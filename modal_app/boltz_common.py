@@ -42,14 +42,24 @@ weights_vol = modal.Volume.from_name("pepstab-boltz-weights", create_if_missing=
 msa_vol = modal.Volume.from_name("pepstab-hla-msa", create_if_missing=True)
 out_vol = modal.Volume.from_name("pepstab-structures", create_if_missing=True)
 
+# Every image must carry THIS module: Modal uploads the entrypoint file but not
+# its siblings, so without add_local_python_source the container dies on
+# `from boltz_common import ...` -- and because `modal run` buffers stdout, the
+# failure shows up only in `modal app logs` while containers crash-loop on the
+# clock. Learned the expensive way.
+_SHARED = ("boltz_common",)
+
 download_image = (
     modal.Image.debian_slim(python_version="3.12")
     .uv_pip_install("huggingface-hub==0.36.0")
     .env({"HF_XET_HIGH_PERFORMANCE": "1"})
+    .add_local_python_source(*_SHARED)
 )
 
-boltz_image = modal.Image.debian_slim(python_version="3.12").uv_pip_install(
-    f"boltz=={BOLTZ_VERSION}"
+boltz_image = (
+    modal.Image.debian_slim(python_version="3.12")
+    .uv_pip_install(f"boltz=={BOLTZ_VERSION}")
+    .add_local_python_source(*_SHARED)
 )
 
 REPO = Path(__file__).resolve().parent.parent

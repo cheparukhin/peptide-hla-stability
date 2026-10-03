@@ -46,6 +46,8 @@ app = modal.App("pepstab-boltz-setup")
     image=download_image,
     volumes={CACHE_DIR.parent: weights_vol},
     timeout=30 * MINUTES,
+    max_containers=1,
+    retries=0,
 )
 def download_weights(force: bool = False) -> dict:
     """Pull the pinned Boltz-2 snapshot (~6.2 GB) onto the weights Volume."""
@@ -73,9 +75,16 @@ def download_weights(force: bool = False) -> dict:
 @app.function(
     image=boltz_image,
     volumes={MSA_DIR: msa_vol},
-    cpu=WORKER_CPU,
-    memory=WORKER_MEM,
-    timeout=60 * MINUTES,
+    # Deliberately NOT the fold worker's 4 cores / 32 GiB. This function spends
+    # almost all its life in a polling loop waiting on the MSA server's queue
+    # (observed: ~22 min of wall time for 8 sequences), so it is I/O-bound, and
+    # Modal bills the greater of requested and used. Requesting the fold shape
+    # here would cost ~10x for the same wait.
+    cpu=0.25,
+    memory=2048,
+    timeout=90 * MINUTES,
+    max_containers=1,
+    retries=0,
 )
 def build_msas(targets: list[dict], force: bool = False) -> list[dict]:
     """Build one ``.a3m`` per unique HLA domain sequence.

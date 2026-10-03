@@ -42,6 +42,35 @@ Note that **Modal's own published Boltz example does exactly this** — it passe
 its shape into a batch sweep is the trap. Our MSAs are built in a separate
 CPU-only Modal function, written to a Volume, and referenced by path.
 
+### Measured: the MSA step costs about a penny
+
+Run 2026-10-03 on Modal, CPU only (`boltz_setup.py::setup`):
+
+| | |
+| --- | ---: |
+| Weight snapshot cached to Volume | **6.204 GB in 36.5 s** |
+| HLA MSAs built (8 unique sequences, one batched request) | **46.1 s** |
+| Alignment depth per allele | **9,771 – 10,305** sequences |
+| Query sequence first in file (verified, all 8) | yes |
+| Approximate cost | **~$0.01** |
+
+Per-allele depth: A\*02:01 9,771 · A\*03:01 9,872 · A\*11:01 10,077 ·
+B\*07:02 10,216 · B\*08:01 9,933 · B\*15:01 10,305 · B\*35:01 10,252 ·
+B\*39:01 10,187. Class I HLA is a deeply sampled family, so these are rich
+alignments — which is the substantive reason to keep the MSA arm rather than
+fold single-sequence.
+
+Two notes from the run:
+
+- **The 46 s was a single batched request for all 8 sequences.** The progress
+  bar's early estimate said 22 minutes; it finished in 45 s once the server
+  dequeued it. Server queue time is the variable here, not compute.
+- **`build_msas` requests 0.25 cores / 2 GiB, not the fold worker's 4 cores /
+  32 GiB.** It spends its life in a polling loop waiting on the MSA server, so
+  it is I/O-bound; Modal bills the greater of requested and used, and asking for
+  the fold shape would have cost roughly 10× for the same wait. This matters
+  more at 75 alleles than at 8.
+
 ### What the pilot checks about MSAs
 
 Boltz's docs say single-sequence mode "reduces accuracy" and is "not

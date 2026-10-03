@@ -238,14 +238,20 @@ def _collect_outputs(
 
 
 @app.local_entrypoint()
-def pilot(gpu: str = "L40S", both_arms: bool = True):
-    """Fold the 5 pilot complexes end to end. The gate on any batch job.
+def pilot(gpu: str = "L40S", limit: int = 3, both_arms: bool = False):
+    """Fold the pilot complexes end to end. The gate on any batch job.
 
-    Runs the MSA arm and, by default, a single-sequence arm on the same five
-    complexes, so the pilot also measures what the MSA actually buys here.
+    Defaults are chosen to spend as little as possible while still clearing the
+    gate: ``limit=3`` is the floor CLAUDE.md allows ("3-5 examples"), the
+    cheapest candidate GPU, and the MSA arm only. The single-sequence arm is
+    informative but answers a question the GPU decision does not need, so it is
+    opt-in via ``--both-arms``.
+
+    This run is what makes the real benchmark cheap: its peak-memory figure
+    decides whether the 80 GB cards can be dropped from the sweep.
     """
-    complexes = read_panel("boltz_pilot.csv")
-    print(f"pilot: {len(complexes)} complexes on {gpu}")
+    complexes = read_panel("boltz_pilot.csv")[:limit]
+    print(f"pilot: {len(complexes)} complexes on {gpu}, arms={'2' if both_arms else '1'}")
     fn = fold_batch.with_options(gpu=gpu)
 
     batches = [fn.remote(complexes, gpu_label=gpu, single_sequence=False)]
@@ -266,17 +272,32 @@ def pilot(gpu: str = "L40S", both_arms: bool = True):
             else:
                 print(f"  {r['complex_id']:22} FAILED{tag}: {r.get('error', '')[:300]}")
 
+    peaks = [r["peak_mem_gb"] for b in batches for r in b["results"] if r["ok"]]
+    if peaks:
+        print(f"\npeak GPU memory across pilot folds: {max(peaks)} GB")
+        print(
+            "  If that fits 40 GB with headroom, A100-80GB is strictly dominated "
+            "by A100-40GB (same silicon, higher rate) and can leave the sweep."
+        )
+
     write_results(REPO / "reports" / "boltz_pilot_results.csv", batches)
     print(
-        "\nBefore running ::benchmark, confirm the poses sit in the groove "
-        "(peptide RMSD against the crystal structures in reports/boltz_pilot.csv)."
+        "\nBefore running ::benchmark, check the poses:\n"
+        "  python scripts/boltz_pose_check.py --structures <dir>"
     )
 
 
 @app.local_entrypoint()
-def benchmark(gpus: str = ",".join(BENCH_GPUS)):
-    """Fold the 24-complex panel on each GPU with identical settings."""
-    complexes = read_panel("boltz_bench_panel.csv")
+def benchmark(gpus: str = ",".join(BENCH_GPUS), limit: int = 8):
+    """Fold the benchmark panel on each GPU with identical settings.
+
+    ``limit`` trades statistical quality for credits. Every complex is 191
+    residues, so runtime spread should be small and a reduced panel still
+    ranks hardware reliably -- but it weakens the *failure-rate* estimate,
+    which is the other thing the plan's 20-30 figure buys. Raise it for the
+    real run.
+    """
+    complexes = read_panel("boltz_bench_panel.csv")[:limit]
     labels = [g.strip() for g in gpus.split(",") if g.strip()]
     print(f"benchmark: {len(complexes)} complexes x {len(labels)} GPUs: {labels}")
 
