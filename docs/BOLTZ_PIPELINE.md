@@ -164,7 +164,10 @@ remains a caveat on absolute RMSD, and belongs in the limitations section.
 every GPU; only the GPU changes, via `fold_batch.with_options(gpu=...)` so there
 is exactly one code path.
 
-- **GPUs:** L40S 48 GB, A100 40 GB, A100 80 GB, H100 80 GB.
+- **GPUs tested:** L4 24 GB, A10 24 GB, L40S 48 GB, A100 40 GB, H100 80 GB.
+  A100-80GB was dropped after the pilot measured peak GPU memory at 8.59 GB,
+  making it strictly dominated by A100-40GB. L4 and A10 were added because
+  8.59 GB fits comfortably in a 24 GB card.
 - **Settings:** `--diffusion_samples 1` (one pose), `--recycling_steps 3` and
   `--sampling_steps 200` (defaults), `--output_format mmcif`, and
   **`--write_full_pae`** because stage 5 feature extraction needs the matrix.
@@ -194,8 +197,10 @@ is exactly one code path.
   minute per fold, a 60 s tail per container is a large fraction of the bill, so
   `scaledown_window` is set explicitly to 10 s. Modal also charges the greater of
   requested and used CPU/memory, and the published Boltz example sets neither —
-  defaulting to 0.125 cores and 128 MiB. Ours requests 4 cores / 32 GiB to match
-  the plan's rate table, so measured cost and budgeted cost are the same number.
+  defaulting to 0.125 cores and 128 MiB. Ours requests 4 cores / 16 GiB,
+  right-sized after measuring peak Boltz child RSS at 9.89 GB (the plan's
+  original 32 GiB was 3x more than needed and biased the comparison toward
+  expensive GPUs — see the benchmark report for the analysis).
 
 ## The decision rule
 
@@ -229,19 +234,21 @@ Two traps this avoids:
 `gpu_decision.py` computes from Modal's published **per-second** rates, read
 2026-10-03, rather than hardcoding the plan's rounded hourly figures:
 
-| GPU | $/s (GPU) | $/hr (GPU) | $/hr + 4 cores + 32 GiB | plan's table |
-| --- | ---: | ---: | ---: | ---: |
-| L40S | 0.000542 | 1.9512 | **2.3956** | 2.40 |
-| A100-40GB | 0.000583 | 2.0988 | **2.5432** | 2.54 |
-| A100-80GB | 0.000694 | 2.4984 | **2.9428** | 2.94 |
-| H100 | 0.001097 | 3.9492 | **4.3936** | 4.39 |
+| GPU | $/s (GPU) | $/hr (GPU) | $/hr + 4c/16 GiB |
+| --- | ---: | ---: | ---: |
+| L4 | 0.000222 | 0.7992 | **1.1157** |
+| A10 | 0.000306 | 1.1016 | **1.4181** |
+| L40S | 0.000542 | 1.9512 | **2.2677** |
+| A100-40GB | 0.000583 | 2.0988 | **2.4153** |
+| H100 | 0.001097 | 3.9492 | **4.2657** |
 
-Host rates: CPU $0.0000131/core/s, memory $0.00000222/GiB/s. **All four
-reproduce the plan's reference table to the cent**, so the plan's "recheck rates
-before launch" step is discharged — recheck again only if the event slips.
+Host rates: CPU $0.0000131/core/s, memory $0.00000222/GiB/s. The plan's original
+four GPUs at 4c/32 GiB reproduce its reference table to the cent, so the
+"recheck rates before launch" step is discharged. The table above uses the
+right-sized 4c/16 GiB host request. Recheck if the event date slips.
 
 One caution: modal.com/pricing carries a *second* CPU/memory table for Sandboxes
-and Notebooks at roughly 3× the Function rates. The figures above are the
+and Notebooks at roughly 3x the Function rates. The figures above are the
 Function rates, which is what `@app.function` bills at.
 
 ## Measured: the pilot passed, and it reframes the whole decision
@@ -279,37 +286,26 @@ Every GPU in the plan's table has **4.7× to 9.3× headroom**. Two consequences:
 
 ### Budget is not the binding constraint
 
-Projected from the measured steady-state 43.6 s/complex and the 124.5 s
-per-container overhead (weight load plus CUDA kernel compilation), at 100
-complexes per container:
+The pilot showed L40S at $0.027/complex already fits 2,000 complexes inside the
+$330 ceiling (18%). The benchmark confirmed that even cheaper cards exist: A10
+at $0.018/complex puts 2,000 complexes at $37, leaving room for ~17,800
+complexes total. At these costs, wall-clock time is the bottleneck, not money.
 
-| | L40S |
-| --- | ---: |
-| Billed per complex | 44.8 s |
-| Cost per complex | $0.0298 |
-| **2,000-complex panel** | **$59.7** — 18% of the $330 ceiling |
-| Capacity at $330 | ~11,000 complexes |
-| Wall-clock at 10 workers | 2.5 h |
+The benchmark also confirmed two predictions from the pilot:
 
-**L40S alone already fits both the budget and the deadline with room to spare.**
-That reframes the GPU question: it is no longer "can we afford to fold 2,000
-complexes" but "is anything meaningfully cheaper or faster than the baseline
-card". Two specific open questions:
-
-- **H100 needs to be >1.83× faster than L40S to also be cheaper per complex**
-  ($4.3936 / $2.3956). Plausible but unmeasured.
-- **Cheap cards are less attractive than their GPU rate suggests**, because the
-  host floor (4 cores + 32 GiB = $0.444/hr) is a large share of a budget card's
-  total. L4 only wins if it is under ~1.9× slower than L40S. Also worth noting:
-  that host request is itself tunable — 8.6 GB of GPU demand does not obviously
-  need 32 GiB of host RAM, and dropping to 2 cores / 8 GiB would cut the L40S
-  combined rate from $2.396 to $2.109/hr.
+- **H100 did not break even.** It needed >1.83x the speed of L40S to justify
+  its price. It measured 1.03x — a 3% speedup for nearly double the rate. The
+  191-residue workload is too small to saturate it.
+- **Cheap cards did win**, but only after right-sizing the host request. At the
+  plan's 4c/32 GiB, the fixed host cost inflated cheap cards' bills
+  disproportionately (29% of A10's bill vs 10% of H100's). At 4c/16 GiB the
+  bias is removed and A10 is the clear winner.
 
 ## Open question before launch
 
 **Which Modal plan is the workspace on?** Starter caps GPU concurrency at **10
 containers**; Team raises it to 50. That cap sets the `--workers` figure in the
-deadline arithmetic, and it is the difference between a ~3.5 h and a ~45 min
+deadline arithmetic, and it is the difference between a 2.6 h and a ~30 min
 production run. It changes no cost figure — concurrency buys wall-clock, not
 dollars.
 

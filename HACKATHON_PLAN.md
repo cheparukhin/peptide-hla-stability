@@ -385,6 +385,8 @@ Moving to full-length HLA with beta-2-microglobulin (the additional chain that s
 
 **Deliverable:** MSA manifest, hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
 
+**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). GPU chosen: **A10 at $0.018/complex**, $37 for 2,000 complexes, 2.6 h at 10 workers. Total benchmark spend ~$1.58 against the $15 ceiling. Pilot gate cleared: 3/3 in the groove at 0.13–0.42 Å peptide CA RMSD, PAE written, chain mapping verified. 44 folds, zero failures.
+
 **Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
 
 ### 5. Test additional feature groups
