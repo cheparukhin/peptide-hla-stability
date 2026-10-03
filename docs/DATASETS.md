@@ -6,10 +6,11 @@
 | [`data/c67s_cleanup/rasmussen_no_C67S.csv`](../data/c67s_cleanup/rasmussen_no_C67S.csv) | 27,031 | 72 | 5,633 | **train / eval** | [summary](rasmussen_no_C67S_summary/DATASET_SUMMARY.md) |
 | [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv) | 1,135 | 3 | 663 | held-out stability-floor benchmark | — |
 
-Fold assignments for every row of all three files live in
-[`data/c67s_cleanup/peptide_splits.csv`](../data/c67s_cleanup/peptide_splits.csv) and are
-documented in [SPLITS.md](SPLITS.md).
-Join them on `(allele, peptide)`.
+Split assignments for every row of all three files live in
+[`data/splits.csv`](../data/splits.csv) and are documented in
+[EVALUATION.md](../EVALUATION.md). Join them on `(allele, peptide)`. The earlier
+`data/c67s_cleanup/peptide_splits.csv` is superseded — see [SPLITS.md](SPLITS.md)
+for why it is kept.
 
 Public binding-affinity measurements for the same 75 alleles — the auxiliary
 labels for stage 3b — are in

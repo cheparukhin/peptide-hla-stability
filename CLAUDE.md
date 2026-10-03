@@ -16,10 +16,11 @@ affinity table used for augmentation.
 - `data/rasmussen_et_al_dataset.csv` is read-only. Derived or corrected data
   goes to a new file; `(cd data && shasum -a 256 -c SHA256SUMS)` must still
   pass. The manifest stores a bare filename, so it only verifies from `data/`.
-- Load the frozen splits from `data/c67s_cleanup/peptide_splits.csv`, never
-  recompute them — regenerating drops the peptide-cluster grouping and leaks
-  training data into the test set. Join on `(allele, peptide)` and filter on
-  the `split` column; never join on `row_id`, which is positional into the raw
-  CSV. See [docs/SPLITS.md](docs/SPLITS.md).
+- Load the frozen splits from `data/splits.csv`, never recompute them —
+  regenerating drops the peptide-cluster grouping and leaks training data into
+  the test set. Join on `(allele, peptide)` and filter on the `split` column;
+  never join on `pair_id`, which is positional into the raw CSV. See
+  [EVALUATION.md](EVALUATION.md). `data/c67s_cleanup/peptide_splits.csv` is the
+  superseded BLOSUM62 version — do not load it.
 - Validation drives every decision. The test set is scored once, at stage 6.
 - No batch GPU job without a passing end-to-end pilot on 3–5 examples.

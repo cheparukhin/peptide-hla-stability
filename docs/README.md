@@ -16,7 +16,7 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [SPLITS.md](SPLITS.md) | the frozen peptide-grouped folds — how components are built, why the threshold is 0.70, what the leakage check proves, and how to join them |
+| [SPLITS.md](SPLITS.md) | **superseded** by `data/splits.csv` and [EVALUATION.md](../EVALUATION.md) — kept for the BLOSUM62-vs-Hamming method comparison and the threshold argument |
 
 ## Augmentation
 

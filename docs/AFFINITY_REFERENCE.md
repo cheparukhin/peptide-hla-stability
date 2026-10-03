@@ -123,12 +123,11 @@ measured on a different allele. Of the 46,157 `padding_eligible` rows:
 | --- | ---: | ---: |
 | peptide genuinely absent from the stability set | 21,728 | 4,728 |
 | peptide present under a different allele | 24,429 | 2,189 |
-| …of those, peptide assigned to **val or test** | **7,129** | **651** |
+| …of those, peptide assigned to **val or test** | **7,502** | **654** |
 
-Those 7,129 rows are distance-zero leakage, not near-neighbour leakage. Filter
-`padding_eligible` against
-[`data/c67s_cleanup/peptide_splits.csv`](../data/c67s_cleanup/peptide_splits.csv)
-on `peptide` before using it, not on `(allele, peptide)`.
+Those 7,502 rows are distance-zero leakage, not near-neighbour leakage. Filter
+`padding_eligible` against [`data/splits.csv`](../data/splits.csv) on `peptide`
+before using it, not on `(allele, peptide)`.
 
 ### 2. Near neighbours of held-out peptides
 
@@ -137,21 +136,22 @@ to any val/test peptide:
 
 | distance | peptides | share | padding-eligible subset |
 | ---: | ---: | ---: | ---: |
-| 1 | 175 | 0.84% | 40 |
-| 2 | 70 | 0.34% | 11 |
-| 3 | 374 | 1.79% | 54 |
-| 4 | 4,166 | 19.95% | 774 |
-| 5 | 13,359 | 63.98% | 3,068 |
-| ≥ 6 | 2,735 | 13.10% | 781 |
+| 1 | 177 | 0.85% | 32 |
+| 2 | 54 | 0.26% | 11 |
+| 3 | 327 | 1.57% | 53 |
+| 4 | 4,229 | 20.25% | 827 |
+| 5 | 13,344 | 63.91% | 3,050 |
+| ≥ 6 | 2,748 | 13.16% | 755 |
 
 Stage 3b of the plan requires excluding anything within one residue of a test
-peptide — that is **175** peptides. Stage 1 now groups peptides at Hamming ≤ 3,
-so holding the augmentation to the same standard excludes **619** peptides
-(3.0%), of which 105 are padding-eligible. Either way the cost is small.
+peptide — that is **177** peptides. Stage 1 groups peptides at Hamming ≤ 3, so
+holding the augmentation to the same standard excludes **558** peptides (2.7%),
+of which 96 are padding-eligible. Either way the cost is small.
 
-These distances are measured against the split currently checked in, which was
-built with BLOSUM62 grouping at 0.70. Recompute them if the split is
-regenerated under the Hamming ≤ 3 rule the plan now specifies.
+Augmented peptides are outside the frozen clustering, so `dist_to_train` in
+`splits.csv` does not describe them — these distances are measured here against
+the val/test peptides of that file and must be recomputed if the split is
+refrozen.
 
 ### 3. Censoring and missing values
 
