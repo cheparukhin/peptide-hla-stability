@@ -294,3 +294,38 @@ def test_unknown_gpu_is_refused_rather_than_guessed():
 
 def test_complex_id_strips_allele_punctuation():
     assert complex_id("HLA-A*02:01", "SLLMWITQV") == "A0201_SLLMWITQV"
+
+
+def test_every_rated_gpu_has_a_vram_entry():
+    """A missing VRAM figure would silently skip the memory eligibility check."""
+    assert set(gpu_decision.GPU_PER_S) == set(gpu_decision.VRAM_GB)
+
+
+def test_budget_cards_were_added_with_real_rates():
+    """Added after the pilot measured 8.59 GB peak -- they must be cheaper than L40S."""
+    l40s = gpu_decision.RATES["L40S"]["combined_hr"]
+    for gpu in ("L4", "A10"):
+        assert gpu_decision.RATES[gpu]["combined_hr"] < l40s
+        assert gpu_decision.RATES[gpu]["vram_gb"] >= 24  # must still fit 8.59 GB
+
+
+def test_a_gpu_over_its_own_vram_is_ineligible():
+    """Peak memory above the card's capacity must disqualify it, not just cost it."""
+    runs = _runs("T4", 6, 100.0, 100.0)
+    for r in runs:
+        r["peak_mem_gb"] = "20.0"  # over T4's 16 GB
+    s = gpu_decision.summarize("T4", runs, per_container=100)
+    assert s["peak_mem_gb"] > s["vram_gb"]
+
+
+def test_host_floor_is_a_real_share_of_a_budget_card():
+    """Why cheap cards win less than their GPU rate suggests.
+
+    The 4-core/32-GiB host request costs the same on every card, so it is a
+    third of an L4 bill but a tenth of an H100's -- which is exactly why L4
+    only breaks even if it stays under ~1.9x slower than L40S.
+    """
+    host_hr = gpu_decision._HOST_PER_S * 3600
+    l4_share = host_hr / gpu_decision.RATES["L4"]["combined_hr"]
+    h100_share = host_hr / gpu_decision.RATES["H100"]["combined_hr"]
+    assert l4_share > 2 * h100_share

@@ -37,12 +37,22 @@ OUT = REPO / "reports" / "gpu_decision.csv"
 # memory are added, so the plan's "recheck rates before launch" step is done --
 # but recheck again if the event slips, since published rates move.
 GPU_PER_S = {
+    "T4": 0.000164,
+    "L4": 0.000222,
+    "A10": 0.000306,
     "L40S": 0.000542,
     "A100-40GB": 0.000583,
     "A100-80GB": 0.000694,
     "H100": 0.001097,
 }
-VRAM_GB = {"L40S": 48, "A100-40GB": 40, "A100-80GB": 80, "H100": 80}
+# L4/A10/T4 are not in HACKATHON_PLAN.md's candidate table. They were added
+# after the pilot measured peak GPU memory at 8.59 GB, which puts a 191-residue
+# pMHC complex inside a 24 GB card with room to spare -- the plan's candidate
+# set was chosen without that number in hand.
+VRAM_GB = {
+    "T4": 16, "L4": 24, "A10": 24,
+    "L40S": 48, "A100-40GB": 40, "A100-80GB": 80, "H100": 80,
+}
 
 # Per the plan's worker assumption: 4 physical cores and 32 GiB host memory.
 CPU_PER_CORE_S = 0.0000131
