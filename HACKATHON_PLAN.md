@@ -2,39 +2,41 @@
 
 **Team:** 3 participants
 **Event:** London AI × Science, protein engineering track, October 3-4, 2026
-**Research question:** do frozen protein foundation-model features improve prediction of how long a peptide remains bound to HLA, and does any improvement justify its compute cost?
+**Research question:** can pretrained protein language model features predict how long a peptide stays bound to an HLA molecule better than raw sequence features — and is the improvement worth the compute cost?
 
-The primary claim concerns **unseen peptides on familiar HLA alleles**. New-allele generalisation is a separate test, not the headline result.
+Our main claim is about **unseen peptides on HLA alleles we trained on**. Whether the model works on entirely new alleles is a separate test, not the headline.
 
 ## Recommended scope
 
-Commit to a full-dataset comparison of a supervised sequence baseline against frozen ESM-2 features. Add a bounded structural experiment using geometry and confidence **only if an end-to-end pilot passes**.
+Commit to comparing a supervised sequence baseline against frozen ESM-2 features across the full dataset. Only add a structural experiment (predicted 3D shapes, confidence scores) if a small end-to-end pilot works first.
 
-Do not commit to folding the whole dataset. A precise negative result is a successful submission; structural work must not prevent completion of the core comparison.
+Do not commit to folding the whole dataset. A clear negative result ("pretrained features didn't help") is a successful submission. Structural work must not block the core comparison.
 
 ## Scientific rationale
 
-HLA molecules display short protein fragments for immune surveillance. The target here is **residence time**: how long a peptide remains bound once a complex has formed. Binding affinity also depends on how readily binding occurs, so a good-looking predicted structure or a favourable interaction energy is not automatically evidence of a long half-life. We test these quantities as candidate predictors of the measured half-life, not as measurements of it.
+HLA molecules sit on cell surfaces and display short protein fragments (peptides) so the immune system can inspect them. Our target is **residence time** — how long a peptide stays bound once the complex has formed, measured as a dissociation half-life.
 
-The experiment ladder asks whether each source of information adds value **beyond a trained sequence baseline**. Start with inexpensive full-dataset comparisons; pay for structures only after a small pilot works end to end; then reuse those structures to test geometry, confidence, sequence compatibility, and energy separately.
+This is different from binding affinity (how readily a peptide binds in the first place). A peptide might bind easily but leave quickly, or vice versa. So a good-looking predicted structure or a favourable energy score doesn't automatically mean a long half-life. We test these quantities as candidate *predictors* of the measured half-life, not as direct measurements of it.
 
-The baseline, ESM extraction, and the folding pilot can run in parallel. The ordering below describes the evidence needed before expanding scope, not a strict serial schedule.
+The experiment ladder asks: does each additional source of information add value **beyond what a trained sequence baseline already captures**? We start with cheap full-dataset comparisons, only pay for expensive structure predictions after a small pilot works end to end, and then reuse those same structures to test geometry, confidence, sequence compatibility, and energy separately.
 
-| Experiment | Priority | Scientific question | Features and their meaning | What we track |
+The baseline, ESM extraction, and folding pilot can run in parallel. The ordering below describes what evidence is needed before expanding scope, not a strict serial schedule.
+
+| Experiment | Priority | Question | What goes in | What we measure |
 |---|---|---|---|---|
-| Sequence baseline | Core | What can we learn from the labelled sequences alone? Establishes the inexpensive reference. | Peptide and HLA amino-acid encodings, preserving residue positions. | Peptide ranking, prediction error, training/inference cost. |
-| Frozen ESM-2 | Core | Does protein pretraining add useful information? Testable across the dataset without structures. | Learned representations of peptide positions and HLA sequence; alone and added to raw sequence features. | Improvement over the sequence baseline; embedding cost; sensitivity to layer and model size. |
-| Auxiliary affinity | Optional, pre-structural | Does multi-task training with binding-affinity labels improve the stability encoder? No GPU cost. | Shared encoder with a second head predicting affinity; tested on dual-labelled peptides first, then optionally on broader IEDB data. | Gain over single-task stability baseline and ESM-2; whether the benefit differs between sequence and ESM arms. |
-| Boltz geometry | Pilot-gated | Does the predicted fit in the HLA groove explain stability? Small panel, because folding is costly. | Contacts and burial per peptide position; terminal hydrogen bonds; anchor-pocket clashes. | Added accuracy on matched examples; credible groove poses; cost and failures. |
-| Boltz confidence | Same structures | Does uncertainty in the prediction carry signal? Tested separately from geometry, reusing the same folds. | Per-position and peptide mean/minimum pLDDT (local confidence); peptide-HLA PAE (relative placement); pairwise ipTM (interface). | Gain from confidence alone and beyond geometry. |
-| ProteinMPNN | Optional next | Is the peptide sequence compatible with the predicted backbone? Another pretrained model, no refolding. | Peptide-only likelihood and per-position scores, with HLA fixed. | Predictive value beyond sequence/structure features, versus scoring cost. |
-| FoldX | Optional last | Do estimated interface energetics add information? Setup is conditional. | Peptide-HLA interaction energy and individual terms, after structure repair. | Incremental accuracy versus setup/scoring cost. |
+| Sequence baseline | Core | What can labelled sequences alone tell us? This is the cheap reference point. | Peptide amino acids and HLA amino acids, preserving which position each residue sits at. | Peptide ranking accuracy, prediction error, training and inference cost. |
+| Frozen ESM-2 | Core | Does a pretrained protein language model add useful signal? Testable across the full dataset, no structures needed. | Learned vector representations of each peptide position and HLA sequence (from ESM-2), used alone and combined with raw sequence features. | Improvement over the sequence baseline; embedding extraction cost; sensitivity to which internal layer and model size we use. |
+| Auxiliary affinity | Optional, pre-structural | Does training on binding-affinity labels alongside stability labels improve the model? No extra GPU cost. | A shared encoder with a second output head predicting affinity (how strongly a peptide binds, rather than how long it stays). Tested first on peptides that have both measurements, then optionally on broader IEDB data. | Gain over single-task baseline and over ESM-2; whether the benefit differs between the sequence and ESM arms. |
+| Boltz geometry | Pilot-gated | Does the predicted physical fit in the HLA groove explain stability? Small panel, because folding is expensive. | Contacts and burial (how deeply each peptide position sits in the groove); hydrogen bonds at the peptide ends; clashes at anchor pockets (positions where the peptide is pinned down). | Added accuracy on matched examples; whether the predicted poses look physically reasonable; cost and failure rate. |
+| Boltz confidence | Same structures | Does the model's own uncertainty carry signal? Tested separately from geometry, reusing the same predicted structures. | Per-position pLDDT plus its peptide mean and minimum (pLDDT = per-residue confidence in the local structure around that residue); peptide-HLA PAE (predicted alignment error — how sure the model is about the relative placement of the two chains); pairwise ipTM (interface predicted TM-score — overall interface quality). | Gain from confidence alone and beyond geometry. |
+| ProteinMPNN | Optional next | Is the peptide sequence "compatible" with the predicted backbone shape? Uses another pretrained model, no refolding needed. | Peptide-only overall likelihood and per-position scores from ProteinMPNN (an inverse-folding model that asks: given this 3D backbone, how probable is this amino acid sequence?), with HLA held fixed. | Predictive value beyond sequence and structure features, versus scoring cost. |
+| FoldX | Optional last | Do estimated binding energetics add information? Only if FoldX is already available. | Peptide-HLA interaction energy and its component terms (van der Waals, electrostatics, etc.), computed after repairing the predicted structure. | Incremental accuracy versus setup and scoring cost. |
 
-Each experiment must earn its place by improving prediction on the same held-out examples, with uncertainty and compute cost reported alongside accuracy. A useful negative result tells us which representation did not help under these conditions; it does not rule out every use of that model family.
+Each experiment must earn its place by improving prediction on the same held-out examples, with uncertainty and compute cost reported alongside accuracy. A useful negative result tells us which approach didn't help under these conditions — it doesn't rule out every use of that model family.
 
 ## Dataset and known facts
 
-**Canonical input:** the corrected raw CSV committed under `data/`. Preserve it unmodified alongside its checksum so every workstream uses identical data.
+**Canonical input:** the corrected CSV committed under `data/`. Keep it unmodified alongside its checksum so every workstream uses identical data.
 
 | Property | Value |
 |---|---:|
@@ -50,7 +52,7 @@ Each experiment must earn its place by improving prediction on the same held-out
 
 Inputs are `peptide`, `hla_seq`, and `hla_pseudoseq`; the target `thalf_hours` is dissociation half-life.
 
-The 34-position contact pseudosequence identifies potential peptide-contacting HLA positions but gives no peptide-specific 3D geometry. Individual experimental replicates are absent, so the CSV cannot establish a replicate-based noise ceiling. Released NetMHCstabpan was trained on this dataset and is not a fair held-out comparator.
+The 34-position contact pseudosequence identifies which HLA positions are likely to touch the peptide, but gives no 3D geometry for any specific peptide-HLA pair. Individual experimental replicates aren't included, so we can't estimate a noise ceiling from the data alone. The released NetMHCstabpan model was trained on this same dataset, so it's not a fair held-out comparison.
 
 ## Stages, deliverables, and justification
 
@@ -59,100 +61,100 @@ The 34-position contact pseudosequence identifies potential peptide-contacting H
 **Work**
 
 - Check sequence alphabets, pseudosequence lengths, engineered constructs, missing values, and label distributions.
-- Start with `y = log1p(thalf_hours)`, which accommodates zero labels. Preserve original labels for reporting.
-- Investigate what zero values and any apparent assay limits mean. Do not infer censoring from repeated values alone or discard zeros automatically.
-- Freeze approximately **70/10/20** train/validation/test partitions. Keep identical peptides **and one-residue-neighbour clusters** together, across all alleles. Inspect per-allele counts before fitting.
-- Agree on metrics, model-selection rules, **a predeclared practically meaningful improvement**, and shared example identifiers. Keep test outcomes sealed until the final comparison.
+- Start with `y = log1p(thalf_hours)` as the prediction target — this handles zero-valued labels cleanly. Keep original labels for reporting.
+- Investigate what zero values and any apparent assay limits actually mean. Don't assume they're censored based on repeated values alone, and don't automatically discard them.
+- Freeze approximately **70/10/20** train/validation/test splits. Keep identical peptides **and peptides differing by just one residue** in the same split, across all alleles. Check per-allele counts before fitting.
+- Agree on metrics, model-selection rules, **a predeclared threshold for what counts as a meaningful improvement**, and shared example IDs. Don't touch the test set until the final comparison.
 
-**Deliverable:** audit summary, saved split assignments, and a common evaluation script.
+**Deliverable:** audit summary, saved split assignments, and a shared evaluation script.
 
-**Why:** every model must solve the same generalisation problem without leakage. The larger test partition gives more evidence for within-allele ranking; grouping near-identical peptides removes the main leakage route, and the clusters are small enough that grouping costs little data.
+**Why:** every model must solve the same generalisation problem without data leakage. The larger test partition gives more statistical power for within-allele ranking. Grouping near-identical peptides closes the main leakage route, and the clusters are small enough that grouping costs almost no data.
 
 ### 2. Establish supervised baselines
 
 **Work**
 
-- Train a small MLP on position-preserving one-hot or BLOSUM encodings of the peptide and HLA contact pseudosequence.
-- Add an input-matched baseline using the HLA domain sequence when comparing against domain-based embeddings, so extra sequence context is not mistaken for a pretraining benefit.
-- Include training-set allele means as a simple control for error and pooled metrics.
+- Train a small MLP on position-preserving one-hot or BLOSUM encodings of the peptide and HLA contact pseudosequence. (BLOSUM encodes amino acids using a substitution-probability matrix, so similar amino acids get similar vectors.)
+- When comparing against domain-based embeddings later, add a matching baseline that uses the full HLA domain sequence as input — so we don't mistake "more input sequence" for a benefit of pretraining.
+- Include training-set allele means as a simple sanity-check baseline for error and pooled metrics.
 - Use a modest, comparable tuning budget across approaches. Save predictions, configuration, validation performance, and training/inference time.
 
 **Deliverable:** reproducible sequence baselines and a first results table.
 
-**Why:** this establishes what the task's labelled data can teach a small model. It is not a reproduction of NetMHCstabpan's training procedure and should not be described as one.
+**Why:** this shows what the task's labelled data can teach a small model on its own. It's not a reproduction of NetMHCstabpan's training and shouldn't be described as one.
 
 ### 3. Test frozen ESM-2 representations
 
 **Work**
 
-- Start with **ESM-2 35M**; consider a larger checkpoint only if time, throughput, and validation results justify it.
-- Cache embeddings once per unique peptide and HLA sequence, not once per measurement.
-- Embed peptide and HLA separately. Preserve peptide-position information; do not rely only on mean pooling.
-- Embed the supplied HLA domain. Verify residue mapping before selecting the 34 contact-position embeddings.
-- Compare a middle layer against the final layer. Train small heads on embeddings alone and embeddings plus raw sequence features.
-- Select checkpoint, layer, representation, and head on validation data, and check variation across head-training seeds.
+- Start with **ESM-2 35M** (the smallest checkpoint); try a larger one only if time, throughput, and validation results justify it.
+- Cache embeddings once per unique peptide and HLA sequence, not once per measurement row.
+- Embed peptide and HLA separately. Keep per-position information from the peptide; don't only use the mean across positions.
+- Embed the supplied HLA domain. Verify residue indexing before selecting the 34 contact-position embeddings.
+- Compare a middle layer against the final layer. Train small prediction heads on embeddings alone, and on embeddings plus raw sequence features.
+- Select checkpoint, layer, representation, and head architecture using validation data. Check how much results vary across random seeds.
 
 **Deliverable:** full-dataset baseline-versus-ESM comparison, cached features, and measured compute costs.
 
-**Why:** this is the cheapest direct test of the foundation-model question and needs no structures. Separate embeddings leave peptide-HLA interaction learning to the head, so useful performance is a hypothesis, not a guarantee.
+**Why:** this is the cheapest direct test of the foundation-model question and needs no structures. Embedding peptide and HLA separately means the prediction head has to learn peptide-HLA interactions on its own, so useful performance is a hypothesis, not a guarantee.
 
 ### 3b. Test auxiliary affinity training (optional, pre-structural)
 
 **Work**
 
-- **Probe (∼1 hour):** Rasmussen et al. report ∼7,600 peptides with both affinity and stability measurements across 58 allotypes. Add a second prediction head to the sequence baseline that predicts binding affinity alongside stability. Train on these dual-labelled peptides only — they are already inside the frozen splits, so no new leakage surface. Compare single-task versus multi-task validation performance.
-- **Expand (only if probe helps, ∼2–3 hours):** Ingest the broader IEDB affinity dataset (∼136K measurements, 152 alleles). Before training, verify that no IEDB peptide is a Hamming-1 neighbour of any stability-set test peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
-- Report whether the auxiliary target helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that is a finding worth reporting — it means cheap auxiliary labels substitute for expensive pretrained features on this task.
+- **Probe (~1 hour):** Rasmussen et al. report ~7,600 peptides with both affinity (how strongly the peptide binds) and stability (how long it stays) measurements across 58 allotypes. Add a second prediction head to the sequence baseline for affinity. Train on these dual-labelled peptides only — they're already inside the frozen splits, so no new leakage risk. Compare single-task vs. multi-task validation performance.
+- **Expand (only if probe helps, ~2-3 hours):** Bring in the broader IEDB affinity dataset (~136K measurements, 152 alleles). Before training, verify that no IEDB peptide is within one residue change of any stability test-set peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
+- Report whether auxiliary affinity data helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that's worth reporting — it would mean cheap extra labels substitute for expensive pretrained features on this task.
 
-**Deliverable:** multi-task versus single-task comparison on the same frozen validation set, with the leakage audit documented.
+**Deliverable:** multi-task vs. single-task comparison on the same frozen validation set, with the leakage audit documented.
 
-**Why:** The stability dataset's peptides were pre-selected for strong predicted affinity, limiting peptide diversity. The IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), and that the gain came from complementary signal, not just more rows.
+**Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, so peptide diversity is limited. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that broader diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), with the gain coming from complementary signal, not just more rows.
 
 ### 4. Pilot structure prediction and choose scale
 
 **Work**
 
-- Use Boltz-2; keep Chai-1 as an alternative rather than running both. Input is the supplied 182-residue HLA domain plus a separate 9-residue peptide chain.
-- **Push 3-5 training/validation examples all the way through folding, feature extraction, and prediction before launching any batch.** Inspect groove-bound poses and verify residue/chain mapping.
-- Benchmark 20-30 representative complexes with identical settings, comparing L40S, A100 40 GB, and H100 where useful. Measure billed dollars per successful complex, throughput, peak memory, startup overhead, and failures.
-- Cache model weights and HLA MSAs; use single-sequence peptide input; keep models loaded across complexes; avoid GPU time spent waiting on MSA generation. Begin with one pose per complex and standard settings. **Save full PAE** for feature extraction. Test reduced sampling only against pilot structural quality.
-- Choose roughly **2,000 complexes across 4-6 adequately represented alleles**, independently of model performance and test labels. Preserve the frozen splits and seek **at least 50 held-out examples per included allele, nearer 100 where possible**.
-- Moving to full soluble HLA plus beta-2-microglobulin requires a new pilot and runtime benchmark.
-- **At hour 5, expand only if the complete pipeline works and measured throughput supports completion by hour 10.** Otherwise reduce the panel or report the pilot alone.
+- Use Boltz-2 for structure prediction; keep Chai-1 as a fallback rather than running both. Input: the supplied 182-residue HLA domain plus a separate 9-residue peptide chain.
+- **Push 3-5 training/validation examples all the way through folding, feature extraction, and prediction before launching any batch.** Visually inspect the predicted poses to check the peptide sits in the HLA groove, and verify residue/chain mapping.
+- Benchmark 20-30 representative complexes with identical settings, comparing L40S, A100 40 GB, and H100 GPUs. Measure billed cost per successful complex, throughput, peak memory, startup overhead, and failure rate.
+- Cache model weights and HLA MSAs. Use single-sequence peptide input. Keep models loaded across complexes to avoid reload overhead. Don't spend GPU time waiting on MSA generation. Start with one pose per complex and standard settings. **Save full PAE** (the matrix of predicted alignment errors — needed for feature extraction). Test reduced sampling only against pilot quality.
+- Choose roughly **2,000 complexes across 4-6 well-represented alleles**, independently of model performance and test labels. Preserve the frozen splits. Target **at least 50 held-out examples per included allele, ideally closer to 100**.
+- Moving to full-length HLA with beta-2-microglobulin (the additional chain that stabilises the HLA structure in vivo) would require a new pilot and runtime benchmark.
+- **At hour 5, expand only if the complete pipeline works and measured throughput supports finishing by hour 10.** Otherwise shrink the panel or report just the pilot results.
 
-**Deliverable:** hardware/runtime benchmark, a fixed structural panel, the structures, and a manifest of successes and failures.
+**Deliverable:** hardware and runtime benchmark, a fixed structural panel, the structures themselves, and a manifest of successes and failures.
 
-**Why:** folding is the largest compute and integration risk. Cheaper hourly hardware may be slower, so measured cost per completed prediction decides the choice. A smaller interpretable experiment with adequate test coverage is worth more than many structures that cannot support a comparison.
+**Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
 
 ### 5. Test additional feature groups
 
 **Work**
 
-- Start with geometry and confidence, which come from the existing predictions. Add each group separately, then test combinations supported by validation.
-- Score only the peptide with ProteinMPNN, HLA fixed, so the larger chain does not dominate the score. Do this once the core pipeline is complete.
-- If FoldX access is already available, run `RepairPDB` then `AnalyseComplex` for peptide versus HLA. Use interaction energy, not total complex folding energy.
+- Start with geometry and confidence features, which come from the existing structure predictions. Add each group separately, then test combinations that validation supports.
+- Score only the peptide chain with ProteinMPNN (holding HLA fixed), so the much larger HLA chain doesn't dominate the score. Do this once the core pipeline is complete.
+- If FoldX is already available, run `RepairPDB` (fixes common structural artifacts) then `AnalyseComplex` (decomposes binding energy into physical terms) for peptide versus HLA. Use interaction energy, not total complex energy.
 - Train sequence, ESM, and augmented models on **exactly the same structural training rows**, with identical validation and test rows. Separately report full-training-data sequence models on that same test set as practical comparators.
-- Keep low-confidence but usable predictions. Predefine technical-failure handling, report coverage, and show a sequence-model fallback for failed structures.
-- Use repeated poses only on a small diagnostic subset if budget remains.
+- Keep low-confidence but usable predictions. Predefine how to handle outright failures, report coverage, and show a sequence-model fallback for structures that fail.
+- Try multiple poses only on a small diagnostic subset if budget remains.
 
 **Deliverable:** ablation table showing the incremental predictive value and cost of each feature group.
 
-**Why:** a feature can score well alone yet add nothing to the sequence baseline. pLDDT is confidence, not physical stability; seed disagreement is model uncertainty, not measured motion; inverse-folding likelihood is not a half-life; interaction energy is not the unbinding barrier. OpenMM minimisation energy is not a drop-in replacement for FoldX interface scoring.
+**Why:** a feature can look useful alone but add nothing on top of the sequence baseline. Important conceptual guardrails: pLDDT is the model's confidence in its prediction, not a measure of physical stability; seed disagreement captures model uncertainty, not real molecular motion; inverse-folding likelihood tells you if the sequence fits the backbone, not how long the complex lasts; interaction energy estimates the strength of binding, not the energy barrier to unbinding. OpenMM minimisation energy is not a drop-in replacement for FoldX interface scoring.
 
 ### 6. Evaluate and prepare the submission
 
 **Work**
 
-- Evaluate validation-selected configurations **once** on the held-out test set.
-- Report per-allele Spearman correlation for peptide ranking, with test counts and a median/IQR summary. Keep a common set of eligible alleles across models and report small or undefined cases explicitly.
-- Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** to show how many top-ranked candidates are sufficiently stable. Treat pooled metrics as secondary, and distinguish within-allele ranking from between-allele effects.
+- Evaluate the validation-selected models **once** on the held-out test set.
+- Report per-allele Spearman correlation (how well the model ranks peptides within each allele), with test-set sizes and a median/IQR summary across alleles. Use a common set of eligible alleles across models and report small or undefined cases explicitly.
+- Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** — of the top 10 predictions per allele, how many actually have a half-life above 2 hours? This directly measures whether the model identifies sufficiently stable peptides. Treat pooled metrics as secondary. Distinguish within-allele ranking from cross-allele effects.
 - Use paired uncertainty estimates that keep peptide clusters together across alleles.
 - Report accuracy gains alongside extraction/training cost, **cost per 1,000 new predictions**, runtime, and prediction failures.
-- A confidence interval crossing zero is inconclusive. A strong negative result should exclude the predeclared worthwhile gain. Bound every conclusion to the tested representation, data, split, and budget.
-- If time remains, add an allele-held-out evaluation, stratified by distance to training HLA sequences, before making any new-allele generalisation claim.
+- If a confidence interval crosses zero, the result is inconclusive — not negative. A strong negative result should rule out the predeclared minimum worthwhile gain. Bound every conclusion to the specific representation, data, split, and budget tested.
+- If time remains, add an allele-held-out evaluation (train without some alleles, test on them), stratified by how similar the held-out alleles are to training alleles. Only then make any new-allele generalisation claim.
 - The original assay panel was partly selected by predicted affinity, so broader biological or clinical claims need additional evidence.
 
-**Deliverable:** reproducible code/configurations, final comparison table, limitations, and a concise presentation.
+**Deliverable:** reproducible code and configs, final comparison table, limitations section, and a concise presentation.
 
 **Why:** the submission should show what helped, where it helped, and what it cost. A gain on unseen peptides for familiar alleles is useful even without a new-allele result.
 
@@ -168,9 +170,9 @@ Team credits: **$450 Modal + approximately $60 Hugging Face**. Keep provider bud
 | Modal: inverse-folding and energy scoring | $45 |
 | Modal: contingency | $60 |
 
-Claude, Devin, Antigravity, and AMASS credits support implementation and research; do not assume they fund folding GPUs. Recheck rates and credit availability before launch.
+Claude, Devin, Antigravity, and AMASS credits support implementation and research; don't assume they fund folding GPUs. Recheck rates and credit availability before launch.
 
-Reference worker rates assume standard Functions at base rates, four physical CPU cores, and 32 GiB host memory per GPU worker. They exclude startup, retries, extra poses, and storage/egress; region and non-preemptible options change pricing.
+Reference worker rates assume standard Functions at base rates, four physical CPU cores, and 32 GiB host memory per GPU worker. These exclude startup, retries, extra poses, and storage/egress; region and non-preemptible options change pricing.
 
 | GPU | GPU-only $/hour | Including CPU/memory $/hour |
 |---|---:|---:|
@@ -182,10 +184,10 @@ Reference worker rates assume standard Functions at base rates, four physical CP
 ```text
 cost = total billed worker seconds * combined GPU/CPU/memory rate
 capacity = folding budget / measured cost per successful complex
-elapsed time approximately = total worker hours / concurrent workers
+elapsed time ~ total worker hours / concurrent workers
 ```
 
-**Any seconds-per-complex figure is a budget threshold, not measured throughput.** Choose hardware on measured dollars per successful prediction and the deadline. Parallel workers shorten elapsed time but do not inherently reduce total compute cost. Choose the lowest-cost GPU that meets the deadline and memory requirements.
+**Any seconds-per-complex figure is a budget threshold, not measured throughput.** Choose hardware based on measured dollars per successful prediction and the deadline. Running more workers in parallel shortens wall-clock time but doesn't reduce total compute cost. Pick the cheapest GPU that meets the deadline and memory requirements.
 
 ## Team workstreams and checkpoints
 
@@ -193,23 +195,23 @@ elapsed time approximately = total worker hours / concurrent workers
 |---|---|---|
 | 1 | Data audit, splits, sequence baselines, evaluation | Shared split IDs and prediction/evaluation format |
 | 2 | ESM-2 embeddings, regression heads, representation comparisons | Cached features and validation-selected models |
-| 3 | GPU pilot, structures, additional feature extraction | Structure/feature manifests keyed by complex ID, with success and failure records |
+| 3 | GPU pilot, structures, additional feature extraction | Structure and feature manifests keyed by complex ID, with success and failure records |
 
 - **First 3 hours:** freeze data and evaluation, establish a baseline, begin ESM extraction, complete the small structural pilot.
-- **By hour 5:** review validation results; make the structural go / reduce / stop decision. Run the auxiliary affinity probe if the core comparison is on track.
+- **By hour 5:** review validation results. Make the structural go / reduce / stop decision. Run the auxiliary affinity probe if the core comparison is on track.
 - **Hours 5-12:** finish the selected workload and ablations. Stop adding features at hour 10; freeze configurations by hour 12.
 - **Final 4 hours:** evaluate on held-out data, compute uncertainty, prepare figures and the presentation, save deliverables.
 - Adjust these cutoffs if the official deadline requires it.
-- Save code, data and splits, features, checkpoints, structures, and results locally before the **Antigravity event resources are deleted after the event on Sunday, October 4**. Modal and Hugging Face credits are separate per-participant offers and are not affected by that deletion. Keep credentials out of shared manifests and exported artifacts.
+- Save code, data, splits, features, checkpoints, structures, and results locally before the **Antigravity event resources are deleted after the event on Sunday, October 4**. Modal and Hugging Face credits are separate per-participant offers and aren't affected by that deletion. Keep credentials out of shared manifests and exported artifacts.
 
 ## Stretch work and stopping rules
 
-- The auxiliary affinity experiment (stage 3b) may interact with the ESM-2 comparison: if multi-task training helps the sequence arm more than the ESM arm, report that result rather than suppressing it.
-- Defer until the core comparison is secure: SaProt, chimeric inputs, cross-attention, folding-trunk features, template threading, new geometry-aware GNNs, extensive interpretability probes, source-protein mapping, and molecular-dynamics unbinding calculations.
-- Same-peptide / different-HLA diagnostics are possible on this data. **Matched C67S / wild-type comparisons are not** — the corresponding wild-type alleles are absent.
-- Expand a feature pipeline only when validation evidence or useful uncertainty information supports the extra cost. Do not claim an unbinding mechanism from improved prediction alone.
+- The auxiliary affinity experiment (stage 3b) may interact with the ESM-2 comparison: if multi-task training helps the sequence arm more than the ESM arm, report that result rather than burying it.
+- Defer until the core comparison is secure: SaProt, chimeric inputs, cross-attention, folding-trunk features, template threading, new geometry-aware GNNs, extensive interpretability probes, source-protein mapping, and molecular-dynamics unbinding simulations.
+- Same-peptide / different-HLA diagnostics are possible with this data. **Matched C67S / wild-type comparisons are not** — the corresponding wild-type alleles aren't in the dataset.
+- Only expand a feature pipeline when validation evidence or useful uncertainty information supports the extra cost. Don't claim an unbinding mechanism from improved prediction alone.
 
-**Minimum successful submission:** reliable splits, a trained sequence baseline, an ESM-2 comparison, uncertainty estimates, and measured costs. Structural experiments strengthen this result but must not prevent completion of the core study.
+**Minimum successful submission:** reliable splits, a trained sequence baseline, an ESM-2 comparison, uncertainty estimates, and measured costs. Structural experiments strengthen this result but must not prevent completing the core study.
 
 ## Sources and shared context
 
