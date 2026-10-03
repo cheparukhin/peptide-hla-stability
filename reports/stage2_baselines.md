@@ -3,7 +3,7 @@
 How well can a small model predict stability from labelled sequences alone?
 This report establishes the reference point every later stage must beat.
 
-All numbers are **validation**; the test split is untouched. Metrics and the
+All numbers are **validation**. No model reported here was fitted on or scored against test rows; one superseded diagnostic did consume them, disclosed in EVALUATION.md. Metrics and the
 0.05 minimum worthwhile gain are predeclared in
 [EVALUATION.md](../EVALUATION.md).
 
@@ -233,14 +233,14 @@ parity is supported. Matching their network count is not matching their method.
 
 | Factor | Effect on mean SCC | Status |
 |---|---|---|
-| Split grouping, at equal training rows | Δ median ρ **−0.005 [−0.035, +0.046]** | **inconclusive; rules out a 0.05 gain** |
+| Split grouping, at equal training rows | Δ median ρ **−0.005 [−0.035, +0.046]**; Δ mean ρ **−0.000 [−0.024, +0.024]** | **no conclusive advantage; bounds it below ~0.024 on the mean** |
 | Ensembling (3 seeds) | +0.042 | measured |
 | Ensembling (30-network CV) | +0.090 | measured |
 | The paper's `2^(-t0/th)` target | −0.022 to −0.034 | measured, worse here |
 
-**Split grouping explains nothing — this corrects an earlier claim of +0.018.**
+**No conclusive grouping advantage — and the earlier +0.018 is retracted.**
 That figure came from re-partitioning the whole dataset by peptide identity and
-comparing the result against the frozen score. That experiment was invalid twice
+comparing the result against the frozen score. The experiment was invalid twice
 over: it changed the training, stopping *and* scored rows together (only 310 of
 2,817 validation rows survived into it), and it consumed frozen test rows (see
 EVALUATION.md, "Disclosed test exposure").
@@ -248,15 +248,26 @@ EVALUATION.md, "Disclosed test exposure").
 The controlled version fixes a common evaluation set carved from the frozen
 training split — 2,894 rows, 592 peptides, 68 eligible alleles, 18.8% of rows
 within 3 substitutions of a training peptide under identity grouping — and
-varies only which training rows are available, at **equal row count**. Result:
-**−0.005 [−0.035, +0.046]**. Inconclusive, and it rules out a 0.05 advantage.
-The identity-grouped arm *does* score +0.007 higher when it keeps its extra 830
-near-neighbour rows, but that is the row count, not the neighbours.
+varies only which training rows are available, at **equal row count**:
 
-So our harder split is not why we score below the paper, and **the gap cannot be
-discounted for it.** Given the grouping and target-transform results are null or
-negative, the training-set difference is the leading remaining explanation —
-which stage 2b tests directly.
+| Panel statistic | Δ (identity size-matched − cluster-grouped) | 95% CI |
+|---|---:|---|
+| median per-allele ρ (our contract metric) | −0.005 | [−0.035, +0.046] |
+| mean per-allele ρ (the paper's aggregation) | −0.000 | [−0.024, +0.024] |
+
+**Read this as "no conclusive advantage found", not "no effect".** Both
+intervals straddle zero and both still admit a modest positive grouping
+advantage — including the retracted +0.018, which sits inside each. What the
+experiment does establish, under these conditions, is that grouping is unlikely
+to be worth 0.05, and on the mean (the quantity the paper's figure reports) it
+is unlikely to exceed ~0.024 — about half the 0.045 gap. The identity-grouped
+arm *does* score +0.007 higher when it keeps its extra 830 near-neighbour rows,
+but that is row count, not neighbourness.
+
+So the gap can be discounted for the split only partially and only with that
+uncertainty attached. Since grouping is at most a small part and the target
+transform is actively worse here, the training-set difference remains the
+leading explanation — which stage 2b tests directly.
 
 **Ensembling is the one factor that clearly moves us.** NetMHC-family training
 fits one network per CV fold per architecture and predicts with the ensemble;
@@ -287,8 +298,8 @@ PCC here puts **both** predictions and labels on the paper's `2^(-1/th)` scale.
 An earlier version correlated log1p predictions against paper-scale labels,
 which is neither metric and read 0.639 where the paper-scale value is 0.649.
 
-**Reading the remaining 0.045 SCC.** It is not discountable for the split, and
-not explained by the target transform. It is consistent with the training-set
+**Reading the remaining 0.045 SCC.** At most ~0.024 of it is attributable to
+split grouping, and the target transform is actively worse here. It is consistent with the training-set
 difference (5.2×, mostly augmented negatives), the richer architecture diversity
 in their ensemble, and their scoring on the same fold each network stopped on.
 We cannot separate those here. **What we have is a strong sequence baseline in

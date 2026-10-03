@@ -397,13 +397,24 @@ def score_by_distance(name: str, dist_to_train: pd.Series, allele: pd.Series,
     return frame[[c for c in cols if c in frame.columns]]
 
 
+#: How a resample's per-allele Spearman series is reduced to one number.
+#: ``median`` is the contract (EVALUATION.md); ``mean`` exists only so a
+#: diagnostic can put an interval on the same quantity an external paper
+#: reports, since NetMHCstabpan's published figure is a mean over allotypes.
+#: A median interval does not bound a mean effect, so the two are not
+#: interchangeable and the primary metric never changes.
+PANEL_STATISTICS = {"median": lambda s: float(s.median()),
+                    "mean": lambda s: float(s.mean())}
+
+
 def paired_cluster_bootstrap(cluster_id: pd.Series, allele: pd.Series,
                              y_true_log1p: np.ndarray, pred_a: np.ndarray,
                              pred_b: np.ndarray, alleles: list[str] | None = None,
                              n_boot: int = N_BOOTSTRAP,
                              seed: int = BOOTSTRAP_SEED,
-                             split: str | None = None) -> dict:
-    """Paired CI for ``b - a`` on median per-allele Spearman.
+                             split: str | None = None,
+                             statistic: str = "median") -> dict:
+    """Paired CI for ``b - a`` on the panel Spearman, median by default.
 
     Resamples whole peptide clusters with replacement, scoring both models on the
     same resample, so the interval reflects the paired comparison and respects
@@ -425,10 +436,16 @@ def paired_cluster_bootstrap(cluster_id: pd.Series, allele: pd.Series,
     rows_by_cluster = {c: np.nonzero(cluster_id == c)[0] for c in unique_clusters}
     rng = np.random.default_rng(seed)
 
+    try:
+        reduce = PANEL_STATISTICS[statistic]
+    except KeyError:
+        raise ValueError(f"statistic must be one of {sorted(PANEL_STATISTICS)}, "
+                         f"got {statistic!r}") from None
+
     def median_rho(idx: np.ndarray, pred: np.ndarray, rankable: list[str]) -> float:
         rho = per_allele_spearman(allele_arr[idx], y_true_log1p[idx], pred[idx], alleles)
         panel = panel_spearman(rho, rankable)
-        return float(panel.median()) if len(panel) else float("nan")
+        return reduce(panel) if len(panel) else float("nan")
 
     full = np.arange(len(y_true_log1p))
     full_rankable = rankable_alleles(allele_arr, y_true_log1p, alleles)
@@ -474,6 +491,7 @@ def paired_cluster_bootstrap(cluster_id: pd.Series, allele: pd.Series,
     lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
     return {
         "delta_median_spearman": observed,
+        "statistic": statistic,
         "ci95": (float(lo), float(hi)),
         "n_boot": n_boot,
         # Resamples that could score nothing at all; excluded from the CI.

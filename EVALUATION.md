@@ -159,26 +159,35 @@ by peptide identity, which pulled frozen test rows into that experiment:
 | 448 | early stopping that model |
 | 585 | the score that model was judged on |
 
-**What was observed.** One aggregate statistic — mean per-allele Spearman 0.591
-— computed over 2,817 rows of which 585 were frozen test rows, mixed with
-val and train rows. No per-row test prediction, no per-allele test score, and no
-test label was inspected individually.
+**What was observed.** Eight aggregate statistics, from two models scored on
+that contaminated evaluation set — 2,817 rows of which 585 were frozen test rows
+(21%), the rest train and val:
+
+| Model | Mean ρ | Median ρ | Mean PCC (log1p) | Mean PCC (paper scale) |
+|---|---:|---:|---:|---:|
+| single network (seed mean) | 0.591 | 0.605 | 0.616 | 0.573 |
+| 3-seed ensemble | 0.625 | 0.650 | 0.654 | 0.608 |
+
+All are panel aggregates over 68 alleles. No per-row test prediction, no
+per-allele test score and no individual test label was inspected, and the other
+four settings in that run used the frozen split and are clean.
 
 **What it influenced.** A reported +0.018 attribution for split grouping, which
-fed the narrative that our split was not the reason for the gap, and partly
-motivated building the ensemble baseline. That attribution has since been
-measured properly and is **−0.005 [−0.035, +0.046]**, i.e. inconclusive — so the
-leaked experiment's conclusion was also wrong.
+fed the narrative that our split was not the reason for the gap to
+NetMHCstabpan, and partly motivated building the ensemble baseline. That
+attribution has been retracted: measured properly it is **−0.005 [−0.035,
++0.046]** on the median and **−0.000 [−0.024, +0.024]** on the mean — no
+conclusive advantage either way.
 
 **What was not affected.** No model that will be scored at stage 6 saw a test
 row. `scripts/baseline_sequence.py` and `scripts/baseline_ensemble.py` both fit
 on `split == "train"` only; every prediction file in `preds/` covers 2,817
 validation rows.
 
-**Assessment.** The exposure is one aggregate number over a 21% test admixture,
-used for a diagnostic whose conclusion was then reversed. We judge the test split
-still usable and continue to score it once at stage 6. A reader who disagrees has
-the numbers above to discount with.
+**Assessment.** The exposure is eight panel aggregates over a 21% test
+admixture, used for a diagnostic whose conclusion was then retracted. We judge
+the test split still usable and continue to score it once at stage 6. A reader
+who disagrees has the numbers above to discount with.
 
 **Fix.** `scripts/compare_to_paper.py` now runs the grouping experiment entirely
 inside `split == "train"`, on a common evaluation set, with a paired CI.

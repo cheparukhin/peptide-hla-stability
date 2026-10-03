@@ -1,4 +1,4 @@
-"""The NetMHCstabpan *method*, reimplemented under the frozen splits.
+"""A strong sequence baseline in the NetMHCstabpan family, under the frozen splits.
 
     .venv/bin/python scripts/baseline_ensemble.py                  # pep_pseudo
     .venv/bin/python scripts/baseline_ensemble.py --input-set pep_domain
@@ -11,6 +11,12 @@ hidden sizes x 5 folds ~ 30 networks). Measured in
 per-allele SCC -- nearly the entire predeclared worthwhile-gain bar, from no new
 information. A single-network baseline would hand stage 3 a gap it did not earn.
 
+**This is not a reproduction of NetMHCstabpan.** They train on 103,166 rows
+(28,166 measured plus 1,000 assumed-zero weak binders per allele) against our
+19,716 measured rows, and use BLOSUM50, smoothed sparse encoding and single
+hidden layers of 40/50/60. Matching their network count is not matching their
+method; see ``reports/stage2_baselines.md`` for the full list of differences.
+
 So this builds the strong form: **5 inner CV folds x 2 encodings x 3 seeds = 30
 networks**, averaged. Each network stops on its own fold, so the ensemble
 collectively trains on all 19,716 training rows instead of the 17,744 a single
@@ -21,7 +27,9 @@ What is deliberately *not* copied from the paper:
 - **Their split.** Folds here are cut along whole Hamming <= 3 peptide clusters,
   the same grouping as the frozen splits, so every held-out peptide stays >= 4
   substitutions from every training peptide. The paper groups by peptide
-  identity, which is worth +0.018 and would make our test set meaningless.
+  identity, which would make our test set meaningless. A controlled experiment
+  found no conclusive advantage from that looser grouping, bounding it below
+  ~0.024 on the mean -- not zero, but not the main gap either.
 - **Their evaluation.** They report performance on the same fold each network
   stopped on. Here the CV folds live entirely inside ``train``; validation is
   never seen during fitting.

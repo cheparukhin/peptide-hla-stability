@@ -100,27 +100,46 @@ def paper_scale(values_log1p: np.ndarray, t0: float = 1.0) -> np.ndarray:
     return np.where(positive, 2.0 ** (-t0 / np.where(positive, hours, 1.0)), 0.0)
 
 
-def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
-               alleles: list[str]) -> dict:
-    """Mean and median per-allele SCC, plus PCC with both sides on each scale.
+#: The scales a model's predictions can already be on. A model trained on the
+#: paper's target emits paper-scale scores directly; one trained on log1p emits
+#: log1p half-life. Getting this wrong transforms paper-scale predictions a
+#: second time and silently inflates PCC -- it read 0.611 for the t0=1 ensemble
+#: where the true paper-scale value is 0.590.
+PRED_SCALES = ("log1p", "paper")
 
-    SCC is the metric to compare on: it is invariant to the target transform,
-    so it favours neither side's choice of scale.
+
+def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
+               alleles: list[str], pred_scale: str = "log1p") -> dict:
+    """Mean and median per-allele SCC, plus PCC with both sides on one scale.
+
+    ``pred_scale`` says what ``y_pred`` already is, so predictions are converted
+    at most once. SCC is unaffected either way -- it is rank-based and both
+    scales are monotone in half-life -- which is exactly why SCC is the metric
+    to compare against the paper on.
+
+    ``pcc_log1p_mean`` is NaN for paper-scale predictions: inverting
+    ``s = 2^(-t0/th)`` is undefined at ``s = 0``, where 20.2% of the labels sit.
     """
-    true_paper, pred_paper = paper_scale(y_log1p), paper_scale(y_pred)
+    if pred_scale not in PRED_SCALES:
+        raise ValueError(f"pred_scale must be one of {PRED_SCALES}, got {pred_scale!r}")
+    true_paper = paper_scale(y_log1p)
+    pred_paper = paper_scale(y_pred) if pred_scale == "log1p" else np.asarray(y_pred, float)
+
     scc, pcc_log, pcc_paper = [], [], []
     for a in alleles:
         m = allele == a
         if len(np.unique(y_pred[m])) < 2 or len(np.unique(y_log1p[m])) < 2:
             continue
         scc.append(stats.spearmanr(y_pred[m], y_log1p[m]).statistic)
-        pcc_log.append(stats.pearsonr(y_pred[m], y_log1p[m]).statistic)
+        if pred_scale == "log1p":
+            pcc_log.append(stats.pearsonr(y_pred[m], y_log1p[m]).statistic)
         if len(np.unique(pred_paper[m])) > 1 and len(np.unique(true_paper[m])) > 1:
             pcc_paper.append(stats.pearsonr(pred_paper[m], true_paper[m]).statistic)
     return {"n_alleles": len(scc), "scc_mean": float(np.mean(scc)),
             "scc_median": float(np.median(scc)),
-            "pcc_log1p_mean": float(np.mean(pcc_log)),
-            "pcc_paper_mean": float(np.mean(pcc_paper))}
+            "pcc_log1p_mean": float(np.mean(pcc_log)) if pcc_log else float("nan"),
+            "pcc_paper_mean": float(np.mean(pcc_paper)),
+            "pred_scale": pred_scale}
 
 
 def fit_predict(train: pd.DataFrame, evalset: pd.DataFrame, t0: float | None = None,
@@ -225,21 +244,33 @@ def grouping_experiment(train: pd.DataFrame) -> pd.DataFrame:
         preds[label] = np.mean(members, axis=0)
         singles = [per_allele(allele_arr, y_eval, p, alleles) for p in members]
         rows.append({"arm": label, "n_train_rows": len(frame),
-                     **{k: float(np.mean([s[k] for s in singles])) for k in singles[0]}})
+                     **{k: float(np.mean([s[k] for s in singles]))
+                        for k in singles[0] if k != "pred_scale"}})
         print(f"  {label:32s} mean SCC={rows[-1]['scc_mean']:.3f}  "
               f"median SCC={rows[-1]['scc_median']:.3f}")
 
     base = "cluster-grouped (our rule)"
-    boot = paired_cluster_bootstrap(
-        evalset.cluster_id, evalset.allele, y_eval,
-        preds[base], preds["identity-grouped, size-matched"], alleles)
-    lo, hi = boot["ci95"]
     print(f"\n  grouping effect at equal row count (identity size-matched minus "
           f"cluster-grouped),\n  paired cluster bootstrap on the common "
           f"evaluation set:")
-    print(f"    delta median per-allele rho = {boot['delta_median_spearman']:+.4f}  "
-          f"95% CI [{lo:+.4f}, {hi:+.4f}]")
-    print(f"    {describe_delta(boot)}")
+    # Both statistics, because the paper's published figure is a *mean* over
+    # allotypes while our contract metric is the median -- a median interval
+    # does not bound a mean effect, so quoting only one would overreach.
+    for statistic in ("median", "mean"):
+        boot = paired_cluster_bootstrap(
+            evalset.cluster_id, evalset.allele, y_eval,
+            preds[base], preds["identity-grouped, size-matched"], alleles,
+            statistic=statistic)
+        lo, hi = boot["ci95"]
+        rows.append({"arm": f"grouping effect ({statistic} per-allele rho)",
+                     "n_train_rows": len(cluster),
+                     "delta": boot["delta_median_spearman"], "ci_low": lo, "ci_high": hi})
+        print(f"    delta {statistic:6s} per-allele rho = "
+              f"{boot['delta_median_spearman']:+.4f}  95% CI [{lo:+.4f}, {hi:+.4f}]"
+              + (f"   <- contract metric" if statistic == "median" else
+                 "   <- comparable to the paper's aggregation"))
+    print("    An inconclusive interval is not evidence of no effect: it still "
+          "admits\n    a modest positive grouping advantage.")
     return pd.DataFrame(rows)
 
 
@@ -288,10 +319,15 @@ def main() -> int:
     for label, t0 in [("log1p target", None)] + [
             (f"2^(-{t:g}/th) target", t) for t in T0_GRID]:
         members = fit_predict(train, val, t0=t0)
-        singles = [per_allele(allele_arr, y_val, p, alleles) for p in members]
-        ens = per_allele(allele_arr, y_val, np.mean(members, axis=0), alleles)
+        # A model trained on the paper's target already emits paper-scale
+        # scores; only a log1p-trained model needs converting.
+        scale = "log1p" if t0 is None else "paper"
+        singles = [per_allele(allele_arr, y_val, p, alleles, scale) for p in members]
+        ens = per_allele(allele_arr, y_val, np.mean(members, axis=0), alleles, scale)
         rows.append({"setting": label, "model": "single network (seed mean)",
-                     **{k: float(np.mean([s[k] for s in singles])) for k in singles[0]}})
+                     "pred_scale": scale,
+                     **{k: float(np.mean([s[k] for s in singles]))
+                        for k in singles[0] if k != "pred_scale"}})
         rows.append({"setting": label, "model": f"{len(SEEDS)}-seed ensemble", **ens})
         print(f"  {label:22s} single={rows[-2]['scc_mean']:.3f}  "
               f"{len(SEEDS)}-seed ensemble={ens['scc_mean']:.3f}  "
