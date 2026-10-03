@@ -250,25 +250,72 @@ cannot isolate:
   ("the remaining 1/5 was left for testing and early stop"), which is optimistic
   by an unknown amount.
 
-**Conclusion: the stage 2 baseline is a credible reference point, not a weak
-one.** It sits roughly 0.07 SCC below a 30-network ensemble trained on more data
-and scored on its own early-stopping fold, and the residual is consistent with
-exactly those differences. It is not evidence that the architecture or features
-are wrong.
+So the single-network baseline is a *weakened* form of the paper's method —
+1 network against ~30. That is a problem for stage 3: ESM-2 beating a hobbled
+NetMHCstabpan is not the claim we want to make.
 
-Two things this does *not* license. NetMHCstabpan was trained on this dataset,
-including the peptides in our test split, so it cannot be used as a held-out
-comparator at stage 6 — the paper's number is a cross-validation score on its
-own training data, quoted here for calibration only. And none of the above was
-scored on test.
+### The strong form: a 30-network ensemble
+
+`scripts/baseline_ensemble.py` builds the method properly — **5 inner CV folds ×
+2 encodings × 3 seeds = 30 networks**, averaged, matching the paper's count.
+Each network stops on its own fold, so the ensemble collectively trains on all
+19,716 training rows rather than the 17,744 a single fit/dev cut leaves. Folds
+are cut along whole Hamming ≤ 3 clusters, so the frozen split's guarantee holds
+inside the ensemble too. Config per encoding is taken from
+`stage2_summary.csv`, not re-tuned — ensembling is the only thing that changed.
+
+| Model | Mean SCC | Median per-allele ρ | Mean PCC (paper scale) | MAE log1p |
+|---|---:|---:|---:|---:|
+| Single network, pep + pseudoseq | 0.573 | 0.610 | 0.562 | 0.517 |
+| **30-network ensemble, pep + pseudoseq** | **0.645** | **0.693** | **0.639** | **0.473** |
+| 30-network ensemble, pep + domain | 0.610 | 0.653 | 0.605 | 0.495 |
+| *NetMHCstabpan (their 5-fold CV)* | *~0.69* | *—* | *0.676* | *—* |
+
+Ensembling is worth **+0.090 mean SCC** on the pseudosequence arm and +0.100 on
+the domain arm — far more than the +0.042 three seeds alone bought, because CV
+folds add training-data coverage on top of seed averaging. Individual members
+score 0.511–0.555 mean SCC; the ensemble reaches 0.645. On the project's primary
+metric the paired cluster bootstrap gives **Δ median per-allele ρ = +0.083
+[+0.029, +0.124]** over the single network: a real improvement whose size
+against the 0.05 bar is unresolved.
+
+**This is method parity, on a harder benchmark.** The remaining gap is 0.045
+mean SCC and 0.037 PCC — and the paper's number carries +0.018 of split
+advantage plus an unknown amount of optimism from scoring on its own
+early-stopping fold. Adjusting for the split alone puts the two within ~0.02.
+We did not reproduce their *number*, and should not try to: part of it is
+measurement protocol, not model quality. We reproduced their *method* and
+measured it honestly.
+
+The pseudosequence-vs-domain tie survives ensembling: **+0.040 [−0.001,
++0.073]**, still inconclusive. Stage 3 still owes both comparisons.
+
+### Why NetMHCstabpan can never be our comparator
+
+It was trained on all 28,166 rows, **including every peptide in our test
+split**. Any score it posts on our data is memorisation, not generalisation. So
+there is no "beat NetMHCstabpan" result available from this dataset at any
+stage — the 0.69 above is a cross-validation score on its own training data,
+quoted for calibration only. The baseline that stage 3 must beat is the
+ensemble in the table above: the same method, trained on our train split,
+scored on data it has never seen.
+
+(An honest comparison would need peptide–HLA stability measurements published
+after 2016 and absent from its training set. Out of scope here.)
+
+None of the above was scored on test.
 
 ## Carried into stage 3
 
-- Headline sequence baseline: **MLP, one-hot, peptide + contact
-  pseudosequence**, 256×64, L2 1e-5 — ρ = 0.610 [0.594, 0.625] on validation.
-  Written to `preds/seq_baseline.csv` under a stable name.
-- The matching **full-domain** raw-sequence arm (ρ = 0.574) is the comparator
-  for any HLA-domain embedding result. Report both.
+- **The baseline to beat is the 30-network ensemble**, `preds/seq_ensemble_pep_pseudo.csv`
+  — median per-allele ρ = 0.693, mean SCC 0.645 on validation. Not the
+  single-network `preds/seq_baseline.csv`, which is 0.083 lower and would hand
+  stage 3 a gap it did not earn.
+- The matching **full-domain** ensemble (`preds/seq_ensemble_pep_domain.csv`,
+  ρ = 0.653) is the comparator for any HLA-domain embedding result. Report both;
+  the two arms are still statistically tied.
+- The single-network table above stays valid as the *arm and encoding*
+  comparison, because every arm in it is single-network.
 - Compare against seed means, not single seeds, and treat anything under ~0.05
   as noise.
 - **Ensemble both arms identically, or neither.** Seed-averaging alone is worth

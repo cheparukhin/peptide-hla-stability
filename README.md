@@ -27,16 +27,19 @@ uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow
 |---|---|
 | [reports/stage2_baselines.md](reports/stage2_baselines.md) | Six sequence arms, paired CIs, cost, limitations |
 | `reports/stage2_runs.csv` | Every run in the grid; `stage2_summary.csv` is the selection |
-| `preds/seq_baseline.csv` | Headline baseline: MLP, one-hot, peptide + contact pseudosequence |
+| `preds/seq_ensemble_pep_pseudo.csv` | **The baseline stage 3 must beat**: 30-network ensemble, median per-allele rho 0.693 |
+| `preds/seq_baseline.csv` | Single-network headline arm (rho 0.610); the arm/encoding comparison |
 | `pepstab/features.py` | One-hot and BLOSUM62 encodings, cached per unique sequence |
 | `pepstab/mlp.py` | Small numpy MLP; stops on a caller-supplied fold |
 | `tests/test_baselines.py` | 25 guards, including the fit/dev leakage check |
 | `reports/compare_to_paper.csv` | Calibration against NetMHCstabpan, factor by factor |
 
-Validation median per-allele Spearman: **0.610** (peptide + pseudosequence,
-one-hot MLP) against **0.000** for the training allele mean and **0.278** for
-ridge on identical features. Full-domain input ties the pseudosequence within
-noise, so stage 3 must compare domain embeddings against *both*.
+Validation median per-allele Spearman: **0.693** for the 30-network ensemble
+(the NetMHCstabpan method under our splits), **0.610** for a single network,
+**0.278** for ridge on identical features, **0.000** for the training allele
+mean. Full-domain input ties the pseudosequence within noise, so stage 3 must
+compare domain embeddings against *both* — and must ensemble its own arm the
+same way, since ensembling alone is worth +0.090 mean SCC.
 
 ## Quick start
 
@@ -73,6 +76,7 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 .venv/bin/python scripts/audit_data.py         # rewrites reports/audit_summary.md
 .venv/bin/python scripts/baseline_constant.py  # constant reference baselines
 .venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
+.venv/bin/python scripts/baseline_ensemble.py  # 30-network ensemble baseline, ~1 min
 .venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
 .venv/bin/python -m pytest tests/ -q
 ```
