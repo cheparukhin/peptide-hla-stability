@@ -1,23 +1,18 @@
 # Evaluation contract (frozen at stage 1)
 
-Agreed before any model existed. Nothing here may be changed after seeing
-results. Implemented in `pepstab/evaluation.py`; run through
-`scripts/evaluate.py`.
+Locked before any model existed. Nothing here changes after seeing results.
+Code: `pepstab/evaluation.py`; CLI: `scripts/evaluate.py`.
 
-## The data contract
+## Data contract
 
-- **Shared example ID:** `pair_id`, the 0-based row position in the read-only
-  `data/rasmussen_et_al_dataset.csv`. Every prediction file, embedding cache,
-  structure manifest, and feature table keys on it.
-- **Splits:** load `data/splits.csv` from disk via
-  `pepstab.data.load_with_splits()`. Never recompute them.
-- **Target:** train and predict `y_log1p = log1p(thalf_hours)`. Report raw hours
-  alongside. 20.2% of labels sit at the assay floor, where `log1p` is defined
-  and a log is not.
+- **Row key:** `pair_id`, the 0-based row index in `data/rasmussen_et_al_dataset.csv`.
+- **Splits:** `pepstab.data.load_with_splits()`. Never recompute.
+- **Target:** `y_log1p = log1p(thalf_hours)`. Report raw hours alongside.
+  20.2% of labels sit at the assay floor (zero); `log1p` is defined there, `log` is not.
 
 ## Prediction file format
 
-CSV with exactly two columns, one row per scored pair:
+CSV, two columns, one row per scored pair. `y_pred` on the `log1p` scale.
 
 ```
 pair_id,y_pred
@@ -25,138 +20,143 @@ pair_id,y_pred
 1,0.0117
 ```
 
-`y_pred` is on the `log1p` scale. One file per model per split.
-
 ## Metrics
 
-**Primary — median per-allele Spearman ρ.** Spearman between predicted and
-measured half-life within each allele, then the median across eligible alleles,
-reported with the interquartile range and the per-allele table. This is the
-headline because the claim is about ranking unseen peptides on alleles we
-trained on. Ties take average ranks, which matters: the floor is a large tied
-block, and a tie-blind correlation would flatter every model.
+**Primary — median per-allele Spearman rho.** Rank-correlate predicted vs
+measured half-life within each HLA allele, then take the median across eligible
+alleles. Report IQR and per-allele table. Ties get average ranks — the floor
+creates a large tied block and a tie-blind correlation would flatter every model.
 
 **Secondary**
 
-- **MAE on `log1p` half-life** — numerical error. At the floor this is a lower
-  bound on true error, because the recorded 0 is a censoring point, not a
-  measurement.
-- **precision@10 at a 2-hour threshold** — of each allele's top 10 predictions,
-  how many really exceed 2 hours. Reported next to that allele's base rate and
-  the reachable ceiling, since an allele with three positives cannot score above
-  0.3. Ties are credited by expectation, not by row order: rows strictly above
-  the 10th predicted value all count, and the remaining slots get the positive
-  rate among the rows tied at that value. A constant predictor therefore scores
-  exactly its base rate instead of whatever the first ten rows of the CSV happen
-  to hold.
-- **Pooled Spearman and Pearson** — secondary only. Pooling across alleles mixes
-  within-allele ranking with between-allele offsets; always report the two
-  separately.
+- **MAE on `log1p` half-life.** Error against *recorded* labels. At the floor
+  the recorded 0 is a detection limit, not a measurement, so floor MAE is
+  biased in both directions and is neither an upper nor a lower bound on true
+  error. (Details: a latent 0.05 h recorded as 0 — predicting 0.10 overcharges
+  by 2x, predicting 0.01 undercharges by 4x.)
+
+- **Precision@10 at 2 hours.** Of each allele's top 10 predictions, how many
+  truly exceed 2 h? Reported with base rate and reachable ceiling. Ties credited
+  by expectation, not row order, so a constant predictor scores its base rate.
+
+- **Pooled Spearman and Pearson** — secondary only. Pooling mixes within-allele
+  ranking with between-allele offsets; report them separately.
 
 ## Eligible alleles
 
-An allele enters the per-allele summary when it clears a row threshold on that
-split and has at least two distinct label values. Computed from the split and
-labels alone, never from predictions, so the eligible set is identical for every
-model.
+An allele needs enough rows on the split and at least two distinct labels.
+Computed from splits and labels alone, never from predictions — same set for
+every model.
 
-| Split | Threshold | Eligible alleles | Share of split rows |
+| Split | Row threshold | Eligible | Coverage |
 |---|---:|---:|---:|
-| test | ≥ 50 rows | 67 of 75 | 98.8% |
-| val | ≥ 20 rows | 68 of 75 | 99.5% |
+| test | >= 50 | 67 / 75 | 98.8% |
+| val | >= 20 | 68 / 75 | 99.5% |
 
-The threshold differs because the splits differ in size. Test carries 20% of the
-data (median 72 rows per allele), so the final claim can rest on ≥ 50. Val
-carries 10% (median 35), where a 50-row bar leaves only **10** eligible alleles
-covering a quarter of the split — far too thin to select models on. At 20 rows
-both splits land on ~68 alleles and >99% coverage, so selection and reporting
-see effectively the same alleles while the headline number stays on the
-better-powered ones.
+Thresholds differ because splits differ in size. Test is 20% of data (median 72
+rows/allele); val is 10% (median 35). A 50-row bar on val leaves 10 alleles
+covering a quarter of the split — useless for model selection. The 8 excluded
+test alleles are in `reports/audit_summary.md` §5; 7 are rare in the dataset.
 
-The 8 alleles excluded from the test summary are listed in
-`reports/audit_summary.md` §5; 7 of them are rare across the whole dataset.
-Alleles whose ρ is undefined are reported as such, not silently dropped, and a
-constant-within-allele predictor yields an **undefined** comparison rather than
-an inconclusive one.
+### Constant predictions
+
+Spearman is undefined when predictions are constant. Scoring rule, declared in
+advance:
+
+> Constant prediction on an eligible allele scores **0**.
+
+| Behaviour | Score |
+|---|---:|
+| Ranks backwards | < 0 |
+| Constant (no ranking info) | 0 |
+| Ranks with skill | > 0 |
+
+The allele stays in the panel — dropping it would let a model raise its median
+by going constant on hard alleles. The per-allele table shows the raw `NaN` in
+`spearman` alongside the scored 0 and an `unranked` flag.
+
+Adjacent cases:
+
+| Case | Treatment |
+|---|---|
+| All labels identical | Degenerate — leaves the panel (untestable) |
+| NaN / inf predictions | Rejected before scoring (`ValueError`) |
+
+`validate_finite()` enforces rejection in `score()`, `score_by_distance()`, and
+`paired_cluster_bootstrap()`. `+inf` inflates Spearman; `NaN` would be silently
+absorbed as a 0. Both are checked before resampling.
+
+Inside bootstrap resamples, an allele can end up with one distinct label. It
+leaves that resample's panel (scoring it 0 would confuse "untestable draw" with
+"model failed"). The panel rebuilds per resample; both models always share the
+same alleles.
 
 ## Distance-stratified reporting (stage 6)
 
-`splits.csv` carries `dist_to_train`: each peptide's Hamming distance to its
+`splits.csv` has `dist_to_train`: Hamming distance from each peptide to its
 nearest training peptide. Held-out peptides sit at d=4 or d=5 by construction.
 
 | Stratum | Test rows | Share |
 |---|---:|---:|
 | d=4 | 3,256 | 57.8% |
-| d≥5 | 2,377 | 42.2% |
+| d>=5 | 2,377 | 42.2% |
 
-Two strata, not three. Only 6 test peptides (12 rows) reach d≥6, so a separate
-far stratum cannot be scored.
+Only 12 rows at d>=6, so two strata, not three. Both scored on the same 65
+alleles (intersection of those eligible within each stratum at a 20-row bar).
+Using the split-level 50-row bar would leave 17 and 7 alleles — different
+ones — and the gap would partly measure panel composition rather than distance.
 
-Both strata are scored on the **same allele set** — the intersection of those
-eligible in each, at a 20-row within-stratum bar (65 alleles on test). At the
-split-level 50-row bar the strata would retain 17 and 7 alleles, and not the
-same ones, so the gap would partly measure allele panels rather than distance.
-On val the intersection is only 6 alleles, so this diagnostic is for the test
-split.
-
-If a model is exploiting residual similarity at the split boundary, d=4 should
-score better than d≥5.
+If a model exploits residual similarity at the split boundary, d=4 will score
+higher than d>=5.
 
 ## Uncertainty
 
-Paired **cluster bootstrap**: resample whole peptide clusters with replacement
-and score both models on the same resample. Rows sharing a peptide cluster are
-not independent — one peptide appears on up to 36 alleles — so a row bootstrap
-would understate the interval. 2,000 resamples, seed `20261003`.
-
-Report the difference and its 95% CI, not two separate intervals.
+Paired cluster bootstrap: resample whole peptide clusters with replacement, score
+both models on the same resample. Peptide clusters are the independence unit —
+one peptide appears on up to 36 alleles, so a row bootstrap understates
+uncertainty. 2,000 resamples, seed `20261003`. Report the difference and its
+95% CI, not two separate intervals.
 
 ## Minimum worthwhile gain
 
-**Δ median per-allele Spearman = 0.05.**
+**Delta median per-allele Spearman = 0.05**, derived from the frozen test set:
 
-Derived from the frozen test set, not chosen by preference:
+- Shuffled labels: median rho = 0.000 +/- 0.018, 95% range [-0.036, +0.035].
+- Paired cluster bootstrap under no true difference: 95% CI half-width
+  0.037–0.053.
 
-- Permuting labels within allele gives a median per-allele Spearman of
-  0.000 ± 0.018 (sd), 95% range [−0.036, +0.035].
-- A paired cluster bootstrap of the difference between two models whose true
-  difference is zero has a 95% CI half-width of 0.037–0.053, depending on how
-  correlated their errors are.
+Below ~0.05 this test set cannot separate a difference from noise.
 
-Below ≈0.05 this test set cannot separate a difference from zero, so a smaller
-gain cannot be called meaningful whatever its point estimate.
+### Reading a comparison
 
-Reading a comparison:
+Six mutually exclusive verdicts, implemented in `describe_delta()`:
 
-| Paired 95% CI for Δ | Verdict |
+| Paired 95% CI for Delta | Verdict |
 |---|---|
-| lower bound > 0.05 | improvement, meets the predeclared bar |
-| excludes 0, but upper bound < 0.05 | real but below the bar — report as such |
-| crosses 0 | **inconclusive, not negative** |
-| upper bound < 0.05 | strong negative: rules out a worthwhile gain |
+| upper < 0 | Worse |
+| lower > 0.05 | Meets the bar |
+| Excludes 0, upper < 0.05 | Real but too small to matter |
+| Excludes 0, straddles 0.05 | Real, size unresolved |
+| Crosses 0, upper < 0.05 | Inconclusive, rules out a worthwhile gain |
+| Crosses 0, upper >= 0.05 | Inconclusive |
+
+Row 4 is the tricky one: the improvement is real, its magnitude is not
+established. "Below the bar" would be wrong — the interval doesn't support that.
 
 ## Model selection
 
-- Select every checkpoint, layer, representation, head, and hyperparameter on
-  **validation** data.
-- **The test set is scored once, at stage 6.** One scoring run, all models at
-  the same time.
-- Report seed-to-seed variation for anything selected on validation. A gap
-  smaller than the seed spread is not a result.
-- Use a comparable tuning budget across arms, and record training and inference
-  cost next to every accuracy number.
-- When comparing against HLA-domain embeddings, include a baseline that gets the
-  full domain sequence too, so "more input sequence" is not mistaken for a
-  benefit of pretraining.
+- Select on **validation**. Test is scored once, at stage 6, all models together.
+- Report seed-to-seed variation. A gap smaller than seed spread is not a result.
+- Use comparable tuning budgets across arms. Record cost next to accuracy.
+- When comparing against HLA-domain embeddings, include a baseline with the full
+  domain sequence, so "more input" is not mistaken for pretraining benefit.
 
-## Standing caveats
+## Caveats
 
-- The released NetMHCstabpan model was trained on this dataset, so it is not a
-  held-out comparator.
-- The assay panel was partly selected by predicted affinity, so peptide
-  diversity is limited and broader biological claims need other evidence.
-- No replicates are supplied, so no noise ceiling can be estimated from this
-  file.
-- `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` share a contact pseudosequence
-  (756 rows), so pseudosequence-only models cannot separate them.
-- Bound every conclusion to the representation, data, split, and budget tested.
+- NetMHCstabpan was trained on this dataset — not a held-out comparator.
+- The assay panel was partly selected by predicted binding affinity, limiting
+  peptide diversity.
+- No replicates, so no noise ceiling from this file alone.
+- `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` share a pseudosequence (756 rows);
+  pseudosequence-only models cannot separate them.
+- Conclusions are bounded by the representation, data, split, and budget tested.
