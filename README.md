@@ -41,6 +41,24 @@ input ties the pseudosequence within noise, so stage 3 must compare domain
 embeddings against *both*. Ensembling alone is worth +0.090 mean SCC, so
 stage 3 must ensemble its arm the same way.
 
+## Stage 4b.1 output (done — arm B's MSA cache)
+
+| Artifact | Description |
+|---|---|
+| [reports/stage4b1_msa_cache.md](reports/stage4b1_msa_cache.md) | Route, verified Boltz constraints, parse-cost benchmark |
+| `reports/msa_manifest.csv` | Committed record: 75 alleles, `sha256` per HLA sequence and per MSA file |
+| `reports/msa_parse_benchmark.json` | `parse_csv` cost vs `--max_msa_seqs` |
+| `scripts/make_msas.py` | Regenerates the cache (needs boltz; see the report) |
+| `structures/msa/<stem>.csv` | The MSAs — **gitignored**, 141.3 MB, regenerable |
+| `tests/test_msa_cache.py` | 14 guards on manifest/cache consistency |
+
+All **75** alleles cached, not just the six panel alleles: 137 s of CPU, **$0**,
+no GPU booked. Measured findings that change the plan — the parse cost at the
+default `--max_msa_seqs 8192` is ~$0.25 across 2,000 complexes, so **do not trim
+for cost**; `--subsample_msa` defaults to *False* despite its help text;
+and the C67S pseudosequence collision does not reach this arm, because the full
+domains differ.
+
 ## Quick start
 
 ```python
@@ -79,4 +97,12 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 .venv/bin/python scripts/baseline_ensemble.py  # 30-network ensemble baseline, ~1 min
 .venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
 .venv/bin/python -m pytest tests/ -q
+```
+
+The MSA cache needs boltz, which pulls torch, so it is kept out of `.venv`:
+
+```bash
+uv venv /tmp/boltzenv --python 3.12
+uv pip install --python /tmp/boltzenv/bin/python boltz
+/tmp/boltzenv/bin/python scripts/make_msas.py --all-alleles   # ~2.5 min, $0
 ```

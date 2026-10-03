@@ -285,16 +285,21 @@ Input: the supplied 182-residue HLA domain plus a separate 9-residue peptide cha
 
 **4b.1 — Precompute the MSAs (CPU, ~$0, before any GPU is booked).**
 
-One MSA per unique HLA sequence, reused across every complex on that allele — six panel alleles means six MSA generations for ~2,000 folds. Alleles and HLA domain sequences are 1:1, so there is never a reason to compute an MSA per complex.
+**Status: done, and wider than planned.** All **75** alleles are cached, not
+just the six panel alleles: `reports/stage4b1_msa_cache.md` (findings),
+`scripts/make_msas.py` (regenerates), `reports/msa_manifest.csv` (committed
+record, with `sha256` per HLA sequence and per MSA file),
+`reports/msa_parse_benchmark.json`. The MSA files land in
+`structures/msa/<stem>.csv` and are gitignored — 141.3 MB of regenerable data.
+**137 s of CPU, $0, no GPU booked.**
 
-Boltz has no MSA-only subcommand; `predict` is the only command. The harvest route:
+One MSA per unique HLA sequence, reused across every complex on that allele. Alleles and HLA domain sequences are 1:1 — **75 alleles, 75 distinct domain sequences, asserted in code before any server call** — so there is never a reason to compute an MSA per complex.
 
-1. Write one pilot YAML per allele: the HLA chain with **no `msa:` key**, the peptide with **`msa: empty`**. Only one entity then needs generating, so Boltz takes the unpaired branch and produces a clean single-chain MSA.
-2. Run `boltz predict pilots/<allele>.yaml --out_dir ./msa_gen --use_msa_server --accelerator cpu`. MSA generation happens before the model loads.
-3. Harvest `msa_gen/boltz_results_<stem>/msa/<stem>_0.csv` — two columns, `key,sequence`. Copy to `structures/msa/<allele>.csv`, sanitising the `(C67S)` suffix out of the filename.
-4. Record a manifest: allele, `sha256(hla_seq)`, sequence count, server URL, timestamp.
+**The whole dataset was cached because it is free.** At ~2 s and $0 per allele, all 75 cost 137 s. That removes the ordering dependency between this step and 4b.4: the panel is still unfrozen, the hour-5 call may move it, and no tier change now costs new MSA work. Depth came in at 9,505–10,454 rows per allele (median 9,991).
 
-Every batch YAML then looks like this:
+**Route: call `boltz.main.compute_msa` directly, not the `boltz predict` harvest.** The harvest route works, but the claim that "MSA generation happens before the model loads" misses the real cost — the *download* comes first. In boltz 2.2.1 `download_boltz2(cache)` runs at `main.py:1141` and `process_inputs` (which calls the MSA server) at `main.py:1162`, each download gated only on `path.exists()`. So the harvest route pulls all **6.2 GB** before generating a single MSA, then needs the process killed before the model loads. `compute_msa` is the function that route eventually reaches, it is importable, and it needs neither checkpoint nor CCD. With one sequence in `data` it takes the unpaired branch — exactly what the `msa: empty` peptide chain existed to force — and writes `msa_dir/<name>.csv` directly. Same code path for the part we want, no download, no YAML, no kill hack.
+
+Every batch YAML looks like this:
 
 ```yaml
 version: 1
@@ -302,19 +307,30 @@ sequences:
   - protein:
       id: A
       sequence: <182-residue hla_seq>
-      msa: /abs/path/structures/msa/<allele>.csv
+      msa: /abs/path/structures/msa/<stem>.csv
   - protein:
       id: B
       sequence: <9-mer peptide>
       msa: empty
 ```
 
-Four constraints that otherwise cost hours:
+The four constraints, now verified in source — three confirmed, one reversed:
 
-- **`msa: empty` on the peptide is mandatory, not optional.** Boltz refuses to mix custom and auto-generated MSAs in one input; omitting the key means "auto" and fails the run.
-- **Only `.a3m` and `.csv` are accepted.** `.a3m.gz` fails the suffix check.
-- **Omit `--use_msa_server` on the batch run.** Boltz then errors if any chain lacks an MSA — exactly the guard that stops 2,000 jobs silently calling the ColabFold server.
-- **Trim the MSA.** Boltz re-parses the MSA file once per complex, so a deep MSA is parsed ~2,000 times on CPU. Measure that cost in the pilot and cap `--max_msa_seqs` (default 8192) accordingly.
+- **`msa: empty` on the peptide is mandatory, not optional.** Confirmed: a missing key defaults to `0` = auto-generate (`schema.py:1111`), `"empty"` maps to `-1` = single-sequence (`schema.py:1127`), and Boltz refuses to mix custom and auto-generated MSAs in one input (`schema.py:1311`).
+- **Only `.a3m` and `.csv` are accepted.** Confirmed (`main.py:615-624`). `.a3m.gz` fails because `Path.suffix` is `.gz`.
+- **Omit `--use_msa_server` on the batch run.** Confirmed, and it is the guard we want: any chain still needing an MSA raises `"Missing MSA's in input and --use_msa_server flag not set."` (`main.py:581-582`).
+- **Trimming the MSA is not worth doing for cost — this concern is overturned.** The re-parse is real and has no cross-complex reuse (`processed/msa/<target_id>_<idx>.npz` is keyed by target), but measured with boltz's own `parse_csv` on the deepest cached file it costs **0.176 s per complex at the default `--max_msa_seqs 8192`** — ~5.9 min across 2,000 complexes, about **$0.25** of L40S time, under 0.2% of arm B's ceiling. Trim only if a depth-versus-accuracy benchmark at 4b.3 says to, never for cost.
+
+Two further facts the batch YAML depends on:
+
+- **`msa:` paths must be absolute.** Boltz does `Path(msa_id)` verbatim and existence-checks it (`main.py:605-608`), so a relative path resolves against the worker's CWD.
+- **Generation and parse caps are different numbers.** `compute_msa` truncates at `const.max_msa_seqs = 16384`; the batch run's `--max_msa_seqs` (CLI default 8192) decides what the model actually sees. The cached files hold full depth, so changing depth needs no regeneration.
+
+**`--subsample_msa` is a broken flag, not just a documentation mismatch.** It is declared `is_flag=True` with no `default=`, so click's default is **False** while both the help text and the `predict()` signature say True. Omitting it means no subsampling (up to `--max_msa_seqs` rows); passing it subsamples to `--num_subsampled_msa` (default 1,024). Those are very different compute profiles and the help text points the wrong way. Pin it explicitly and record which way.
+
+**The stage 1 C67S collision does not reach this arm.** `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` share one contact pseudosequence, but their 182-residue domains differ (one substitution at position 10, `A` vs `S`, outside the 34 contact positions), so they received distinct MSAs with distinct checksums. Boltz-2 takes the full domain, so it sees two different inputs. The collision caps the pseudosequence arm only.
+
+**Still open after this step.** No YAML has been parsed by Boltz yet — `load_canonicals` needs 21 CCD residue files from the `mols.tar` this route deliberately never downloaded, so the batch YAML shape is verified by source reading, not execution. **First item in the 4b.2 pilot: parse one YAML with a custom `msa:` path and an `msa: empty` peptide before anything else.**
 
 **4b.2 — Smoke pilot on 5 complexes with crystal ground truth (1 GPU, <$5).**
 
@@ -347,7 +363,7 @@ These five complexes are the ones *most* likely to have been memorised. The pilo
 
 - Compare L40S 48 GB, A100 40 GB and H100 80 GB on identical settings. The metric is **measured billed dollars per successful complex**, not dollars per hour.
 - Pre-stage weights in a persistent volume and set `BOLTZ_CACHE` to an absolute path. Boltz downloads all three files unconditionally — `boltz2_conf.ckpt` 2.29 GB, `boltz2_aff.ckpt` 2.06 GB, `mols.tar` 1.86 GB, ~6.2 GB total — even though the affinity head is never used. Pin the revision.
-- Pin settings: `--diffusion_samples 1 --recycling_steps 3 --sampling_steps 200 --write_full_pae --output_format mmcif`. Pin `--subsample_msa` explicitly; its CLI default and its help text disagree.
+- Pin settings: `--diffusion_samples 1 --recycling_steps 3 --sampling_steps 200 --write_full_pae --output_format mmcif`. Pin `--subsample_msa` explicitly — 4b.1 established it is a broken flag, not just a documentation mismatch: `is_flag=True` with no `default=` makes the CLI default **False** while the help text and function signature both say True. Omitting it uses full depth up to `--max_msa_seqs`; passing it subsamples to 1,024. Benchmark both and record which way it was pinned. Leave `--max_msa_seqs` at 8192 unless accuracy says otherwise — 4b.1 measured the parse at $0.25 across the whole panel, so there is no cost case for trimming.
 - Batch by **directory**: `boltz predict <dir>` loads weights once for every YAML inside, which satisfies the "keep models loaded" requirement natively.
 - Capacity = the arm B budget divided by measured cost per successful complex.
 
@@ -383,7 +399,7 @@ Tiers, predeclared against measured throughput so the hour-5 call is arithmetic:
 
 Moving to full-length HLA with beta-2-microglobulin (the additional chain that stabilises the HLA structure in vivo) would require a new pilot and runtime benchmark.
 
-**Deliverable:** MSA manifest, hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
+**Deliverable:** MSA manifest (**done** — `reports/msa_manifest.csv`, 75 alleles), hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
 
 **Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
 
@@ -464,7 +480,7 @@ elapsed time ~ total worker hours / concurrent workers
 | 2 | ESM-2 embeddings, regression heads, representation comparisons | Cached features and validation-selected models |
 | 3 | GPU pilots, both structure arms, additional feature extraction | Structure and feature manifests keyed by complex ID, with success and failure records |
 
-Participant 3 now owns two arms. They are not serial: **arm A has no MSA step, so it starts immediately, while arm B's 4b.1 MSA generation is CPU work that runs concurrently with arm A's pilot.** Neither blocks the other.
+Participant 3 now owns two arms. They are not serial: **arm A has no MSA step, so it starts immediately, and arm B's 4b.1 MSA generation is already done** — all 75 alleles cached in 137 s of CPU for $0, so arm B's only remaining prework is freezing the panel (4b.4). Neither arm blocks the other.
 
 - **First 3 hours:** freeze data and evaluation, establish a baseline, begin ESM extraction, complete both arms' pilots on the same five crystal-matched complexes.
 - **By hour 5:** review validation results. Make **two** structural decisions — arm A's scale decision (full dataset versus panel, from 4a.2) and arm B's go / reduce / stop against the 4b.4 tier table. Arm A proceeding while arm B is cut to tier 0 is a legitimate and reasonably likely outcome, and it still leaves a structural result. Run the auxiliary affinity probe if the core comparison is on track.

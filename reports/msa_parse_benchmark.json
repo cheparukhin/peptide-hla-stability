@@ -1,0 +1,45 @@
+{
+  "benchmarked_file": "structures/msa/HLA-B_35_08.csv",
+  "allele": "HLA-B*35:08",
+  "n_rows": 10454,
+  "platform": "Darwin arm64",
+  "boltz_version": "2.2.1",
+  "note": "parse_csv runs once per complex; multiply by the panel size for total CPU cost",
+  "results": [
+    {
+      "max_msa_seqs": 256,
+      "parsed_seqs": 256,
+      "parse_seconds": 0.019
+    },
+    {
+      "max_msa_seqs": 512,
+      "parsed_seqs": 512,
+      "parse_seconds": 0.025
+    },
+    {
+      "max_msa_seqs": 1024,
+      "parsed_seqs": 1024,
+      "parse_seconds": 0.035
+    },
+    {
+      "max_msa_seqs": 2048,
+      "parsed_seqs": 2048,
+      "parse_seconds": 0.054
+    },
+    {
+      "max_msa_seqs": 4096,
+      "parsed_seqs": 4096,
+      "parse_seconds": 0.095
+    },
+    {
+      "max_msa_seqs": 8192,
+      "parsed_seqs": 8192,
+      "parse_seconds": 0.176
+    },
+    {
+      "max_msa_seqs": 16384,
+      "parsed_seqs": 10025,
+      "parse_seconds": 0.219
+    }
+  ]
+}
