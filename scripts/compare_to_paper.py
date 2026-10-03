@@ -1,35 +1,34 @@
-"""Why our stage 2 baseline scores below NetMHCstabpan, factor by factor.
+"""Calibrate the stage 2 sequence baseline against NetMHCstabpan's published score.
 
     .venv/bin/python scripts/compare_to_paper.py     # ~3 min, CPU
 
-Rasmussen et al. (2016) figure 1 reports, for the released NetMHCstabpan
-configuration (global rescaling t0 = 1 h), **average per-allotype SCC ~0.69 and
-PCC 0.676**, from 5-fold cross-validation on this same 28,166-row dataset. Our
-stage 2 headline arm reaches mean per-allele SCC 0.573 on the frozen validation
-split -- about 0.12 lower.
+Rasmussen et al. (2016) figure 1 reports, for the released configuration
+(t0 = 1 h), **average per-allotype SCC ~0.69 and PCC 0.676**, from 5-fold
+cross-validation. Our ensemble baseline reaches mean per-allele SCC 0.645 on
+the frozen validation split.
 
-That difference is not a like-for-like model comparison, because three things
-differ besides the model. This script isolates the ones we can test, changing
-one at a time and holding the arm, config, metric and allele panel fixed:
+**This is a calibration, not a reproduction.** Our model differs from theirs on
+every axis listed in :data:`METHOD_DIFFERENCES` -- most importantly, they train
+on 103,166 rows (28,166 measured plus 1,000 assumed-zero weak binders per
+allele, 73% of their training set) against our 19,716 measured training rows.
+The two numbers are not a model-quality comparison and no claim of method parity
+is supported.
 
-1. **Split grouping.** The paper groups "all peptide-HLA-I stability data for a
-   given peptide" into one CV group -- peptide *identity*, so a held-out peptide
-   may sit one substitution from a training peptide. Our frozen splits move
-   whole Hamming <= 3 clusters, putting every held-out peptide >= 4
-   substitutions away.
-2. **Ensembling.** NetMHC-family training fits a network per CV fold per
-   architecture (2 encodings x 3 hidden sizes x 5 folds) and predicts with the
-   ensemble. Stage 2 reports single networks.
-3. **Target transform.** The paper trains on ``s = 2^(-t0/th)`` and tuned t0
-   over {0.5, 1, 2, 5}, which moved PCC from 0.633 to 0.676. We train on
-   ``log1p`` and never tuned it.
+This script measures the three differences that *are* testable here, each with a
+controlled design:
 
-What this cannot isolate: they train on 4/5 of the data (~22.5k rows) against
-our 17.7k, and their reported score is measured on the same fold used for early
-stopping, which is optimistic by an unknown amount.
+1. **Split grouping** -- the paper groups by peptide identity, so a held-out
+   peptide may sit 1 substitution from a training peptide; we hold out whole
+   Hamming <= 3 clusters. Measured on a **common evaluation set** carved from
+   the frozen training split, varying only which training rows are available.
+2. **Ensembling** -- they fit one network per fold per architecture and predict
+   with the ensemble; stage 2 reported single networks.
+3. **Target transform** -- they train on ``s = 2^(-t0/th)``; we train on
+   ``log1p``.
 
-Nothing here touches ``data/splits.csv`` or the stage 2 results. The frozen
-split remains the only one any reported result is scored on.
+Everything here runs inside the frozen **train** split. See EVALUATION.md
+"Disclosed test exposure" for the earlier version of this script, which
+re-partitioned the whole dataset and did consume frozen test rows.
 """
 
 from __future__ import annotations
@@ -43,79 +42,72 @@ from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from pepstab.data import PEPTIDE_LENGTH, encode_sequences, load_with_splits  # noqa: E402
-from pepstab.evaluation import eligible_alleles  # noqa: E402
+from pepstab.data import load_with_splits  # noqa: E402
+from pepstab.evaluation import (  # noqa: E402
+    describe_delta,
+    eligible_alleles,
+    paired_cluster_bootstrap,
+)
 from pepstab.features import build_features  # noqa: E402
 from pepstab.mlp import MLPConfig, MLPRegressor  # noqa: E402
-from pepstab.splits import SPLIT_FRACTIONS, SPLIT_NAMES, assign_clusters  # noqa: E402
-from scripts.baseline_sequence import (  # noqa: E402
-    DEV_FRACTION,
-    MAX_EPOCHS,
-    PATIENCE,
-    SEEDS,
-    inner_folds,
-)
+from pepstab.splits import assign_clusters  # noqa: E402
+from scripts.baseline_sequence import MAX_EPOCHS, PATIENCE, SEEDS  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-#: The stage 2 headline arm and config, held fixed throughout.
 INPUT_SET, ENCODING, HIDDEN, L2 = "pep_pseudo", "onehot", (256, 64), 1e-5
 
 #: Rasmussen et al. figure 1, t0 = 1 h. PCC is stated in the text; SCC is read
-#: off the figure, so it is quoted as approximate.
+#: off the figure, so it is approximate.
 PAPER_SCC, PAPER_PCC = 0.69, 0.676
 
-#: t0 values the paper swept for its target transform.
 T0_GRID = (0.5, 1.0, 2.0)
 
+#: Share of training *peptides* held out as the common evaluation set.
+EVAL_PEPTIDE_FRACTION = 0.15
+DEV_FRACTION = 0.10
 
-def paper_scale(y_log1p: np.ndarray, t0: float) -> np.ndarray:
-    """The paper's target: ``s = 2^(-t0/th)``, mapping half-life into (0, 1].
+#: Every way our model differs from the one that produced 0.69. Printed with
+#: the results so the gap is never read as a model-quality difference.
+METHOD_DIFFERENCES = [
+    ("Training rows", "103,166 (28,166 measured + 75,000 assumed-zero weak "
+                      "binders, 1,000 per allele)", "19,716 measured"),
+    ("Encoding A", "BLOSUM50 / 5", "BLOSUM62 / 5"),
+    ("Encoding B", "smoothed sparse (0.9 / 0.05)", "plain one-hot (1 / 0)"),
+    ("Architecture", "one hidden layer, 40 / 50 / 60 units", "two layers, 256x64"),
+    ("Ensemble diversity", "2 encodings x 3 hidden sizes x 5 folds",
+     "2 encodings x 5 folds x 3 seeds"),
+    ("Target", "s = 2^(-t0/th), t0 tuned over {0.5, 1, 2, 5}", "log1p(th)"),
+    ("Held-out grouping", "peptide identity", "Hamming <= 3 cluster"),
+    ("Scored on", "the same 1/5 fold used for early stopping",
+     "a split never seen during fitting"),
+]
 
-    Monotone in half-life, so it leaves SCC unchanged when applied to *labels*;
-    it matters only as the thing a model is trained to fit. A half-life of 0
-    maps to 0, which is the limit as th -> 0.
+
+def paper_scale(values_log1p: np.ndarray, t0: float = 1.0) -> np.ndarray:
+    """Map ``log1p`` half-life onto the paper's target ``s = 2^(-t0/th)``.
+
+    Applied to **both** labels and predictions before computing PCC. Pearson
+    correlation is not invariant under a nonlinear transform, so correlating
+    log1p predictions against paper-scale labels would be neither metric --
+    it reads 0.639 where the paper-scale PCC is 0.649.
+
+    Negative predictions on the log1p scale mean a predicted half-life below
+    zero; they clamp to ``s = 0``, the limit as th -> 0.
     """
-    hours = np.expm1(y_log1p)
-    safe = np.where(hours > 0, hours, 1.0)
-    return np.where(hours > 0, 2.0 ** (-t0 / safe), 0.0)
-
-
-def identity_grouped_split(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
-    """70/10/20 grouped by peptide identity alone, as the paper describes.
-
-    Same water-fill as the frozen split, with each distinct peptide its own
-    group instead of each Hamming <= 3 cluster. Returns ``(split, group)``.
-    """
-    group = pd.Series(pd.factorize(df["peptide"])[0], index=df.index, name="group")
-    placement = assign_clusters(group.groupby(group).size(),
-                                fractions=SPLIT_FRACTIONS, names=SPLIT_NAMES)
-    return group.map(placement), group
-
-
-def min_distance_to_train(df: pd.DataFrame, split: pd.Series, held: str) -> int:
-    """Nearest-training-peptide Hamming distance for a held-out split."""
-    train_codes = encode_sequences(
-        sorted(df.loc[(split == "train").to_numpy(), "peptide"].unique()), PEPTIDE_LENGTH)
-    held_codes = encode_sequences(
-        sorted(df.loc[(split == held).to_numpy(), "peptide"].unique()), PEPTIDE_LENGTH)
-    best = PEPTIDE_LENGTH
-    for start in range(0, len(held_codes), 256):
-        block = held_codes[start:start + 256]
-        best = min(best, int((block[:, None, :] != train_codes[None, :, :])
-                             .sum(axis=2).min()))
-    return best
+    hours = np.expm1(np.asarray(values_log1p, dtype=float))
+    positive = hours > 0
+    return np.where(positive, 2.0 ** (-t0 / np.where(positive, hours, 1.0)), 0.0)
 
 
 def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
                alleles: list[str]) -> dict:
-    """Mean and median per-allele SCC, plus PCC on log1p and the paper's scale.
+    """Mean and median per-allele SCC, plus PCC with both sides on each scale.
 
-    SCC is the comparable one: it is invariant to the target transform, so it
-    does not reward either side's choice of scale. The paper reports a *mean*
-    over allotypes, which is why mean is carried alongside our usual median.
+    SCC is the metric to compare on: it is invariant to the target transform,
+    so it favours neither side's choice of scale.
     """
-    s_paper = paper_scale(y_log1p, 1.0)
+    true_paper, pred_paper = paper_scale(y_log1p), paper_scale(y_pred)
     scc, pcc_log, pcc_paper = [], [], []
     for a in alleles:
         m = allele == a
@@ -123,101 +115,198 @@ def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
             continue
         scc.append(stats.spearmanr(y_pred[m], y_log1p[m]).statistic)
         pcc_log.append(stats.pearsonr(y_pred[m], y_log1p[m]).statistic)
-        pcc_paper.append(stats.pearsonr(y_pred[m], s_paper[m]).statistic)
+        if len(np.unique(pred_paper[m])) > 1 and len(np.unique(true_paper[m])) > 1:
+            pcc_paper.append(stats.pearsonr(pred_paper[m], true_paper[m]).statistic)
     return {"n_alleles": len(scc), "scc_mean": float(np.mean(scc)),
             "scc_median": float(np.median(scc)),
             "pcc_log1p_mean": float(np.mean(pcc_log)),
             "pcc_paper_mean": float(np.mean(pcc_paper))}
 
 
-def fit_seeds(X_fit, y_fit, X_dev, y_dev, X_val) -> list[np.ndarray]:
-    """Validation predictions from one network per seed."""
+def fit_predict(train: pd.DataFrame, evalset: pd.DataFrame, t0: float | None = None,
+                seeds=SEEDS) -> list[np.ndarray]:
+    """Fit one network per seed on ``train``, predict ``evalset``.
+
+    The stopping fold is cut from ``train`` along whole peptide clusters, so no
+    network stops on a near-duplicate of a row it fitted.
+    """
+    placement = assign_clusters(train.groupby("cluster_id").size(),
+                                fractions=(1 - DEV_FRACTION, DEV_FRACTION),
+                                names=("fit", "dev"))
+    is_fit = (train["cluster_id"].map(placement) == "fit").to_numpy()
+    X = build_features(train, INPUT_SET, ENCODING)
+    X_eval = build_features(evalset, INPUT_SET, ENCODING)
+    y = train.y_log1p.to_numpy()
+    target = y if t0 is None else paper_scale(y, t0)
+
     out = []
-    for seed in SEEDS:
+    for seed in seeds:
         model = MLPRegressor(MLPConfig(hidden=HIDDEN, l2=L2, seed=seed,
                                        max_epochs=MAX_EPOCHS, patience=PATIENCE))
-        model.fit(X_fit, y_fit, X_dev, y_dev)
-        out.append(model.predict(X_val))
+        model.fit(X[is_fit], target[is_fit], X[~is_fit], target[~is_fit])
+        out.append(model.predict(X_eval))
     return out
 
 
-def run(df: pd.DataFrame, split: pd.Series, group: pd.Series, label: str,
-        t0: float | None = None) -> list[dict]:
-    """Fit on ``split``'s train, score its validation, single and ensembled.
+def grouping_experiment(train: pd.DataFrame) -> pd.DataFrame:
+    """Isolate the grouping effect on a **common** evaluation set.
 
-    ``t0`` trains on the paper's transform instead of ``log1p``. Scoring is
-    always against the ``log1p`` labels, so every row of the output table is
-    measured the same way whatever the model was trained on.
+    The earlier version of this script re-partitioned the whole dataset by
+    peptide identity and compared the resulting score against the frozen one.
+    That changed the training rows, the stopping rows *and* the scored rows at
+    once -- only 310 of 2,817 validation rows survived into it -- so the
+    difference could not be attributed to grouping. It also moved 3,798 frozen
+    test rows into fitting and scoring.
+
+    Here the evaluation set E is fixed, carved from the frozen training split,
+    and only the training rows change:
+
+    - **cluster-grouped**: train rows whose peptide's cluster contains no E
+      peptide, so every training peptide is >= 4 substitutions from every E
+      peptide -- the frozen split's rule.
+    - **identity-grouped**: train rows whose *peptide* is not in E. E's
+      cluster-mates stay in training, so E peptides can sit 1-3 substitutions
+      from a training peptide -- the paper's rule.
+    - **identity-grouped, size-matched**: every near-neighbour row, plus enough
+      randomly chosen far rows to match the cluster-grouped arm exactly. The
+      identity arm is necessarily larger than the cluster arm -- the extra rows
+      *are* the neighbours -- and there is no reservoir of unused far rows to
+      pad the cluster arm with, so matching has to happen by dropping far rows
+      from the identity arm rather than adding to the cluster one.
+
+    ``identity size-matched - cluster-grouped`` is then the grouping effect at
+    equal row count: the same number of training rows, with near neighbours
+    standing in for unrelated peptides.
     """
-    is_train = (split == "train").to_numpy()
-    train, val = df[is_train], df[(split == "val").to_numpy()]
-    placement = assign_clusters(group[is_train].groupby(group[is_train]).size(),
-                                fractions=(1 - DEV_FRACTION, DEV_FRACTION),
-                                names=("fit", "dev"))
-    is_fit = (group[is_train].map(placement) == "fit").to_numpy()
+    peptides = pd.Index(sorted(train["peptide"].unique()))
+    weights = pd.Series(1, index=np.arange(len(peptides)))
+    placement = assign_clusters(weights, fractions=(1 - EVAL_PEPTIDE_FRACTION,
+                                                   EVAL_PEPTIDE_FRACTION),
+                               names=("pool", "eval"))
+    eval_peptides = set(peptides[placement.to_numpy() == "eval"])
 
-    X_train = build_features(train, INPUT_SET, ENCODING)
-    X_val = build_features(val, INPUT_SET, ENCODING)
-    y_train = train.y_log1p.to_numpy()
-    y_val = val.y_log1p.to_numpy()
-    target = y_train if t0 is None else paper_scale(y_train, t0)
-    alleles = eligible_alleles(val.allele, y_val, split="val")
-    allele_arr = val.allele.to_numpy()
+    in_eval = train["peptide"].isin(eval_peptides).to_numpy()
+    evalset = train[in_eval]
+    eval_clusters = set(evalset["cluster_id"].unique())
 
-    preds = fit_seeds(X_train[is_fit], target[is_fit],
-                      X_train[~is_fit], target[~is_fit], X_val)
-    singles = [per_allele(allele_arr, y_val, p, alleles) for p in preds]
-    ensemble = per_allele(allele_arr, y_val, np.mean(preds, axis=0), alleles)
+    identity = train[~in_eval]
+    cluster = train[~train["cluster_id"].isin(eval_clusters).to_numpy()]
+    # The rows identity grouping keeps and cluster grouping drops: E's
+    # cluster-mates, i.e. training peptides within 3 substitutions of an
+    # evaluation peptide.
+    neighbours = identity.index.difference(cluster.index)
+    far = identity.index.intersection(cluster.index)
+    rng = np.random.default_rng(20261003)
+    keep_far = rng.choice(far.to_numpy(), size=len(cluster) - len(neighbours),
+                          replace=False)
+    matched = identity.loc[np.concatenate([neighbours.to_numpy(), keep_far])]
 
-    rows = [{"setting": label, "model": f"single seed (mean of {len(SEEDS)})",
-             **{k: float(np.mean([s[k] for s in singles])) for k in singles[0]}},
-            {"setting": label, "model": f"{len(SEEDS)}-seed ensemble", **ensemble}]
-    print(f"\n{label}")
-    print(f"  train={len(train):,} val={len(val):,} alleles={len(alleles)}")
-    for r in rows:
-        print(f"  {r['model']:24s} mean SCC={r['scc_mean']:.3f}  "
-              f"median SCC={r['scc_median']:.3f}  "
-              f"mean PCC(paper scale)={r['pcc_paper_mean']:.3f}")
-    return rows
+    y_eval = evalset.y_log1p.to_numpy()
+    alleles = eligible_alleles(evalset.allele, y_eval, min_rows=20)
+    allele_arr = evalset.allele.to_numpy()
+    nearest = evalset["peptide"].map(_nearest_distance(evalset, identity))
+
+    print(f"\ncommon evaluation set carved from train: {len(evalset):,} rows, "
+          f"{len(eval_peptides):,} peptides, {len(alleles)} eligible alleles")
+    print(f"  nearest training peptide under identity grouping: "
+          f"min {int(nearest.min())}, "
+          f"{float((nearest <= 3).mean()):.1%} of rows within 3 substitutions")
+    print(f"  near-neighbour rows identity grouping keeps and cluster grouping "
+          f"drops: {len(neighbours):,}")
+    print(f"  training rows -- cluster-grouped {len(cluster):,}, "
+          f"identity size-matched {len(matched):,}, "
+          f"identity full {len(identity):,}")
+
+    rows, preds = [], {}
+    for label, frame in [("cluster-grouped (our rule)", cluster),
+                         ("identity-grouped, size-matched", matched),
+                         ("identity-grouped, full", identity)]:
+        members = fit_predict(frame, evalset)
+        preds[label] = np.mean(members, axis=0)
+        singles = [per_allele(allele_arr, y_eval, p, alleles) for p in members]
+        rows.append({"arm": label, "n_train_rows": len(frame),
+                     **{k: float(np.mean([s[k] for s in singles])) for k in singles[0]}})
+        print(f"  {label:32s} mean SCC={rows[-1]['scc_mean']:.3f}  "
+              f"median SCC={rows[-1]['scc_median']:.3f}")
+
+    base = "cluster-grouped (our rule)"
+    boot = paired_cluster_bootstrap(
+        evalset.cluster_id, evalset.allele, y_eval,
+        preds[base], preds["identity-grouped, size-matched"], alleles)
+    lo, hi = boot["ci95"]
+    print(f"\n  grouping effect at equal row count (identity size-matched minus "
+          f"cluster-grouped),\n  paired cluster bootstrap on the common "
+          f"evaluation set:")
+    print(f"    delta median per-allele rho = {boot['delta_median_spearman']:+.4f}  "
+          f"95% CI [{lo:+.4f}, {hi:+.4f}]")
+    print(f"    {describe_delta(boot)}")
+    return pd.DataFrame(rows)
+
+
+def _nearest_distance(evalset: pd.DataFrame, training: pd.DataFrame) -> pd.Series:
+    """Hamming distance from each evaluation peptide to its nearest training one."""
+    from pepstab.data import PEPTIDE_LENGTH, encode_sequences
+    ev = sorted(evalset["peptide"].unique())
+    tr = encode_sequences(sorted(training["peptide"].unique()), PEPTIDE_LENGTH)
+    codes = encode_sequences(ev, PEPTIDE_LENGTH)
+    out = np.empty(len(codes), dtype=int)
+    for start in range(0, len(codes), 256):
+        block = codes[start:start + 256]
+        out[start:start + len(block)] = (
+            block[:, None, :] != tr[None, :, :]).sum(axis=2).min(axis=1)
+    return pd.Series(out, index=pd.Index(ev, name="peptide"))
 
 
 def main() -> int:
     df = load_with_splits()
-    frozen_split, frozen_group = df["split"], df["cluster_id"]
-    identity_split, identity_group = identity_grouped_split(df)
+    train = df[df.split == "train"]
+    val = df[df.split == "val"].sort_values("pair_id").reset_index(drop=True)
 
-    print(f"arm={ENCODING}_{INPUT_SET} hidden={HIDDEN} l2={L2:g} seeds={list(SEEDS)}")
-    print("Scored against log1p labels throughout, on the same allele panel.")
-    print(f"min val-to-train peptide distance: "
-          f"frozen={min_distance_to_train(df, frozen_split, 'val')}, "
-          f"identity-grouped={min_distance_to_train(df, identity_split, 'val')}")
+    print("CALIBRATION, NOT A REPRODUCTION. How our model differs from the one "
+          "that scored 0.69:\n")
+    width = max(len(a) for a, _, _ in METHOD_DIFFERENCES)
+    for axis, theirs, ours in METHOD_DIFFERENCES:
+        print(f"  {axis:<{width}}  paper: {theirs}")
+        print(f"  {'':<{width}}  ours : {ours}")
+    print(f"\nTheir training set is {103166 / len(train):.1f}x ours and 73% "
+          "assumed-zero rows we do not have.")
+    print(f"\narm={ENCODING}_{INPUT_SET} hidden={HIDDEN} l2={L2:g} seeds={list(SEEDS)}")
+
+    print("\n" + "=" * 72)
+    print("1. SPLIT GROUPING (inside the frozen train split; test untouched)")
+    print("=" * 72)
+    grouping = grouping_experiment(train)
+
+    print("\n" + "=" * 72)
+    print("2. ENSEMBLING and 3. TARGET TRANSFORM (train -> frozen validation)")
+    print("=" * 72)
+    y_val = val.y_log1p.to_numpy()
+    alleles = eligible_alleles(val.allele, y_val, split="val")
+    allele_arr = val.allele.to_numpy()
 
     rows = []
-    rows += run(df, frozen_split, frozen_group, "frozen split, log1p target")
-    rows += run(df, identity_split, identity_group,
-                "identity-grouped split, log1p target")
-    for t0 in T0_GRID:
-        rows += run(df, frozen_split, frozen_group,
-                    f"frozen split, 2^(-{t0:g}/th) target", t0=t0)
+    for label, t0 in [("log1p target", None)] + [
+            (f"2^(-{t:g}/th) target", t) for t in T0_GRID]:
+        members = fit_predict(train, val, t0=t0)
+        singles = [per_allele(allele_arr, y_val, p, alleles) for p in members]
+        ens = per_allele(allele_arr, y_val, np.mean(members, axis=0), alleles)
+        rows.append({"setting": label, "model": "single network (seed mean)",
+                     **{k: float(np.mean([s[k] for s in singles])) for k in singles[0]}})
+        rows.append({"setting": label, "model": f"{len(SEEDS)}-seed ensemble", **ens})
+        print(f"  {label:22s} single={rows[-2]['scc_mean']:.3f}  "
+              f"{len(SEEDS)}-seed ensemble={ens['scc_mean']:.3f}  "
+              f"(PCC paper scale {ens['pcc_paper_mean']:.3f})")
 
     out = pd.DataFrame(rows)
-    path = REPO_ROOT / "reports" / "compare_to_paper.csv"
-    out.to_csv(path, index=False)
+    out.to_csv(REPO_ROOT / "reports" / "compare_to_paper.csv", index=False)
+    grouping.to_csv(REPO_ROOT / "reports" / "compare_to_paper_grouping.csv", index=False)
 
-    base = out[(out.setting == "frozen split, log1p target")
-               & out.model.str.startswith("single")].iloc[0]
-    print("\n--- factor by factor, against the stage 2 baseline "
-          f"(mean SCC {base.scc_mean:.3f}) ---")
-    for _, r in out.iterrows():
-        if r.setting == base.setting and r.model == base.model:
-            continue
-        print(f"  {r.setting:38s} {r.model:24s} "
-              f"{r.scc_mean - base.scc_mean:+.3f}")
     print(f"\nNetMHCstabpan (Rasmussen et al. figure 1, t0=1 h): "
           f"mean per-allotype SCC ~{PAPER_SCC}, PCC {PAPER_PCC}.")
-    print(f"Unexplained after split and seed ensembling: "
-          f"~{PAPER_SCC - out.scc_mean.max():.2f} SCC.")
-    print(f"\nwrote {path.relative_to(REPO_ROOT)}")
+    print("Not a comparator at any stage: it trained on all 28,166 rows, "
+          "including every peptide in our test split.")
+    print("\nwrote reports/compare_to_paper.csv and "
+          "reports/compare_to_paper_grouping.csv")
     return 0
 
 

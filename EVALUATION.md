@@ -143,6 +143,46 @@ Six mutually exclusive verdicts, implemented in `describe_delta()`:
 Row 4 is the tricky one: the improvement is real, its magnitude is not
 established. "Below the bar" would be wrong — the interval doesn't support that.
 
+## Disclosed test exposure
+
+One diagnostic breached the single-use test rule. Recorded here rather than
+quietly fixed, because the audit trail is what makes "scored once" meaningful.
+
+**What happened.** The first version of `scripts/compare_to_paper.py`
+(commit 24dfaa6) estimated how much Rasmussen et al.'s looser peptide grouping
+flattered their published score. It re-partitioned the **whole dataset** 70/10/20
+by peptide identity, which pulled frozen test rows into that experiment:
+
+| Frozen test rows | Used for |
+|---:|---|
+| 3,350 | fitting a diagnostic model |
+| 448 | early stopping that model |
+| 585 | the score that model was judged on |
+
+**What was observed.** One aggregate statistic — mean per-allele Spearman 0.591
+— computed over 2,817 rows of which 585 were frozen test rows, mixed with
+val and train rows. No per-row test prediction, no per-allele test score, and no
+test label was inspected individually.
+
+**What it influenced.** A reported +0.018 attribution for split grouping, which
+fed the narrative that our split was not the reason for the gap, and partly
+motivated building the ensemble baseline. That attribution has since been
+measured properly and is **−0.005 [−0.035, +0.046]**, i.e. inconclusive — so the
+leaked experiment's conclusion was also wrong.
+
+**What was not affected.** No model that will be scored at stage 6 saw a test
+row. `scripts/baseline_sequence.py` and `scripts/baseline_ensemble.py` both fit
+on `split == "train"` only; every prediction file in `preds/` covers 2,817
+validation rows.
+
+**Assessment.** The exposure is one aggregate number over a 21% test admixture,
+used for a diagnostic whose conclusion was then reversed. We judge the test split
+still usable and continue to score it once at stage 6. A reader who disagrees has
+the numbers above to discount with.
+
+**Fix.** `scripts/compare_to_paper.py` now runs the grouping experiment entirely
+inside `split == "train"`, on a common evaluation set, with a paired CI.
+
 ## Model selection
 
 - Select on **validation**. Test is scored once, at stage 6, all models together.

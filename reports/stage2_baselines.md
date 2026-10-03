@@ -197,95 +197,122 @@ be thin (220 pairs, 43 test rows).
 
 ## Calibration against NetMHCstabpan (Rasmussen et al. 2016)
 
-Regenerate: `.venv/bin/python scripts/compare_to_paper.py` (~3 min); table in
-`compare_to_paper.csv`.
+Regenerate: `.venv/bin/python scripts/compare_to_paper.py` (~3 min); tables in
+`compare_to_paper.csv` and `compare_to_paper_grouping.csv`.
 
 The paper reports **mean per-allotype SCC ≈ 0.69 and PCC 0.676** from 5-fold CV
-on this same 28,166-row dataset (figure 1, global rescaling t0 = 1 h; PCC
-stated in text, SCC read from the figure). SCC is the fair comparison metric
-since it is invariant to target transform.
+on this same 28,166-row dataset (figure 1, global rescaling t0 = 1 h; PCC stated
+in the text, SCC read off the figure). SCC is the metric to compare on: it is
+invariant to the target transform, so it favours neither side's scale.
 
-Our headline arm reaches **mean per-allele SCC 0.573** (median 0.610). That is
-~0.12 below their number, but the comparison is not like-for-like. Changing one
-factor at a time:
+### This is a calibration, not a reproduction
 
-| Change | Mean SCC | Δ |
-|---|---:|---:|
-| Stage 2 baseline — frozen split, log1p, single network | 0.573 | — |
-| Identity-grouped split (as the paper describes) | 0.591 | +0.018 |
-| 3-seed ensemble | 0.615 | +0.042 |
-| Both | 0.625 | +0.052 |
-| The paper's `2^(-1/th)` target, single network | 0.551 | −0.022 |
+Our model is **not** NetMHCstabpan reimplemented. It differs on every axis:
 
-**Split grouping: +0.018.** The paper groups by peptide identity, so a held-out
-peptide can sit 1 substitution from a training peptide (vs 4 on our split). This
-flatters them slightly, but only 15.5% of peptides have any neighbour within 3
-substitutions — limited leakage is available. Our split is harder, but this is
-not the main reason we score lower.
+| Axis | Rasmussen et al. | Ours |
+|---|---|---|
+| **Training rows** | **103,166** — 28,166 measured **plus 1,000 assumed-zero weak binders per allele (75,000 rows, 73% of the set)** | **19,716 measured** |
+| Encoding A | BLOSUM50 / 5 | BLOSUM62 / 5 |
+| Encoding B | smoothed sparse (0.9 / 0.05) | plain one-hot (1 / 0) |
+| Architecture | one hidden layer, 40 / 50 / 60 units | two layers, 256×64 |
+| Ensemble diversity | 2 encodings × 3 hidden sizes × 5 folds | 2 encodings × 5 folds × 3 seeds |
+| Target | `s = 2^(-t0/th)`, t0 tuned | `log1p(th)` |
+| Held-out grouping | peptide identity | Hamming ≤ 3 cluster |
+| Scored on | the same 1/5 fold used for early stopping | a split never seen during fitting |
 
-**Ensembling: +0.042, the largest explained factor.** NetMHC-family training
-fits one network per CV fold per architecture (~30 networks total) and predicts
-with the ensemble. Stage 2 reports single networks. Averaging 3 seeds alone
-recovers +0.042, nearly the full 0.05 bar, from no new information.
+The first row dominates. **Their training set is 5.2× ours**, and nearly
+three-quarters of it is augmentation we do not have: random natural 9-mers with
+predicted affinity weaker than 20,000 nM, assigned `thalf = 0`. Our
+`data/rasmussen_et_al_dataset.csv` is the 28,166 *measured* rows; the 75,000
+augmented rows were never released with it. Adding them is stage 2b.
 
-**Target transform: no help.** Training on `s = 2^(-t0/th)` at t0 ∈ {0.5, 1,
-2} scores 0.022–0.034 *below* log1p in our setup, despite mattering for them
-(their t0 sweep moved PCC from 0.633 to 0.676).
+So the gap below is **not a model-quality comparison**, and no claim of method
+parity is supported. Matching their network count is not matching their method.
 
-The remaining **~0.07 SCC** is consistent with three factors we cannot isolate:
-they train on ~22,500 rows (vs our 17,744), ensemble ~30 networks across 6
-architectures (vs our 3 seeds), and score on the same fold used for early
-stopping.
+### What we can measure
 
-The single-network baseline is a weakened form of the paper's method — 1 network
-vs ~30. That matters for stage 3: ESM-2 beating a single network would not be a
-meaningful claim.
+| Factor | Effect on mean SCC | Status |
+|---|---|---|
+| Split grouping, at equal training rows | Δ median ρ **−0.005 [−0.035, +0.046]** | **inconclusive; rules out a 0.05 gain** |
+| Ensembling (3 seeds) | +0.042 | measured |
+| Ensembling (30-network CV) | +0.090 | measured |
+| The paper's `2^(-t0/th)` target | −0.022 to −0.034 | measured, worse here |
+
+**Split grouping explains nothing — this corrects an earlier claim of +0.018.**
+That figure came from re-partitioning the whole dataset by peptide identity and
+comparing the result against the frozen score. That experiment was invalid twice
+over: it changed the training, stopping *and* scored rows together (only 310 of
+2,817 validation rows survived into it), and it consumed frozen test rows (see
+EVALUATION.md, "Disclosed test exposure").
+
+The controlled version fixes a common evaluation set carved from the frozen
+training split — 2,894 rows, 592 peptides, 68 eligible alleles, 18.8% of rows
+within 3 substitutions of a training peptide under identity grouping — and
+varies only which training rows are available, at **equal row count**. Result:
+**−0.005 [−0.035, +0.046]**. Inconclusive, and it rules out a 0.05 advantage.
+The identity-grouped arm *does* score +0.007 higher when it keeps its extra 830
+near-neighbour rows, but that is the row count, not the neighbours.
+
+So our harder split is not why we score below the paper, and **the gap cannot be
+discounted for it.** Given the grouping and target-transform results are null or
+negative, the training-set difference is the leading remaining explanation —
+which stage 2b tests directly.
+
+**Ensembling is the one factor that clearly moves us.** NetMHC-family training
+fits one network per CV fold per architecture and predicts with the ensemble;
+stage 2 reported single networks, a weakened form of the same idea.
 
 ### The strong form: a 30-network ensemble
 
-`scripts/baseline_ensemble.py` builds the method properly: **5 inner CV folds ×
-2 encodings × 3 seeds = 30 networks**, averaged. Each network stops on its own
-fold, so the ensemble trains on all 19,716 training rows (vs 17,744 for a single
-fit/dev split). Folds are cut along whole Hamming ≤ 3 clusters. Configs come
+`scripts/baseline_ensemble.py`: **5 inner CV folds × 2 encodings × 3 seeds = 30
+networks**, averaged. Each network stops on its own fold, so the ensemble
+collectively trains on all 19,716 training rows rather than the 17,744 a single
+fit/dev cut leaves. Folds are cut along whole Hamming ≤ 3 clusters. Configs come
 from `stage2_summary.csv`, not re-tuned — ensembling is the only change.
 
 | Model | Mean SCC | Median per-allele ρ | Mean PCC (paper scale) | MAE log1p |
 |---|---:|---:|---:|---:|
-| Single network, pep + pseudoseq | 0.573 | 0.610 | 0.562 | 0.517 |
-| **30-network ensemble, pep + pseudoseq** | **0.645** | **0.693** | **0.639** | **0.473** |
-| 30-network ensemble, pep + domain | 0.610 | 0.653 | 0.605 | 0.495 |
-| *NetMHCstabpan (their 5-fold CV)* | *~0.69* | *—* | *0.676* | *—* |
+| Single network, pep + pseudoseq | 0.573 | 0.610 | 0.568 | 0.517 |
+| **30-network ensemble, pep + pseudoseq** | **0.645** | **0.693** | **0.649** | **0.473** |
+| 30-network ensemble, pep + domain | 0.610 | 0.653 | 0.621 | 0.495 |
+| *NetMHCstabpan (their 5-fold CV, different training set)* | *~0.69* | *—* | *0.676* | *—* |
 
 Ensembling adds **+0.090 mean SCC** on the pseudosequence arm (+0.100 on
-domain) — much more than the +0.042 from 3 seeds alone, because CV folds add
-training-data coverage on top of seed averaging. Individual members score
-0.511–0.555; the ensemble reaches 0.645.
+domain) — more than the +0.042 from 3 seeds alone, because CV folds add
+training-data coverage on top of seed averaging. Members score 0.511–0.555; the
+ensemble reaches 0.645. Paired cluster bootstrap vs the single network:
+**Δ median per-allele ρ = +0.083 [+0.029, +0.124]**.
 
-Paired cluster bootstrap: **Δ median per-allele ρ = +0.083 [+0.029, +0.124]**
-over the single network.
+PCC here puts **both** predictions and labels on the paper's `2^(-1/th)` scale.
+An earlier version correlated log1p predictions against paper-scale labels,
+which is neither metric and read 0.639 where the paper-scale value is 0.649.
 
-**This is method parity on a harder benchmark.** The remaining gap is 0.045 mean
-SCC (0.037 PCC). The paper's number includes +0.018 of split advantage plus
-unknown optimism from scoring on its early-stopping fold. Adjusting for split
-alone puts the two within ~0.02. We reproduced their *method* and measured it
-honestly; the remaining gap reflects measurement protocol, not model quality.
+**Reading the remaining 0.045 SCC.** It is not discountable for the split, and
+not explained by the target transform. It is consistent with the training-set
+difference (5.2×, mostly augmented negatives), the richer architecture diversity
+in their ensemble, and their scoring on the same fold each network stopped on.
+We cannot separate those here. **What we have is a strong sequence baseline in
+the NetMHCstabpan family, not a reproduction of it.**
 
 The pseudosequence-vs-domain tie survives ensembling: +0.040 [−0.001, +0.073],
 still inconclusive.
 
 ### Why NetMHCstabpan cannot be a comparator
 
-NetMHCstabpan was trained on all 28,166 rows, **including every peptide in our
-test split**. Any score it produces on our data reflects memorisation, not
-generalisation. There is no valid "beat NetMHCstabpan" result from this dataset
-at any stage. The 0.69 is a CV score on its own training data, useful for
-calibration only. The baseline stage 3 must beat is the ensemble above: the same
-method, trained on our split, scored on data it has never seen.
+It was trained on all 28,166 rows, **including every peptide in our test
+split**. Any score it produces on our data reflects memorisation, not
+generalisation. There is no valid "beat NetMHCstabpan" result available from
+this dataset at any stage. The 0.69 is a cross-validation score on its own
+training data, useful for calibration only. The baseline stage 3 must beat is
+the ensemble above: our method, trained on our train split, scored on data it
+has never seen.
 
 (An honest comparison would require stability measurements published after 2016
 and absent from its training set. Out of scope.)
 
-None of the above was scored on test.
+Apart from the disclosed exposure in the superseded calibration script, none of
+the above was scored on test.
+
 
 ## Rules for stage 3
 
@@ -302,5 +329,13 @@ None of the above was scored on test.
 - **Ensemble both arms the same way, or neither.** Ensembling alone is worth
   +0.090 mean SCC from no new information. An ensembled ESM arm against a
   single-network sequence arm (or vice versa) would manufacture a result.
-- Reuse `inner_folds()` so every arm trains on the same 17,744 rows and stops
-  on the same 1,972.
+- **Use `cv_folds()` from `scripts/baseline_ensemble.py`, not `inner_folds()`.**
+  The ensemble comparator fits each member on 15,772–15,773 rows across 5 folds,
+  collectively covering all 19,716 training rows. `inner_folds()` is the
+  single-network protocol: one permanent stopping fold, 17,744 fit rows. An ESM
+  arm built on `inner_folds()` would be compared against a baseline trained a
+  different way, confounding the result. Match the folds **and** the member
+  count (5 folds × encodings/representations × 3 seeds).
+- Score with `scripts/evaluate.py --split val preds/seq_ensemble_pep_pseudo.csv
+  preds/esm_ensemble.csv` — the ensemble is the baseline argument, so the paired
+  CI is measured against it.

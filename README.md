@@ -54,7 +54,7 @@ train = df[df.split == "train"]
 Write predictions as `pair_id,y_pred` on the `log1p` scale, then:
 
 ```bash
-.venv/bin/python scripts/evaluate.py --split val preds/seq_baseline.csv preds/esm.csv
+.venv/bin/python scripts/evaluate.py --split val preds/seq_ensemble_pep_pseudo.csv preds/esm.csv
 ```
 
 First file is the baseline; the rest get paired cluster-bootstrap CIs against
