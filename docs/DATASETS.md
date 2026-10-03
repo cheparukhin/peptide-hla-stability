@@ -1,0 +1,84 @@
+# Datasets
+
+| file | rows | alleles | peptides | role | summary |
+| --- | --- | --- | --- | --- | --- |
+| [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) | 28,166 | 75 | 5,633 | raw source, read-only | [summary](rasmussen_et_al_dataset_summary/DATASET_SUMMARY.md) |
+| [`data/c67s_cleanup/rasmussen_no_C67S.csv`](../data/c67s_cleanup/rasmussen_no_C67S.csv) | 27,031 | 72 | 5,633 | **train / eval** | [summary](rasmussen_no_C67S_summary/DATASET_SUMMARY.md) |
+| [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv) | 1,135 | 3 | 663 | held-out stability-floor benchmark | — |
+
+Fold assignments for every row of all three files live in
+[`data/c67s_cleanup/peptide_splits.csv`](../data/c67s_cleanup/peptide_splits.csv) and are
+documented in [SPLITS.md](SPLITS.md).
+Join them on `(allele, peptide)`.
+
+Structural coverage for these alleles — deposited PDB entries, threading
+templates, and the 32 complexes with both a measured half-life and an
+experimental structure — is described in [STRUCTURES.md](STRUCTURES.md).
+
+The two derived files are regenerated with
+`python3 scripts/make_no_c67s_dataset.py`; the summaries with
+`python3 scripts/summarize_dataset.py [--input <csv>]`. The split is lossless —
+concatenating them reproduces the raw CSV row for row. The raw CSV is never
+modified; `shasum -a 256 -c data/SHA256SUMS` still passes.
+
+## Why the C67S constructs are excluded
+
+`HLA-B*14:01(C67S)`, `HLA-B*14:02(C67S)` and `HLA-B*39:06(C67S)` — 1,135 rows,
+4.03% of the dataset — are pulled out of train/eval and promoted to a dedicated
+benchmark.
+
+All three carry **serine at position 67** of the mature heavy chain, verifiable
+directly in the `hla_seq` column (`hla_seq[66] == "S"` for each). Position 67 is
+an unpaired cysteine site in some natural HLA-B allotypes; it is not part of the
+structural disulfide, which is C101–C164 and is intact in all three constructs
+(their only cysteines are at 101 and 164). So the substitution is visible to any
+sequence-based model rather than hidden behind the allele name.
+
+### 1. They are engineered assay constructs, not natural allotypes
+
+Fitting them teaches the model about an assay stabilisation artefact rather than
+about HLA biology.
+
+### 2. No wild-type counterpart is available
+
+`HLA-B*14:01`, `HLA-B*14:02` and `HLA-B*39:06` are all absent from the dataset,
+so the constructs cannot serve as a mutation-effect test either. The nearest
+natural alleles are several substitutions away — too far to attribute a
+half-life difference to position 67:
+
+| construct | nearest natural allele(s) | residues differing (of 182) |
+| --- | --- | --- |
+| HLA-B*14:01(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 6 |
+| HLA-B*14:02(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 7 |
+| HLA-B*39:06(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 3 |
+
+### 3. They barely form stable complexes
+
+They would inflate the zero spike without being informative:
+
+| construct | rows | % exactly 0 h | median | p95 half-life | max |
+| --- | --- | --- | --- | --- | --- |
+| HLA-B*14:01(C67S) | 374 | 89.0% | 0.0 h | 0.60 h | 108.4 h |
+| HLA-B*14:02(C67S) | 382 | 74.9% | 0.0 h | 4.39 h | 66.3 h |
+| HLA-B*39:06(C67S) | 379 | 92.1% | 0.0 h | 0.50 h | 8.5 h |
+
+Note on provenance: the challenge brief lists these as "75%, 89% and 92% zeros"
+with 95th-percentile half-lives of "4.5, 0.6 and 0.5 h" in the allele order
+B\*14:01, B\*14:02, B\*39:06. Recomputed from the raw CSV, the first two pairs
+belong to the opposite alleles — 74.9%/4.39 h is **B\*14:02** and 89.0%/0.60 h is
+**B\*14:01**. The set of values matches; only the pairing differs. The table
+above is the recomputed version.
+
+## Effect of the exclusion
+
+- Zero-inflation drops from **20.16% to 17.43%** of rows.
+- Rows above the 2-hour stability threshold rise from **39.88% to 41.37%**.
+- `hla_pseudoseq` becomes a **unique allele key** (72 alleles, 72 pseudosequences).
+  The only collision in the raw data was `HLA-B*14:01(C67S)` /
+  `HLA-B*14:02(C67S)` sharing one pseudosequence.
+- **No peptides are lost** — all 5,633 remain, because each of the 663 peptides
+  measured against a C67S construct is also measured against at least one
+  natural allele.
+- **No Cys67 signal is lost.** Six natural alleles retain cysteine at position 67
+  (B\*15:10, B\*27:02, B\*27:03, B\*27:05, B\*27:20, B\*39:01), together 2,504
+  rows (8.9%), and all stay in the training set.
