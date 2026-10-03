@@ -1,0 +1,32 @@
+# Derived artifacts — regenerate from the raw CSV and the frozen splits
+embeddings/
+features/
+structures/
+checkpoints/
+runs/
+results/
+*.npy
+*.npz
+*.pt
+*.pkl
+*.h5
+
+# Credentials — never commit
+.env
+.env.*
+*.pem
+*.key
+modal.toml
+.huggingface/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# OS
+.DS_Store
