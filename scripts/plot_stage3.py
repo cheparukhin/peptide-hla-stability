@@ -40,7 +40,17 @@ ARMS = {
     "ESM alone": ("esm_alone_esm2_35M.csv", PALE),
     "ESM + cross-attention\n(coupled)": ("xattn_esm2_35M.csv", ALARM),
     "ESM + mean-pooled groove\n(ablation)": ("meanpool_esm2_35M.csv", GREY),
+    "BLOSUM cross-features\nstacked": ("blosum_cross_stacked.csv", "#5B8C5A"),
+    "positive control\n(baseline features, same pipeline)": ("control_onehot_pca_alone_esm2_35M.csv", "#6B4C8A"),
+    "negative control\n(random block, stacked)": ("control_random_stacked_esm2_35M.csv", PALE),
+    "negative control\n(shuffled ESM, stacked)": ("control_shuffled_stacked_esm2_35M.csv", GREY),
 }
+
+#: Rank agreement between HLA alleles differing at one contact residue, from
+#: reports/allele_pair_concordance.csv (companion branch). Two distinct molecules
+#: cannot agree better than the assay resolves, so this bounds assay
+#: reproducibility from below -- and therefore bounds what any model can reach.
+NOISE_CEILING = 0.90
 
 
 def main() -> int:
@@ -80,7 +90,7 @@ def main() -> int:
 
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     with mpl.rc_context(RC):
-        fig, (axL, axR) = plt.subplots(1, 2, figsize=(10.4, 4.3),
+        fig, (axL, axR) = plt.subplots(1, 2, figsize=(12.6, 4.6),
                                        gridspec_kw={"width_ratios": [1.45, 1]})
         names = [n for n in ARMS if n in panels]
         rng = np.random.default_rng(0)
@@ -90,15 +100,24 @@ def main() -> int:
                         s=9, color=ARMS[name][1], alpha=.45, edgecolor="none", zorder=2)
             axL.plot([i - .28, i + .28], [medians[name]] * 2, color=ARMS[name][1],
                      lw=2.4, zorder=4, solid_capstyle="butt")
-            axL.text(i, 1.03, f"{medians[name]:.3f}", ha="center", fontsize=7,
+            axL.text(i, 0.955, f"{medians[name]:.3f}", ha="center", fontsize=7,
                      color=ARMS[name][1])
         base_med = medians[names[0]]
         axL.axhline(base_med, color=DARK, lw=.7, ls=(0, (4, 3)), zorder=1)
+        axL.axhline(NOISE_CEILING, color=ALARM, lw=1.0, zorder=1)
+        axL.text(len(names) - 0.45, NOISE_CEILING + 0.015,
+                 "noise ceiling 0.90 — one-substitution allele pairs",
+                 ha="right", fontsize=6.5, color=ALARM)
+        axL.annotate("", xy=(-0.42, NOISE_CEILING), xytext=(-0.42, base_med),
+                     arrowprops=dict(arrowstyle="<->", lw=.8, color=ALARM))
+        axL.text(-0.34, (NOISE_CEILING + base_med) / 2,
+                 f"{NOISE_CEILING - base_med:.2f}\nheadroom", fontsize=6.5,
+                 color=ALARM, va="center")
         axL.set_xticks(range(len(names)))
         axL.set_xticklabels(names, fontsize=6.5)
         axL.set_ylabel("per-allele Spearman rho (validation)")
         axL.set_title("Frozen ESM-2 features do not reach the sequence baseline", loc="left")
-        axL.set_ylim(-0.35, 1.12)
+        axL.set_ylim(-0.35, 1.02)
         axL.margins(x=0.04)
 
         for name in names:
