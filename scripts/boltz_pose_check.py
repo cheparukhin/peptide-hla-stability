@@ -232,6 +232,10 @@ def main() -> None:
         help="directory holding one subdirectory per complex_id with the predicted mmCIF",
     )
     p.add_argument("--cache", type=Path, default=Path("/tmp/rcsb_cache"))
+    p.add_argument(
+        "--out", type=Path, default=OUT,
+        help="where to write the per-complex table; set it to compare two folders",
+    )
     args = p.parse_args()
     _require_biotite()
 
@@ -256,13 +260,13 @@ def main() -> None:
         "peptide_max_dev", "dev_p2", "dev_p9", "in_groove", "per_position",
         "status",
     ]
-    OUT.parent.mkdir(exist_ok=True)
-    with OUT.open("w", newline="") as fh:
+    args.out.parent.mkdir(exist_ok=True)
+    with args.out.open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
         w.writeheader()
         for r in results:
             w.writerow({c: r.get(c, "") for c in cols})
-    print(f"wrote {OUT.relative_to(REPO)}\n")
+    print(f"wrote {args.out}\n")
 
     hdr = f"{'complex':22} {'PDB':6} {'HLA fit':>8} {'pep RMSD':>9} {'max':>6} {'verdict':>9}"
     print(hdr)

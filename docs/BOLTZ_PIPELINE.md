@@ -175,13 +175,28 @@ is exactly one code path.
   floating version would make the benchmark unreproducible.
 - **Weights (~6.2 GB) on a Modal Volume**, mounted at `--cache`, never
   downloaded inside a timed region.
-- **A batch runs in one container** so weights load once — the plan's "keep
-  models loaded across complexes".
-- **Warm-up fold excluded from the steady-state mean.** The first complex pays
+- **A batch runs as ONE `boltz predict` process over a directory of YAMLs**, so
+  weights load once — the plan's "keep models loaded across complexes".
+  Per-complex timings are recovered from that single process by watching the
+  output tree for each structure to land (`_CompletionProbe`).
+
+  > This was **got wrong the first time and is the most expensive mistake in
+  > this stage.** The original harness spawned a fresh `boltz predict` per
+  > complex, putting a Python start, torch import, 6.2 GB weight load and CUDA
+  > init inside every timed fold — 86% of each measurement. It reported
+  > `startup_s = 0.0` because, by its own definition, nothing happened before
+  > the first fold. The shape came from Modal's published Boltz example, which
+  > folds **one** input per call; there the weight load is invisible because
+  > nothing amortises it. The idiomatic fix is `modal.Cls` with
+  > `@modal.enter()`. See finding 1 in the benchmark report.
+
+- **Warm-up fold excluded from the steady-state mean.** The first interval pays
   weight load and CUDA kernel compilation. Charging that to every complex would
   overstate a 2,000-complex run, where it is paid once per container. It is
-  measured and then *amortised* over the production batch size rather than
-  dropped, because Modal explicitly bills container load time.
+  measured as `load_plus_first_s` and *amortised* over the production batch size
+  rather than dropped, because Modal explicitly bills container load time.
+- **boltz's stdout is retained** (`stdout_tail`). The original harness discarded
+  it on success, which made the overhead above unrecoverable without a re-run.
 - **Instrumented per complex:** fold wall time, container startup, peak GPU
   memory (polled from `nvidia-smi` on a thread — Boltz runs as a subprocess, so
   in-process torch counters would see nothing), success/failure with stderr, and
@@ -253,21 +268,31 @@ Function rates, which is what `@app.function` bills at.
 
 ## Measured: the pilot passed, and it reframes the whole decision
 
-Run 2026-10-03, 3 complexes on L40S, MSA arm, `--diffusion_samples 1`,
-`--write_full_pae`. Cost about **$0.20**.
+Run 2026-10-03 on L40S, MSA arm, `--diffusion_samples 1`, `--write_full_pae`,
+5 complexes with the corrected one-process harness (weight load + first fold
+53.9 s, then 6.3 s per complex).
 
-| complex | fold | peak GPU mem | ipTM | PAE | peptide CA RMSD |
-| --- | ---: | ---: | ---: | :---: | ---: |
-| A\*11:01 / KTFPPTEPK | 168.1 s *(warm-up)* | 8.59 GB | 0.982 | yes | **0.39 Å** |
-| A\*02:01 / LLWNGPMAV | 43.4 s | 8.59 GB | 0.993 | yes | **0.13 Å** |
-| B\*15:01 / ILGPPGSVY | 43.8 s | 8.59 GB | 0.990 | yes | **0.42 Å** |
+| complex | PDB | peptide CA RMSD | max per-residue | ipTM |
+| --- | --- | ---: | ---: | ---: |
+| A\*11:01 / KTFPPTEPK | 1X7Q | **0.29 Å** | 0.74 Å | 0.981 |
+| A\*02:01 / LLWNGPMAV | 9SL0 | **0.14 Å** | 0.31 Å | 0.993 |
+| B\*15:01 / ILGPPGSVY | 1XR9 | **0.38 Å** | 0.70 Å | 0.990 |
+| B\*07:02 / IPRRNVATL | 7LFZ | **1.30 Å** | 3.33 Å | 0.991 |
+| B\*08:01 / ELRRKMMYM | 4QRU | **0.25 Å** | 0.37 Å | 0.990 |
 
-**The register check passes decisively.** Peptide CA RMSD against crystal, after
-superposing on the HLA domain only, is 0.13–0.42 Å — essentially
-crystallographic agreement. Per-position deviation never exceeds 0.85 Å, and
-the P2/PΩ anchors are the tightest positions. The predicted peptides sit in the
-canonical pose, in the right register, so geometry features extracted from these
-structures are measuring the complex and not a docking artefact.
+**The register check passes: 5/5 in groove**, median 0.29 Å. Peak GPU memory
+8.6 GB throughout. The predicted peptides sit in the canonical pose in the right
+register, so geometry features taken from these structures measure the complex
+rather than a docking artefact.
+
+**But the error is not uniform along the peptide, and stage 5 needs to know
+that.** B\*07:02 / IPRRNVATL deviates 1.90 Å at P5 and 3.33 Å at P6 while
+P1–P2 and P8–P9 all stay under 0.25 Å. ESMFold2 shows the same pattern on two
+complexes. So the anchors are reliably placed in both engines while **the
+central bulge (P5–P7) carries several-angstrom uncertainty on some complexes** —
+burial and contact features computed at central positions are intrinsically
+noisier than the same features at anchors, and should not be treated as equally
+well determined.
 
 Also settled: **`msa: empty` on the peptide coexists fine with a precomputed
 `.a3m` on the HLA chain** — the combination the Boltz docs never show. No
@@ -286,28 +311,70 @@ Every GPU in the plan's table has **4.7× to 9.3× headroom**. Two consequences:
 
 ### Budget is not the binding constraint
 
-The pilot showed L40S at $0.027/complex already fits 2,000 complexes inside the
-$330 ceiling (18%). The benchmark confirmed that even cheaper cards exist: A10
-at $0.018/complex puts 2,000 complexes at $37, leaving room for ~17,800
-complexes total. At these costs, wall-clock time is the bottleneck, not money.
+With the corrected harness, A10 folds at **$0.004/complex**: $8.00 for a 2,000
+panel (2% of the $330 ceiling) and ~$113 for the entire 28,166-pair dataset.
+Folding is not a budget question on this project at all. Wall-clock and GPU
+concurrency are the only real limits.
 
-The benchmark also confirmed two predictions from the pilot:
+The benchmark confirmed one prediction from the pilot and refuted the cost
+figures:
 
-- **H100 did not break even.** It needed >1.83x the speed of L40S to justify
-  its price. It measured 1.03x — a 3% speedup for nearly double the rate. The
-  191-residue workload is too small to saturate it.
-- **Cheap cards did win**, but only after right-sizing the host request. At the
-  plan's 4c/32 GiB, the fixed host cost inflated cheap cards' bills
+- **H100 did not break even**, and this survived both corrections. It needs
+  3.01x the speed of A10 to justify its rate and measured 1.35x. The gap is
+  absolute (2.5 s), not a ratio that subtracting overhead could rescue.
+- **Cheap cards win**, but only after right-sizing the host request. At the
+  plan's 4c/32 GiB the fixed host cost inflated cheap cards' bills
   disproportionately (29% of A10's bill vs 10% of H100's). At 4c/16 GiB the
-  bias is removed and A10 is the clear winner.
+  bias is removed.
+
+### Between-container variance is the real measurement limit
+
+The same model, GPU type and settings gave **6.3 s in one container and 10.9 s
+in another** — 73% apart, against ±1% *within* a container. Modal places each
+container on whatever host is free and those hosts differ.
+
+**The sweep's n=1 container per GPU is therefore too thin to rank the middle
+cards.** A10's cost lead and the H100 verdict exceed the variance; the 10.9 vs
+10.1 s L40S/A100 ordering does not. Any re-run should use ~3 containers per GPU
+and report a median of container medians — and since within-container spread is
+negligible, it should trade folds-per-container for container count rather than
+adding folds.
+
+## ESMFold2: evaluated, rejected
+
+[ESMFold2](https://huggingface.co/biohub/ESMFold2) (Biohub, MIT) is a diffusion
+predictor on ESMC embeddings with native multi-chain input, published DockQ wins
+over AlphaFold 3 on protein-protein interfaces, and a richer confidence set
+(`pae`, `plddt`, `ptm`, `iptm`, plus `pair_chains_iptm`). Benchmarked under
+`modal_app/esmfold_*.py`; it runs in-process with the model resident, so it was
+never affected by the harness bug above.
+
+Rejected on three measurements, not on principle:
+
+- **26.0 GB peak** vs Boltz-2's 8.4 GB. A 7B ESMC backbone plus diffusion trunk
+  does not fit a 24 GB card even with bf16 weights, which removes A10 and L4 —
+  the two cheapest options — from the table entirely.
+- **Speed indistinguishable.** Its 6.7 s on L40S sits inside Boltz-2's own
+  6.3–10.9 s between-container range on the same card.
+- **Pose quality worse at matched n=5**: median peptide CA RMSD 0.68 A against
+  Boltz-2's 0.29 A, with 3 of 5 poses over 0.5 A against 1 of 5.
+
+Two results worth retaining:
+
+- **MSAs do not help ESMFold2 on pMHC.** Given the same alignments Boltz-2 uses,
+  B1501 degraded 1.35 -> 1.72 A while fold time rose 32%. Single-sequence is
+  strictly better here, which contradicts Biohub's general-case guidance and is
+  therefore a pMHC-specific finding.
+- **`pair_chains_iptm` is the peptide-HLA interface ipTM** that stage 5 wants as
+  a confidence feature; Boltz-2 exposes only a global ipTM. If that feature
+  earns its place, ESMFold2 is the cheaper way to get it.
 
 ## Open question before launch
 
 **Which Modal plan is the workspace on?** Starter caps GPU concurrency at **10
 containers**; Team raises it to 50. That cap sets the `--workers` figure in the
-deadline arithmetic, and it is the difference between a 2.6 h and a ~30 min
-production run. It changes no cost figure — concurrency buys wall-clock, not
-dollars.
+deadline arithmetic: 0.56 h at 10 workers against ~7 min at 50. It changes no
+cost figure — concurrency buys wall-clock, not dollars.
 
 ## Status
 
@@ -318,21 +385,29 @@ dollars.
 | Cost/decision model | done, unit-checked on synthetic timings |
 | MSA precompute (8 alignments, verified) | **done**, ~$0.01 |
 | Weights cached to Volume (6.204 GB) | **done** |
-| Pilot: 3 complexes on L40S | **done**, 3/3, ~$0.20 |
-| Register check vs crystal | **done**, 0.13–0.42 Å peptide CA RMSD |
-| Hardware sweep: 8 complexes x 5 GPUs | **done**, ~$1.35 |
 | Host-memory probe (peak RSS 9.89 GB) | **done**, ~$0.03 |
-| **GPU chosen: A10** | $0.018/complex, $37 per 2,000, 2.6 h at 10 workers |
+| Harness bug found and fixed (one process per batch) | **done**, invalidated the first sweep |
+| Pilot: 5 complexes on L40S | **done**, 5/5 in groove, median 0.29 Å |
+| Hardware sweep: 8 complexes x 5 GPUs | **done** (re-run after the fix) |
+| ESMFold2 evaluated as an alternative engine | **done**, rejected on VRAM + pose quality |
+| **Engine + GPU chosen: Boltz-2 on A10** | $0.004/complex, $8.00 per 2,000, 0.56 h at 10 workers |
+| Multi-container re-run (~3 per GPU) | **open** — n=1 cannot rank the middle cards |
 
 The `CLAUDE.md` gate — "no batch GPU job without a passing end-to-end pilot on
-3–5 examples" — **is cleared**: 3 complexes folded end to end, all three in the
+3–5 examples" — **is cleared**: 5 complexes folded end to end, all five in the
 groove, PAE written, chain and residue mapping verified.
 
 Results in [reports/stage4_benchmark.md](../reports/stage4_benchmark.md).
-Headline: **A10 wins at $0.018/complex**; H100 came in only 1.03x faster than
-L40S against the 1.83x it needed to break even; A100-40GB was anomalously the
-slowest card and is flagged as unverified at n=1 container. Total spend
-**~$1.58** against the plan's $15 pilot/benchmark ceiling.
+Headline: **Boltz-2 on A10 at $0.004/complex**, $8.00 per 2,000 complexes.
+H100 measured 1.35x faster against the 3.01x it needed to break even.
+A100-40GB was slower than A10 in three independent allocations. ESMFold2 is
+genuinely competitive on cost but needs 26 GB, which removes the cheap cards,
+and is less accurate at matched n=5. Total spend **~$2.64** against the plan's
+$15 pilot/benchmark ceiling.
 
-A100-80GB was never run: the pilot's 8.59 GB peak made it strictly dominated by
+Two numbers in this document were previously wrong and are corrected above: the
+per-complex cost (was $0.018, from the harness bug) and the claim that weights
+loaded once per batch (they did not, until the fix).
+
+A100-80GB was never run: the pilot's 8.6 GB peak made it strictly dominated by
 A100-40GB, and the sweep then showed A100-40GB itself was uncompetitive.

@@ -202,6 +202,53 @@ One hypothesis for stage 6: on the 22 alleles with no public weak-affinity data,
 
 **Deliverable:** single-task vs. multi-task sequence validation results first, then an optional matched ESM comparison, with the leakage audit documented.
 
+**Status: done — negative, and bounded.** `reports/stage2c_affinity.md`
+(results and reasoning), `scripts/affinity_multitask.py` (regenerates),
+`pepstab/multitask.py` + `pepstab/affinity.py`, `reports/stage2c_runs_*.csv`,
+`reports/stage2c_deltas_*.csv`, `tests/test_multitask.py` (17 guards).
+
+Across **20 paired comparisons** — 5 λ settings × {one-hot, BLOSUM} × {single
+network, 30-network ensemble}, plus a censoring-robustness variant — every 95%
+CI crosses zero and **every upper bound sits below 0.05**. Largest upper bound
++0.034. The predeclared worthwhile gain is ruled out, not merely undetected.
+
+The comparison is controlled by construction: at **λ = 0 the multi-task network
+is bit-identical to `pepstab.mlp.MLPRegressor`** (asserted on the real feature
+grid, not only a toy), so the single-task arm *is* the stage 2 baseline. The
+λ=0 single network reproduces 0.610 exactly, and the λ=0 ensemble is
+**bit-identical** to `scripts/baseline_ensemble.py`'s predictions on all 2,817
+validation rows. Both arms were ensembled identically, per the stage 3 parity
+rule.
+
+Two diagnostics make this a clean null rather than an ambiguous one:
+
+- **The auxiliary task was genuinely learned** — the affinity head reaches
+  ρ 0.55–0.62 against held-out affinity labels, against ≈ 0 at λ = 0. The shared
+  trunk learns affinity about as well as it learns stability, and the stability
+  predictions still do not move. Mean ensemble-member quality is flat at every
+  λ, so affinity is not acting as a diversity source either.
+- **The label's ceiling is below the baseline.** Measured affinity used
+  *directly* as a stability predictor ranks at median per-allele ρ **0.580**
+  [IQR 0.486, 0.696] over the 33 training alleles with ≥ 30 dual-labelled pairs
+  — under the 0.610 a single network already reaches from stability labels
+  alone. The auxiliary signal is **redundant, not absent**.
+
+**The expansion is declined on evidence, not blocked.** The plan gates it on the
+probe helping; it does not. The leakage audit was still completed because stage
+2b needs it: of 66,214 affinity rows on 20,836 peptides absent from the
+stability set, **64,226 rows on 20,195 peptides** clear Hamming > 3 from every
+validation, test *and inner stopping-fold* peptide (2,076 in all). Absence is
+tested on `peptide`, never on `(allele, peptide)` — the reference table's
+`padding_eligible` flag tests the pair and therefore leaks.
+
+**The ESM-2 extension is blocked, not declined**, and is where the hypothesis
+keeps its strongest form: affinity is redundant with what a *sequence* model
+already extracts, which does not establish redundancy with ESM-2 features. The
+machinery is protocol-agnostic, so re-running it on the stage 3 arm is cheap.
+
+**Cost: CPU only, $0.** 210 networks in total; the paired bootstrap dominates
+wall time, not the fitting.
+
 **Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, limiting peptide diversity. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that diversity without changing the stability evaluation. Rasmussen et al. found that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), from complementary signal rather than row count.
 
 ### 3. Test frozen ESM-2 representations
@@ -228,6 +275,9 @@ One hypothesis for stage 6: on the 22 alleles with no public weak-affinity data,
 - Report whether auxiliary affinity data helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that's worth reporting — it would mean cheap extra labels substitute for expensive pretrained features on this task.
 
 **Deliverable:** multi-task vs. single-task comparison on the same frozen validation set, with the leakage audit documented.
+
+**Status: the sequence half is done at stage 2c** (negative and bounded — see
+above). What remains here is only the ESM-2 arm, which needs stage 3 features.
 
 **Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, so peptide diversity is limited. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that broader diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), with the gain coming from complementary signal, not just more rows.
 
@@ -418,7 +468,16 @@ Moving to full-length HLA with beta-2-microglobulin (the additional chain that s
 
 **Deliverable:** MSA manifest (**done** — `reports/msa_manifest.csv`, 75 alleles), hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
 
-**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). GPU chosen: **A10 at $0.018/complex**, $37 for 2,000 complexes, 2.6 h at 10 workers. Total benchmark spend ~$1.58 against the $15 ceiling. Pilot gate cleared: 3/3 in the groove at 0.13–0.42 Å peptide CA RMSD, PAE written, chain mapping verified. 44 folds, zero failures.
+**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Boltz-2 and ESMFold2 Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). Engine and GPU chosen: **Boltz-2 on A10 at $0.004/complex**, $8.00 for 2,000 complexes, 0.56 h at 10 workers. Total benchmark spend ~$2.64 against the $15 ceiling. Pilot gate cleared: 5/5 in the groove, median 0.29 Å peptide CA RMSD, PAE written, chain mapping verified. 68 folds, zero failures.
+
+Four findings constrain later stages:
+
+- **This stage's "keep models loaded across complexes" requirement was initially violated.** The first harness spawned a fresh `boltz predict` per complex, putting an 86% process-and-weight-load overhead inside every timed fold and overstating cost 4.6x ($0.018 vs $0.004). Fixed to one process per batch. Any future folding harness must verify that the model is resident across the timed region.
+- **Between-container variance (73%) dwarfs within-container variance (±1%).** The same GPU type gave 6.3 s and 10.9 s in two allocations, so the sweep's n=1 container per GPU cannot rank the middle cards. A10's lead and the H100 verdict survive it; the L40S/A100 ordering does not.
+- **Folding is not a budget constraint.** At $0.004/complex the whole 28,166-pair dataset costs ~$113, inside the $330 ceiling. Panel size is now a statistical and wall-clock decision, not a financial one.
+- **Peptide error is concentrated at P5–P7, not uniform.** Anchors (P1–P2, P8–P9) sit under 0.25 Å while central positions reach 3.3 Å on some complexes, in both Boltz-2 and ESMFold2. Stage 5 geometry features at central positions are intrinsically noisier than the same features at anchors.
+
+**ESMFold2 was evaluated and rejected** (not on principle — on three measurements): 26.0 GB peak removes the cheap 24 GB cards, its speed is indistinguishable from Boltz-2's inside the between-container range, and pose quality is worse at matched n=5 (median 0.68 Å vs 0.29 Å). It does expose `pair_chains_iptm`, the peptide-HLA interface ipTM this stage's confidence arm wants, which Boltz-2 gives only globally.
 
 **Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
 

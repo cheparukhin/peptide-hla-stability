@@ -1,0 +1,9 @@
+comparison,arm,lambda_aff,delta_median_spearman,ci95_low,ci95_high,verdict
+single:onehot lambda=0.1 vs lambda=0,onehot,0.1,0.0067,-0.042,0.0246,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:onehot lambda=0.3 vs lambda=0,onehot,0.3,-0.0022,-0.0491,0.0253,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:onehot lambda=1 vs lambda=0,onehot,1.0,-0.0085,-0.0516,0.0211,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:onehot lambda=3 vs lambda=0,onehot,3.0,0.0066,-0.042,0.033,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:blosum lambda=0.1 vs lambda=0,blosum,0.1,-0.018,-0.0402,0.0329,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:blosum lambda=0.3 vs lambda=0,blosum,0.3,-0.0342,-0.0557,0.018,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:blosum lambda=1 vs lambda=0,blosum,1.0,-0.0213,-0.0497,0.0258,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+single:blosum lambda=3 vs lambda=0,blosum,3.0,-0.0256,-0.049,0.0235,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"

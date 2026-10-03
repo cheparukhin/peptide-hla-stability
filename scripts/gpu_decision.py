@@ -66,7 +66,7 @@ MEM_PER_GIB_S = 0.00000222
 # 9.89 GB, so 32 GiB is roughly 3x more than Boltz touches -- but 8 GiB would
 # have OOMed, which is why this is measured rather than guessed.
 WORKER_CORES = 4
-WORKER_GIB = 32
+WORKER_GIB = 16
 
 
 def host_per_s(cores: float = WORKER_CORES, gib: float = WORKER_GIB) -> float:

@@ -209,11 +209,27 @@ def test_worker_shape_matches_the_budget_assumption():
 # Cost model
 # --------------------------------------------------------------------------
 def test_published_rates_reproduce_the_plan_table():
+    """Our per-second rates must reproduce the plan's published hourly table.
+
+    The plan's table is defined at 4 cores / 32 GiB, so it is checked at that
+    shape explicitly. The module default is 16 GiB -- right-sized from the
+    measured 9.89 GB peak -- which is a separate decision from whether the
+    underlying rate data is correct.
+    """
+    rates = gpu_decision.build_rates(cores=4, gib=32)
     expected = {
         "L40S": 2.40, "A100-40GB": 2.54, "A100-80GB": 2.94, "H100": 4.39,
     }
     for gpu, combined in expected.items():
-        assert abs(gpu_decision.RATES[gpu]["combined_hr"] - combined) < 0.01
+        assert abs(rates[gpu]["combined_hr"] - combined) < 0.01
+
+
+def test_default_worker_shape_is_the_measured_one_not_the_plans():
+    """The plan assumed 32 GiB; measurement said 9.89 GB peak. Defaults must
+    follow the measurement, or a production run silently pays double the host
+    cost -- which matters most on the cheap card we actually chose."""
+    assert gpu_decision.WORKER_GIB == 16
+    assert gpu_decision.WORKER_CORES == 4
 
 
 def _runs(gpu: str, n: int, fold_s: float, warmup_s: float, startup_s: float = 40.0,
@@ -256,7 +272,10 @@ def test_failures_are_charged_to_the_successes():
     )
     assert lossy["success_rate"] == 0.5
     assert lossy["cost_per_success"] > clean["cost_per_success"]
-    assert abs(lossy["cost_per_success"] - 2 * clean["cost_per_success"]) < 1e-6
+    # A 50% success rate must double the cost per success. Compared as a ratio
+    # because cost_per_success is rounded to 4 dp, so differencing two rounded
+    # values carries up to 1e-4 of rounding noise.
+    assert abs(lossy["cost_per_success"] / clean["cost_per_success"] - 2.0) < 0.01
 
 
 def test_cost_scales_with_the_published_rate():
@@ -329,3 +348,77 @@ def test_host_floor_is_a_real_share_of_a_budget_card():
     l4_share = host_hr / gpu_decision.RATES["L4"]["combined_hr"]
     h100_share = host_hr / gpu_decision.RATES["H100"]["combined_hr"]
     assert l4_share > 2 * h100_share
+
+
+# --------------------------------------------------------------------------
+# Harness: the model must stay resident across the timed region
+# --------------------------------------------------------------------------
+# HACKATHON_PLAN.md:206 requires "keep models loaded across complexes to avoid
+# reload overhead". The first harness violated it by spawning a fresh
+# `boltz predict` per complex, putting a Python start, torch import, 6.2 GB
+# weight load and CUDA init inside every timed fold. That was 86% of each
+# measurement and overstated per-complex cost 4.6x ($0.018 against $0.004),
+# and nothing in this suite caught it. These guards are structural because the
+# property is otherwise only observable on a GPU.
+def _fold_batch_source() -> str:
+    src = (REPO / "modal_app" / "boltz_bench.py").read_text()
+    assert "def fold_batch(" in src
+    return src.split("def fold_batch(", 1)[1].split("\n@app.function", 1)[0]
+
+
+def test_boltz_is_handed_the_input_directory_not_one_yaml():
+    """One process over a directory of YAMLs is what loads the weights once.
+
+    A per-complex invocation would pass a single YAML path instead, which is
+    the shape Modal's published single-input example uses and the shape that
+    reintroduces the bug.
+    """
+    body = _fold_batch_source()
+    assert '"boltz", "predict", str(work)' in body, (
+        "boltz must be invoked once over the shared input directory"
+    )
+    assert "str(yaml_path)" not in body, (
+        "passing a per-complex YAML path means weights reload every fold"
+    )
+
+
+def test_fold_batch_reports_amortisable_load_overhead():
+    """The weight load has to be measured separately so it can be amortised.
+
+    Reporting it as part of each fold is what made the first sweep wrong; the
+    cost model divides this over --per-container complexes instead.
+    """
+    body = _fold_batch_source()
+    assert "load_plus_first_s" in body
+    assert "stdout_tail" in body, (
+        "boltz's own stdout carries the per-stage breakdown; discarding it on "
+        "success made the overhead unrecoverable without a re-run"
+    )
+
+
+def test_completion_probe_recovers_per_complex_timings():
+    src = (REPO / "modal_app" / "boltz_bench.py").read_text()
+    assert "class _CompletionProbe" in src, (
+        "batching into one process collapses the batch into a single wall "
+        "time; per-complex timings come from watching outputs land"
+    )
+
+
+def test_warmup_overhead_cannot_swamp_the_steady_state_figure():
+    """A realistic load-vs-fold ratio must not land in the per-complex cost.
+
+    Measured on A10: 57.9 s load + first fold against 9.6 s steady. Amortised
+    over 100 complexes that is ~0.5 s, so the billed figure must stay near the
+    steady fold rather than drifting toward the warm-up.
+    """
+    runs = [
+        {"gpu": "A10", "ok": "True", "is_warmup": "True",
+         "billed_s": "57.9", "fold_s": "57.9", "startup_s": "0.0", "peak_mem_gb": "8.4"},
+    ] + [
+        {"gpu": "A10", "ok": "True", "is_warmup": "False",
+         "billed_s": "9.6", "fold_s": "9.6", "startup_s": "0.0", "peak_mem_gb": "8.4"}
+        for _ in range(7)
+    ]
+    row = gpu_decision.summarize("A10", runs, per_container=100)
+    assert row["median_s"] == 9.6
+    assert 9.6 <= row["billed_per_complex_s"] < 11.0, row["billed_per_complex_s"]
