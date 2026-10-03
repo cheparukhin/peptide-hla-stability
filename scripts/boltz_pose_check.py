@@ -42,6 +42,10 @@ OUT = REPO / "reports" / "boltz_pose_check.csv"
 
 GOOD_RMSD = 2.0
 
+# CLAUDE.md gates a batch GPU job on "a passing end-to-end pilot on 3-5
+# examples", so three scored complexes is the floor.
+MIN_PILOT = 3
+
 THREE_TO_ONE = {
     "ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q",
     "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K",
@@ -275,8 +279,19 @@ def main() -> None:
             f"{r['peptide_ca_rmsd']:9.2f} {r['peptide_max_dev']:6.2f} {verdict:>9}"
         )
 
+    # "Not folded" is not "failed". A cost-reduced pilot deliberately folds a
+    # subset, and counting the unfolded rows as failures would block the gate
+    # on complexes nobody ran.
     scored = [r for r in results if r.get("status") == "ok"]
-    print(f"\n{good}/{len(results)} in groove at <= {GOOD_RMSD} A peptide CA RMSD")
+    not_run = [r for r in results if r.get("status") == "no predicted mmCIF found"]
+    broken = [
+        r for r in results
+        if r.get("status") not in ("ok", "no predicted mmCIF found")
+    ]
+    print(f"\n{good}/{len(scored)} folded complexes in groove at <= {GOOD_RMSD} A peptide CA RMSD")
+    if not_run:
+        print(f"{len(not_run)} not folded (skipped, not failed): "
+              + ", ".join(r["complex_id"] for r in not_run))
     if scored:
         vals = [r["peptide_ca_rmsd"] for r in scored]
         print(f"peptide CA RMSD: min {min(vals):.2f}, median "
@@ -285,13 +300,31 @@ def main() -> None:
         for r in scored:
             print(f"  {r['complex_id']:22} {r['per_position']}")
 
-    if len(scored) < len(results) or good < len(results):
+    # CLAUDE.md's gate: a passing end-to-end pilot on 3-5 examples. So the bar
+    # is at least MIN_PILOT scored complexes, every one of them in the groove,
+    # and nothing that errored while being checked.
+    if broken:
+        print("\nPILOT NOT CLEAN -- these could not be scored:")
+        for r in broken:
+            print(f"  {r['complex_id']}: {r.get('status')}")
+        sys.exit(1)
+    if good < len(scored):
         print(
-            "\nPILOT NOT CLEAN. CLAUDE.md gates the batch job on a passing "
-            "end-to-end pilot -- resolve these before running ::benchmark."
+            f"\nPILOT NOT CLEAN -- {len(scored) - good} folded pose(s) sit outside "
+            f"the groove at > {GOOD_RMSD} A. Resolve before running ::benchmark."
         )
         sys.exit(1)
-    print("\nPilot poses check out. The batch gate is clear.")
+    if len(scored) < MIN_PILOT:
+        print(
+            f"\nPilot poses all check out, but only {len(scored)} complexes were "
+            f"folded. CLAUDE.md's gate wants at least {MIN_PILOT} -- fold more "
+            "before the batch job."
+        )
+        sys.exit(1)
+    print(
+        f"\nPilot poses check out: {good}/{len(scored)} in groove. "
+        "The batch gate is clear."
+    )
 
 
 if __name__ == "__main__":

@@ -244,6 +244,67 @@ One caution: modal.com/pricing carries a *second* CPU/memory table for Sandboxes
 and Notebooks at roughly 3× the Function rates. The figures above are the
 Function rates, which is what `@app.function` bills at.
 
+## Measured: the pilot passed, and it reframes the whole decision
+
+Run 2026-10-03, 3 complexes on L40S, MSA arm, `--diffusion_samples 1`,
+`--write_full_pae`. Cost about **$0.20**.
+
+| complex | fold | peak GPU mem | ipTM | PAE | peptide CA RMSD |
+| --- | ---: | ---: | ---: | :---: | ---: |
+| A\*11:01 / KTFPPTEPK | 168.1 s *(warm-up)* | 8.59 GB | 0.982 | yes | **0.39 Å** |
+| A\*02:01 / LLWNGPMAV | 43.4 s | 8.59 GB | 0.993 | yes | **0.13 Å** |
+| B\*15:01 / ILGPPGSVY | 43.8 s | 8.59 GB | 0.990 | yes | **0.42 Å** |
+
+**The register check passes decisively.** Peptide CA RMSD against crystal, after
+superposing on the HLA domain only, is 0.13–0.42 Å — essentially
+crystallographic agreement. Per-position deviation never exceeds 0.85 Å, and
+the P2/PΩ anchors are the tightest positions. The predicted peptides sit in the
+canonical pose, in the right register, so geometry features extracted from these
+structures are measuring the complex and not a docking artefact.
+
+Also settled: **`msa: empty` on the peptide coexists fine with a precomputed
+`.a3m` on the HLA chain** — the combination the Boltz docs never show. No
+paired-CSV fallback needed.
+
+### Peak memory is 8.59 GB, and that changes the candidate set
+
+Every GPU in the plan's table has **4.7× to 9.3× headroom**. Two consequences:
+
+- **A100-80GB is strictly dominated by A100-40GB.** Same silicon, 15% higher
+  rate, and the extra 40 GB buys nothing at 8.6 GB of demand. It leaves the
+  sweep on measurement, not assumption.
+- **The plan's candidate set was chosen without knowing this.** Cards the plan
+  never considered now fit easily: L4 (24 GB), A10 (24 GB), even T4 (16 GB).
+  Whether they are *cheaper per complex* is a different question — see below.
+
+### Budget is not the binding constraint
+
+Projected from the measured steady-state 43.6 s/complex and the 124.5 s
+per-container overhead (weight load plus CUDA kernel compilation), at 100
+complexes per container:
+
+| | L40S |
+| --- | ---: |
+| Billed per complex | 44.8 s |
+| Cost per complex | $0.0298 |
+| **2,000-complex panel** | **$59.7** — 18% of the $330 ceiling |
+| Capacity at $330 | ~11,000 complexes |
+| Wall-clock at 10 workers | 2.5 h |
+
+**L40S alone already fits both the budget and the deadline with room to spare.**
+That reframes the GPU question: it is no longer "can we afford to fold 2,000
+complexes" but "is anything meaningfully cheaper or faster than the baseline
+card". Two specific open questions:
+
+- **H100 needs to be >1.83× faster than L40S to also be cheaper per complex**
+  ($4.3936 / $2.3956). Plausible but unmeasured.
+- **Cheap cards are less attractive than their GPU rate suggests**, because the
+  host floor (4 cores + 32 GiB = $0.444/hr) is a large share of a budget card's
+  total. L4 only wins if it is under ~1.9× slower than L40S. Also worth noting:
+  that host request is itself tunable — 8.6 GB of GPU demand does not obviously
+  need 32 GiB of host RAM, and dropping to 2 cores / 8 GiB would cut the L40S
+  combined rate from $2.396 to $2.109/hr.
+
 ## Open question before launch
 
 **Which Modal plan is the workspace on?** Starter caps GPU concurrency at **10
@@ -259,12 +320,16 @@ dollars.
 | Panels selected | done |
 | Rates rechecked against published pricing | done |
 | Cost/decision model | done, unit-checked on synthetic timings |
-| MSA precompute function | written, unrun |
-| Modal benchmark app | written, unrun |
-| Pilot run (5 complexes, both MSA arms) | **blocked: needs Modal credentials** |
-| Hardware benchmark (24 × 4 GPUs) | blocked on pilot |
+| MSA precompute (8 alignments, verified) | **done**, ~$0.01 |
+| Weights cached to Volume (6.204 GB) | **done** |
+| Pilot: 3 complexes on L40S | **done**, 3/3, ~$0.20 |
+| Register check vs crystal | **done**, 0.13–0.42 Å peptide CA RMSD |
+| Hardware sweep across GPUs | pending scope decision |
 
-**Nothing has been folded and no GPU has been benchmarked.** Every runtime,
-memory and cost figure this pipeline will produce is still unmeasured. The pilot
-gate in `CLAUDE.md` — "no batch GPU job without a passing end-to-end pilot on
-3–5 examples" — has not been cleared.
+The `CLAUDE.md` gate — "no batch GPU job without a passing end-to-end pilot on
+3–5 examples" — **is cleared**: 3 complexes folded end to end, all three in the
+groove, PAE written, chain and residue mapping verified.
+
+Still unmeasured: **every GPU other than L40S.** The A100-40GB, A100-80GB and
+H100 figures in the rate table are published prices, not measured throughput,
+so no cross-GPU claim can be made yet. Total spend to date is about **$0.21**.
