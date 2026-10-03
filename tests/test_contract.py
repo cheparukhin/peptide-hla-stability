@@ -24,13 +24,18 @@ from pepstab.data import (
 )
 from pepstab.evaluation import (
     MIN_ROWS_BY_SPLIT,
+    UNRANKED_CONTRIBUTION,
+    describe_delta,
     eligible_alleles,
+    panel_spearman,
     paired_cluster_bootstrap,
     per_allele_spearman,
     precision_at_k,
+    rankable_alleles,
     score,
     score_by_distance,
 )
+from scripts.evaluate import read_predictions
 from pepstab.splits import (
     HAMMING_THRESHOLD,
     assign_clusters,
@@ -178,14 +183,54 @@ def test_reversed_predictions_score_minus_one():
     assert per_allele_spearman(allele, y, -y, ["A"])["A"] == pytest.approx(-1.0)
 
 
-def test_constant_prediction_gives_undefined_not_zero():
+def test_constant_prediction_is_undefined_per_allele_but_scores_zero():
+    """Per-allele reporting stays honest; the panel aggregate credits chance.
+
+    The per-allele table must say "undefined", because nothing was measured. The
+    panel median must still produce a number, or the primary metric would be
+    unavailable for exactly the models it should rank last.
+    """
     allele = pd.Series(["A"] * 30)
     y = np.linspace(0, 3, 30)
     rho = per_allele_spearman(allele, y, np.ones(30), ["A"])
     assert np.isnan(rho["A"])
     s = score("const", allele, y, np.ones(30), ["A"])
-    assert np.isnan(s.median_spearman)
-    assert np.isnan(s.pooled_spearman)
+    assert s.median_spearman == pytest.approx(UNRANKED_CONTRIBUTION)
+    assert s.n_alleles_unranked == 1
+    assert np.isnan(s.pooled_spearman)  # a pooled correlation really is undefined
+
+
+def test_partially_constant_predictions_do_not_shrink_the_panel():
+    """A model cannot raise its median by going constant on the hard alleles.
+
+    Perfect on A, constant on B and C. Dropping the undefined alleles would
+    report 1.0 on a panel of three; the panel is fixed, so the answer is the
+    median of [1, 0, 0].
+    """
+    n = 25
+    allele = pd.Series(["A"] * n + ["B"] * n + ["C"] * n)
+    y = np.tile(np.linspace(0, 3, n), 3)
+    pred = np.concatenate([np.linspace(0, 3, n), np.zeros(n), np.zeros(n)])
+    s = score("partial", allele, y, pred, ["A", "B", "C"])
+    assert s.median_spearman == pytest.approx(0.0)
+    assert s.n_alleles_eligible == 3
+    assert s.n_alleles_scored == 3
+    assert s.n_alleles_unranked == 2
+
+
+def test_partially_constant_model_cannot_beat_a_full_ranker():
+    """The bootstrap must not read abstention on hard alleles as an improvement."""
+    n = 25
+    allele = pd.Series(np.repeat(["A", "B", "C"], n))
+    clusters = pd.Series(np.tile(np.arange(n), 3))
+    y = np.tile(np.linspace(0, 3, n), 3)
+    full = y.copy()                                    # ranks all three
+    partial = np.concatenate([np.linspace(0, 3, n), np.zeros(n), np.zeros(n)])
+    r = paired_cluster_bootstrap(clusters, allele, y, full, partial,
+                                 ["A", "B", "C"], n_boot=100)
+    assert not r["undefined"]
+    assert r["delta_median_spearman"] < 0
+    assert r["ci95"][1] < 0  # conclusively worse, not a silent win
 
 
 def test_precision_at_k_on_a_constant_predictor_equals_base_rate():
@@ -210,14 +255,47 @@ def test_precision_at_k_rewards_a_correct_ranking():
     assert table.loc["A", "precision_at_k"] == pytest.approx(table.loc["A", "ceiling"])
 
 
-def test_paired_bootstrap_is_undefined_against_a_constant_baseline():
+def test_paired_bootstrap_compares_against_a_constant_baseline():
+    """A constant baseline is scorable at chance, so the comparison is defined.
+
+    Previously this returned "undefined" and sent the reader to MAE, which made
+    a per-allele-mean baseline -- a meaningful reference -- impossible to compare
+    on the primary metric.
+    """
     allele = pd.Series(["A"] * 40)
     clusters = pd.Series(np.arange(40))
     y = np.linspace(0, 3, 40)
     r = paired_cluster_bootstrap(clusters, allele, y, np.ones(40), y, ["A"],
-                                 n_boot=20)
+                                 n_boot=50)
+    assert r["undefined"] is False
+    assert r["delta_median_spearman"] == pytest.approx(1.0)
+    assert r["conclusive"]
+
+
+def test_paired_bootstrap_is_undefined_when_no_allele_has_label_spread():
+    """The only remaining undefined case, and it hits both models alike."""
+    allele = pd.Series(["A"] * 40)
+    clusters = pd.Series(np.arange(40))
+    y = np.zeros(40)  # every label at the floor: nothing to rank
+    r = paired_cluster_bootstrap(clusters, allele, y, np.ones(40),
+                                 np.linspace(0, 1, 40), ["A"], n_boot=20)
     assert r["undefined"] is True
     assert not r["conclusive"]
+
+
+def test_verdict_distinguishes_a_straddling_ci_from_one_below_the_bar():
+    """A CI that excludes 0 but straddles 0.05 leaves the size unresolved."""
+    straddles = describe_delta({"ci95": (0.0215, 0.0863),
+                               "delta_median_spearman": 0.0568})
+    assert "unresolved" in straddles
+    below = describe_delta({"ci95": (0.01, 0.04), "delta_median_spearman": 0.03})
+    assert "rules out" in below and "unresolved" not in below
+    meets = describe_delta({"ci95": (0.06, 0.10), "delta_median_spearman": 0.08})
+    assert "meets" in meets
+    worse = describe_delta({"ci95": (-0.20, -0.05), "delta_median_spearman": -0.1})
+    assert "worse" in worse
+    crosses = describe_delta({"ci95": (-0.01, 0.09), "delta_median_spearman": 0.02})
+    assert "inconclusive" in crosses
 
 
 def test_paired_bootstrap_detects_a_real_improvement():
@@ -284,3 +362,174 @@ def test_distance_strata_share_one_allele_set_on_test(split_df):
     assert len(table) == 2
     assert table.n_alleles.nunique() == 1
     assert table.n_alleles.iloc[0] >= 60
+
+
+# --- prediction files -----------------------------------------------------
+
+def _truth(n: int = 3) -> pd.DataFrame:
+    return pd.DataFrame({"pair_id": list(range(n))})
+
+
+def test_read_predictions_rejects_non_finite_values(tmp_path):
+    """inf passes a NaN check, scores a perfect Spearman and makes MAE infinite."""
+    path = tmp_path / "inf.csv"
+    pd.DataFrame({"pair_id": [0, 1, 2],
+                  "y_pred": [0.0, 1.0, np.inf]}).to_csv(path, index=False)
+    with pytest.raises(SystemExit, match="NaN or inf"):
+        read_predictions(path, _truth())
+
+
+def test_read_predictions_rejects_non_numeric_values(tmp_path):
+    path = tmp_path / "text.csv"
+    pd.DataFrame({"pair_id": [0, 1, 2],
+                  "y_pred": [0.0, "not-a-number", 2.0]}).to_csv(path, index=False)
+    with pytest.raises(SystemExit, match="non-numeric"):
+        read_predictions(path, _truth())
+
+
+def test_read_predictions_accepts_finite_values(tmp_path):
+    path = tmp_path / "ok.csv"
+    pd.DataFrame({"pair_id": [0, 1, 2],
+                  "y_pred": [0.0, 1.5, -0.25]}).to_csv(path, index=False)
+    out = read_predictions(path, _truth())
+    assert np.isfinite(out.to_numpy()).all()
+    assert out.tolist() == [0.0, 1.5, -0.25]
+
+
+# --- the unranked convention, narrowly ------------------------------------
+
+def test_degenerate_allele_leaves_the_panel_instead_of_scoring_zero():
+    """Three cases must stay distinct, and only one of them scores 0.
+
+    A: rankable and ranked. B: no label spread on these rows -- degenerate, so it
+    leaves the panel rather than being credited 0, because the rows could not
+    test it. C: label spread but constant predictions -- the model failed to rank
+    it, which is what UNRANKED_CONTRIBUTION is for.
+    """
+    n = 20
+    allele = pd.Series(["A"] * n + ["B"] * n + ["C"] * n)
+    y = np.concatenate([np.linspace(0, 3, n), np.zeros(n), np.linspace(0, 3, n)])
+    pred = np.concatenate([np.linspace(0, 3, n), np.linspace(0, 1, n), np.zeros(n)])
+
+    rankable = rankable_alleles(allele, y, ["A", "B", "C"])
+    assert rankable == ["A", "C"]  # B dropped: nothing to rank
+
+    panel = panel_spearman(per_allele_spearman(allele, y, pred, ["A", "B", "C"]),
+                           rankable)
+    assert "B" not in panel.index
+    assert panel["A"] == pytest.approx(1.0)
+    assert panel["C"] == pytest.approx(UNRANKED_CONTRIBUTION)
+
+
+def test_reversed_ranking_scores_below_an_unranked_one():
+    """The ordering that makes 0 the right choice for 'no information'."""
+    n = 30
+    allele = pd.Series(["A"] * n)
+    y = np.linspace(0, 3, n)
+    reversed_ = score("rev", allele, y, -y, ["A"]).median_spearman
+    constant = score("const", allele, y, np.ones(n), ["A"]).median_spearman
+    skilled = score("good", allele, y, y, ["A"]).median_spearman
+    assert reversed_ < constant < skilled
+    assert constant == pytest.approx(UNRANKED_CONTRIBUTION)
+
+
+def test_per_allele_frame_flags_unranked_without_imputing_spearman():
+    """The table must carry the NaN and the convention side by side."""
+    n = 25
+    allele = pd.Series(["A"] * n + ["B"] * n)
+    y = np.tile(np.linspace(0, 3, n), 2)
+    pred = np.concatenate([np.linspace(0, 3, n), np.zeros(n)])
+    frame = score("partial", allele, y, pred, ["A", "B"]).per_allele_frame()
+    assert np.isnan(frame.loc["B", "spearman"])        # never imputed
+    assert bool(frame.loc["B", "unranked"]) is True
+    assert frame.loc["B", "scored"] == pytest.approx(UNRANKED_CONTRIBUTION)
+    assert bool(frame.loc["A", "unranked"]) is False
+    assert frame.loc["A", "scored"] == pytest.approx(1.0)
+
+
+def test_read_predictions_rejects_nan_as_invalid(tmp_path):
+    """NaN is invalid input, not a scoreable constant."""
+    path = tmp_path / "nan.csv"
+    pd.DataFrame({"pair_id": [0, 1, 2],
+                  "y_pred": [0.0, np.nan, 2.0]}).to_csv(path, index=False)
+    with pytest.raises(SystemExit, match="NaN or inf"):
+        read_predictions(path, _truth())
+
+
+def test_bootstrap_reports_degenerate_draws():
+    rng = np.random.default_rng(3)
+    allele = pd.Series(np.repeat([f"A{i}" for i in range(6)], 40))
+    clusters = pd.Series(np.tile(np.arange(40), 6))
+    y = rng.normal(size=240)
+    r = paired_cluster_bootstrap(clusters, allele, y, y + rng.normal(0, 2, 240),
+                                 y + rng.normal(0, 0.3, 240),
+                                 sorted(allele.unique()), n_boot=100)
+    assert r["panel_size_full"] == 6
+    assert r["n_resamples_with_dropped_alleles"] == 0  # continuous labels
+    assert r["n_degenerate_resamples"] == 0
+
+
+# --- invalid predictions reach no metric ----------------------------------
+
+@pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf],
+                         ids=["nan", "+inf", "-inf"])
+def test_score_rejects_non_finite_predictions(bad_value):
+    """Direct calls must not rely on the CLI loader for validation.
+
+    Unchecked, these corrupt the primary metric in opposite directions: +inf
+    outranks every real prediction and pulls Spearman to 1.0, while NaN makes the
+    allele look constant and is absorbed as an unranked 0.
+    """
+    n = 30
+    allele = pd.Series(["A"] * n)
+    y = np.linspace(0, 3, n)
+    pred = y.copy()
+    pred[-1] = bad_value
+    with pytest.raises(ValueError, match="invalid value"):
+        score("bad", allele, y, pred, ["A"])
+
+
+@pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf],
+                         ids=["nan", "+inf", "-inf"])
+def test_bootstrap_rejects_non_finite_predictions_in_either_arm(bad_value):
+    """Both arms, and before resampling starts."""
+    n = 40
+    allele = pd.Series(["A"] * n)
+    clusters = pd.Series(np.arange(n))
+    y = np.linspace(0, 3, n)
+    good = y.copy()
+    bad = y.copy()
+    bad[0] = bad_value
+    with pytest.raises(ValueError, match="comparison predictions"):
+        paired_cluster_bootstrap(clusters, allele, y, good, bad, ["A"], n_boot=10)
+    with pytest.raises(ValueError, match="baseline predictions"):
+        paired_cluster_bootstrap(clusters, allele, y, bad, good, ["A"], n_boot=10)
+
+
+def test_score_by_distance_rejects_non_finite_predictions(split_df):
+    val = split_df[split_df.split == "val"]
+    pred = val.y_log1p.to_numpy().copy()
+    pred[0] = np.inf
+    with pytest.raises(ValueError, match="invalid value"):
+        score_by_distance("bad", val.dist_to_train, val.allele, val.y_log1p,
+                          pred, split="val")
+
+
+def test_non_finite_labels_are_rejected_too():
+    """Same silent-failure class; the frozen data is finite, misuse is not."""
+    n = 30
+    allele = pd.Series(["A"] * n)
+    y = np.linspace(0, 3, n)
+    y[-1] = np.nan
+    with pytest.raises(ValueError, match="labels"):
+        score("bad", allele, y, np.linspace(0, 3, n), ["A"])
+
+
+def test_validation_does_not_reject_a_finite_constant_prediction():
+    """The agreed convention survives: constant is valid and scores 0."""
+    n = 30
+    allele = pd.Series(["A"] * n)
+    y = np.linspace(0, 3, n)
+    s = score("const", allele, y, np.ones(n), ["A"])
+    assert s.median_spearman == pytest.approx(UNRANKED_CONTRIBUTION)
+    assert np.isnan(s.per_allele["A"])  # mathematical value still NaN

@@ -230,7 +230,13 @@ def section_labels(out: list[str], df: pd.DataFrame) -> None:
            "the floor to exactly 0. Report raw hours alongside.")
     h(out, "- **Rank metrics are the primary ones.** Spearman with average ranks "
            "handles the large tied block at the floor without pretending the ties "
-           "are ordered. Treat MAE at the floor as a lower bound on true error.")
+           "are ordered. MAE at the floor measures error against the *recorded* "
+           "censored label, not against the latent half-life, and the bias runs "
+           "**both ways**: for a latent 0.05 h recorded as 0, a 0.10 h "
+           "prediction is charged 0.095 on the `log1p` scale against the "
+           "recorded 0 but only 0.047 against the latent value, while a 0.01 h "
+           "prediction is charged 0.010 instead of 0.039. It is neither an upper "
+           "nor a lower bound on true error.")
     h(out, "- **Do not read a model's sub-floor predictions as measurements.** "
            "We cannot distinguish 0.02 h from 0.08 h in this data.")
     h(out, "- A censored-regression (Tobit-style) loss is the principled "

@@ -22,6 +22,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -29,8 +30,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from pepstab.data import load_with_splits  # noqa: E402
 from pepstab.evaluation import (  # noqa: E402
     MIN_ROWS_BY_SPLIT,
-    MIN_WORTHWHILE_DELTA_SPEARMAN,
     N_BOOTSTRAP,
+    UNRANKED_CONTRIBUTION,
+    describe_delta,
     eligible_alleles,
     paired_cluster_bootstrap,
     score,
@@ -46,6 +48,34 @@ def read_predictions(path: Path, truth: pd.DataFrame) -> pd.Series:
         raise SystemExit(f"{path}: missing column(s) {sorted(missing)}")
     if preds.pair_id.duplicated().any():
         raise SystemExit(f"{path}: duplicate pair_id rows")
+
+    # Must be numeric before anything else: a non-numeric column survives the
+    # merge as object dtype and only fails much later, inside the metrics.
+    y = pd.to_numeric(preds.y_pred, errors="coerce")
+    bad = y.isna() & preds.y_pred.notna()
+    if bad.any():
+        where = ", ".join(str(i) for i in preds.index[bad][:5])
+        raise SystemExit(
+            f"{path}: {int(bad.sum()):,} non-numeric y_pred value(s), first at "
+            f"row(s) {where}. Predictions must be numbers on the log1p scale."
+        )
+    # NaN and infinite predictions are invalid, not scoreable. There is no
+    # scoring convention for either -- unlike a constant prediction, which is
+    # valid and scores UNRANKED_CONTRIBUTION.
+    #
+    # pepstab.evaluation.validate_finite() is the real guard and catches these
+    # whoever calls the scoring functions. This check is kept because it runs per
+    # file and can name the offending CSV and row numbers, which a caller fixing
+    # a prediction file actually needs.
+    nonfinite = ~np.isfinite(y.to_numpy(dtype=float))
+    if nonfinite.any():
+        where = ", ".join(str(i) for i in preds.index[nonfinite][:5])
+        raise SystemExit(
+            f"{path}: {int(nonfinite.sum()):,} invalid y_pred value(s) "
+            f"(NaN or inf), first at row(s) {where}. Predictions must be "
+            "finite numbers on the log1p scale."
+        )
+    preds = preds.assign(y_pred=y)
 
     merged = truth[["pair_id"]].merge(preds, on="pair_id", how="left")
     if merged.y_pred.isna().any():
@@ -101,12 +131,12 @@ def main() -> int:
     if args.per_allele:
         for name, _, s in scored:
             print(f"\n--- {name}: per-allele Spearman ---")
-            detail = s.precision_table.join(s.per_allele)
-            print(detail[["n", "spearman", "precision_at_k", "base_rate",
-                          "ceiling"]].to_string())
+            print(s.per_allele_frame().to_string())
             undefined = s.per_allele[s.per_allele.isna()]
             if len(undefined):
-                print(f"  undefined for: {', '.join(undefined.index)}")
+                print(f"  unranked -- Spearman undefined (constant predictions), "
+                      f"scored {UNRANKED_CONTRIBUTION} by the predeclared rule: "
+                      f"{', '.join(undefined.index)}")
 
     if args.by_distance:
         print("\nby distance from each held-out peptide to its nearest training "
@@ -128,25 +158,20 @@ def main() -> int:
             r = paired_cluster_bootstrap(truth.cluster_id, truth.allele,
                                          truth.y_log1p, base_pred, y_pred,
                                          alleles, n_boot=args.n_boot)
-            lo, hi = r["ci95"]
             if r.get("undefined"):
-                print(f"  {name:28s} undefined -- {r['reason']}. Compare the "
-                      "primary metric against a model that ranks within allele; "
-                      "use MAE for constant references.")
+                print(f"  {name:28s} {describe_delta(r)}")
                 continue
-            if r["meets_min_worthwhile"]:
-                verdict = f"improvement, meets the {MIN_WORTHWHILE_DELTA_SPEARMAN} bar"
-            elif r["rules_out_min_worthwhile"] and r["conclusive"] and hi < 0:
-                verdict = "worse"
-            elif r["rules_out_min_worthwhile"]:
-                verdict = (f"strong negative: rules out a "
-                           f"{MIN_WORTHWHILE_DELTA_SPEARMAN} gain")
-            elif r["conclusive"]:
-                verdict = f"real but below the {MIN_WORTHWHILE_DELTA_SPEARMAN} bar"
-            else:
-                verdict = "inconclusive (CI crosses 0) -- not a negative result"
+            lo, hi = r["ci95"]
             print(f"  {name:28s} delta={r['delta_median_spearman']:+.4f}  "
-                  f"95% CI [{lo:+.4f}, {hi:+.4f}]  {verdict}")
+                  f"95% CI [{lo:+.4f}, {hi:+.4f}]  {describe_delta(r)}")
+            dropped = r["n_resamples_with_dropped_alleles"]
+            if dropped or r["n_degenerate_resamples"]:
+                print(f"    degenerate draws: {dropped:,}/{r['n_boot']:,} "
+                      f"resamples lost >=1 of the {r['panel_size_full']} alleles "
+                      f"to missing label spread (dropped from that resample's "
+                      f"panel, not scored 0); resamples that could score "
+                      f"nothing at all: {r['n_degenerate_resamples']:,}, "
+                      "excluded from the CI.")
 
     return 0
 

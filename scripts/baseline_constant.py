@@ -4,10 +4,11 @@
 
 Writes ``preds/global_mean.csv`` and ``preds/allele_mean.csv``. These are the
 floor for MAE and pooled metrics -- any real model must beat them. They are
-deliberately constant within an allele, so their *per-allele* Spearman is
-undefined: they carry no within-allele ranking information at all. That is the
-point, and it is also a check that `scripts/evaluate.py` reports undefined
-correlations rather than scoring them as 0.
+deliberately constant within an allele, so they carry no within-allele ranking
+information: every per-allele Spearman is undefined and the panel median is
+exactly 0, chance level. That is the point, and it makes them the reference the
+primary metric is measured against (see EVALUATION.md, "Alleles the model cannot
+rank").
 
 Allele means are taken from the training split only.
 """
