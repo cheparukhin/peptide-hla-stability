@@ -1,0 +1,58 @@
+{
+  "atlas_rows_total": 487343,
+  "atlas_9mers_on_stability_alleles": 151170,
+  "shared_alleles": 54,
+  "stability_rows_on_shared_alleles": 20370,
+  "eluted": {
+    "n": 140,
+    "median_thalf_h": 7.9,
+    "mean_thalf_h": 12.99,
+    "frac_censored": 0.021,
+    "frac_ge_1h": 0.921
+  },
+  "not_eluted": {
+    "n": 20230,
+    "median_thalf_h": 1.1,
+    "mean_thalf_h": 5.36,
+    "frac_censored": 0.212,
+    "frac_ge_1h": 0.52
+  },
+  "mannwhitney_u": 2210237.0,
+  "mannwhitney_p_greater": 5.977046439661706e-31,
+  "common_language_effect": 0.78,
+  "per_allele_min_eluted": 3,
+  "per_allele_alleles_tested": 18,
+  "per_allele_eluted_median_higher": 14,
+  "counterexamples": [
+    {
+      "allele_std": "HLA-B*51:01",
+      "peptide": "FPEHIFPAL",
+      "thalf_hours": 0.0
+    },
+    {
+      "allele_std": "HLA-B*51:01",
+      "peptide": "SPSSPGSSL",
+      "thalf_hours": 0.0
+    },
+    {
+      "allele_std": "HLA-B*08:01",
+      "peptide": "FPEHIFPAL",
+      "thalf_hours": 0.0
+    },
+    {
+      "allele_std": "HLA-B*08:01",
+      "peptide": "FMKPGKVVL",
+      "thalf_hours": 0.4
+    },
+    {
+      "allele_std": "HLA-B*39:01",
+      "peptide": "YHEDIHTYL",
+      "thalf_hours": 0.4
+    },
+    {
+      "allele_std": "HLA-B*08:01",
+      "peptide": "DAYRRIHSL",
+      "thalf_hours": 0.4
+    }
+  ]
+}

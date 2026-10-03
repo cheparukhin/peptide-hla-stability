@@ -45,18 +45,28 @@ dynamic range (99.8% of Rasmussen rows fall at or below 97.1 h). The
 longest-lived is `HLA-A*11:01 / ATIGTAMYK` at 97.1 h ([6JOZ](https://www.rcsb.org/structure/6JOZ),
 1.35 Å); the most-structured is `HLA-A*02:01 / SLLMWITQV` — NY-ESO-1 — with 13
 entries; A\*02:01 accounts for 17 of the 32. Resolution runs 1.1–3.84 Å, with 20
-of 32 at 2.0 Å or better. **Six were deposited in 2021 or later**, which makes
-them the post-cutoff subset for a recall-versus-prediction test.
+of 32 at 2.0 Å or better.
+
+**Six were deposited in 2021 or later** (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`,
+`7LFZ`), but only one is clearly post-cutoff for all models under consideration:
+`21EX` ("Wild type p53WT-HLA-A2") was deposited 2025-12-10 and **released
+2026-09-09** — under a month ago. It is the only pair that a September 2026
+co-folding run could not have memorised. The other five may or may not post-date
+ESMFold2's training snapshot (undocumented); check the model card before
+claiming them as controls. Stage 4b.2 in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md)
+uses these rows as the pilot gate for both structure arms.
 
 ### Two uses, not just a note
 
-1. **Positive control.** These are complexes with both a measured half-life and
-   an experimental structure. Co-fold them, measure RMSD against the crystal,
-   and ask directly whether structural accuracy predicts stability-prediction
-   error.
+1. **Pilot gate (stage 4a.1 and 4b.2).** These are the complexes used to validate
+   both structure arms before any batch job launches. Co-fold them, measure RMSD
+   against the crystal, and verify the peptide lands in the groove before
+   committing budget to 28,000 folds. See
+   [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stages 4a.1 and 4b.2 for the exit
+   criteria.
 2. **Register check.** Verify the predicted peptide sits in the canonical
    P2/PΩ-anchored conformation *here*, where the answer is known, before
-   trusting threaded structures for the other 99.9%.
+   trusting predicted structures for the other 99.9%.
 
 ### Caveats on the 32
 

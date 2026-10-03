@@ -3,8 +3,8 @@
 | file | rows | alleles | peptides | role | summary |
 | --- | --- | --- | --- | --- | --- |
 | [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) | 28,166 | 75 | 5,633 | raw source, read-only | [summary](rasmussen_et_al_dataset_summary/DATASET_SUMMARY.md) |
-| [`data/c67s_cleanup/rasmussen_no_C67S.csv`](../data/c67s_cleanup/rasmussen_no_C67S.csv) | 27,031 | 72 | 5,633 | **train / eval** | [summary](rasmussen_no_C67S_summary/DATASET_SUMMARY.md) |
-| [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv) | 1,135 | 3 | 663 | held-out stability-floor benchmark | — |
+| [`data/c67s_cleanup/rasmussen_no_C67S.csv`](../data/c67s_cleanup/rasmussen_no_C67S.csv) | 27,031 | 72 | 5,633 | available, not in use this round | [summary](rasmussen_no_C67S_summary/DATASET_SUMMARY.md) |
+| [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv) | 1,135 | 3 | 663 | available, not in use this round | — |
 
 Split assignments for every row of all three files live in
 [`data/splits.csv`](../data/splits.csv) and are documented in
@@ -28,7 +28,18 @@ The two derived files are regenerated with
 concatenating them reproduces the raw CSV row for row. The raw CSV is never
 modified; `(cd data && shasum -a 256 -c SHA256SUMS)` still passes.
 
-## Why the C67S constructs are excluded
+## The C67S constructs: available but kept in training
+
+**Decision:** all 75 alleles, including the three C67S constructs, remain in
+train/val/test. This matches `data/splits.csv` (which distributes all 1,135 C67S
+rows: train 798 / val 122 / test 215) and `EVALUATION.md`'s 67-of-75
+eligible-allele panel. The files below exist for reference but are not the
+canonical training path.
+
+The original rationale for building them follows — it explains why the split
+*exists*, not why it is *used*.
+
+### Why these files were built (historical)
 
 `HLA-B*14:01(C67S)`, `HLA-B*14:02(C67S)` and `HLA-B*39:06(C67S)` — 1,135 rows,
 4.03% of the dataset — are pulled out of train/eval and promoted to a dedicated

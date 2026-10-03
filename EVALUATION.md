@@ -194,6 +194,14 @@ inside `split == "train"`, on a common evaluation set, with a paired CI.
 ## Caveats
 
 - NetMHCstabpan was trained on this dataset — not a held-out comparator.
+- **The published 0.676 PCC is not comparable.** NetMHCstabpan's reported Pearson
+  correlation was computed on data padded with ~1,000 synthetic 0 h peptides per
+  allele (~75,000 easy negatives on top of ~28,000 measured rows). That inflates
+  correlation substantially. Our numbers on measured rows alone will be lower;
+  never quote 0.676 as the bar to beat.
+- **Early stopping.** Rasmussen et al. used the held-out 1/5 fold as both test
+  and early-stopping set, which is mildly optimistic. We use a separate inner
+  validation split. This partly explains why our numbers sit lower.
 - The assay panel was partly selected by predicted binding affinity, limiting
   peptide diversity.
 - No replicates, so no noise ceiling from this file alone.
