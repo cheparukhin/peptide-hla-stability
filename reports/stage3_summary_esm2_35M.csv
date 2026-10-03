@@ -1,0 +1,4 @@
+model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,delta,ci_low,ci_high,verdict
+seq_ensemble_pep_pseudo,2802,68,68,0,0.6904,0.5647,0.7589,0.4733,0.7,0.8014,0.8106,,,,
+esm_alone_esm2_35M,2802,68,68,0,0.3866,0.2305,0.536,0.6447,0.6,0.6563,0.6602,-0.3038,-0.3588,-0.2196,worse: CI entirely below 0
+esm_stacked_esm2_35M,2802,68,68,0,0.5387,0.3777,0.6624,0.5675,0.65,0.7309,0.7366,-0.1517,-0.2045,-0.0887,worse: CI entirely below 0
