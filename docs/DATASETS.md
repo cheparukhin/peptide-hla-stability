@@ -13,7 +13,7 @@ Split assignments for every row of all three files live in
 for why it is kept.
 
 Public binding-affinity measurements for the same 75 alleles — the auxiliary
-labels for stage 3b — are in
+labels for stage 2c — are in
 [`data/data_augmentation_iedb/`](../data/data_augmentation_iedb/) and described
 in [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md). They are not stability data
 and are not part of train/eval; read that document before training on them.

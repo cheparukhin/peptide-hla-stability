@@ -22,7 +22,7 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md) | the public binding-affinity table behind stage 3b — provenance, allele coverage, why the C67S constructs are flagged rather than matched, and the leakage filters to apply before training on it |
+| [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md) | the public binding-affinity table behind stages 2b and 2c — provenance, allele coverage, why the C67S constructs are flagged rather than matched, and the leakage filters to apply before training on it |
 
 ## Structures
 

@@ -9,7 +9,8 @@ records the sources, filters and counts. Regenerate with
 `external/` (93 MB, gitignored) and the output reproduces byte for byte.
 
 This table supports the auxiliary affinity experiment in
-[HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 3b. It carries **affinity**, how
+[HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 2c, and the measured-affinity
+augmentation arm in stage 2b. It carries **affinity**, how
 strongly a peptide binds — not **stability**, how long it stays. The two are
 related but distinct, which is the whole reason the experiment is worth running.
 
@@ -143,10 +144,11 @@ to any val/test peptide:
 | 5 | 13,344 | 63.91% | 3,050 |
 | ≥ 6 | 2,748 | 13.16% | 755 |
 
-Stage 3b of the plan requires excluding anything within one residue of a test
-peptide — that is **177** peptides. Stage 1 groups peptides at Hamming ≤ 3, so
-holding the augmentation to the same standard excludes **558** peptides (2.7%),
-of which 96 are padding-eligible. Either way the cost is small.
+Stages 2b and 2c require excluding any candidate within Hamming ≤ 3 of an
+inner-dev, validation, or test peptide, across all alleles. For the validation/test
+part of this rule, the table above excludes **558** peptides (2.7%), of which 96
+are padding-eligible. Apply the same distance check against the inner stopping
+fold as well; its additional exclusions are not included in those counts.
 
 Augmented peptides are outside the frozen clustering, so `dist_to_train` in
 `splits.csv` does not describe them — these distances are measured here against
