@@ -207,7 +207,7 @@ A **superseded version of that calibration consumed frozen test rows** (3,350 in
 **Work**
 
 - **Probe (~1 hour):** Rasmussen et al. report ~7,600 peptides with both affinity (how strongly the peptide binds) and stability (how long it stays) measurements across 58 allotypes. Add a second prediction head to the sequence baseline for affinity. Train on these dual-labelled peptides only — they're already inside the frozen splits, so no new leakage risk. Compare single-task vs. multi-task validation performance.
-- **Expand (only if probe helps, ~2-3 hours):** Bring in the broader IEDB affinity dataset (~136K measurements, 152 alleles). Before training, verify that no IEDB peptide is within one residue change of any stability test-set peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
+- **Expand (only if probe helps, ~2-3 hours):** Bring in the broader IEDB affinity dataset (~136K measurements, 152 alleles). Before training, verify that no IEDB peptide is within one substitution of any stability test-set peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
 - Report whether auxiliary affinity data helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that's worth reporting — it would mean cheap extra labels substitute for expensive pretrained features on this task.
 
 **Deliverable:** multi-task vs. single-task comparison on the same frozen validation set, with the leakage audit documented.
@@ -222,7 +222,7 @@ A **superseded version of that calibration consumed frozen test rows** (3,350 in
 
 - Use the MHC Motif Atlas class I ligands (`data_classI_all_peptides.txt`, 487,343 rows) as an independent validation set, not training augmentation.
 - Join to the stability dataset on `(allele, peptide)`. Only 140 of 151,170 9-mers on shared alleles overlap — this is a near-disjoint peptide universe, making it a genuine external test rather than circular validation.
-- Score atlas ligands against length- and allele-matched proteome decoys. If the trained model ranks true ligands above decoys, that is transfer to a different assay measuring a different biological event.
+- Score atlas ligands against length- and allele-matched proteome decoys. If the trained model ranks true ligands above decoys, that demonstrates transfer to a different assay measuring a different biological event.
 
 **The finding.** Elution implies high stability probabilistically: among the 140 overlapping pairs, eluted ligands have **~7× higher median half-life** (7.90 h vs 1.10 h), and the fraction with zero measured stability drops **tenfold** (2.1% vs 21.2%). Mann–Whitney p = 6.0 × 10⁻³¹. The effect is not carried by HLA-A\*02:01 — among 18 alleles with ≥3 measured eluted ligands, the eluted median exceeds the non-eluted median in 14, including HLA-A\*01:01 (15.00 vs 1.30 h), HLA-B\*27:05 (5.20 vs 0.80 h), and HLA-A\*02:01 (17.50 vs 3.80 h). Common-language effect size: **0.78** — a random eluted ligand outlasts a random non-eluted peptide 78% of the time.
 
@@ -230,14 +230,14 @@ Six counterexamples have measured half-life <0.5 h, three at exactly zero. `FPEH
 
 **Why not training augmentation.** Four reasons against using the atlas as training data:
 
-1. **Scale mismatch.** 151,170 atlas 9-mers against 28,166 stability measurements. An auxiliary task 5.4× the size of the target dominates training; the result is a presentation model with a stability side-effect.
+1. **Scale mismatch.** 151,170 atlas 9-mers against 28,166 stability measurements. An auxiliary task 5.4× the size of the target dominates training; the result is an antigen-presentation model with a stability side-effect.
 2. **The threshold is unknowable.** The honest encoding of an eluted ligand is "t½ > τ" for some protocol-dependent τ. Nothing in the data determines τ, and conclusions move with whatever value is chosen.
 3. **Confounding.** Elution is confounded with source-protein abundance, proteasomal cleavage, TAP transport and MS ionisation efficiency. Stability is one of several filters, and the data cannot separate them.
 4. **It changes the question.** Adding auxiliary data benefits a small BLOSUM network and a frozen protein language model to different degrees. Any difference measured afterwards is partly about which architecture absorbs mass-spec data, not about whether foundation models encode stability.
 
 **Deliverable:** external validation pass on the trained model, measuring how well it ranks atlas ligands above decoys. The finding and reproducible analysis are in [`elution_stability_finding.md`](elution_stability_finding.md) and [`04_elution_stability_test.py`](04_elution_stability_test.py).
 
-**Why:** a single scoring pass with no retraining tests transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation.
+**Why:** a single scoring pass with no retraining demonstrates transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation.
 
 ### 4a. Structure arm A — ESMFold2
 
@@ -265,7 +265,7 @@ Arm A runs first because it has **no MSA step at all**, so it is producing struc
 **4a.2 — Throughput measurement and the scale decision.** Arm A folds one of two row sets, and the measurement decides which:
 
 - **Option 1 — the full dataset (all 28,166 rows).** Take this if the measured cost per structure fits the arm A budget. It is much the stronger result: arm A then scores on the *same* rows, the *same* frozen splits and the *same* 67-allele panel as the sequence and ESM-2 arms, through the same evaluation call. No subsetting and no caveat about which rows were compared.
-- **Option 2 — the same ~2,000-complex panel as arm B (`data/structural_panel.csv`).** Take this if the full dataset does not fit. Arm A then folds exactly the complexes arm B folds, so ESMFold2 and Boltz-2 are compared structure for structure, with neither model having seen a larger or easier set of rows.
+- **Option 2 — the same ~2,000-complex panel as arm B (`data/structural_panel.csv`).** Take this if the full dataset does not fit the budget. Arm A then folds exactly the complexes arm B folds, so ESMFold2 and Boltz-2 are compared structure for structure, with neither model having seen a larger or easier set of rows.
 
 The cost driver to measure is `num_diffusion_samples` — it defaults to 32 and is roughly linear in runtime. Benchmark at 1 and at 8 before assuming arm A is the cheap arm; at the default it may well cost more per structure than Boltz-2. Decide on measured dollars per successful structure, and predeclare the threshold before measuring so the choice is arithmetic.
 
@@ -318,7 +318,7 @@ Four constraints that otherwise cost hours:
 
 **4b.2 — Smoke pilot on 5 complexes with crystal ground truth (1 GPU, <$5).**
 
-`data/pdb_rasmussen_overlap.csv` holds 32 pairs with both a measured half-life and a deposited structure, 19 of them TCR-free, and 17 of those 19 are in the training split — so a pilot drawn from them touches no held-out data. Proposed set, all training rows, all TCR-free, four alleles that are also on the structural panel so their MSAs get reused:
+`data/pdb_rasmussen_overlap.csv` holds 32 pairs with both a measured half-life and a deposited structure, 19 of them TCR-free, and 17 of those 19 are in the training split — so a pilot drawn from them touches no held-out data. Proposed set — all training rows, all TCR-free, four alleles that are also on the structural panel so their MSAs get reused:
 
 | Allele | Peptide | Half-life | PDB | Resolution (Å) | Released |
 |---|---|---:|---|---:|---|
@@ -328,13 +328,13 @@ Four constraints that otherwise cost hours:
 | `HLA-B*15:01` | ILGPPGSVY | 11.0 h | 1XR9 | 1.79 | 2005 |
 | `HLA-A*02:01` | LLWNGPMAV | 38.2 h | 5N6B | 1.60 | 2017 |
 
-**The first row is a free recall-versus-prediction control.** `21EX` was deposited 2025-12-10 and released **2026-09-09**, after the training cutoff of every model under consideration, and it is the only pair among the 32 clearly post-cutoff for Boltz-2. So compare its peptide RMSD against the pre-2020 rows, which are all memorisable: comparable RMSD means the model is predicting, markedly worse on `21EX` means it was recalling. Report it with the obvious limit — n=1, so it is directional, not a measurement.
+**The first row is a free recall-versus-prediction control.** `21EX` was deposited 2025-12-10 and released **2026-09-09**, after the training cutoff of every model under consideration, and it is the only pair among the 32 clearly post-cutoff for Boltz-2. Compare its peptide RMSD against the pre-2020 rows, which the model could have memorised: comparable RMSD means the model is predicting, markedly worse RMSD on `21EX` means it was recalling. Report it with the obvious limit — n=1, so it is directional, not a measurement.
 
-Six of the 32 are 2021 or later (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`, `7LFZ`). Whether those count as post-cutoff for ESMFold2 depends on its training snapshot; check the model card before claiming it.
+Six of the 32 are 2021 or later (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`, `7LFZ`). Whether those count as post-cutoff for ESMFold2 depends on its training snapshot; check the model card before claiming them as controls.
 
 Exit criteria — **all** must pass before any batch launches:
 
-1. Peptide backbone RMSD to the crystal peptide, after superposing on the HLA domain, inside a predeclared threshold.
+1. Peptide backbone RMSD to the crystal peptide, after superposing on the HLA domain, below a predeclared threshold.
 2. Canonical register: P2 and PΩ seated in the B and F pockets.
 3. **Token-to-chain mapping verified.** The PAE matrix should be 191×191 with indices 0-181 the HLA and 182-190 the peptide. Boltz does not document this boundary — confirm it from the CIF residue order before any code slices the peptide-HLA PAE block.
 4. **`pair_chains_iptm["0"]["1"]` confirmed to be HLA-to-peptide.** Chain index follows YAML entity order, also undocumented.
@@ -353,9 +353,9 @@ These five complexes are the ones *most* likely to have been memorised. The pilo
 
 **4b.4 — Freeze the structural panel (CPU; labels never consulted).**
 
-Selected from `data/splits.csv` and allele row counts alone — wide and proportional, ~2,000 complexes across the top 6 alleles, preserving 70/10/20 within each allele.
+Selected from `data/splits.csv` and allele row counts alone — spread across the top 6 alleles proportionally, ~2,000 complexes, preserving 70/10/20 within each allele.
 
-| Allele | Fold | of | Test rows |
+| Allele | In panel | Allele total | Test rows |
 |---|---:|---:|---:|
 | `HLA-B*15:01` | 434 | 1,070 | ~87 |
 | `HLA-A*02:01` | 415 | 1,023 | ~83 |
@@ -364,7 +364,7 @@ Selected from `data/splits.csv` and allele row counts alone — wide and proport
 | `HLA-B*35:01` | 264 | 650 | ~53 |
 | `HLA-B*07:02` | 262 | 647 | ~52 |
 
-Every allele clears the 50-row test bar in [EVALUATION.md](EVALUATION.md), so the primary metric has six alleles to take a median over. The deep alternative — three alleles folded in full, 2,954 complexes — gives tighter per-allele rho, but n=3 is not a median and it runs ~950 folds over budget.
+Every allele clears the 50-row test bar in [EVALUATION.md](EVALUATION.md), so the primary metric has six alleles to take a median over. The deep alternative — three alleles folded in full, 2,954 complexes — gives tighter per-allele rho, but a median over three alleles is uninformative, and it runs ~950 folds over budget.
 
 Freeze to `data/structural_panel.csv` (`pair_id, allele, peptide, split`), committed like `data/splits.csv`, selection deterministic and seeded.
 
@@ -392,7 +392,7 @@ Moving to full-length HLA with beta-2-microglobulin (the additional chain that s
 **Work**
 
 - Start with geometry and confidence features, which come from the existing structure predictions. Add each group separately, then test combinations that validation supports.
-- **Test every feature group per arm**, so the ESMFold2-versus-Boltz-2 comparison lands in the ablation table rather than in prose. Report the two arms on the rows **both** folded; if arm A took the full dataset, report its unrestricted numbers separately and labelled, never against a panel-restricted arm B.
+- **Test every feature group per arm**, so the ESMFold2-versus-Boltz-2 comparison lands in the ablation table rather than in prose. Report the two arms on the rows **both** folded; if arm A took the full dataset, report its unrestricted numbers separately, clearly labelled, never against a panel-restricted arm B.
 - Train sequence, ESM, and augmented models on **exactly the same structural training rows**, with identical validation and test rows. Separately report full-training-data sequence models on that same test set as practical comparators.
 - Keep low-confidence but usable predictions. Predefine how to handle outright failures, report coverage, and show a sequence-model fallback for structures that fail.
 - Try multiple poses only on a small diagnostic subset if budget remains.

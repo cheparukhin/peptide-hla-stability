@@ -12,7 +12,7 @@ A peptide nonetheless had to *survive* to be in it. Cell lysis, immunoprecipitat
 
 ## Rationale for the test
 
-The two datasets share 54 alleles, and the atlas contributes 151,170 nine-mers on them. Crucially the peptide universes are nearly disjoint: only **140** allele–peptide pairs appear in both. That is too few to be useful as training data, but it is exactly what is needed as a *test* — an independent sample of peptides that immunopeptidomics flagged as presented, for which we independently hold a measured dissociation half-life.
+The two datasets share 54 alleles, and the atlas contributes 151,170 nine-mers on them. Crucially, the peptide universes are nearly disjoint: only **140** allele–peptide pairs appear in both. That is too few to be useful as training data, but it is exactly what is needed as a *test* — an independent sample of peptides that immunopeptidomics flagged as presented, for which we also hold a measured dissociation half-life.
 
 If the survival argument holds, those 140 should sit high in the half-life distribution relative to the 20,230 measured peptides on the same alleles that the atlas never observed.
 
@@ -56,11 +56,11 @@ Six eluted ligands have a measured half-life below 0.5 h, three of them exactly 
 
 **This does not justify augmenting the training data, for four reasons.**
 
-1. **Scale mismatch.** 151,170 atlas 9-mers against 28,166 stability measurements. An auxiliary task 5.4× the size of the target task would dominate training; the result would be a presentation model with a stability side-effect.
+1. **Scale mismatch.** 151,170 atlas 9-mers against 28,166 stability measurements. An auxiliary task 5.4× the size of the target task would dominate training; the result would be an antigen-presentation model with a stability side-effect.
 2. **The threshold is unknowable.** The honest encoding of an eluted ligand is "t½ > τ" for some protocol-dependent τ. Nothing in the data determines τ, and conclusions would move with whatever value is chosen.
 3. **It is a selection effect, not a measurement.** Elution is confounded with source-protein abundance, proteasomal cleavage, TAP transport and MS ionisation efficiency. Stability is one of several filters a peptide passed, and the dataset cannot separate them.
 4. **It changes the question.** Adding auxiliary data benefits a small BLOSUM network and a frozen protein language model to different degrees. Any difference measured afterwards is partly about which architecture absorbs mass-spec data, not about whether foundation models encode stability.
 
-**The high-value use is external validation.** Because only 140 of 151,170 pairs overlap, the atlas is an almost completely independent peptide set on the same alleles. Train on stability alone, then score atlas ligands against length- and allele-matched proteome decoys. If the model ranks true ligands above decoys, that is transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation, at the cost of a single scoring pass with no retraining and no new assumptions.
+**The high-value use is external validation.** Because only 140 of 151,170 pairs overlap, the atlas is an almost completely independent peptide set on the same alleles. Train on stability alone, then score atlas ligands against length- and allele-matched proteome decoys. If the model ranks true ligands above decoys, that demonstrates transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation, at the cost of a single scoring pass with no retraining and no new assumptions.
 
 If elution data is ever used for training, the established pattern is NetMHCpan-4.x: binding affinity and eluted ligands trained jointly with **separate output heads**, not merged into one target. And in either case the peptide-similarity grouping must span both datasets, or an atlas peptide one substitution from a held-out stability peptide walks straight through the split.
