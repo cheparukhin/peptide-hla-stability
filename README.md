@@ -31,6 +31,7 @@ uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow
 | `pepstab/features.py` | One-hot and BLOSUM62 encodings, cached per unique sequence |
 | `pepstab/mlp.py` | Small numpy MLP; stops on a caller-supplied fold |
 | `tests/test_baselines.py` | 25 guards, including the fit/dev leakage check |
+| `reports/compare_to_paper.csv` | Calibration against NetMHCstabpan, factor by factor |
 
 Validation median per-allele Spearman: **0.610** (peptide + pseudosequence,
 one-hot MLP) against **0.000** for the training allele mean and **0.278** for
@@ -72,5 +73,6 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 .venv/bin/python scripts/audit_data.py         # rewrites reports/audit_summary.md
 .venv/bin/python scripts/baseline_constant.py  # constant reference baselines
 .venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
+.venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
 .venv/bin/python -m pytest tests/ -q
 ```

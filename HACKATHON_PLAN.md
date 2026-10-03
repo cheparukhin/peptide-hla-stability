@@ -25,6 +25,7 @@ The baseline, ESM extraction, and folding pilot can run in parallel. The orderin
 | Experiment | Priority | Question | What goes in | What we measure |
 |---|---|---|---|---|
 | Sequence baseline | Core | What can labelled sequences alone tell us? This is the cheap reference point. | Peptide amino acids and HLA amino acids, preserving which position each residue sits at. | Peptide ranking accuracy, prediction error, training and inference cost. |
+| Weak-binder augmentation | Optional, after stage 2 | Does a broader negative background improve stability prediction, and does the source of negatives matter? | Measured weak-affinity pairs or random natural peptides with predicted weak affinity, assigned assumed zero-hour stability labels. | Gain over the measured-only baseline on unchanged measured validation examples; label-source effects, allele coverage, and cost. |
 | Frozen ESM-2 | Core | Does a pretrained protein language model add useful signal? Testable across the full dataset, no structures needed. | Learned vector representations of each peptide position and HLA sequence (from ESM-2), used alone and combined with raw sequence features. | Improvement over the sequence baseline; embedding extraction cost; sensitivity to which internal layer and model size we use. |
 | Auxiliary affinity | Optional, pre-structural | Does training on binding-affinity labels alongside stability labels improve the model? No extra GPU cost. | A shared encoder with a second output head predicting affinity (how strongly a peptide binds, rather than how long it stays). Tested first on peptides that have both measurements, then optionally on broader IEDB data. | Gain over single-task baseline and over ESM-2; whether the benefit differs between the sequence and ESM arms. |
 | Boltz geometry | Pilot-gated | Does the predicted physical fit in the HLA groove explain stability? Small panel, because folding is expensive. | Contacts and burial (how deeply each peptide position sits in the groove); hydrogen bonds at the peptide ends; clashes at anchor pockets (positions where the peptide is pinned down). | Added accuracy on matched examples; whether the predicted poses look physically reasonable; cost and failure rate. |
@@ -144,9 +145,29 @@ The stage 1 C67S finding was confirmed with a consequence attached: the pseudose
 
 Distance stratification is not answerable on validation: at the 20-row-per-allele bar the two strata share only 6 alleles and 499 of 2,817 rows. It waits for the test split at stage 6.
 
+**Calibration against NetMHCstabpan** (`scripts/compare_to_paper.py`, `reports/compare_to_paper.csv`). Rasmussen et al. figure 1 reports average per-allotype SCC ≈ 0.69 / PCC 0.676 from 5-fold CV on this same dataset. Our headline arm reaches mean per-allele SCC 0.573 (median 0.610). Changing one factor at a time: identity-grouped splitting as the paper describes is worth **+0.018** (our split is harder, but that is not why we score lower — only 15.5% of peptides have any neighbour within 3 substitutions), 3-seed ensembling is worth **+0.042**, both together +0.052, and the paper's `2^(-t0/th)` target is 0.022–0.034 *worse* here than `log1p`. The remaining ~0.07 is consistent with three untestable differences: they train on ~22,500 rows vs our 17,744, ensemble ~30 networks across 6 architectures, and measure on the same fold used for early stopping. **The baseline is a credible reference point, not a weak one.** NetMHCstabpan still cannot serve as a held-out comparator at stage 6 — it was trained on our test peptides.
+
+**Ensemble both arms identically at stage 3, or neither.** Seed-averaging alone buys +0.042 mean SCC from no new information — nearly the whole 0.05 bar. An ensembled ESM arm against a single-network sequence arm would manufacture a result. The stage 2 table stays valid as an arm comparison because every arm is single-network.
+
 **Cost:** CPU only, no credits. Feature build under 0.3 s per arm (cached per unique sequence), fit 0.4–28 s, **inference under 1 ms per 1,000 predictions**. That is the floor ESM-2 extraction and GPU folding have to justify themselves against.
 
 **Why:** this shows what the task's labelled data can teach a small model on its own. It's not a reproduction of NetMHCstabpan's training and shouldn't be described as one.
+
+### 2b. Compare weak-binder augmentation sources (optional)
+
+**Work**
+
+- **Pilot (~1-2 hours, only while the core comparison is on track):** preserve the stage 2 measured-only baseline and compare two augmentation arms using its selected peptide+pseudosequence MLP configuration, the same real fit rows, the same inner stopping fold, and the same three seeds. Run this separately from stage 3b's auxiliary affinity head so each effect can be identified.
+- **Measured-affinity arm:** use the committed [affinity reference](docs/AFFINITY_REFERENCE.md), sourced from MHCflurry-curated and BD2013 snapshots. Select 9-mer pairs whose quantitative measurement or lower bound establishes affinity of at least **20,000 nM**. Respect measurement inequalities; a generic negative assay result or missing value does not establish this threshold.
+- **Predicted-affinity arm:** sample 9-mers from natural protein sequences and retain pairs with predicted affinity **weaker than 20,000 nM**, following Rasmussen's sampling recipe. Record the protein source, sampling seed, affinity predictor version, and its training-data provenance. Use affinity predictions, not NetMHCstabpan stability predictions; reject candidates contradicted by available measured affinity. If predictor setup threatens the time box, run the measured arm and leave the source comparison incomplete.
+- **Treat both arms as assumed stability labels:** assign `thalf_hours = 0` (`y_log1p = 0`) in a separate training table with label provenance. Never overwrite measured stability or pad a pair that already has it. Do not substitute wild-type affinity for a C67S construct; skip constructs without a matching affinity measurement or supported predictor input.
+- **Match the comparison:** after filtering, use equal added counts per allele on the alleles supported by both sources, initially capped at **25% of that allele's real fit rows**. Keep unsupported alleles in the unchanged evaluation panel and report augmentation coverage. Try assumed-label sample weights **0.1 and 0.25**, with measured-label weight 1; these are a small validation grid, not established optimal settings. Save the sampled rows and weights so model arms reuse identical data.
+- **Protect every held-out fold:** load `data/splits.csv` and stage 2's `inner_folds()` without changing their assignments. Exclude candidates within **Hamming distance ≤ 3 of any inner-dev, validation, or test peptide, across all alleles**, using sequences only. The reference's `padding_eligible` flag is insufficient: it checks exact pairs, so held-out peptides can reappear under other alleles. Save distance checks, exclusions, and source counts. Preserve the original distance strata for shared reporting and separately report distance to the augmented fitting pool.
+- **Select on measured validation only:** compare median per-allele Spearman over seeds, MAE on `log1p`, and precision@10 at 2 hours on the original examples and eligible alleles. Assumed zeros never enter validation or test. Report sampling, prediction, and training cost; test the selected arms only at stage 6 under the existing **Δ Spearman = 0.05** contract. Expand only if validation gains survive seed variation. If extending to ESM-2, give the sequence and ESM arms the same augmentation rows, targets, and weights and report gains over each arm's measured-only counterpart.
+
+**Deliverable:** a measured-only vs. measured-affinity-padding vs. predicted-affinity-padding validation table, candidate manifests, leakage checks, seed variation, and measured costs. Record a skipped or inconclusive source comparison explicitly.
+
+**Why:** the assay peptides were pre-selected for predicted binding, so augmentation tests whether broader negative sequence coverage helps. Rasmussen et al. added 1,000 predicted weak binders per allele, but did not directly compare them with measured affinity negatives. Earlier [NetMHCpan work](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0000796) motivates random negatives as a way to reduce selection bias. Measured affinity gives stronger evidence per label; prediction gives control over diversity and allele coverage. Neither measures half-life: in our natural-allele training overlap, 8 of 181 measured weak binders exceed 2 hours. This pilot tests the zero-label assumption rather than adopting the paper's full augmentation volume by default. Stage 3b separately tests affinity as an auxiliary target without assigning zero stability.
 
 ### 3. Test frozen ESM-2 representations
 
@@ -168,7 +189,7 @@ Distance stratification is not answerable on validation: at the 20-row-per-allel
 **Work**
 
 - **Probe (~1 hour):** Rasmussen et al. report ~7,600 peptides with both affinity (how strongly the peptide binds) and stability (how long it stays) measurements across 58 allotypes. Add a second prediction head to the sequence baseline for affinity. Train on these dual-labelled peptides only — they're already inside the frozen splits, so no new leakage risk. Compare single-task vs. multi-task validation performance.
-- **Expand (only if probe helps, ~2-3 hours):** Bring in the broader IEDB affinity dataset (~136K measurements, 152 alleles). Before training, verify that no IEDB peptide is within one residue change of any stability test-set peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
+- **Expand (only if probe helps, ~2-3 hours):** Bring in the broader IEDB affinity dataset (~136K measurements, 152 alleles). Apply stage 2b's external-peptide exclusion rule: no auxiliary training peptide may be within Hamming distance ≤ 3 of any inner-dev, validation, or test peptide, across alleles. Train multi-task models for both the sequence baseline and the ESM-2 arm.
 - Report whether auxiliary affinity data helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that's worth reporting — it would mean cheap extra labels substitute for expensive pretrained features on this task.
 
 **Deliverable:** multi-task vs. single-task comparison on the same frozen validation set, with the leakage audit documented.
@@ -265,7 +286,7 @@ elapsed time ~ total worker hours / concurrent workers
 | 3 | GPU pilot, structures, additional feature extraction | Structure and feature manifests keyed by complex ID, with success and failure records |
 
 - **First 3 hours:** freeze data and evaluation, establish a baseline, begin ESM extraction, complete the small structural pilot.
-- **By hour 5:** review validation results. Make the structural go / reduce / stop decision. Run the auxiliary affinity probe if the core comparison is on track.
+- **By hour 5:** review validation results. Make the structural go / reduce / stop decision. If the core comparison is on track, choose a time-boxed weak-binder augmentation pilot (stage 2b) or auxiliary affinity probe (stage 3b); do not commit to both unless time permits.
 - **Hours 5-12:** finish the selected workload and ablations. Stop adding features at hour 10; freeze configurations by hour 12.
 - **Final 4 hours:** evaluate on held-out data, compute uncertainty, prepare figures and the presentation, save deliverables.
 - Adjust these cutoffs if the official deadline requires it.
@@ -273,6 +294,7 @@ elapsed time ~ total worker hours / concurrent workers
 
 ## Stretch work and stopping rules
 
+- Weak-binder augmentation (stage 2b) is optional and must not delay the core sequence-vs-ESM comparison. Keep its measured-only references, use matched augmentation for comparisons between model families, and defer larger negative pools or combinations with auxiliary affinity until the separate pilots justify them.
 - The auxiliary affinity experiment (stage 3b) may interact with the ESM-2 comparison: if multi-task training helps the sequence arm more than the ESM arm, report that result rather than burying it.
 - Defer until the core comparison is secure: SaProt, chimeric inputs, cross-attention, folding-trunk features, template threading, new geometry-aware GNNs, extensive interpretability probes, source-protein mapping, and molecular-dynamics unbinding simulations.
 - Same-peptide / different-HLA diagnostics are possible with this data. **Matched C67S / wild-type comparisons are not** — the corresponding wild-type alleles aren't in the dataset.

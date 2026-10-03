@@ -196,6 +196,72 @@ thin (220 pairs, 43 test rows).
   recorded limitation.
 - Bounded to these representations, this split, and this budget.
 
+## Against NetMHCstabpan (Rasmussen et al. 2016)
+
+Regenerate with `.venv/bin/python scripts/compare_to_paper.py` (~3 min);
+table in `compare_to_paper.csv`.
+
+The paper's figure 1 reports, for the released configuration (global rescaling
+t0 = 1 h), **average per-allotype SCC ≈ 0.69 and PCC 0.676** — from 5-fold
+cross-validation on this same 28,166-row dataset. PCC is stated in the text;
+SCC is read off figure 1, so quote it as approximate.
+
+SCC is the comparable metric: it is invariant to the target transform, so it
+rewards neither side's choice of scale. Our headline arm reaches **mean
+per-allele SCC 0.573** (median 0.610 — the paper aggregates by mean, we report
+median, so both are given). That is ~0.12 below NetMHCstabpan.
+
+That gap is not a like-for-like model comparison. Three things differ besides
+the model; changing one at a time, holding arm, config, metric and allele panel
+fixed:
+
+| Change | Mean SCC | Δ |
+|---|---:|---:|
+| Stage 2 baseline — frozen split, log1p, single network | 0.573 | — |
+| Identity-grouped split (as the paper describes) | 0.591 | +0.018 |
+| 3-seed ensemble | 0.615 | +0.042 |
+| Both | 0.625 | +0.052 |
+| The paper's `2^(-1/th)` target, single network | 0.551 | −0.022 |
+
+1. **Split grouping is worth +0.018, less than expected.** The paper groups "all
+   peptide-HLA-I stability data for a given peptide" into one CV group — peptide
+   *identity*, so a held-out peptide may sit 1 substitution from a training
+   peptide (measured: minimum distance 1, against 4 on our frozen split). That
+   should flatter it, and does, but only slightly: stage 1 found just 15.5% of
+   peptides have any neighbour within 3 substitutions, so there is limited
+   leakage available. **Our split is harder, but it is not why we score lower.**
+2. **Ensembling is worth +0.042 — the single largest explained factor.**
+   NetMHC-family training fits a network per CV fold per architecture (2
+   encodings × 3 hidden sizes × 5 folds ≈ 30 networks) and predicts with the
+   ensemble. Stage 2 reports single networks. Averaging just 3 seeds recovers
+   +0.042, nearly the whole 0.05 worthwhile-gain bar, **from no new information
+   at all.**
+3. **Their target transform does not explain anything.** Trained on
+   `s = 2^(-t0/th)` at t0 ∈ {0.5, 1, 2}, our model scores 0.022–0.034 *below*
+   log1p. The paper's own t0 sweep moved PCC from 0.633 to 0.676, so the choice
+   matters for them; it does not transfer to this setup.
+
+That leaves **~0.07 SCC unexplained**, against three factors this comparison
+cannot isolate:
+
+- they train each network on 4/5 of the data (~22,500 rows) against our 17,744;
+- they ensemble ~30 networks across 6 architectures, not 3 seeds;
+- their reported score is measured on the same 1/5 fold used for early stopping
+  ("the remaining 1/5 was left for testing and early stop"), which is optimistic
+  by an unknown amount.
+
+**Conclusion: the stage 2 baseline is a credible reference point, not a weak
+one.** It sits roughly 0.07 SCC below a 30-network ensemble trained on more data
+and scored on its own early-stopping fold, and the residual is consistent with
+exactly those differences. It is not evidence that the architecture or features
+are wrong.
+
+Two things this does *not* license. NetMHCstabpan was trained on this dataset,
+including the peptides in our test split, so it cannot be used as a held-out
+comparator at stage 6 — the paper's number is a cross-validation score on its
+own training data, quoted here for calibration only. And none of the above was
+scored on test.
+
 ## Carried into stage 3
 
 - Headline sequence baseline: **MLP, one-hot, peptide + contact
@@ -205,5 +271,10 @@ thin (220 pairs, 43 test rows).
   for any HLA-domain embedding result. Report both.
 - Compare against seed means, not single seeds, and treat anything under ~0.05
   as noise.
+- **Ensemble both arms identically, or neither.** Seed-averaging alone is worth
+  +0.042 mean SCC — nearly the whole worthwhile-gain bar, from no new
+  information. An ensembled ESM arm against a single-network sequence arm (or
+  the reverse) would manufacture a result. Stage 2's single-network table stays
+  valid as an *arm* comparison because every arm is single-network.
 - Reuse `inner_folds()` for the ESM heads so every arm still trains on the same
   17,744 rows and stops on the same 1,972.
