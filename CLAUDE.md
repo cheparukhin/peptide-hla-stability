@@ -10,7 +10,8 @@ go/reduce/stop decision. Add detail there, not here.
 ## Invariants
 
 - `data/rasmussen_et_al_dataset.csv` is read-only. Derived or corrected data
-  goes to a new file; `shasum -a 256 -c data/SHA256SUMS` must still pass.
+  goes to a new file; `(cd data && shasum -a 256 -c SHA256SUMS)` must still
+  pass. The manifest stores a bare filename, so it only verifies from `data/`.
 - Load the frozen splits from disk, never recompute them. Regenerating drops the
   peptide-cluster grouping and leaks training data into the test set.
 - Validation drives every decision. The test set is scored once, at stage 6.

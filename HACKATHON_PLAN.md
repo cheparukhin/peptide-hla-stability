@@ -48,7 +48,9 @@ Each experiment must earn its place by improving prediction on the same held-out
 | HLA contact pseudosequence length | 34 residues |
 | Duplicate peptide-allele pairs | 0 |
 | Zero-hour labels | 5,679 (20.2%) |
-| Largest one-residue-neighbour peptide cluster | 5 peptides |
+| Median nearest-neighbour distance between peptides | 4 substitutions |
+| Peptides with any neighbour within 3 substitutions | 871 (15.5%) |
+| Largest single-linkage cluster at Hamming ≤ 3 | 22 peptides (157 pairs, 0.56%) |
 
 Inputs are `peptide`, `hla_seq`, and `hla_pseudoseq`; the target `thalf_hours` is dissociation half-life.
 
@@ -63,12 +65,17 @@ The 34-position contact pseudosequence identifies which HLA positions are likely
 - Check sequence alphabets, pseudosequence lengths, engineered constructs, missing values, and label distributions.
 - Start with `y = log1p(thalf_hours)` as the prediction target — this handles zero-valued labels cleanly. Keep original labels for reporting.
 - Investigate what zero values and any apparent assay limits actually mean. Don't assume they're censored based on repeated values alone, and don't automatically discard them.
-- Freeze approximately **70/10/20** train/validation/test splits. Keep identical peptides **and peptides differing by just one residue** in the same split, across all alleles. Check per-allele counts before fitting.
+- Freeze approximately **70/10/20** train/validation/test splits. Group peptides by **single-linkage clustering at Hamming distance ≤ 3** and keep every cluster wholly within one split, across all alleles. All peptides are 9 residues, so Hamming distance is exact and needs no alignment. Check per-allele counts before fitting.
+- Use plain Hamming distance, not a BLOSUM-weighted or embedding-based metric. At a matched threshold BLOSUM62 reproduces the same partition (5,493 vs 5,494 clusters at Hamming ≤ 1) while adding a threshold to defend, and a protein-language-model distance would make the split depend on ESM-2 — the model under test at stage 3. The split must stay model-independent.
 - Agree on metrics, model-selection rules, **a predeclared threshold for what counts as a meaningful improvement**, and shared example IDs. Don't touch the test set until the final comparison.
 
 **Deliverable:** audit summary, saved split assignments, and a shared evaluation script.
 
-**Why:** every model must solve the same generalisation problem without data leakage. The larger test partition gives more statistical power for within-allele ranking. Grouping near-identical peptides closes the main leakage route, and the clusters are small enough that grouping costs almost no data.
+**Why:** every model must solve the same generalisation problem without data leakage. The larger test partition gives more statistical power for within-allele ranking.
+
+Grouping at Hamming ≤ 3 closes the memorisation route and is measured to cost nothing: 5,120 clusters, the largest holding 157 of 28,166 pairs (0.56%), and a water-filled assignment still hits 70/10/20 exactly with 54 of 75 alleles clearing 50 test rows. It buys a guarantee worth stating in the writeup — **no validation or test peptide is within 3 substitutions of any training peptide** (verified minimum distance: 4). The threshold is deliberately conservative rather than minimal: near-identical sequences make labels trivially copyable, which is leakage, whereas a conservative substitution changing hold time is real biology the model should be rewarded for learning. Grouping constrains assignment only — it discards no rows — so erring conservative is close to free here.
+
+Known residual: 15 of 75 alleles have too few total pairs to appear in all three splits. That reflects allele rarity, not the threshold, and bounds which alleles support per-allele claims.
 
 ### 2. Establish supervised baselines
 
