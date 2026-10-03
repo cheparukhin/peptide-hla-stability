@@ -23,6 +23,7 @@ and stage order. These documents describe the data behind it.
 | document | covers |
 | --- | --- |
 | [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md) | the public binding-affinity table behind stages 2b and 2c — provenance, allele coverage, why the C67S constructs are flagged rather than matched, and the leakage filters to apply before training on it |
+| [../reports/stage2c_affinity.md](../reports/stage2c_affinity.md) | **the stage 2c result** — auxiliary affinity training does not help, bounded below the 0.05 bar in 20 paired comparisons; why the signal is redundant rather than absent; the declined expansion and its leakage audit |
 
 ## Structures
 
@@ -47,6 +48,7 @@ and stage order. These documents describe the data behind it.
 | either dataset summary | `python3 scripts/summarize_dataset.py [--input <csv>]` |
 | `data/c67s_cleanup/peptide_splits.csv` and its manifest | `python3 scripts/split_peptides.py` |
 | `data/data_augmentation_iedb/affinity_reference_75alleles.csv` and its manifest | `python3 scripts/fetch_affinity_reference.py` |
+| `reports/stage2c_*.csv` | `.venv/bin/python scripts/affinity_multitask.py` (add `--protocol ensemble`, `--drop-censored`) |
 | `reports/boltz_pilot.csv`, `reports/boltz_bench_panel.csv`, `reports/boltz_msa_targets.csv` | `python3 scripts/boltz_panel.py` |
 | `reports/gpu_decision.csv` | `python3 scripts/gpu_decision.py` (needs `reports/boltz_bench_results.csv`) |
 

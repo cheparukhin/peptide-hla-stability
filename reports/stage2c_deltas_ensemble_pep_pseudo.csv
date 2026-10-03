@@ -1,0 +1,5 @@
+comparison,arm,lambda_aff,delta_median_spearman,ci95_low,ci95_high,verdict
+ensemble:ensemble lambda=0.1 vs lambda=0,ensemble,0.1,-0.0043,-0.0132,0.0274,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+ensemble:ensemble lambda=0.3 vs lambda=0,ensemble,0.3,-0.0088,-0.0159,0.0291,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+ensemble:ensemble lambda=1 vs lambda=0,ensemble,1.0,0.0079,-0.0172,0.0297,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"
+ensemble:ensemble lambda=3 vs lambda=0,ensemble,3.0,-0.0072,-0.0301,0.0247,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result"

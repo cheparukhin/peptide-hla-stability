@@ -185,6 +185,53 @@ A **superseded version of that calibration consumed frozen test rows** (3,350 in
 
 **Deliverable:** single-task vs. multi-task sequence validation results first, then an optional matched ESM comparison, with the leakage audit documented.
 
+**Status: done — negative, and bounded.** `reports/stage2c_affinity.md`
+(results and reasoning), `scripts/affinity_multitask.py` (regenerates),
+`pepstab/multitask.py` + `pepstab/affinity.py`, `reports/stage2c_runs_*.csv`,
+`reports/stage2c_deltas_*.csv`, `tests/test_multitask.py` (17 guards).
+
+Across **20 paired comparisons** — 5 λ settings × {one-hot, BLOSUM} × {single
+network, 30-network ensemble}, plus a censoring-robustness variant — every 95%
+CI crosses zero and **every upper bound sits below 0.05**. Largest upper bound
++0.034. The predeclared worthwhile gain is ruled out, not merely undetected.
+
+The comparison is controlled by construction: at **λ = 0 the multi-task network
+is bit-identical to `pepstab.mlp.MLPRegressor`** (asserted on the real feature
+grid, not only a toy), so the single-task arm *is* the stage 2 baseline. The
+λ=0 single network reproduces 0.610 exactly, and the λ=0 ensemble is
+**bit-identical** to `scripts/baseline_ensemble.py`'s predictions on all 2,817
+validation rows. Both arms were ensembled identically, per the stage 3 parity
+rule.
+
+Two diagnostics make this a clean null rather than an ambiguous one:
+
+- **The auxiliary task was genuinely learned** — the affinity head reaches
+  ρ 0.55–0.62 against held-out affinity labels, against ≈ 0 at λ = 0. The shared
+  trunk learns affinity about as well as it learns stability, and the stability
+  predictions still do not move. Mean ensemble-member quality is flat at every
+  λ, so affinity is not acting as a diversity source either.
+- **The label's ceiling is below the baseline.** Measured affinity used
+  *directly* as a stability predictor ranks at median per-allele ρ **0.580**
+  [IQR 0.486, 0.696] over the 33 training alleles with ≥ 30 dual-labelled pairs
+  — under the 0.610 a single network already reaches from stability labels
+  alone. The auxiliary signal is **redundant, not absent**.
+
+**The expansion is declined on evidence, not blocked.** The plan gates it on the
+probe helping; it does not. The leakage audit was still completed because stage
+2b needs it: of 66,214 affinity rows on 20,836 peptides absent from the
+stability set, **64,226 rows on 20,195 peptides** clear Hamming > 3 from every
+validation, test *and inner stopping-fold* peptide (2,076 in all). Absence is
+tested on `peptide`, never on `(allele, peptide)` — the reference table's
+`padding_eligible` flag tests the pair and therefore leaks.
+
+**The ESM-2 extension is blocked, not declined**, and is where the hypothesis
+keeps its strongest form: affinity is redundant with what a *sequence* model
+already extracts, which does not establish redundancy with ESM-2 features. The
+machinery is protocol-agnostic, so re-running it on the stage 3 arm is cheap.
+
+**Cost: CPU only, $0.** 210 networks in total; the paired bootstrap dominates
+wall time, not the fitting.
+
 **Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, limiting peptide diversity. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that diversity without changing the stability evaluation. Rasmussen et al. found that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), from complementary signal rather than row count.
 
 ### 3. Test frozen ESM-2 representations
@@ -211,6 +258,9 @@ A **superseded version of that calibration consumed frozen test rows** (3,350 in
 - Report whether auxiliary affinity data helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that's worth reporting — it would mean cheap extra labels substitute for expensive pretrained features on this task.
 
 **Deliverable:** multi-task vs. single-task comparison on the same frozen validation set, with the leakage audit documented.
+
+**Status: the sequence half is done at stage 2c** (negative and bounded — see
+above). What remains here is only the ESM-2 arm, which needs stage 3 features.
 
 **Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, so peptide diversity is limited. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that broader diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), with the gain coming from complementary signal, not just more rows.
 

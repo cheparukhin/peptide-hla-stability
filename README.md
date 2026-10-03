@@ -41,6 +41,29 @@ input ties the pseudosequence within noise, so stage 3 must compare domain
 embeddings against *both*. Ensembling alone is worth +0.090 mean SCC, so
 stage 3 must ensemble its arm the same way.
 
+## Stage 2c output (done — negative, and bounded)
+
+| Artifact | Description |
+|---|---|
+| [reports/stage2c_affinity.md](reports/stage2c_affinity.md) | Auxiliary affinity head: λ sweep, paired CIs, the ceiling diagnostic, the leakage audit, limitations |
+| `reports/stage2c_runs_*.csv` | Every run; `stage2c_deltas_*.csv` are the paired CIs |
+| `reports/stage2c_affinity_ceiling.csv` | What measured affinity can rank on its own |
+| `reports/stage2c_expansion_audit.csv` | Hamming-distance exclusion table for the declined expansion |
+| `pepstab/multitask.py` | Two-headed MLP; at λ=0 **bit-identical** to `pepstab/mlp.py`, and its ensemble to `preds/seq_ensemble_pep_pseudo.csv` |
+| `pepstab/affinity.py` | Affinity target transform, dual-labelled join, Hamming ≤ 3 leakage filter |
+| `tests/test_multitask.py` | 17 guards, including the λ=0 parity check and the C67S exclusion |
+
+Auxiliary affinity labels **do not help**. Across 20 paired comparisons (5 λ ×
+2 encodings × {single network, 30-network ensemble}, plus a censoring variant),
+every 95% CI crosses zero and every upper bound is below 0.05 — largest +0.034,
+so the worthwhile gain is ruled out, not undetected. The null is clean because
+the mechanism is visible: the affinity head genuinely learns (ρ ≈ 0.58 on
+held-out affinity), but measured affinity used *directly* as a stability
+predictor ranks at ρ **0.580** — below the 0.610 stability labels alone already
+give. Redundant signal, not absent signal. The expansion to 64,226
+leakage-filtered IEDB rows is declined on this evidence; the **ESM-2 arm is
+still open** and needs stage 3.
+
 ## Stage 4b.1 output (done — arm B's MSA cache)
 
 | Artifact | Description |
@@ -96,6 +119,8 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 .venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
 .venv/bin/python scripts/baseline_ensemble.py  # 30-network ensemble baseline, ~1 min
 .venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
+.venv/bin/python scripts/affinity_multitask.py # stage 2c probe, ~10 CPU-minutes
+.venv/bin/python scripts/affinity_multitask.py --protocol ensemble   # ~25 min
 .venv/bin/python -m pytest tests/ -q
 ```
 
