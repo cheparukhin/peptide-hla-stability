@@ -1,39 +1,33 @@
-"""Boltz-2 on Modal: precompute HLA MSAs on CPU, then benchmark folding across GPUs.
+"""Boltz-2 GPU folding: the stage 4 pilot and the hardware benchmark.
 
-Stage 4 of HACKATHON_PLAN.md. Three entrypoints, run in order:
+    modal run modal_app/boltz_bench.py::pilot        # 5 complexes, MSA vs single-sequence
+    modal run modal_app/boltz_bench.py::benchmark    # 24 complexes x 4 GPUs
 
-    modal run modal_app/boltz_bench.py::setup       # weights + 8 HLA MSAs, CPU only
-    modal run modal_app/boltz_bench.py::pilot       # 5 complexes, MSA vs single-sequence
-    modal run modal_app/boltz_bench.py::benchmark   # 24 complexes x 4 GPUs
+Run `boltz_setup.py::setup` first: it caches the weights and the HLA MSAs on
+Volumes that this app mounts read-only. Shared configuration lives in
+`boltz_common.py`; see that module for why the CPU setup is a separate app.
 
-`setup` and `pilot` must both pass before `benchmark`: CLAUDE.md makes the
-end-to-end pilot a hard gate on any batch GPU job.
+CLAUDE.md gates this: no batch GPU job without a passing end-to-end pilot on
+3-5 examples. `::pilot` is that gate, and its poses must be checked with
+`scripts/boltz_pose_check.py` before `::benchmark` runs.
 
-Four design points, each one a cost or correctness trap documented in
+Three cost decisions encoded below, each one a trap documented in
 docs/BOLTZ_PIPELINE.md:
 
-1. **MSAs are built in a CPU-only function.** `boltz predict --use_msa_server`
-   generates alignments *synchronously inside the predict process, before any
-   GPU work*, so the accelerator sits idle on network I/O and is billed for it.
-   MSAs are per unique chain sequence, so the whole production panel needs six
-   alignments -- there is no reason to pay GPU rates for them.
-2. **`gpu="H100!"`, with the bang.** Plain `"H100"` lets Modal substitute an
-   H200, which would silently make the H100 column an H200 measurement. Modal's
-   own GPU docs call this out for benchmarking specifically.
-3. **Weights live on a Volume and load once per container.** A batch of
-   complexes runs in one container so the ~6.2 GB load is paid once, and the
-   first fold is reported separately as warm-up rather than averaged in.
-4. **CPU and memory are requested explicitly.** Modal's default is 0.125 cores
-   and 128 MiB; the published Boltz example leaves it there. Billing charges the
-   greater of requested and used, and HACKATHON_PLAN.md's rate table assumes
-   4 cores / 32 GiB, so the request is pinned to match the budget.
+* **`gpu="H100!"`, with the bang.** Plain `"H100"` lets Modal substitute an
+  H200, silently making the H100 column an H200 measurement at H100 prices.
+  Modal's GPU docs call this out for benchmarking specifically.
+* **A batch runs in one container** so the ~6.2 GB of weights load once, and
+  the first fold is reported as warm-up rather than averaged into the
+  steady-state mean.
+* **`scaledown_window` is explicit.** Modal bills container load time and keeps
+  containers alive 60 s after the last input by default; at roughly a minute
+  per fold that tail is a large share of the bill.
 """
 
 from __future__ import annotations
 
-import csv
 import json
-import os
 import subprocess
 import threading
 import time
@@ -41,169 +35,27 @@ from pathlib import Path
 
 import modal
 
-# --- pinned versions -------------------------------------------------------
-# Matches the version pinned by Modal's published Boltz example. A floating
-# version would make the benchmark unreproducible.
-BOLTZ_VERSION = "2.1.1"
-HF_REPO = "boltz-community/boltz-2"
-HF_REVISION = "6fdef46d763fee7fbb83ca5501ccceff43b85607"
-
-# --- worker shape ----------------------------------------------------------
-# Pinned to HACKATHON_PLAN.md's rate-table assumption so measured cost matches
-# the budget arithmetic in scripts/gpu_decision.py.
-WORKER_CPU = 4.0
-WORKER_MEM = 32 * 1024  # MiB
-
-# The four candidates from the plan. "H100!" blocks the H200 upgrade.
-BENCH_GPUS = ["L40S", "A100-40GB", "A100-80GB", "H100!"]
-
-MINUTES = 60
-
-CACHE_DIR = Path("/weights/boltz")
-MSA_DIR = Path("/msa")
-OUT_DIR = Path("/structures")
-
-weights_vol = modal.Volume.from_name("pepstab-boltz-weights", create_if_missing=True)
-msa_vol = modal.Volume.from_name("pepstab-hla-msa", create_if_missing=True)
-out_vol = modal.Volume.from_name("pepstab-structures", create_if_missing=True)
+from boltz_common import (
+    BENCH_GPUS,
+    CACHE_DIR,
+    MINUTES,
+    MSA_DIR,
+    OUT_DIR,
+    REPO,
+    WORKER_CPU,
+    WORKER_MEM,
+    boltz_image,
+    build_yaml,
+    msa_vol,
+    out_vol,
+    read_panel,
+    weights_vol,
+    write_results,
+)
 
 app = modal.App("pepstab-boltz")
 
-download_image = (
-    modal.Image.debian_slim(python_version="3.12")
-    .uv_pip_install("huggingface-hub==0.36.0")
-    .env({"HF_XET_HIGH_PERFORMANCE": "1"})
-)
 
-boltz_image = modal.Image.debian_slim(python_version="3.12").uv_pip_install(
-    f"boltz=={BOLTZ_VERSION}"
-)
-
-REPO = Path(__file__).resolve().parent.parent
-
-
-# --------------------------------------------------------------------------
-# YAML construction
-# --------------------------------------------------------------------------
-def build_yaml(peptide: str, hla_seq: str, msa_ref: str) -> str:
-    """A 2-chain Boltz-2 input: chain A the HLA domain, chain B the peptide.
-
-    ``msa_ref`` is either a path to a ``.a3m`` for the HLA chain or the literal
-    ``empty``. The peptide chain is always ``empty``: a 9-residue query has no
-    meaningful alignment, and leaving the field off would make Boltz try to
-    generate one.
-
-    Boltz only accepts ``.a3m`` when a *single* protein chain carries a
-    precomputed MSA -- two aligned chains would need the paired CSV format. That
-    constraint is satisfied here precisely because the peptide is ``empty``.
-    """
-    return (
-        "version: 1\n"
-        "sequences:\n"
-        "  - protein:\n"
-        "      id: A\n"
-        f"      sequence: {hla_seq}\n"
-        f"      msa: {msa_ref}\n"
-        "  - protein:\n"
-        "      id: B\n"
-        f"      sequence: {peptide}\n"
-        "      msa: empty\n"
-    )
-
-
-# --------------------------------------------------------------------------
-# Setup: weights and MSAs, both CPU-only
-# --------------------------------------------------------------------------
-@app.function(
-    image=download_image,
-    volumes={CACHE_DIR.parent: weights_vol},
-    timeout=30 * MINUTES,
-)
-def download_weights(force: bool = False) -> dict:
-    """Pull the pinned Boltz-2 snapshot (~6.2 GB) onto the weights Volume."""
-    from huggingface_hub import snapshot_download
-
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    t0 = time.monotonic()
-    snapshot_download(
-        repo_id=HF_REPO,
-        revision=HF_REVISION,
-        local_dir=str(CACHE_DIR),
-        force_download=force,
-    )
-    weights_vol.commit()
-    total = sum(f.stat().st_size for f in CACHE_DIR.rglob("*") if f.is_file())
-    return {
-        "seconds": round(time.monotonic() - t0, 1),
-        "bytes": total,
-        "gb": round(total / 1e9, 3),
-    }
-
-
-@app.function(
-    image=boltz_image,
-    volumes={MSA_DIR: msa_vol},
-    cpu=WORKER_CPU,
-    memory=WORKER_MEM,
-    timeout=60 * MINUTES,
-)
-def build_msas(targets: list[dict], force: bool = False) -> list[dict]:
-    """Build one ``.a3m`` per unique HLA domain sequence, on CPU.
-
-    ``targets`` is ``reports/boltz_msa_targets.csv`` as records: ``msa_id``,
-    ``hla_seq``. All sequences go to the MSA server in a single batched request
-    -- it is a free shared community service (ColabFold/MMseqs2), and eight
-    sequences in one ticket is the polite and fast way to ask.
-    """
-    from boltz.data.msa.mmseqs2 import run_mmseqs2
-
-    MSA_DIR.mkdir(parents=True, exist_ok=True)
-    pending = [
-        t for t in targets if force or not (MSA_DIR / f"{t['msa_id']}.a3m").exists()
-    ]
-    if not pending:
-        return [{"msa_id": t["msa_id"], "status": "cached"} for t in targets]
-
-    t0 = time.monotonic()
-    result = run_mmseqs2(
-        [t["hla_seq"] for t in pending],
-        prefix=str(MSA_DIR / "_tmp"),
-        use_env=True,
-        use_filter=True,
-        use_pairing=False,
-    )
-    # Signature is annotated as a tuple but the single-chain path returns just
-    # the a3m list; accept either so a boltz point release cannot break setup.
-    a3m_lines = result[0] if isinstance(result, tuple) else result
-    elapsed = time.monotonic() - t0
-
-    if len(a3m_lines) != len(pending):
-        raise RuntimeError(
-            f"MSA server returned {len(a3m_lines)} alignments for {len(pending)} queries"
-        )
-
-    out = []
-    for target, lines in zip(pending, a3m_lines):
-        path = MSA_DIR / f"{target['msa_id']}.a3m"
-        path.write_text(lines)
-        depth = sum(1 for ln in lines.splitlines() if ln.startswith(">"))
-        out.append(
-            {
-                "msa_id": target["msa_id"],
-                "status": "built",
-                "depth": depth,
-                "bytes": path.stat().st_size,
-            }
-        )
-    msa_vol.commit()
-    for rec in out:
-        rec["total_seconds"] = round(elapsed, 1)
-    return out
-
-
-# --------------------------------------------------------------------------
-# Folding
-# --------------------------------------------------------------------------
 class _GpuMemoryProbe:
     """Polls ``nvidia-smi`` on a thread; boltz runs as a subprocess so in-process
     torch counters would see nothing."""
@@ -382,60 +234,7 @@ def _collect_outputs(
 # --------------------------------------------------------------------------
 # Local entrypoints
 # --------------------------------------------------------------------------
-def _read_panel(name: str) -> list[dict]:
-    """Join a panel CSV against the MSA target table to attach hla_seq + msa_id."""
-    targets = list(csv.DictReader((REPO / "reports" / "boltz_msa_targets.csv").open()))
-    by_allele = {
-        allele: t for t in targets for allele in t["alleles"].split("|")
-    }
-    rows = []
-    for r in csv.DictReader((REPO / "reports" / name).open()):
-        t = by_allele[r["allele"]]
-        rows.append(
-            {
-                "complex_id": r["complex_id"],
-                "allele": r["allele"],
-                "peptide": r["peptide"],
-                "hla_seq": t["hla_seq"],
-                "msa_id": t["msa_id"],
-            }
-        )
-    return rows
 
-
-def _write_results(path: Path, batches: list[dict]) -> None:
-    cols = [
-        "gpu", "msa_mode", "complex_id", "allele", "peptide", "ok", "is_warmup",
-        "fold_s", "billed_s", "startup_s", "peak_mem_gb", "has_structure",
-        "has_pae", "confidence_score", "ptm", "iptm", "complex_plddt", "error",
-    ]
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
-        w.writeheader()
-        for batch in batches:
-            for rec in batch["results"]:
-                rec = dict(rec)
-                rec["startup_s"] = batch["startup_s"]
-                # gpu_decision.py reads billed_s; steady-state cost is the fold
-                # itself, with startup amortised separately by that script.
-                rec["billed_s"] = rec.get("fold_s", "")
-                w.writerow(rec)
-    print(f"wrote {path}")
-
-
-@app.local_entrypoint()
-def setup(force: bool = False):
-    """Download weights and build the HLA MSAs. CPU only -- no GPU is billed."""
-    targets = list(csv.DictReader((REPO / "reports" / "boltz_msa_targets.csv").open()))
-    print(f"weights: pulling {HF_REPO}@{HF_REVISION[:8]} ...")
-    w = download_weights.remote(force=force)
-    print(f"  {w['gb']} GB in {w['seconds']} s")
-
-    print(f"MSAs: {len(targets)} unique HLA domain sequences ...")
-    for rec in build_msas.remote(targets, force=force):
-        depth = rec.get("depth")
-        print(f"  {rec['msa_id']}: {rec['status']}" + (f", depth {depth}" if depth else ""))
 
 
 @app.local_entrypoint()
@@ -445,7 +244,7 @@ def pilot(gpu: str = "L40S", both_arms: bool = True):
     Runs the MSA arm and, by default, a single-sequence arm on the same five
     complexes, so the pilot also measures what the MSA actually buys here.
     """
-    complexes = _read_panel("boltz_pilot.csv")
+    complexes = read_panel("boltz_pilot.csv")
     print(f"pilot: {len(complexes)} complexes on {gpu}")
     fn = fold_batch.with_options(gpu=gpu)
 
@@ -467,7 +266,7 @@ def pilot(gpu: str = "L40S", both_arms: bool = True):
             else:
                 print(f"  {r['complex_id']:22} FAILED{tag}: {r.get('error', '')[:300]}")
 
-    _write_results(REPO / "reports" / "boltz_pilot_results.csv", batches)
+    write_results(REPO / "reports" / "boltz_pilot_results.csv", batches)
     print(
         "\nBefore running ::benchmark, confirm the poses sit in the groove "
         "(peptide RMSD against the crystal structures in reports/boltz_pilot.csv)."
@@ -477,7 +276,7 @@ def pilot(gpu: str = "L40S", both_arms: bool = True):
 @app.local_entrypoint()
 def benchmark(gpus: str = ",".join(BENCH_GPUS)):
     """Fold the 24-complex panel on each GPU with identical settings."""
-    complexes = _read_panel("boltz_bench_panel.csv")
+    complexes = read_panel("boltz_bench_panel.csv")
     labels = [g.strip() for g in gpus.split(",") if g.strip()]
     print(f"benchmark: {len(complexes)} complexes x {len(labels)} GPUs: {labels}")
 
@@ -493,5 +292,5 @@ def benchmark(gpus: str = ",".join(BENCH_GPUS)):
         except Exception as exc:
             print(f"  {g}: batch failed -- {exc}")
 
-    _write_results(REPO / "reports" / "boltz_bench_results.csv", batches)
+    write_results(REPO / "reports" / "boltz_bench_results.csv", batches)
     print("\nNow run: python scripts/gpu_decision.py")

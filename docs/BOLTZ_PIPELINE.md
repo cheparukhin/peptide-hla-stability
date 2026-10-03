@@ -105,6 +105,30 @@ the spread turns out to be wide, that itself is a finding — it would mean
 something other than sequence length drives runtime, and the production cost
 estimate needs the p90, not the median.
 
+## Residue and chain mapping: verified
+
+The plan asks to "verify residue/chain mapping" before trusting any structural
+feature. Checked against all six deposited entries behind the pilot
+([`scripts/boltz_pose_check.py`](../scripts/boltz_pose_check.py) helpers, run
+against freshly fetched RCSB mmCIFs):
+
+- **`hla_seq` is exactly residues 1–182 of the deposited heavy chain.** The
+  182-mer matches at **offset 0 of chain A** in every entry — 1X7Q, 7WKJ, 5N6B,
+  9SL0, 1XR9, 7LFZ, 4QRU. No alignment or offset correction is needed, and the
+  same indexing carries to the 34 contact positions used elsewhere.
+- **The peptide is chain C**, 9 residues, exact sequence match in every entry.
+- 5N6B holds two copies in the asymmetric unit (A–C and D–F); the checker takes
+  the first matching pair.
+
+**One caveat this exposes: every pilot crystal contains β2-microglobulin as
+chain B (99–100 residues), and our input does not.** We fold a 2-chain complex
+against a 3-chain structure. The plan defers full-length HLA with β2m
+explicitly — it "would require a new pilot and runtime benchmark" — so this is
+a known scope decision, not an oversight. It is defensible for this comparison
+because β2m sits beneath the α1/α2 platform rather than in the groove, and the
+pose check superposes on the α1/α2 domain and measures only the peptide. It
+remains a caveat on absolute RMSD, and belongs in the limitations section.
+
 ## Benchmark protocol
 
 [`modal_app/boltz_bench.py`](../modal_app/boltz_bench.py). Identical settings on

@@ -28,20 +28,17 @@ from scripts.boltz_panel import complex_id  # type: ignore # noqa: E402
 
 
 def _load_app():
-    """Import the Modal app module for its pure helpers.
+    """Import the shared Boltz config module for its pure helpers.
 
     Skips rather than fails when modal is absent: the panel and cost guards are
     the ones that must run everywhere, and modal is only installed in .venv.
     """
-    modal_spec = importlib.util.find_spec("modal")
-    if modal_spec is None:
+    if importlib.util.find_spec("modal") is None:
         pytest.skip("modal not installed")
-    spec = importlib.util.spec_from_file_location(
-        "boltz_bench", REPO / "modal_app" / "boltz_bench.py"
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    sys.path.insert(0, str(REPO / "modal_app"))
+    import boltz_common
+
+    return boltz_common
 
 
 def _rows(name: str) -> list[dict]:
