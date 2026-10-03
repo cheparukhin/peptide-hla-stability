@@ -22,11 +22,15 @@ HF_REPO = "boltz-community/boltz-2"
 HF_REVISION = "6fdef46d763fee7fbb83ca5501ccceff43b85607"
 
 # --- worker shape ----------------------------------------------------------
-# Pinned to HACKATHON_PLAN.md's rate-table assumption (4 cores / 32 GiB) so
-# measured cost matches the budget arithmetic in scripts/gpu_decision.py.
+# Right-sized from measurement, not from the plan's rate-table assumption.
+# Peak Boltz child RSS is 9.89 GB (reports/boltz_hostmem_probe_a10.csv), so the
+# plan's 32 GiB was ~3x oversized -- and because the host cost is identical on
+# every GPU, over-requesting inflates a cheap card's bill (29% of an A10's)
+# far more than an expensive one's (10% of an H100's), biasing the whole
+# cheap-vs-fast comparison toward the fast card. 8 GiB would OOM.
 # Modal bills the greater of requested and used.
 WORKER_CPU = 4.0
-WORKER_MEM = 32 * 1024  # MiB
+WORKER_MEM = 16 * 1024  # MiB
 
 # The four candidates from the plan. "H100!" blocks Modal's automatic upgrade
 # to an H200, which would otherwise make the H100 column an H200 measurement.

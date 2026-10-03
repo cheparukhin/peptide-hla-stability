@@ -130,6 +130,51 @@ class _GpuMemoryProbe:
         return round(self.peak_mib / 1024, 2)
 
 
+class _CompletionProbe:
+    """Records when each complex's mmCIF first appears, on a thread.
+
+    One ``boltz predict`` call over a directory loads the weights once, which
+    is what the plan requires -- but it also collapses the whole batch into a
+    single wall time. Watching the output tree for each structure to land
+    recovers per-complex timings from that single process, so the steady-state
+    figure is a fold with the model already resident.
+    """
+
+    def __init__(self, root: Path, interval: float = 0.25) -> None:
+        self.root = root
+        self.interval = interval
+        self.seen: dict[str, float] = {}
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def _poll(self) -> None:
+        while not self._stop.is_set():
+            try:
+                for cif in self.root.rglob("*_model_0.cif"):
+                    # boltz names outputs after the input stem, which is the
+                    # complex_id because that is what the YAML is called.
+                    key = cif.name.split("_model_0")[0]
+                    self.seen.setdefault(key, time.monotonic())
+            except Exception:
+                pass  # a probe failure must never fail the batch
+            self._stop.wait(self.interval)
+
+    def __enter__(self) -> _CompletionProbe:
+        self._thread = threading.Thread(target=self._poll, daemon=True)
+        self._thread.start()
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self._stop.set()
+        if self._thread:
+            self._thread.join(timeout=5)
+        try:  # catch anything written between the last poll and exit
+            for cif in self.root.rglob("*_model_0.cif"):
+                self.seen.setdefault(cif.name.split("_model_0")[0], time.monotonic())
+        except Exception:
+            pass
+
+
 @app.function(
     image=boltz_image,
     volumes={CACHE_DIR.parent: weights_vol, MSA_DIR: msa_vol, OUT_DIR: out_vol},
@@ -138,6 +183,8 @@ class _GpuMemoryProbe:
     memory=WORKER_MEM,
     timeout=120 * MINUTES,
     scaledown_window=10,  # the 60 s default would bill a GPU tail per container
+    max_containers=1,
+    retries=0,
 )
 def fold_batch(
     complexes: list[dict],
@@ -145,102 +192,140 @@ def fold_batch(
     single_sequence: bool = False,
     save_structures: bool = True,
 ) -> dict:
-    """Fold a batch of complexes in one container, timing each separately.
+    """Fold a batch in ONE ``boltz predict`` process, timing each complex.
 
-    Returns per-complex timings plus a ``startup_s`` for the container. The
-    first complex is the warm-up: it absorbs weight load and CUDA kernel
-    compilation, and is flagged so it can be excluded from the steady-state
-    mean instead of inflating a 2,000-complex projection.
+    This is the plan's "keep models loaded across complexes to avoid reload
+    overhead". An earlier version of this function spawned a fresh
+    ``boltz predict`` per complex, which put a full Python start, torch import,
+    6.2 GB weight load and CUDA init *inside every timed fold* -- and reported
+    ``startup_s = 0.0`` because, by its own definition, nothing happened before
+    the first fold. Every steady-state number it produced was a per-process
+    overhead measurement wearing a per-fold label. Weights now load once per
+    batch, and ``load_plus_first_s`` carries that cost explicitly so the cost
+    model can amortise it over the production batch size instead of charging it
+    to all 2,000 complexes.
     """
     container_t0 = time.monotonic()
-    work = Path("/tmp/work")
+    work = Path("/tmp/work/inputs")
     work.mkdir(parents=True, exist_ok=True)
+    case_out = Path("/tmp/work/out")
+    case_out.mkdir(parents=True, exist_ok=True)
     run_out = OUT_DIR / gpu_label.replace("!", "") / (
         "single_seq" if single_sequence else "msa"
     )
     run_out.mkdir(parents=True, exist_ok=True)
 
-    results = []
-    startup_s = None
+    mode = "single_seq" if single_sequence else "msa"
+    ordered: list[dict] = []
+    missing: list[dict] = []
 
-    for i, cx in enumerate(complexes):
+    for cx in complexes:
         msa_ref = "empty" if single_sequence else str(MSA_DIR / f"{cx['msa_id']}.a3m")
         if not single_sequence and not Path(msa_ref).exists():
-            results.append(
+            missing.append(
                 {
                     "complex_id": cx["complex_id"],
+                    "allele": cx["allele"],
+                    "peptide": cx["peptide"],
+                    "gpu": gpu_label,
+                    "msa_mode": mode,
                     "ok": False,
                     "error": f"missing MSA {msa_ref} -- run setup first",
-                    "is_warmup": i == 0,
                 }
             )
             continue
+        # One YAML per complex in a single directory: boltz predict accepts the
+        # directory and processes every entry in one process.
+        (work / f"{cx['complex_id']}.yaml").write_text(
+            build_yaml(cx["peptide"], cx["hla_seq"], msa_ref)
+        )
+        ordered.append(cx)
 
-        case = work / cx["complex_id"]
-        case.mkdir(parents=True, exist_ok=True)
-        yaml_path = case / "input.yaml"
-        yaml_path.write_text(build_yaml(cx["peptide"], cx["hla_seq"], msa_ref))
+    cmd = [
+        "boltz", "predict", str(work),
+        "--out_dir", str(case_out),
+        "--cache", str(CACHE_DIR),
+        "--accelerator", "gpu",
+        "--devices", "1",
+        # Plan: one pose, standard sampling, full PAE for stage 5 features.
+        "--diffusion_samples", "1",
+        "--recycling_steps", "3",
+        "--sampling_steps", "200",
+        "--output_format", "mmcif",
+        "--write_full_pae",
+        "--override",
+    ]
 
-        cmd = [
-            "boltz", "predict", str(yaml_path),
-            "--out_dir", str(case),
-            "--cache", str(CACHE_DIR),
-            "--accelerator", "gpu",
-            "--devices", "1",
-            # Plan: one pose, standard sampling, full PAE for stage 5 features.
-            "--diffusion_samples", "1",
-            "--recycling_steps", "3",
-            "--sampling_steps", "200",
-            "--output_format", "mmcif",
-            "--write_full_pae",
-            "--override",
-        ]
+    run_t0 = time.monotonic()
+    with _GpuMemoryProbe() as probe, _CompletionProbe(case_out) as done:
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+    total_s = time.monotonic() - run_t0
 
-        t0 = time.monotonic()
-        with _GpuMemoryProbe() as probe:
-            proc = subprocess.run(cmd, capture_output=True, text=True)
-        fold_s = time.monotonic() - t0
+    # Order complexes by when their structure landed, then difference the
+    # timestamps. The first interval carries the weight load; the rest are
+    # folds with the model resident.
+    finished = sorted(done.seen.items(), key=lambda kv: kv[1])
+    results: list[dict] = []
+    prev = run_t0
+    load_plus_first = None
 
-        if startup_s is None:
-            # Everything before the first fold began: image already pulled by
-            # Modal, but volume mount and process import land here.
-            startup_s = round(t0 - container_t0, 2)
-
+    for rank, (cid, at) in enumerate(finished):
+        cx = next((c for c in ordered if c["complex_id"] == cid), None)
+        if cx is None:
+            continue
+        delta = at - prev
+        prev = at
+        if rank == 0:
+            load_plus_first = round(delta, 2)
         rec = {
-            "complex_id": cx["complex_id"],
+            "complex_id": cid,
             "allele": cx["allele"],
             "peptide": cx["peptide"],
             "gpu": gpu_label,
-            "msa_mode": "single_seq" if single_sequence else "msa",
-            "is_warmup": i == 0,
-            "ok": proc.returncode == 0,
-            "fold_s": round(fold_s, 2),
+            "msa_mode": mode,
+            "is_warmup": rank == 0,
+            "ok": True,
+            "fold_s": round(delta, 2),
             "peak_mem_gb": probe.peak_gb,
-            # Host RAM, not GPU. The worker requests 4 cores / 32 GiB only
-            # because HACKATHON_PLAN.md's rate table assumes that shape -- it
-            # is a bookkeeping choice, never a measured requirement. Modal
-            # bills the greater of requested and used, and the host floor is a
-            # third of a budget card's bill against a tenth of an H100's, so
-            # over-requesting distorts the cheap-vs-fast comparison itself.
-            # Measure it so the production run can be sized honestly.
             "host_peak_rss_gb": _child_peak_rss_gb(),
             "container_peak_mem_gb": _cgroup_peak_mem_gb(),
         }
-        if proc.returncode != 0:
-            rec["error"] = (proc.stderr or proc.stdout)[-2000:]
-        else:
-            rec.update(_collect_outputs(case, run_out, cx, save_structures))
+        rec.update(_collect_outputs(case_out, run_out, cx, save_structures))
         results.append(rec)
+
+    # Anything that never produced a structure failed, whatever the exit code.
+    for cx in ordered:
+        if not any(r["complex_id"] == cx["complex_id"] for r in results):
+            results.append(
+                {
+                    "complex_id": cx["complex_id"],
+                    "allele": cx["allele"],
+                    "peptide": cx["peptide"],
+                    "gpu": gpu_label,
+                    "msa_mode": mode,
+                    "ok": False,
+                    "error": (proc.stderr or proc.stdout or "no structure written")[-2000:],
+                }
+            )
+    results.extend(missing)
 
     if save_structures:
         out_vol.commit()
 
     return {
         "gpu": gpu_label,
-        "msa_mode": "single_seq" if single_sequence else "msa",
-        "startup_s": startup_s,
+        "msa_mode": mode,
+        # The real container startup: mount and setup before boltz was invoked.
+        "startup_s": round(run_t0 - container_t0, 2),
+        # Weight load + CUDA init + the first fold, paid once per container.
+        "load_plus_first_s": load_plus_first,
+        "batch_total_s": round(total_s, 2),
         "container_s": round(time.monotonic() - container_t0, 2),
         "n": len(complexes),
+        # boltz's own stdout carries the per-stage breakdown and was previously
+        # discarded on success, which made the overhead unrecoverable.
+        "stdout_tail": (proc.stdout or "")[-3000:],
+        "returncode": proc.returncode,
         "results": results,
     }
 
@@ -248,11 +333,21 @@ def fold_batch(
 def _collect_outputs(
     case: Path, run_out: Path, cx: dict, save: bool
 ) -> dict:
-    """Harvest the structure, the confidence JSON, and the PAE matrix."""
+    """Harvest the structure, the confidence JSON, and the PAE matrix.
+
+    ``case`` is the batch-wide output tree, so every glob is filtered to this
+    complex: a bare rglob would return all eight complexes' files and attach
+    the first one's scores to every row.
+    """
     info: dict = {}
-    cifs = sorted(case.rglob("*_model_0.cif")) or sorted(case.rglob("*.cif"))
-    confs = sorted(case.rglob("confidence_*.json"))
-    paes = sorted(case.rglob("pae_*.npz")) + sorted(case.rglob("pae_*.npy"))
+    cid = cx["complex_id"]
+
+    def mine(pattern: str) -> list[Path]:
+        return sorted(p for p in case.rglob(pattern) if cid in p.as_posix())
+
+    cifs = mine(f"{cid}_model_0.cif") or mine("*_model_0.cif") or mine("*.cif")
+    confs = mine("confidence_*.json")
+    paes = mine("pae_*.npz") + mine("pae_*.npy")
 
     info["has_structure"] = bool(cifs)
     info["has_pae"] = bool(paes)
@@ -303,7 +398,12 @@ def pilot(gpu: str = "L40S", limit: int = 3, both_arms: bool = False):
 
     for b in batches:
         ok = sum(1 for r in b["results"] if r["ok"])
-        print(f"\n{b['msa_mode']}: {ok}/{b['n']} ok, startup {b['startup_s']} s")
+        print(
+            f"\n{b['msa_mode']}: {ok}/{b['n']} ok  "
+            f"container setup {b['startup_s']} s  "
+            f"weight load + first fold {b.get('load_plus_first_s')} s  "
+            f"batch total {b.get('batch_total_s')} s"
+        )
         for r in b["results"]:
             tag = " (warmup)" if r["is_warmup"] else ""
             if r["ok"]:
