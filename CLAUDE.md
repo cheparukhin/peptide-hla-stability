@@ -8,7 +8,8 @@ for scope, stage order, budget ceilings, and the hour-5 structural
 go/reduce/stop decision. Add detail there, not here.
 
 Data documentation lives in [docs/](docs/README.md): dataset stats, the C67S
-exclusion, the frozen splits, and the PDB structural overlap.
+exclusion, the frozen splits, the PDB structural overlap, and the public
+affinity table used for augmentation.
 
 ## Invariants
 

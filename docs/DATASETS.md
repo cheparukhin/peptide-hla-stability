@@ -11,6 +11,12 @@ Fold assignments for every row of all three files live in
 documented in [SPLITS.md](SPLITS.md).
 Join them on `(allele, peptide)`.
 
+Public binding-affinity measurements for the same 75 alleles — the auxiliary
+labels for stage 3b — are in
+[`data/data_augmentation_iedb/`](../data/data_augmentation_iedb/) and described
+in [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md). They are not stability data
+and are not part of train/eval; read that document before training on them.
+
 Structural coverage for these alleles — deposited PDB entries, threading
 templates, and the 32 complexes with both a measured half-life and an
 experimental structure — is described in [STRUCTURES.md](STRUCTURES.md).
@@ -19,7 +25,7 @@ The two derived files are regenerated with
 `python3 scripts/make_no_c67s_dataset.py`; the summaries with
 `python3 scripts/summarize_dataset.py [--input <csv>]`. The split is lossless —
 concatenating them reproduces the raw CSV row for row. The raw CSV is never
-modified; `shasum -a 256 -c data/SHA256SUMS` still passes.
+modified; `(cd data && shasum -a 256 -c SHA256SUMS)` still passes.
 
 ## Why the C67S constructs are excluded
 

@@ -18,6 +18,12 @@ and stage order. These documents describe the data behind it.
 | --- | --- |
 | [SPLITS.md](SPLITS.md) | the frozen peptide-grouped folds — how components are built, why the threshold is 0.70, what the leakage check proves, and how to join them |
 
+## Augmentation
+
+| document | covers |
+| --- | --- |
+| [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md) | the public binding-affinity table behind stage 3b — provenance, allele coverage, why the C67S constructs are flagged rather than matched, and the leakage filters to apply before training on it |
+
 ## Structures
 
 | document | covers |
@@ -33,6 +39,7 @@ and stage order. These documents describe the data behind it.
 | `data/c67s_cleanup/rasmussen_no_C67S.csv`, `data/c67s_cleanup/benchmark_C67S.csv` | `python3 scripts/make_no_c67s_dataset.py` |
 | either dataset summary | `python3 scripts/summarize_dataset.py [--input <csv>]` |
 | `data/c67s_cleanup/peptide_splits.csv` and its manifest | `python3 scripts/split_peptides.py` |
+| `data/data_augmentation_iedb/affinity_reference_75alleles.csv` and its manifest | `python3 scripts/fetch_affinity_reference.py` |
 
 The structural tables were assembled from RCSB and are checked in as-is; no
 script in this repo regenerates them.

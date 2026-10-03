@@ -1,0 +1,57 @@
+{
+  "sources": {
+    "curated": {
+      "url": "https://github.com/openvax/mhcflurry/releases/download/pre-2.1/data_curated.20231023.tar.bz2",
+      "member": "curated_training_data.affinity.csv.bz2",
+      "snapshot": "2023-10-23"
+    },
+    "bd2013": {
+      "url": "https://github.com/openvax/mhcflurry/releases/download/0.9.1/data_kim2014.tar.bz2",
+      "member": "bdata.20130222.mhci.public.1.txt",
+      "citation": "Kim et al. 2014, BMC Bioinformatics"
+    }
+  },
+  "filters": {
+    "species": "human HLA",
+    "peptide_length": 9,
+    "alleles": "the 75 stability alleles, C67S suffix stripped for matching",
+    "weak_binder_threshold_nM": 20000.0,
+    "duplicates": "lowest affinity_nM kept per (allele, peptide)"
+  },
+  "counts": {
+    "rows": 110591,
+    "alleles_with_any_affinity": 70,
+    "alleles_with_weak_binders": 54,
+    "weak_binders": 46479,
+    "pairs_also_in_stability_set": 7281,
+    "padding_eligible": 46157,
+    "bd2013_overlap": 97965,
+    "bd2013_agrees_on_weak": 45736,
+    "excluded_engineered_construct_rows": 245,
+    "affinity_vs_stability_spearman": -0.4911
+  },
+  "engineered_construct_note": "C67S constructs are substituted at position 67, which is one of the 34 peptide-contact positions, so wild-type affinity measures a different groove. These rows are flagged and excluded from both the stability join and padding.",
+  "alleles_without_weak_binders": [
+    "HLA-A*24:07",
+    "HLA-A*24:19",
+    "HLA-A*32:07",
+    "HLA-A*33:03",
+    "HLA-A*43:01",
+    "HLA-A*68:23",
+    "HLA-A*74:01",
+    "HLA-B*13:02",
+    "HLA-B*15:10",
+    "HLA-B*27:20",
+    "HLA-B*35:08",
+    "HLA-B*39:02",
+    "HLA-B*39:10",
+    "HLA-B*41:01",
+    "HLA-B*42:02",
+    "HLA-B*44:05",
+    "HLA-B*55:01",
+    "HLA-B*56:01",
+    "HLA-B*57:02",
+    "HLA-B*57:03",
+    "HLA-B*81:01"
+  ]
+}
