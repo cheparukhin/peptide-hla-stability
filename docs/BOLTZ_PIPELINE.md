@@ -324,12 +324,19 @@ dollars.
 | Weights cached to Volume (6.204 GB) | **done** |
 | Pilot: 3 complexes on L40S | **done**, 3/3, ~$0.20 |
 | Register check vs crystal | **done**, 0.13–0.42 Å peptide CA RMSD |
-| Hardware sweep across GPUs | pending scope decision |
+| Hardware sweep: 8 complexes x 5 GPUs | **done**, ~$1.35 |
+| Host-memory probe (peak RSS 9.89 GB) | **done**, ~$0.03 |
+| **GPU chosen: A10** | $0.018/complex, $37 per 2,000, 2.6 h at 10 workers |
 
 The `CLAUDE.md` gate — "no batch GPU job without a passing end-to-end pilot on
 3–5 examples" — **is cleared**: 3 complexes folded end to end, all three in the
 groove, PAE written, chain and residue mapping verified.
 
-Still unmeasured: **every GPU other than L40S.** The A100-40GB, A100-80GB and
-H100 figures in the rate table are published prices, not measured throughput,
-so no cross-GPU claim can be made yet. Total spend to date is about **$0.21**.
+Results in [reports/stage4_benchmark.md](../reports/stage4_benchmark.md).
+Headline: **A10 wins at $0.018/complex**; H100 came in only 1.03x faster than
+L40S against the 1.83x it needed to break even; A100-40GB was anomalously the
+slowest card and is flagged as unverified at n=1 container. Total spend
+**~$1.58** against the plan's $15 pilot/benchmark ceiling.
+
+A100-80GB was never run: the pilot's 8.59 GB peak made it strictly dominated by
+A100-40GB, and the sweep then showed A100-40GB itself was uncompetitive.

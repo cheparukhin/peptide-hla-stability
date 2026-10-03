@@ -54,22 +54,41 @@ VRAM_GB = {
     "L40S": 48, "A100-40GB": 40, "A100-80GB": 80, "H100": 80,
 }
 
-# Per the plan's worker assumption: 4 physical cores and 32 GiB host memory.
 CPU_PER_CORE_S = 0.0000131
 MEM_PER_GIB_S = 0.00000222
+
+# HACKATHON_PLAN.md's rate table assumes 4 cores / 32 GiB per GPU worker, so
+# those stay the defaults for comparability. But the host request is a real
+# cost lever and it is NOT a measured requirement: it costs the same on every
+# card, so it is ~29% of an A10 bill against ~10% of an H100's, and
+# over-requesting biases the cheap-vs-fast comparison toward the expensive
+# card. Measured on A10 (reports/boltz_hostmem_probe_a10.csv): peak child RSS
+# 9.89 GB, so 32 GiB is roughly 3x more than Boltz touches -- but 8 GiB would
+# have OOMed, which is why this is measured rather than guessed.
 WORKER_CORES = 4
 WORKER_GIB = 32
 
-_HOST_PER_S = WORKER_CORES * CPU_PER_CORE_S + WORKER_GIB * MEM_PER_GIB_S
 
-RATES = {
-    gpu: {
-        "gpu_hr": round(per_s * 3600, 4),
-        "combined_hr": round((per_s + _HOST_PER_S) * 3600, 4),
-        "vram_gb": VRAM_GB[gpu],
+def host_per_s(cores: float = WORKER_CORES, gib: float = WORKER_GIB) -> float:
+    return cores * CPU_PER_CORE_S + gib * MEM_PER_GIB_S
+
+
+_HOST_PER_S = host_per_s()
+
+
+def build_rates(cores: float = WORKER_CORES, gib: float = WORKER_GIB) -> dict:
+    per_host = host_per_s(cores, gib)
+    return {
+        gpu: {
+            "gpu_hr": round(per_s * 3600, 4),
+            "combined_hr": round((per_s + per_host) * 3600, 4),
+            "vram_gb": VRAM_GB[gpu],
+        }
+        for gpu, per_s in GPU_PER_S.items()
     }
-    for gpu, per_s in GPU_PER_S.items()
-}
+
+
+RATES = build_rates()
 
 
 def load_results(path: Path) -> dict[str, list[dict]]:
@@ -161,8 +180,21 @@ def main() -> None:
         default=100,
         help="complexes folded per container in production, over which startup amortises",
     )
+    p.add_argument(
+        "--cores", type=float, default=WORKER_CORES,
+        help="physical cores requested per worker (billed whether used or not)",
+    )
+    p.add_argument(
+        "--gib", type=float, default=WORKER_GIB,
+        help="host GiB requested per worker; measured peak is 9.89 GB, so do not go below ~12",
+    )
     p.add_argument("--results", type=Path, default=RESULTS)
     args = p.parse_args()
+
+    global RATES
+    RATES = build_rates(args.cores, args.gib)
+    host_hr = host_per_s(args.cores, args.gib) * 3600
+    print(f"host request: {args.cores:g} cores / {args.gib:g} GiB = ${host_hr:.4f}/hr per worker\n")
 
     by_gpu = load_results(args.results)
     rows = [summarize(g, r, args.per_container) for g, r in sorted(by_gpu.items())]

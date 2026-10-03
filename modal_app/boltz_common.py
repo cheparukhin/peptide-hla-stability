@@ -118,7 +118,8 @@ def read_panel(name: str) -> list[dict]:
 def write_results(path: Path, batches: list[dict]) -> None:
     cols = [
         "gpu", "msa_mode", "complex_id", "allele", "peptide", "ok", "is_warmup",
-        "fold_s", "billed_s", "startup_s", "peak_mem_gb", "has_structure",
+        "fold_s", "billed_s", "startup_s", "peak_mem_gb", "host_peak_rss_gb",
+        "container_peak_mem_gb", "has_structure",
         "has_pae", "confidence_score", "ptm", "iptm", "complex_plddt", "error",
     ]
     path.parent.mkdir(exist_ok=True)

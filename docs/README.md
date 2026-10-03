@@ -36,7 +36,8 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | why MSAs are per-sequence and cost almost nothing, the pilot and benchmark panels, the Modal cost traps (`H100!`, billed startup), the verified rate table, and the GPU decision rule |
+| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | why MSAs are per-sequence and cost almost nothing, the pilot and benchmark panels, the Modal cost traps (`H100!`, billed startup, oversized host requests), the verified rate table, and the GPU decision rule |
+| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **the measured result** — throughput and cost per complex across 5 GPUs, why H100 is a trap at this complex size, the A100 anomaly, pose validation, spend, and limitations |
 
 ## Regenerating
 

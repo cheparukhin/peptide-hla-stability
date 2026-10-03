@@ -56,6 +56,40 @@ from boltz_common import (
 app = modal.App("pepstab-boltz")
 
 
+def _child_peak_rss_gb() -> float:
+    """Peak RSS of the boltz subprocess, in GB.
+
+    ``RUSAGE_CHILDREN`` reports the high-water mark across all reaped children,
+    so this is monotonic across folds in one container -- which is what we want
+    for sizing a memory request.
+    """
+    try:
+        import resource
+
+        kb = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+        return round(kb / 1024 / 1024, 2)  # Linux reports kibibytes
+    except Exception:
+        return -1.0
+
+
+def _cgroup_peak_mem_gb() -> float:
+    """Whole-container peak memory from the cgroup, in GB.
+
+    This is the figure Modal's memory request has to cover, since it includes
+    the parent process and page cache, not just the boltz child.
+    """
+    for path in (
+        "/sys/fs/cgroup/memory.peak",
+        "/sys/fs/cgroup/memory/memory.max_usage_in_bytes",
+    ):
+        try:
+            with open(path) as fh:
+                return round(int(fh.read().strip()) / 1e9, 2)
+        except Exception:
+            continue
+    return -1.0
+
+
 class _GpuMemoryProbe:
     """Polls ``nvidia-smi`` on a thread; boltz runs as a subprocess so in-process
     torch counters would see nothing."""
@@ -182,6 +216,15 @@ def fold_batch(
             "ok": proc.returncode == 0,
             "fold_s": round(fold_s, 2),
             "peak_mem_gb": probe.peak_gb,
+            # Host RAM, not GPU. The worker requests 4 cores / 32 GiB only
+            # because HACKATHON_PLAN.md's rate table assumes that shape -- it
+            # is a bookkeeping choice, never a measured requirement. Modal
+            # bills the greater of requested and used, and the host floor is a
+            # third of a budget card's bill against a tenth of an H100's, so
+            # over-requesting distorts the cheap-vs-fast comparison itself.
+            # Measure it so the production run can be sized honestly.
+            "host_peak_rss_gb": _child_peak_rss_gb(),
+            "container_peak_mem_gb": _cgroup_peak_mem_gb(),
         }
         if proc.returncode != 0:
             rec["error"] = (proc.stderr or proc.stdout)[-2000:]
