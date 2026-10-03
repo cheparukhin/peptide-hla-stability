@@ -32,6 +32,12 @@ and stage order. These documents describe the data behind it.
 | [pdb_rasmussen_overlap.md](pdb_rasmussen_overlap.md) | the 32 complexes with both a measured half-life and a deposited structure, plus 12 near misses — browsable, with RCSB links |
 | [allele_pdb_templates.md](allele_pdb_templates.md) | one threading template per allele, tiered by how well the groove matches |
 
+## Folding (stage 4)
+
+| document | covers |
+| --- | --- |
+| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | why MSAs are per-sequence and cost almost nothing, the pilot and benchmark panels, the Modal cost traps (`H100!`, billed startup), the verified rate table, and the GPU decision rule |
+
 ## Regenerating
 
 | artifact | command |
@@ -40,6 +46,8 @@ and stage order. These documents describe the data behind it.
 | either dataset summary | `python3 scripts/summarize_dataset.py [--input <csv>]` |
 | `data/c67s_cleanup/peptide_splits.csv` and its manifest | `python3 scripts/split_peptides.py` |
 | `data/data_augmentation_iedb/affinity_reference_75alleles.csv` and its manifest | `python3 scripts/fetch_affinity_reference.py` |
+| `reports/boltz_pilot.csv`, `reports/boltz_bench_panel.csv`, `reports/boltz_msa_targets.csv` | `python3 scripts/boltz_panel.py` |
+| `reports/gpu_decision.csv` | `python3 scripts/gpu_decision.py` (needs `reports/boltz_bench_results.csv`) |
 
 The structural tables were assembled from RCSB and are checked in as-is; no
 script in this repo regenerates them.
