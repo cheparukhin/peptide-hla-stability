@@ -10,7 +10,9 @@ records the sources, filters and counts. Regenerate with
 
 This table supports the auxiliary affinity experiment in
 [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 2c, and the measured-affinity
-augmentation arm in stage 2b. It carries **affinity**, how
+augmentation arm in stage 2b — which has now run; see
+[reports/stage2b_augmentation.md](../reports/stage2b_augmentation.md) for the
+result and `pepstab.augment` for the filtering described below, implemented. It carries **affinity**, how
 strongly a peptide binds — not **stability**, how long it stays. The two are
 related but distinct, which is the whole reason the experiment is worth running.
 
@@ -129,6 +131,13 @@ measured on a different allele. Of the 46,157 `padding_eligible` rows:
 Those 7,502 rows are distance-zero leakage, not near-neighbour leakage. Filter
 `padding_eligible` against [`data/splits.csv`](../data/splits.csv) on `peptide`
 before using it, not on `(allele, peptide)`.
+
+Stage 2b measured this on the weak-binder pool it actually used. Against the
+inner-dev, validation and test peptides combined, the distance filter removes
+9,731 of 46,157 candidate rows (917 peptides) — and **9,123 of those 9,731 sit
+at distance 0**, exact held-out peptides offered under another allele. They are
+94% of the exclusions, and a pair-wise check would have let every one of them
+through.
 
 ### 2. Near neighbours of held-out peptides
 

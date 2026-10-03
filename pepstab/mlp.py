@@ -12,6 +12,15 @@ error on ``y_log1p``, Adam, L2 on weights (not biases), and the best-dev weights
 restored at the end. Fitting is deterministic given ``seed`` -- the only
 randomness is initialisation and minibatch order, both from one seeded
 generator.
+
+``fit`` accepts an optional per-row ``sample_weight``, which stage 2b needs to
+down-weight assumed-zero augmentation rows against measured ones. The weighted
+loss is ``sum_i w_i (pred_i - y_i)^2 / n_batch`` -- normalised by the batch's
+*row count*, not its weight sum, so uniform weights of 1 reproduce the
+unweighted loss exactly and the measured-only arm is bit-identical to a run
+that passes no weights at all. The dev fold is never weighted: it holds
+measured rows only, and its MSE has to mean the same thing in every arm for the
+stopping epoch to be comparable.
 """
 
 from __future__ import annotations
@@ -95,6 +104,7 @@ class MLPRegressor:
         self.n_epochs_: int = 0
         self.dev_mse_: float = float("nan")
         self.fit_seconds_: float = float("nan")
+        self.sample_weight_sum_: float = float("nan")
 
     # --- internals --------------------------------------------------------
 
@@ -120,11 +130,14 @@ class MLPRegressor:
             acts.append(h)
         return h.ravel(), acts
 
-    def _backward(self, acts: list[np.ndarray], residual: np.ndarray
+    def _backward(self, acts: list[np.ndarray], residual: np.ndarray,
+                  weight: np.ndarray | None = None
                   ) -> tuple[list[np.ndarray], list[np.ndarray]]:
         n = len(residual)
-        # d/dpred of mean((pred - y)^2)
-        delta = ((2.0 / n) * residual[:, None]).astype(DTYPE)
+        # d/dpred of  sum_i w_i (pred_i - y_i)^2 / n, which is mean((pred-y)^2)
+        # when every w_i is 1.
+        scaled = residual if weight is None else residual * weight
+        delta = ((2.0 / n) * scaled[:, None]).astype(DTYPE)
         gw: list[np.ndarray] = [None] * len(self.weights_)  # type: ignore[list-item]
         gb: list[np.ndarray] = [None] * len(self.biases_)  # type: ignore[list-item]
         for k in range(len(self.weights_) - 1, -1, -1):
@@ -140,12 +153,20 @@ class MLPRegressor:
     # --- public API -------------------------------------------------------
 
     def fit(self, X: np.ndarray, y: np.ndarray,
-            X_dev: np.ndarray, y_dev: np.ndarray) -> "MLPRegressor":
+            X_dev: np.ndarray, y_dev: np.ndarray,
+            sample_weight: np.ndarray | None = None) -> "MLPRegressor":
         """Fit on ``(X, y)``, stopping on ``(X_dev, y_dev)``.
 
         The dev fold is only ever used to choose the epoch. It is the caller's
         job to make sure it is separated from ``X`` the same way the frozen
         splits separate train from val -- by whole peptide clusters.
+
+        ``sample_weight`` is an optional non-negative per-row weight on the fit
+        rows. Stage 2b uses it to give assumed-zero augmentation rows less pull
+        than measured ones. It also weights the target offset, so adding a block
+        of assumed zeros at weight 0.1 moves the centring by a tenth of what the
+        same block at weight 1 would. Passing ``None`` or all-ones is the
+        unweighted path, unchanged.
         """
         cfg = self.config
         X = np.asarray(X, dtype=DTYPE)
@@ -157,10 +178,24 @@ class MLPRegressor:
         if not len(X_dev):
             raise ValueError("the dev fold is empty; early stopping needs rows")
 
+        if sample_weight is None:
+            weight = None
+        else:
+            weight = np.asarray(sample_weight, dtype=DTYPE)
+            if weight.shape != (len(X),):
+                raise ValueError(f"sample_weight has shape {weight.shape}, "
+                                 f"expected ({len(X)},)")
+            if not np.all(np.isfinite(weight)) or np.any(weight < 0):
+                raise ValueError("sample_weight must be finite and non-negative")
+            if not weight.sum():
+                raise ValueError("sample_weight sums to 0; nothing to fit on")
+        self.sample_weight_sum_ = float(len(X) if weight is None else weight.sum())
+
         rng = np.random.default_rng(cfg.seed)
         # Centre the target so a zero-initialised output bias already predicts
         # the mean. Added back in predict(); it is not a fitted parameter.
-        self.y_offset_ = float(y.mean())
+        self.y_offset_ = float(y.mean() if weight is None
+                               else np.dot(weight, y) / weight.sum())
         y_centred = y - self.y_offset_
         self._init_params(X.shape[1], rng)
 
@@ -176,7 +211,8 @@ class MLPRegressor:
             for start in range(0, len(order), cfg.batch_size):
                 idx = order[start:start + cfg.batch_size]
                 pred, acts = self._forward(X[idx])
-                gw, gb = self._backward(acts, pred - y_centred[idx])
+                gw, gb = self._backward(acts, pred - y_centred[idx],
+                                        None if weight is None else weight[idx])
                 step += 1
                 for k in range(len(self.weights_)):
                     # L2 on weights only: penalising biases just fights the

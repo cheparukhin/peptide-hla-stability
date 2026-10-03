@@ -41,6 +41,25 @@ input ties the pseudosequence within noise, so stage 3 must compare domain
 embeddings against *both*. Ensembling alone is worth +0.090 mean SCC, so
 stage 3 must ensemble its arm the same way.
 
+## Stage 2b output (done — augmentation does not help)
+
+| Artifact | Description |
+|---|---|
+| [reports/stage2b_augmentation.md](reports/stage2b_augmentation.md) | Measured vs predicted weak-binder negatives, paired intervals, and the mechanism |
+| `data/augmentation/*.csv` | Three candidate manifests with per-row provenance; `provenance.json` carries seeds, the leakage ledger and digests |
+| `reports/stage2b_arms.csv` | The seven arms; `stage2b_deltas.csv` the eight paired intervals |
+| `reports/stage2b_negatives.csv` | Anchor composition and what the baseline already predicts per pool |
+| `pepstab/augment.py` | Candidate filtering, the Hamming ≥ 4 exclusion, manifest verification |
+| `tests/test_augmentation.py` | 47 guards, including the weighted-loss and distance-rule checks |
+
+Neither source helps: best arm +0.024, **all eight paired intervals cross zero
+and exclude 0.05**. The reason is that the two sources supply different kinds of
+negative. Measured weak binders have near-canonical anchors and the model already
+scores them near the floor. Predicted ones from random peptides have the wrong
+anchors and the model already scores them *below* the floor — they're easier than
+the easiest real data. Stage 3 runs unaugmented; stage 6 scores no augmented
+model.
+
 ## Stage 4b.1 output (done — arm B's MSA cache)
 
 | Artifact | Description |
@@ -85,6 +104,10 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 - Load splits from disk. Regenerating breaks peptide-cluster grouping and leaks
   training data into test.
 - Select on validation. **Test is scored once, at stage 6.**
+- Augmented rows are assumptions, not measurements: they carry `thalf_hours = 0`
+  in `data/augmentation/`, enter the fit set only, and never touch validation or
+  test. Verify any manifest with `pepstab.augment.verify_manifest` before
+  training on it.
 - No batch GPU job without a passing pilot on 3–5 examples.
 
 ## Regenerating
@@ -96,6 +119,9 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 .venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
 .venv/bin/python scripts/baseline_ensemble.py  # 30-network ensemble baseline, ~1 min
 .venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
+.venv/bin/python scripts/augment_affinity.py   # stage 2b manifests, ~40 s (downloads a proteome)
+.venv/bin/python scripts/baseline_augmented.py # stage 2b arms + intervals, ~13 min
+.venv/bin/python scripts/stage2b_negatives.py  # stage 2b pool characterisation, ~10 s
 .venv/bin/python -m pytest tests/ -q
 ```
 

@@ -1,0 +1,26 @@
+{
+  "baseline": "measured_only",
+  "baseline_rho_mean": 0.6095672431584382,
+  "best_augmented_arm": "measured_affinity_w0.25",
+  "best_augmented_rho_mean": 0.6205572493055592,
+  "selected_on": "val median per-allele Spearman, mean over seeds",
+  "config": {
+    "input_set": "pep_pseudo",
+    "encoding": "onehot",
+    "hidden": [
+      256,
+      64
+    ],
+    "l2": 1e-05,
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "weights": [
+    0.1,
+    0.25
+  ],
+  "note": "assumed zeros never enter validation or test"
+}

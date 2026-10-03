@@ -84,20 +84,50 @@ METHOD_DIFFERENCES = [
 ]
 
 
-def paper_scale(values_log1p: np.ndarray, t0: float = 1.0) -> np.ndarray:
-    """Map ``log1p`` half-life onto the paper's target ``s = 2^(-t0/th)``.
+#: Every PCC in this script is reported on the paper's released configuration,
+#: ``s = 2^(-1/th)``. A model trained at some other t0 emits scores on *its*
+#: scale, and Pearson is not invariant between them: scoring a perfect t0=0.5
+#: model against t0=1 labels reads 0.985, and a perfect t0=2 model reads 0.974.
+#: Converting through half-life puts every arm on one scale, so the column can
+#: be compared across rows and against the paper's 0.676.
+REPORT_T0 = 1.0
 
-    Applied to **both** labels and predictions before computing PCC. Pearson
-    correlation is not invariant under a nonlinear transform, so correlating
-    log1p predictions against paper-scale labels would be neither metric --
-    it reads 0.639 where the paper-scale PCC is 0.649.
 
-    Negative predictions on the log1p scale mean a predicted half-life below
-    zero; they clamp to ``s = 0``, the limit as th -> 0.
+def hours_to_paper(hours: np.ndarray, t0: float = REPORT_T0) -> np.ndarray:
+    """Map half-life in hours onto ``s = 2^(-t0/th)``, in [0, 1).
+
+    ``th = 0`` maps to 0, the limit as half-life vanishes.
     """
-    hours = np.expm1(np.asarray(values_log1p, dtype=float))
+    hours = np.asarray(hours, dtype=float)
     positive = hours > 0
     return np.where(positive, 2.0 ** (-t0 / np.where(positive, hours, 1.0)), 0.0)
+
+
+def paper_to_hours(s: np.ndarray, t0: float = REPORT_T0) -> np.ndarray:
+    """Invert :func:`hours_to_paper`: ``th = -t0 / log2(s)``.
+
+    A network trained on this target is not constrained to [0, 1), so scores are
+    clipped first: at or below 0 means a vanishing half-life, and at or above 1
+    an unbounded one, which clips to a large finite half-life so the value stays
+    rankable rather than becoming inf.
+    """
+    s = np.clip(np.asarray(s, dtype=float), 0.0, 1.0 - 1e-12)
+    inner = s > 0
+    return np.where(inner, -t0 / np.log2(np.where(inner, s, 0.5)), 0.0)
+
+
+def paper_scale(values_log1p: np.ndarray, t0: float = REPORT_T0) -> np.ndarray:
+    """Map ``log1p`` half-life onto the paper's target ``s = 2^(-t0/th)``.
+
+    Pearson correlation is not invariant under a nonlinear transform, so both
+    sides have to reach the same scale before it is computed -- correlating
+    log1p predictions against paper-scale labels reads 0.639 where the
+    paper-scale PCC is 0.649.
+
+    Negative predictions on the log1p scale mean a predicted half-life below
+    zero; they clamp to ``s = 0``.
+    """
+    return hours_to_paper(np.expm1(np.asarray(values_log1p, dtype=float)), t0)
 
 
 #: The scales a model's predictions can already be on. A model trained on the
@@ -108,22 +138,45 @@ def paper_scale(values_log1p: np.ndarray, t0: float = 1.0) -> np.ndarray:
 PRED_SCALES = ("log1p", "paper")
 
 
-def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
-               alleles: list[str], pred_scale: str = "log1p") -> dict:
-    """Mean and median per-allele SCC, plus PCC with both sides on one scale.
+def to_report_scale(y_pred: np.ndarray, pred_scale: str,
+                    pred_t0: float | None) -> tuple[np.ndarray, float]:
+    """Put predictions on :data:`REPORT_T0`, whatever scale they arrived on.
 
-    ``pred_scale`` says what ``y_pred`` already is, so predictions are converted
-    at most once. SCC is unaffected either way -- it is rank-based and both
-    scales are monotone in half-life -- which is exactly why SCC is the metric
-    to compare against the paper on.
+    Returns the converted scores and the share that had to be clamped into the
+    target's valid range. The networks are unconstrained, so a paper-target
+    model puts 7-10% of its predictions outside [0, 1); those saturate, which
+    creates ties and moves PCC. SCC is computed on the raw predictions and is
+    unaffected -- another reason the comparison against the paper rests on SCC.
+    """
+    y_pred = np.asarray(y_pred, dtype=float)
+    if pred_scale == "log1p":
+        return paper_scale(y_pred, REPORT_T0), float((np.expm1(y_pred) <= 0).mean())
+    if pred_t0 is None:
+        raise ValueError("pred_scale='paper' needs the t0 the model was trained "
+                         "on; without it the conversion silently assumes "
+                         f"t0={REPORT_T0}")
+    outside = float(((y_pred < 0) | (y_pred >= 1)).mean())
+    return hours_to_paper(paper_to_hours(y_pred, pred_t0), REPORT_T0), outside
+
+
+def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
+               alleles: list[str], pred_scale: str = "log1p",
+               pred_t0: float | None = None) -> dict:
+    """Mean and median per-allele SCC, plus PCC with both sides on REPORT_T0.
+
+    ``pred_scale`` says what ``y_pred`` already is and ``pred_t0`` which t0 it
+    was trained on, so predictions are converted exactly once and every row
+    lands on one comparable scale. SCC is unaffected -- it is rank-based and all
+    these scales are monotone in half-life -- which is why SCC, not PCC, is the
+    metric compared against the paper.
 
     ``pcc_log1p_mean`` is NaN for paper-scale predictions: inverting
-    ``s = 2^(-t0/th)`` is undefined at ``s = 0``, where 20.2% of the labels sit.
+    ``s = 2^(-t0/th)`` is undefined at ``s = 0``, where 20.2% of labels sit.
     """
     if pred_scale not in PRED_SCALES:
         raise ValueError(f"pred_scale must be one of {PRED_SCALES}, got {pred_scale!r}")
-    true_paper = paper_scale(y_log1p)
-    pred_paper = paper_scale(y_pred) if pred_scale == "log1p" else np.asarray(y_pred, float)
+    true_report = paper_scale(y_log1p, REPORT_T0)
+    pred_report, clamped = to_report_scale(y_pred, pred_scale, pred_t0)
 
     scc, pcc_log, pcc_paper = [], [], []
     for a in alleles:
@@ -133,13 +186,14 @@ def per_allele(allele: np.ndarray, y_log1p: np.ndarray, y_pred: np.ndarray,
         scc.append(stats.spearmanr(y_pred[m], y_log1p[m]).statistic)
         if pred_scale == "log1p":
             pcc_log.append(stats.pearsonr(y_pred[m], y_log1p[m]).statistic)
-        if len(np.unique(pred_paper[m])) > 1 and len(np.unique(true_paper[m])) > 1:
-            pcc_paper.append(stats.pearsonr(pred_paper[m], true_paper[m]).statistic)
+        if len(np.unique(pred_report[m])) > 1 and len(np.unique(true_report[m])) > 1:
+            pcc_paper.append(stats.pearsonr(pred_report[m], true_report[m]).statistic)
     return {"n_alleles": len(scc), "scc_mean": float(np.mean(scc)),
             "scc_median": float(np.median(scc)),
             "pcc_log1p_mean": float(np.mean(pcc_log)) if pcc_log else float("nan"),
             "pcc_paper_mean": float(np.mean(pcc_paper)),
-            "pred_scale": pred_scale}
+            "clamped_share": clamped,
+            "pred_scale": pred_scale, "pred_t0": pred_t0}
 
 
 def fit_predict(train: pd.DataFrame, evalset: pd.DataFrame, t0: float | None = None,
@@ -245,7 +299,7 @@ def grouping_experiment(train: pd.DataFrame) -> pd.DataFrame:
         singles = [per_allele(allele_arr, y_eval, p, alleles) for p in members]
         rows.append({"arm": label, "n_train_rows": len(frame),
                      **{k: float(np.mean([s[k] for s in singles]))
-                        for k in singles[0] if k != "pred_scale"}})
+                        for k in singles[0] if k not in ("pred_scale", "pred_t0")}})
         print(f"  {label:32s} mean SCC={rows[-1]['scc_mean']:.3f}  "
               f"median SCC={rows[-1]['scc_median']:.3f}")
 
@@ -322,16 +376,18 @@ def main() -> int:
         # A model trained on the paper's target already emits paper-scale
         # scores; only a log1p-trained model needs converting.
         scale = "log1p" if t0 is None else "paper"
-        singles = [per_allele(allele_arr, y_val, p, alleles, scale) for p in members]
-        ens = per_allele(allele_arr, y_val, np.mean(members, axis=0), alleles, scale)
+        singles = [per_allele(allele_arr, y_val, p, alleles, scale, t0) for p in members]
+        ens = per_allele(allele_arr, y_val, np.mean(members, axis=0), alleles, scale, t0)
+        skip = ("pred_scale", "pred_t0")
         rows.append({"setting": label, "model": "single network (seed mean)",
-                     "pred_scale": scale,
+                     "pred_scale": scale, "pred_t0": t0,
                      **{k: float(np.mean([s[k] for s in singles]))
-                        for k in singles[0] if k != "pred_scale"}})
+                        for k in singles[0] if k not in skip}})
         rows.append({"setting": label, "model": f"{len(SEEDS)}-seed ensemble", **ens})
         print(f"  {label:22s} single={rows[-2]['scc_mean']:.3f}  "
               f"{len(SEEDS)}-seed ensemble={ens['scc_mean']:.3f}  "
-              f"(PCC paper scale {ens['pcc_paper_mean']:.3f})")
+              f"(PCC on t0={REPORT_T0:g} scale {ens['pcc_paper_mean']:.3f}, "
+              f"{ens['clamped_share']:.1%} of predictions clamped)")
 
     out = pd.DataFrame(rows)
     out.to_csv(REPO_ROOT / "reports" / "compare_to_paper.csv", index=False)

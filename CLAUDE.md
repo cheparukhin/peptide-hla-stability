@@ -23,4 +23,8 @@ affinity table used for augmentation.
   [EVALUATION.md](EVALUATION.md). `data/c67s_cleanup/peptide_splits.csv` is the
   superseded BLOSUM62 version — do not load it.
 - Validation drives every decision. The test set is scored once, at stage 6.
+- Augmented rows in `data/augmentation/` are **assumed** labels (`thalf_hours =
+  0`), not measurements. They enter the fit set only, never validation or test,
+  and never overwrite a measured value. Check any manifest with
+  `pepstab.augment.verify_manifest` before training on it.
 - No batch GPU job without a passing end-to-end pilot on 3–5 examples.

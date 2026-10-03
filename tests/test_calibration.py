@@ -19,7 +19,14 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from pepstab.evaluation import PANEL_STATISTICS, paired_cluster_bootstrap
-from scripts.compare_to_paper import PRED_SCALES, paper_scale, per_allele
+from scripts.compare_to_paper import (
+    PRED_SCALES,
+    REPORT_T0,
+    hours_to_paper,
+    paper_scale,
+    paper_to_hours,
+    per_allele,
+)
 
 
 # --- the target transform -------------------------------------------------
@@ -65,16 +72,19 @@ def test_log1p_predictions_are_converted_once(toy):
     assert out["pcc_paper_mean"] == pytest.approx(1.0)
 
 
-def test_paper_scale_predictions_are_not_converted_again(toy):
+@pytest.mark.parametrize("t0", [0.5, 1.0, 2.0])
+def test_paper_scale_predictions_are_not_converted_again(toy, t0):
     """A model trained on the paper target emits paper-scale scores already.
 
-    Feeding exact paper-scale labels back in must score PCC 1. Declaring them
-    ``log1p`` instead transforms them a second time and the correlation drops --
-    that gap is the bug.
+    Feeding exact paper-scale labels back in must score PCC 1 **at every t0**.
+    Reporting is on ``REPORT_T0``, so a t0=0.5 or t0=2 model has to be converted
+    through half-life first; scoring it against t0=1 labels unconverted reads
+    0.985 and 0.974 for a perfect model. Declaring the scores ``log1p`` instead
+    transforms them a second time and the correlation drops again.
     """
     allele, y, alleles = toy
-    native = paper_scale(y)
-    correct = per_allele(allele, y, native, alleles, pred_scale="paper")
+    native = paper_scale(y, t0)
+    correct = per_allele(allele, y, native, alleles, pred_scale="paper", pred_t0=t0)
     assert correct["pcc_paper_mean"] == pytest.approx(1.0)
 
     # Declaring them log1p transforms them a second time. The distortion is
@@ -85,12 +95,40 @@ def test_paper_scale_predictions_are_not_converted_again(toy):
     assert double["pcc_paper_mean"] < 1.0
     assert double["pcc_paper_mean"] < correct["pcc_paper_mean"]
 
+    if t0 != REPORT_T0:
+        # The pre-fix behaviour: right scale, wrong t0.
+        unconverted = per_allele(allele, y, native, alleles, pred_scale="paper",
+                                 pred_t0=REPORT_T0)
+        assert unconverted["pcc_paper_mean"] < 1.0
+
+
+@pytest.mark.parametrize("t0", [0.5, 1.0, 2.0])
+def test_paper_scale_round_trips_through_hours(t0):
+    hours = np.array([0.0, 0.05, 0.5, 1.0, 3.0, 50.0])
+    np.testing.assert_allclose(paper_to_hours(hours_to_paper(hours, t0), t0),
+                               hours, atol=1e-9)
+
+
+def test_paper_to_hours_clips_out_of_range_scores():
+    """A network trained on this target is not constrained to [0, 1)."""
+    out = paper_to_hours(np.array([-0.5, 0.0, 1.0, 2.5]), t0=1.0)
+    assert out[0] == 0.0 and out[1] == 0.0
+    assert np.isfinite(out[2]) and np.isfinite(out[3])
+    assert out[2] > 1e9, "a score at the ceiling means an unbounded half-life"
+
+
+def test_paper_scale_predictions_require_their_t0(toy):
+    allele, y, alleles = toy
+    with pytest.raises(ValueError, match="needs the t0"):
+        per_allele(allele, y, paper_scale(y, 2.0), alleles, pred_scale="paper")
+
 
 def test_scc_is_invariant_to_the_prediction_scale(toy):
     """Why SCC is the metric compared against the paper: rank-based."""
     allele, y, alleles = toy
     a = per_allele(allele, y, y.copy(), alleles, pred_scale="log1p")
-    b = per_allele(allele, y, paper_scale(y), alleles, pred_scale="paper")
+    b = per_allele(allele, y, paper_scale(y, 2.0), alleles,
+                   pred_scale="paper", pred_t0=2.0)
     assert a["scc_mean"] == pytest.approx(b["scc_mean"])
     assert a["scc_median"] == pytest.approx(b["scc_median"])
 
@@ -98,7 +136,8 @@ def test_scc_is_invariant_to_the_prediction_scale(toy):
 def test_pcc_log1p_is_undefined_for_paper_scale_predictions(toy):
     """Inverting ``2^(-t0/th)`` is undefined at s=0, where 20% of labels sit."""
     allele, y, alleles = toy
-    out = per_allele(allele, y, paper_scale(y), alleles, pred_scale="paper")
+    out = per_allele(allele, y, paper_scale(y), alleles, pred_scale="paper",
+                     pred_t0=REPORT_T0)
     assert np.isnan(out["pcc_log1p_mean"])
     assert out["pred_scale"] == "paper"
 

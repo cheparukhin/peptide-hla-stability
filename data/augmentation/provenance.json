@@ -1,0 +1,138 @@
+{
+  "built_by": "scripts/augment_affinity.py",
+  "weak_binder_threshold_nM": 20000.0,
+  "cap_fraction_of_fit_rows": 0.25,
+  "min_hamming_to_holdout": 4,
+  "exclusion_rule": "no augmented peptide within Hamming 3 of any inner-dev, validation or test peptide, across all alleles",
+  "assumed_label": {
+    "thalf_hours": 0.0,
+    "y_log1p": 0.0,
+    "note": "assumed, never measured; measured stability is never overwritten"
+  },
+  "seeds": {
+    "natural_peptide_sample": 20262103,
+    "measured_draw": 20262104,
+    "predicted_draw": 20262105
+  },
+  "measured_arm": {
+    "reference_rows": 110591,
+    "at_or_above_threshold": 46479,
+    "bound_at_threshold": 34075,
+    "measured_above_threshold": 6215,
+    "bound_above_threshold": 6189,
+    "after_dropping_c67s_constructs": 46418,
+    "after_dropping_pairs_with_measured_stability": 46157,
+    "peptides_before_distance_filter": 6917,
+    "after_inner_folds_distance_filter": 36426,
+    "after_cv_folds_distance_filter": 19939,
+    "excluded_by_distance": 9731,
+    "excluded_peptides_by_distance": 917,
+    "excluded_at_hamming_0": 9123,
+    "excluded_at_hamming_1": 166,
+    "excluded_at_hamming_2": 131,
+    "excluded_at_hamming_3": 311,
+    "pool_rows": 36426,
+    "pool_alleles": 51,
+    "pool_peptides": 6000,
+    "pool_corroborated_by_bd2013": 35774,
+    "pool_contradicted_by_bd2013": 43
+  },
+  "predicted_arm": {
+    "proteome": {
+      "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed%3Atrue+AND+organism_id%3A9606&format=fasta&compressed=true",
+      "cached_at": "external/uniprot_human_reviewed.fasta.gz",
+      "fasta_sha256": "bf1bc7e188e55199a2447fc20d25834db5f7f798daa818432370deb4a6b0df5e",
+      "n_proteins": 20442
+    },
+    "sampling": {
+      "n_proteins_used": 20426,
+      "n_9mer_positions": 11254806,
+      "n_sampled": 40000,
+      "n_rejected_nonstandard_residue": 0,
+      "sampling": "uniform over 9-mer start positions, distinct peptides kept",
+      "seed": 20262103
+    },
+    "predictor": {
+      "role": "labels the predicted-affinity arm; never scored on stability",
+      "architecture": "MLP pep_pseudo/onehot hidden=256x64 l2=1e-05 seed=0",
+      "target": "1 - log(affinity_nM)/log(50000), clipped to [0, 1]",
+      "inequality_handling": "the recorded bound is used as the point value; '>' rows are therefore trained toward a value stronger than the truth, which under-calls weakness and is the conservative direction for a weak-binder flag",
+      "training_data": "data/data_augmentation_iedb/affinity_reference_75alleles.csv",
+      "training_snapshot": "MHCflurry curated 2023-10-23 + BD2013 2013-02-22",
+      "excluded_rows_near_holdout": 18351,
+      "excluded_peptides_near_holdout": 2419,
+      "n_fit_rows": 82795,
+      "n_dev_rows": 9200,
+      "dev_fold": "whole single-linkage clusters at Hamming <= 3 over the reference peptides",
+      "best_epoch": 5,
+      "epochs_run": 15,
+      "fit_seconds": 5.0,
+      "dev_spearman": 0.7063,
+      "dev_pearson": 0.7815,
+      "dev_mae_unit": 0.1214,
+      "dev_weak_base_rate": 0.3863,
+      "dev_weak_precision": 0.8232,
+      "dev_weak_recall": 0.2634,
+      "dev_weak_precision_on_exact_rows": 0.598,
+      "weak_threshold_nM": 20000.0,
+      "weak_threshold_unit": 0.0847,
+      "dev_peptides": 2417
+    },
+    "selection": {
+      "natural_peptides_sampled": 40000,
+      "natural_peptides_after_inner_folds_filter": 39741,
+      "natural_peptides_after_cv_folds_filter": 39340,
+      "natural_peptides_at_hamming_0": 0,
+      "natural_peptides_at_hamming_1": 0,
+      "natural_peptides_at_hamming_2": 9,
+      "natural_peptides_at_hamming_3": 250,
+      "pairs_scored": 2980575,
+      "pairs_predicted_weak": 468781,
+      "rejected_contradicted_by_measured_affinity": 0,
+      "rejected_pair_already_has_measured_stability": 0,
+      "pool_rows": 468781,
+      "pool_alleles": 75,
+      "pool_peptides": 38979
+    }
+  },
+  "assumed_label_fidelity": {
+    "n_dual_measured_train_pairs": 413,
+    "restriction": "training split only, and only peptides held out of the affinity predictor's own fit",
+    "measured_weak_n": 16,
+    "measured_weak_share_at_floor": 0.75,
+    "measured_weak_share_above_2h": 0.0,
+    "measured_weak_median_thalf_hours": 0.0,
+    "predicted_weak_n": 0,
+    "all_dual_measured_n": 413,
+    "all_dual_measured_share_at_floor": 0.0847,
+    "all_dual_measured_share_above_2h": 0.5012,
+    "all_dual_measured_median_thalf_hours": 2.1
+  },
+  "manifests": {
+    "measured_affinity": {
+      "rows": 2910,
+      "alleles": 51,
+      "peptides": 1849,
+      "ok_cv_folds_rows": 1640,
+      "sha256": "c41862469b59a7f05b51efdaa7e3577d69a7919033f0ac3b99d04d9ceaa34d43"
+    },
+    "predicted_affinity_full": {
+      "rows": 4407,
+      "alleles": 75,
+      "peptides": 3847,
+      "ok_cv_folds_rows": 4338,
+      "sha256": "dde1923cbfa6f8b7e164725f4f97a260d7ff1549c6edfc8f31bd63162c481195"
+    },
+    "predicted_affinity": {
+      "rows": 2910,
+      "alleles": 51,
+      "peptides": 2694,
+      "ok_cv_folds_rows": 2861,
+      "sha256": "dee9b914340931a27a4e4b9ad35eeabcd68d1e74c7a824214caa3c430c320d3a"
+    }
+  },
+  "matched_rows_per_arm": 2910,
+  "matched_alleles": 51,
+  "total_alleles": 75,
+  "build_seconds": 26.5
+}

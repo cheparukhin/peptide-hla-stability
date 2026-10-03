@@ -294,9 +294,19 @@ training-data coverage on top of seed averaging. Members score 0.511–0.555; th
 ensemble reaches 0.645. Paired cluster bootstrap vs the single network:
 **Δ median per-allele ρ = +0.083 [+0.029, +0.124]**.
 
-PCC here puts **both** predictions and labels on the paper's `2^(-1/th)` scale.
-An earlier version correlated log1p predictions against paper-scale labels,
-which is neither metric and read 0.639 where the paper-scale value is 0.649.
+PCC here puts **both** predictions and labels on the paper's `2^(-1/th)` scale,
+converting through half-life so arms trained on different targets land on one
+comparable scale. Two earlier versions got this wrong in opposite directions: one
+correlated log1p predictions against paper-scale labels (read 0.639 where the
+value is 0.649), the next transformed already-paper-scale predictions a second
+time (read 0.611 for the t0=1 arm where the value is 0.599). Guarded by
+`tests/test_calibration.py`, which requires perfect predictions to score PCC 1
+at every t0.
+
+The networks are unconstrained, so 7–10% of predictions fall outside the
+target's valid range and saturate on conversion, which moves PCC. SCC is
+computed on the raw predictions and is unaffected — one more reason the
+comparison against the paper rests on SCC.
 
 **Reading the remaining 0.045 SCC.** At most ~0.024 of it is attributable to
 split grouping, and the target transform is actively worse here. It is consistent with the training-set
