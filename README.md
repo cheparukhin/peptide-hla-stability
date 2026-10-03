@@ -34,12 +34,12 @@ uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow
 | `tests/test_baselines.py` | 25 guards, including the fit/dev leakage check |
 | `reports/compare_to_paper.csv` | Calibration against NetMHCstabpan, factor by factor |
 
-Validation median per-allele Spearman: **0.693** for the 30-network ensemble
-(the NetMHCstabpan method under our splits), **0.610** for a single network,
-**0.278** for ridge on identical features, **0.000** for the training allele
-mean. Full-domain input ties the pseudosequence within noise, so stage 3 must
-compare domain embeddings against *both* — and must ensemble its own arm the
-same way, since ensembling alone is worth +0.090 mean SCC.
+Validation median per-allele Spearman: **0.693** (30-network ensemble, the
+NetMHCstabpan method under our splits), **0.610** (single network), **0.278**
+(ridge on identical features), **0.000** (training allele mean). Full-domain
+input ties the pseudosequence within noise, so stage 3 must compare domain
+embeddings against *both*. Ensembling alone is worth +0.090 mean SCC, so
+stage 3 must ensemble its arm the same way.
 
 ## Quick start
 

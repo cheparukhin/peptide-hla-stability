@@ -1,60 +1,68 @@
 # Stage 2: supervised sequence baselines
 
-What labelled sequences alone teach a small model, and the reference point every
-later stage has to beat. All numbers are **validation**; the test split is
-untouched. Metrics and the 0.05 minimum worthwhile gain are the predeclared ones
-in [EVALUATION.md](../EVALUATION.md).
+How well can a small model predict stability from labelled sequences alone?
+This report establishes the reference point every later stage must beat.
 
-Regenerate with `.venv/bin/python scripts/baseline_sequence.py`
-(~10 min, CPU only). Every run lands in `stage2_runs.csv`; the selected model
-per arm in `stage2_summary.csv`; the chosen config in `stage2_headline.json`.
+All numbers are **validation**; the test split is untouched. Metrics and the
+0.05 minimum worthwhile gain are predeclared in
+[EVALUATION.md](../EVALUATION.md).
 
-## What was run
+Regenerate: `.venv/bin/python scripts/baseline_sequence.py` (~10 min, CPU only).
+Raw runs in `stage2_runs.csv`; selected configs in `stage2_summary.csv`;
+headline config in `stage2_headline.json`.
 
-Six arms: `{one-hot, BLOSUM62} x {peptide, peptide + 34-residue contact
-pseudosequence, peptide + 182-residue domain}`. Each residue becomes a 20-vector
-and the vectors are concatenated in sequence order, so position is never pooled
-away.
+## Setup
 
-Each arm got the same budget: a 4-point MLP grid (hidden `(64,)` or `(256, 64)`,
-L2 `1e-5` or `1e-3`) at 3 seeds, plus a 5-point ridge alpha sweep as the linear
-reference. 72 MLP fits and 36 ridge fits, ~10 minutes of wall time on one
-laptop core.
+Six arms cross two encodings with three HLA input widths:
 
-**Every model fits on the same 17,744 rows.** The MLP needs a held-out fold to
-stop on, so 10% of the training split (1,972 rows, 357 whole peptide clusters)
-is cut off as an inner `dev` fold, and ridge picks alpha on that same fold
-instead of refitting on all of train. Giving one family 10% more training rows
-than another would confound every comparison in the table.
+- **Encodings:** one-hot, BLOSUM62
+- **HLA inputs:** peptide only, peptide + 34-residue contact pseudosequence,
+  peptide + 182-residue domain
 
-The inner cut moves **whole Hamming ≤ 3 peptide clusters**, reusing the stage 1
-water-fill. A random fold would put near-duplicate peptides on both sides and
-tune the epoch count on leaked rows. Measured: the nearest fit/dev peptide pair
-is 4 substitutions apart (3,557 fit peptides against 385 dev peptides) — the
-same guarantee the frozen splits give between train and test, asserted in
+Each residue becomes a 20-dimensional vector. Vectors are concatenated in
+sequence order, preserving position information.
+
+Each arm got the same budget: a 4-point MLP grid (hidden `(64,)` or
+`(256, 64)`, L2 `1e-5` or `1e-3`) at 3 seeds, plus a 5-point ridge alpha sweep
+as a linear reference. 72 MLP fits and 36 ridge fits, ~10 minutes on one laptop
+core.
+
+**All models train on the same 17,744 rows.** The MLP needs a stopping fold, so
+10% of train (1,972 rows, 357 whole peptide clusters) is held out as an inner
+dev fold. Ridge picks its alpha on that same fold rather than refitting on all of
+train. Without this, one model family would see 10% more data and confound every
+comparison.
+
+The inner fold moves **whole Hamming ≤ 3 peptide clusters**, reusing the stage 1
+water-fill procedure. A random split would put near-duplicate peptides on both
+sides and leak labels into early-stopping. Verified: the closest fit–dev peptide
+pair is 4 substitutions apart (3,557 fit vs 385 dev peptides), the same
+guarantee the frozen splits provide between train and test. Asserted in
 `tests/test_baselines.py`.
 
-Validation is used for one thing: choosing a config per arm. Stage 6 scores test
-once.
+Validation serves one purpose here: choosing a config per arm. The test split is
+scored once, at stage 6.
 
 ## Results
 
-Reference baselines, from the whole training split (they have no
-hyperparameters and nothing to stop):
+### Reference baselines
+
+These use the whole training split and have no hyperparameters:
 
 | Model | Median per-allele ρ | MAE log1p | P@10 (2 h) | Pooled ρ |
 |---|---:|---:|---:|---:|
 | Training global mean | 0.000 | 0.928 | 0.359 | — |
 | Training allele mean | 0.000 | 0.734 | 0.359 | 0.554 |
 
-Both are constant within an allele, so every per-allele Spearman is undefined
-and the panel median is exactly 0 by the predeclared rule. That is the point:
-the primary metric is measured against chance. The allele mean still reaches
-pooled ρ = 0.554 purely from between-allele offsets — which is why pooled
-correlation is a secondary metric here and not the headline.
+Both predict a constant within each allele, so per-allele Spearman is undefined
+and defaults to 0 by the predeclared rule. The primary metric measures ranking
+ability against chance. The allele mean still reaches pooled ρ = 0.554 from
+between-allele offsets alone, which is why pooled correlation is secondary.
 
-Selected model per arm. ρ is the median per-allele Spearman over 68 eligible
-validation alleles, **averaged over 3 seeds**, with the seed range in brackets:
+### Selected models
+
+ρ = median per-allele Spearman over 68 eligible validation alleles,
+**averaged over 3 seeds** (seed range in brackets):
 
 | Arm | Family | Config | Features | ρ (mean) | ρ range | MAE log1p | P@10 | Fit (s) |
 |---|---|---|---:|---:|---|---:|---:|---:|
@@ -71,23 +79,20 @@ validation alleles, **averaged over 3 seeds**, with the seed range in brackets:
 | peptide only, one-hot | ridge | α = 100 | 180 | 0.170 | — | 0.834 | 0.40 | <0.1 |
 | peptide only, BLOSUM | ridge | α = 1 | 180 | 0.169 | — | 0.829 | 0.40 | <0.1 |
 
-Seed spread for the selected MLP configs is 0.010–0.051. **Any gap below ~0.05
-is inside seed noise and is not a result** — which is the same order as the
-predeclared 0.05 bar, and not a coincidence: both reflect what this data can
-resolve.
+Seed spread for the selected MLP configs is 0.010–0.051. **Gaps below ~0.05 are
+within seed noise** and match the predeclared bar — both reflect what this
+dataset can resolve.
 
-No run stopped on the epoch ceiling (max best epoch 217 of 300), so patience
-ended every fit and no arm's score is an artifact of a truncated budget. At an
-earlier 120-epoch ceiling, 6 of 72 runs did hit the cap — all in
-`BLOSUM + domain`, the weakest arm. Raising the ceiling changed that arm's score
-by 0.002 (0.523 → 0.521), so it is genuinely weaker, not undertrained.
+No run hit the epoch ceiling (max best epoch 217 of 300), so patience ended
+every fit naturally. An earlier 120-epoch cap was hit by 6 of 72 runs, all in
+BLOSUM + domain (the weakest arm). Raising the cap changed that arm's score by
+0.002 (0.523 → 0.521), confirming it is genuinely weaker, not undertrained.
 
-## The four questions, with paired CIs
+## Paired comparisons
 
-Paired cluster bootstrap on validation, 2,000 resamples, whole peptide clusters
-resampled together, both models scored on the same resample. Run on the per-arm
-prediction files, which are seed 0 of each arm's selected config — fixed in
-advance, not picked by score.
+Paired cluster bootstrap on validation: 2,000 resamples, whole peptide clusters
+resampled together, both models scored on each resample. Comparisons use seed 0
+of each arm's selected config, fixed in advance (not picked by score).
 
 | Question | Comparison | Δ median ρ | 95% CI | Verdict |
 |---|---|---:|---|---|
@@ -97,40 +102,38 @@ advance, not picked by score.
 | Pseudosequence or full domain? | MLP pep+domain → MLP pep+pseudo | +0.016 | [−0.031, +0.084] | inconclusive |
 | One-hot or BLOSUM62? | MLP one-hot → BLOSUM, pep+pseudo | +0.005 | [−0.049, +0.061] | inconclusive |
 
-Read in order:
+### Interpretation
 
-1. **A trained sequence model ranks peptides within an allele; the allele mean
-   cannot.** ρ = 0.61 against a floor of 0, CI nowhere near zero. MAE also
-   improves (0.734 → 0.517) and precision@10 at 2 hours nearly doubles
-   (0.359 → 0.70).
-2. **Nonlinearity is most of the model.** Ridge on identical features reaches
-   only 0.278. The gap is +0.331 [+0.256, +0.414] — the largest single effect in
-   the table. A linear model on one-hot residues is a position-weight matrix; it
-   cannot represent the interaction between a peptide residue and the pocket it
-   sits in.
-3. **The HLA input is the other half.** Peptide alone reaches 0.202; adding 34
-   contact residues takes it to 0.610. So the model is not just learning "some
-   peptides are stable everywhere" — it is using which allele it is being asked
-   about.
-4. **34 contact residues versus 182 domain residues is not resolved.** The
-   pseudosequence arm is nominally ahead (+0.016 on the seed-0 files, +0.035 on
-   seed means), but the CI crosses zero and the gap is inside seed noise. Both
-   framings sit below the 0.05 bar. This matters for stage 3: the full-domain
-   arm is a *legitimate* matching baseline, so if domain ESM-2 embeddings beat
-   the pseudosequence baseline, the win has to be checked against the
-   full-domain raw-sequence baseline before it can be attributed to pretraining.
-5. **The encoding does not matter here.** +0.005 [−0.049, +0.061] for
-   pep+pseudo. BLOSUM62's substitution structure should help most when training
-   data is thin; with 17.7k rows the model apparently learns comparable
-   structure from one-hot. The encodings do separate on the other two arms, and
-   in *opposite* directions — one-hot ahead at pep+domain (0.574 vs 0.521),
-   BLOSUM ahead at peptide-only (0.244 vs 0.202) — with both gaps near the seed
-   spread. Neither was tested with a paired CI. No encoding preference is
-   established.
+1. **The model ranks peptides within an allele; the allele mean cannot.**
+   ρ = 0.61 against a floor of 0, CI far from zero. MAE drops from 0.734 to
+   0.517; precision@10 at 2 hours nearly doubles (0.359 → 0.70).
+
+2. **Nonlinearity accounts for most of the model's power.** Ridge on the same
+   features reaches only 0.278 — a gap of +0.331 [+0.256, +0.414], the largest
+   effect in the table. A linear model on one-hot residues is a position-weight
+   matrix: it cannot capture interactions between a peptide residue and the HLA
+   pocket it sits in.
+
+3. **The HLA input contributes the other half.** Peptide alone reaches 0.202;
+   adding 34 contact residues brings it to 0.610. The model is not just learning
+   "some peptides are stable everywhere" — it uses allele identity.
+
+4. **34 contact residues vs 182 domain residues: unresolved.** The
+   pseudosequence arm leads nominally (+0.016 on seed-0 files, +0.035 on seed
+   means), but the CI crosses zero and the gap is within seed noise.
+   Consequence for stage 3: the full-domain arm is a legitimate baseline, so any
+   win from domain ESM-2 embeddings must be checked against the full-domain
+   raw-sequence arm, not only the pseudosequence arm.
+
+5. **One-hot vs BLOSUM62: unresolved.** +0.005 [−0.049, +0.061] for pep+pseudo.
+   With 17.7k training rows the model apparently learns substitution structure
+   from one-hot alone. The other two arms separate in opposite directions
+   (one-hot ahead at pep+domain, BLOSUM ahead at peptide-only), both within seed
+   spread. No encoding preference is established.
 
 ## Cost
 
-CPU only, one laptop core, no GPU and no credits spent.
+CPU only, one laptop core, no GPU, no credits.
 
 | Arm | Feature build (s) | Fit (s, mean) | Inference (s / 1,000 rows) | Parameters |
 |---|---:|---:|---:|---:|
@@ -138,82 +141,73 @@ CPU only, one laptop core, no GPU and no credits spent.
 | peptide + domain | 0.27 | 7.8–19.4 | 0.0020 | 994,689 |
 | peptide only | 0.01 | 0.5 | 0.0002 | 11,649 |
 
-Feature building is cached per unique sequence (28,166 rows carry 5,633
-peptides and 75 HLA sequences), so it is a rounding error. The whole grid runs
-in ~10 wall minutes, of which 7.5 CPU-minutes is recorded model fitting and the
-rest is the ridge alpha sweep, feature building and scoring. **Cost per 1,000
-new predictions is under a millisecond of CPU**, which is the floor stage 3 and stage 5 will be measured against: an
-ESM-2 arm has to justify embedding extraction, and a structural arm has to
-justify GPU hours, against a baseline that is effectively free.
+Features are cached per unique sequence (28,166 rows carry only 5,633 peptides
+and 75 HLA sequences). The full grid runs in ~10 wall minutes, of which 7.5
+CPU-minutes is model fitting and the rest is the ridge sweep, feature building,
+and scoring. **Inference costs under 1 ms per 1,000 predictions** — the floor
+that ESM-2 extraction and GPU folding must justify themselves against.
 
-Ridge is *slower* to fit than the MLP on the widest arm (27.8 s vs 12.0 s) —
-closed-form solution of a 3,820-column system versus minibatch Adam — while
-scoring 0.30 lower. Nothing recommends the linear arm here.
+Ridge is actually *slower* to fit than the MLP on the widest arm (27.8 s vs
+12.0 s) — closed-form solution of a 3,820-column system costs more than
+minibatch Adam — while scoring 0.30 lower.
 
-## Two checks worth recording
+## Checks
 
-**The C67S pseudosequence collision is real and measurable.** Stage 1 flagged
-that `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` share one contact
-pseudosequence (756 rows, 2.7%). Both are eligible on validation (41 and 43
-rows), and 41 peptides are measured on both. Confirmed:
+**The C67S pseudosequence collision is confirmed.** Stage 1 flagged that
+`HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` share one contact pseudosequence
+(756 rows, 2.7%). Both are eligible on validation (41 and 43 rows), with 41
+peptides measured on both alleles.
 
-- the pseudosequence arm predicts the two alleles **bit-identically** — max
-  absolute difference 0.00 across those 41 shared peptides;
-- the domain arm does separate them (max difference 0.31);
-- the measured labels on those peptides correlate at only ρ = 0.708 between the
-  two alleles, so there is allele-specific signal the pseudosequence arm
-  structurally cannot reach.
+- The pseudosequence arm predicts the two alleles **identically** (max absolute
+  difference 0.00 across 41 shared peptides).
+- The domain arm separates them (max difference 0.31).
+- Measured labels correlate at only ρ = 0.708 between the two alleles — there is
+  allele-specific signal the pseudosequence arm cannot reach.
 
-But the consequence for the *primary metric* is small: per-allele Spearman is
-computed within an allele, and an identical peptide ordering can still rank each
-allele's own labels well (pseudo: 0.487 / 0.613; domain: 0.508 / 0.498). So the
-cap is real for cross-allele and shared-peptide discrimination, and largely
-invisible to within-allele ranking. It is not the reason the two arms tie.
+The impact on the primary metric is small, though. Per-allele Spearman is
+computed within each allele, so identical predictions can still rank each
+allele's labels well (pseudo: 0.487 / 0.613; domain: 0.508 / 0.498). The
+collision caps cross-allele discrimination, not within-allele ranking, and is
+not why the two arms tie.
 
 **Per-allele failures.** For the headline arm, 1 of 68 validation alleles ranks
 backwards (`HLA-A*24:19`, ρ = −0.12) and 4 fall below 0.20 (`HLA-A*24:19`,
 `HLA-A*25:01`, `HLA-A*01:01`, `HLA-B*39:06(C67S)`). The domain arm fails on
-nearly the same set, so these look like hard alleles rather than an artifact of
-one input representation. `HLA-A*01:01` is already known from stage 1 to be
-thin (220 pairs, 43 test rows).
+nearly the same set, suggesting these are hard alleles rather than an
+input-representation artifact. `HLA-A*01:01` is already known from stage 1 to
+be thin (220 pairs, 43 test rows).
 
-## What this does not show
+## Limitations
 
-- **Distance stratification is not answerable on validation.** Splitting the
-  2,817 validation rows into d=4 and d≥5 and applying the 20-row-per-allele bar
-  leaves 6 common alleles and 499 rows. The d=4 / d≥5 gap we see (0.715 vs
-  0.610 for the headline arm) rests on 6 alleles and should not be read as
-  evidence either way. Stage 6 does this on the 5,633-row test split, where both
-  strata keep ~65 alleles.
-- **Validation scores are selection scores.** The config for each arm was chosen
-  on the number reported next to it, so these are optimistic as estimates of
-  held-out performance. They are valid for *comparing* arms given the same
-  budget, which is what stage 2 is for.
-- **The encoding and input-width questions are unresolved, not settled.** Two of
-  the five CIs cross zero. Per EVALUATION.md that is inconclusive, not negative.
-- **No censoring model.** 20.2% of labels sit at the assay floor and are trained
-  on as exact zeros under `log1p`. A Tobit-style censored loss remains a
-  recorded limitation.
+- **Distance stratification cannot be assessed on validation.** Splitting 2,817
+  validation rows into d=4 and d≥5 strata and applying the 20-row-per-allele
+  bar leaves only 6 alleles and 499 rows. The gap we see (0.715 vs 0.610)
+  rests on too few alleles to interpret. Stage 6 runs this on the 5,633-row
+  test split, where both strata keep ~65 alleles.
+- **Validation scores are selection scores.** Each arm's config was chosen on
+  the number reported next to it, making these optimistic as held-out estimates.
+  They remain valid for *comparing* arms under the same budget, which is what
+  stage 2 is for.
+- **Encoding and input-width questions are unresolved, not settled.** Two of
+  five CIs cross zero — inconclusive per EVALUATION.md, not negative.
+- **No censoring model.** 20.2% of labels sit at the assay floor and are treated
+  as exact zeros under `log1p`. A Tobit-style censored loss is a recorded
+  limitation.
 - Bounded to these representations, this split, and this budget.
 
-## Against NetMHCstabpan (Rasmussen et al. 2016)
+## Calibration against NetMHCstabpan (Rasmussen et al. 2016)
 
-Regenerate with `.venv/bin/python scripts/compare_to_paper.py` (~3 min);
-table in `compare_to_paper.csv`.
+Regenerate: `.venv/bin/python scripts/compare_to_paper.py` (~3 min); table in
+`compare_to_paper.csv`.
 
-The paper's figure 1 reports, for the released configuration (global rescaling
-t0 = 1 h), **average per-allotype SCC ≈ 0.69 and PCC 0.676** — from 5-fold
-cross-validation on this same 28,166-row dataset. PCC is stated in the text;
-SCC is read off figure 1, so quote it as approximate.
+The paper reports **mean per-allotype SCC ≈ 0.69 and PCC 0.676** from 5-fold CV
+on this same 28,166-row dataset (figure 1, global rescaling t0 = 1 h; PCC
+stated in text, SCC read from the figure). SCC is the fair comparison metric
+since it is invariant to target transform.
 
-SCC is the comparable metric: it is invariant to the target transform, so it
-rewards neither side's choice of scale. Our headline arm reaches **mean
-per-allele SCC 0.573** (median 0.610 — the paper aggregates by mean, we report
-median, so both are given). That is ~0.12 below NetMHCstabpan.
-
-That gap is not a like-for-like model comparison. Three things differ besides
-the model; changing one at a time, holding arm, config, metric and allele panel
-fixed:
+Our headline arm reaches **mean per-allele SCC 0.573** (median 0.610). That is
+~0.12 below their number, but the comparison is not like-for-like. Changing one
+factor at a time:
 
 | Change | Mean SCC | Δ |
 |---|---:|---:|
@@ -223,46 +217,37 @@ fixed:
 | Both | 0.625 | +0.052 |
 | The paper's `2^(-1/th)` target, single network | 0.551 | −0.022 |
 
-1. **Split grouping is worth +0.018, less than expected.** The paper groups "all
-   peptide-HLA-I stability data for a given peptide" into one CV group — peptide
-   *identity*, so a held-out peptide may sit 1 substitution from a training
-   peptide (measured: minimum distance 1, against 4 on our frozen split). That
-   should flatter it, and does, but only slightly: stage 1 found just 15.5% of
-   peptides have any neighbour within 3 substitutions, so there is limited
-   leakage available. **Our split is harder, but it is not why we score lower.**
-2. **Ensembling is worth +0.042 — the single largest explained factor.**
-   NetMHC-family training fits a network per CV fold per architecture (2
-   encodings × 3 hidden sizes × 5 folds ≈ 30 networks) and predicts with the
-   ensemble. Stage 2 reports single networks. Averaging just 3 seeds recovers
-   +0.042, nearly the whole 0.05 worthwhile-gain bar, **from no new information
-   at all.**
-3. **Their target transform does not explain anything.** Trained on
-   `s = 2^(-t0/th)` at t0 ∈ {0.5, 1, 2}, our model scores 0.022–0.034 *below*
-   log1p. The paper's own t0 sweep moved PCC from 0.633 to 0.676, so the choice
-   matters for them; it does not transfer to this setup.
+**Split grouping: +0.018.** The paper groups by peptide identity, so a held-out
+peptide can sit 1 substitution from a training peptide (vs 4 on our split). This
+flatters them slightly, but only 15.5% of peptides have any neighbour within 3
+substitutions — limited leakage is available. Our split is harder, but this is
+not the main reason we score lower.
 
-That leaves **~0.07 SCC unexplained**, against three factors this comparison
-cannot isolate:
+**Ensembling: +0.042, the largest explained factor.** NetMHC-family training
+fits one network per CV fold per architecture (~30 networks total) and predicts
+with the ensemble. Stage 2 reports single networks. Averaging 3 seeds alone
+recovers +0.042, nearly the full 0.05 bar, from no new information.
 
-- they train each network on 4/5 of the data (~22,500 rows) against our 17,744;
-- they ensemble ~30 networks across 6 architectures, not 3 seeds;
-- their reported score is measured on the same 1/5 fold used for early stopping
-  ("the remaining 1/5 was left for testing and early stop"), which is optimistic
-  by an unknown amount.
+**Target transform: no help.** Training on `s = 2^(-t0/th)` at t0 ∈ {0.5, 1,
+2} scores 0.022–0.034 *below* log1p in our setup, despite mattering for them
+(their t0 sweep moved PCC from 0.633 to 0.676).
 
-So the single-network baseline is a *weakened* form of the paper's method —
-1 network against ~30. That is a problem for stage 3: ESM-2 beating a hobbled
-NetMHCstabpan is not the claim we want to make.
+The remaining **~0.07 SCC** is consistent with three factors we cannot isolate:
+they train on ~22,500 rows (vs our 17,744), ensemble ~30 networks across 6
+architectures (vs our 3 seeds), and score on the same fold used for early
+stopping.
+
+The single-network baseline is a weakened form of the paper's method — 1 network
+vs ~30. That matters for stage 3: ESM-2 beating a single network would not be a
+meaningful claim.
 
 ### The strong form: a 30-network ensemble
 
-`scripts/baseline_ensemble.py` builds the method properly — **5 inner CV folds ×
-2 encodings × 3 seeds = 30 networks**, averaged, matching the paper's count.
-Each network stops on its own fold, so the ensemble collectively trains on all
-19,716 training rows rather than the 17,744 a single fit/dev cut leaves. Folds
-are cut along whole Hamming ≤ 3 clusters, so the frozen split's guarantee holds
-inside the ensemble too. Config per encoding is taken from
-`stage2_summary.csv`, not re-tuned — ensembling is the only thing that changed.
+`scripts/baseline_ensemble.py` builds the method properly: **5 inner CV folds ×
+2 encodings × 3 seeds = 30 networks**, averaged. Each network stops on its own
+fold, so the ensemble trains on all 19,716 training rows (vs 17,744 for a single
+fit/dev split). Folds are cut along whole Hamming ≤ 3 clusters. Configs come
+from `stage2_summary.csv`, not re-tuned — ensembling is the only change.
 
 | Model | Mean SCC | Median per-allele ρ | Mean PCC (paper scale) | MAE log1p |
 |---|---:|---:|---:|---:|
@@ -271,57 +256,51 @@ inside the ensemble too. Config per encoding is taken from
 | 30-network ensemble, pep + domain | 0.610 | 0.653 | 0.605 | 0.495 |
 | *NetMHCstabpan (their 5-fold CV)* | *~0.69* | *—* | *0.676* | *—* |
 
-Ensembling is worth **+0.090 mean SCC** on the pseudosequence arm and +0.100 on
-the domain arm — far more than the +0.042 three seeds alone bought, because CV
-folds add training-data coverage on top of seed averaging. Individual members
-score 0.511–0.555 mean SCC; the ensemble reaches 0.645. On the project's primary
-metric the paired cluster bootstrap gives **Δ median per-allele ρ = +0.083
-[+0.029, +0.124]** over the single network: a real improvement whose size
-against the 0.05 bar is unresolved.
+Ensembling adds **+0.090 mean SCC** on the pseudosequence arm (+0.100 on
+domain) — much more than the +0.042 from 3 seeds alone, because CV folds add
+training-data coverage on top of seed averaging. Individual members score
+0.511–0.555; the ensemble reaches 0.645.
 
-**This is method parity, on a harder benchmark.** The remaining gap is 0.045
-mean SCC and 0.037 PCC — and the paper's number carries +0.018 of split
-advantage plus an unknown amount of optimism from scoring on its own
-early-stopping fold. Adjusting for the split alone puts the two within ~0.02.
-We did not reproduce their *number*, and should not try to: part of it is
-measurement protocol, not model quality. We reproduced their *method* and
-measured it honestly.
+Paired cluster bootstrap: **Δ median per-allele ρ = +0.083 [+0.029, +0.124]**
+over the single network.
 
-The pseudosequence-vs-domain tie survives ensembling: **+0.040 [−0.001,
-+0.073]**, still inconclusive. Stage 3 still owes both comparisons.
+**This is method parity on a harder benchmark.** The remaining gap is 0.045 mean
+SCC (0.037 PCC). The paper's number includes +0.018 of split advantage plus
+unknown optimism from scoring on its early-stopping fold. Adjusting for split
+alone puts the two within ~0.02. We reproduced their *method* and measured it
+honestly; the remaining gap reflects measurement protocol, not model quality.
 
-### Why NetMHCstabpan can never be our comparator
+The pseudosequence-vs-domain tie survives ensembling: +0.040 [−0.001, +0.073],
+still inconclusive.
 
-It was trained on all 28,166 rows, **including every peptide in our test
-split**. Any score it posts on our data is memorisation, not generalisation. So
-there is no "beat NetMHCstabpan" result available from this dataset at any
-stage — the 0.69 above is a cross-validation score on its own training data,
-quoted for calibration only. The baseline that stage 3 must beat is the
-ensemble in the table above: the same method, trained on our train split,
-scored on data it has never seen.
+### Why NetMHCstabpan cannot be a comparator
 
-(An honest comparison would need peptide–HLA stability measurements published
-after 2016 and absent from its training set. Out of scope here.)
+NetMHCstabpan was trained on all 28,166 rows, **including every peptide in our
+test split**. Any score it produces on our data reflects memorisation, not
+generalisation. There is no valid "beat NetMHCstabpan" result from this dataset
+at any stage. The 0.69 is a CV score on its own training data, useful for
+calibration only. The baseline stage 3 must beat is the ensemble above: the same
+method, trained on our split, scored on data it has never seen.
+
+(An honest comparison would require stability measurements published after 2016
+and absent from its training set. Out of scope.)
 
 None of the above was scored on test.
 
-## Carried into stage 3
+## Rules for stage 3
 
-- **The baseline to beat is the 30-network ensemble**, `preds/seq_ensemble_pep_pseudo.csv`
-  — median per-allele ρ = 0.693, mean SCC 0.645 on validation. Not the
-  single-network `preds/seq_baseline.csv`, which is 0.083 lower and would hand
-  stage 3 a gap it did not earn.
-- The matching **full-domain** ensemble (`preds/seq_ensemble_pep_domain.csv`,
-  ρ = 0.653) is the comparator for any HLA-domain embedding result. Report both;
-  the two arms are still statistically tied.
-- The single-network table above stays valid as the *arm and encoding*
-  comparison, because every arm in it is single-network.
-- Compare against seed means, not single seeds, and treat anything under ~0.05
-  as noise.
-- **Ensemble both arms identically, or neither.** Seed-averaging alone is worth
-  +0.042 mean SCC — nearly the whole worthwhile-gain bar, from no new
-  information. An ensembled ESM arm against a single-network sequence arm (or
-  the reverse) would manufacture a result. Stage 2's single-network table stays
-  valid as an *arm* comparison because every arm is single-network.
-- Reuse `inner_folds()` for the ESM heads so every arm still trains on the same
-  17,744 rows and stops on the same 1,972.
+- **Beat the 30-network ensemble**, not the single network. The ensemble
+  (`preds/seq_ensemble_pep_pseudo.csv`) scores median per-allele ρ = 0.693,
+  mean SCC 0.645. The single network (`preds/seq_baseline.csv`) is 0.083 lower
+  and would give stage 3 a free gap.
+- The **full-domain ensemble** (`preds/seq_ensemble_pep_domain.csv`, ρ = 0.653)
+  is the comparator for any HLA-domain embedding result. Report both; the two
+  arms remain tied.
+- The single-network table remains the valid *arm and encoding* comparison (all
+  arms are single-network).
+- Compare seed means, not single seeds. Treat gaps under ~0.05 as noise.
+- **Ensemble both arms the same way, or neither.** Ensembling alone is worth
+  +0.090 mean SCC from no new information. An ensembled ESM arm against a
+  single-network sequence arm (or vice versa) would manufacture a result.
+- Reuse `inner_folds()` so every arm trains on the same 17,744 rows and stops
+  on the same 1,972.
