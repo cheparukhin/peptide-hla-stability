@@ -24,6 +24,7 @@ The baseline, ESM extraction, and the folding pilot can run in parallel. The ord
 |---|---|---|---|---|
 | Sequence baseline | Core | What can we learn from the labelled sequences alone? Establishes the inexpensive reference. | Peptide and HLA amino-acid encodings, preserving residue positions. | Peptide ranking, prediction error, training/inference cost. |
 | Frozen ESM-2 | Core | Does protein pretraining add useful information? Testable across the dataset without structures. | Learned representations of peptide positions and HLA sequence; alone and added to raw sequence features. | Improvement over the sequence baseline; embedding cost; sensitivity to layer and model size. |
+| Auxiliary affinity | Optional, pre-structural | Does multi-task training with binding-affinity labels improve the stability encoder? No GPU cost. | Shared encoder with a second head predicting affinity; tested on dual-labelled peptides first, then optionally on broader IEDB data. | Gain over single-task stability baseline and ESM-2; whether the benefit differs between sequence and ESM arms. |
 | Boltz geometry | Pilot-gated | Does the predicted fit in the HLA groove explain stability? Small panel, because folding is costly. | Contacts and burial per peptide position; terminal hydrogen bonds; anchor-pocket clashes. | Added accuracy on matched examples; credible groove poses; cost and failures. |
 | Boltz confidence | Same structures | Does uncertainty in the prediction carry signal? Tested separately from geometry, reusing the same folds. | Per-position and peptide mean/minimum pLDDT (local confidence); peptide-HLA PAE (relative placement); pairwise ipTM (interface). | Gain from confidence alone and beyond geometry. |
 | ProteinMPNN | Optional next | Is the peptide sequence compatible with the predicted backbone? Another pretrained model, no refolding. | Peptide-only likelihood and per-position scores, with HLA fixed. | Predictive value beyond sequence/structure features, versus scoring cost. |
@@ -94,6 +95,18 @@ The 34-position contact pseudosequence identifies potential peptide-contacting H
 **Deliverable:** full-dataset baseline-versus-ESM comparison, cached features, and measured compute costs.
 
 **Why:** this is the cheapest direct test of the foundation-model question and needs no structures. Separate embeddings leave peptide-HLA interaction learning to the head, so useful performance is a hypothesis, not a guarantee.
+
+### 3b. Test auxiliary affinity training (optional, pre-structural)
+
+**Work**
+
+- **Probe (∼1 hour):** Rasmussen et al. report ∼7,600 peptides with both affinity and stability measurements across 58 allotypes. Add a second prediction head to the sequence baseline that predicts binding affinity alongside stability. Train on these dual-labelled peptides only — they are already inside the frozen splits, so no new leakage surface. Compare single-task versus multi-task validation performance.
+- **Expand (only if probe helps, ∼2–3 hours):** Ingest the broader IEDB affinity dataset (∼136K measurements, 152 alleles). Before training, verify that no IEDB peptide is a Hamming-1 neighbour of any stability-set test peptide; exclude any that are. Train multi-task models for both the sequence baseline and the ESM-2 arm.
+- Report whether the auxiliary target helps each arm differently. If multi-task training closes the gap between the sequence baseline and ESM-2, that is a finding worth reporting — it means cheap auxiliary labels substitute for expensive pretrained features on this task.
+
+**Deliverable:** multi-task versus single-task comparison on the same frozen validation set, with the leakage audit documented.
+
+**Why:** The stability dataset's peptides were pre-selected for strong predicted affinity, limiting peptide diversity. The IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), and that the gain came from complementary signal, not just more rows.
 
 ### 4. Pilot structure prediction and choose scale
 
@@ -183,7 +196,7 @@ elapsed time approximately = total worker hours / concurrent workers
 | 3 | GPU pilot, structures, additional feature extraction | Structure/feature manifests keyed by complex ID, with success and failure records |
 
 - **First 3 hours:** freeze data and evaluation, establish a baseline, begin ESM extraction, complete the small structural pilot.
-- **By hour 5:** review validation results; make the structural go / reduce / stop decision.
+- **By hour 5:** review validation results; make the structural go / reduce / stop decision. Run the auxiliary affinity probe if the core comparison is on track.
 - **Hours 5-12:** finish the selected workload and ablations. Stop adding features at hour 10; freeze configurations by hour 12.
 - **Final 4 hours:** evaluate on held-out data, compute uncertainty, prepare figures and the presentation, save deliverables.
 - Adjust these cutoffs if the official deadline requires it.
@@ -191,6 +204,7 @@ elapsed time approximately = total worker hours / concurrent workers
 
 ## Stretch work and stopping rules
 
+- The auxiliary affinity experiment (stage 3b) may interact with the ESM-2 comparison: if multi-task training helps the sequence arm more than the ESM arm, report that result rather than suppressing it.
 - Defer until the core comparison is secure: SaProt, chimeric inputs, cross-attention, folding-trunk features, template threading, new geometry-aware GNNs, extensive interpretability probes, source-protein mapping, and molecular-dynamics unbinding calculations.
 - Same-peptide / different-HLA diagnostics are possible on this data. **Matched C67S / wild-type comparisons are not** — the corresponding wild-type alleles are absent.
 - Expand a feature pipeline only when validation evidence or useful uncertainty information supports the extra cost. Do not claim an unbinding mechanism from improved prediction alone.
