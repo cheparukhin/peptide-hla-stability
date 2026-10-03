@@ -73,7 +73,22 @@ The 34-position contact pseudosequence identifies which HLA positions are likely
 
 **Why:** every model must solve the same generalisation problem without data leakage. The larger test partition gives more statistical power for within-allele ranking.
 
-Grouping at Hamming ≤ 3 closes the memorisation route and is measured to cost nothing: 5,120 clusters, the largest holding 157 of 28,166 pairs (0.56%), and a water-filled assignment still hits 70/10/20 exactly with 54 of 75 alleles clearing 50 test rows. It buys a guarantee worth stating in the writeup — **no validation or test peptide is within 3 substitutions of any training peptide** (verified minimum distance: 4). The threshold is deliberately conservative rather than minimal: near-identical sequences make labels trivially copyable, which is leakage, whereas a conservative substitution changing hold time is real biology the model should be rewarded for learning. Grouping constrains assignment only — it discards no rows — so erring conservative is close to free here.
+Hamming ≤ 3 is the most conservative feasible threshold. Single-linkage clustering percolates sharply between 3 and 4: at ≤ 3 the largest component has 22 peptides (0.6% of pairs); at ≤ 4 one component swallows 2,807 peptides (54.8% of pairs), making balanced splitting impossible. The split still hits 70/10/20 exactly, with 54 of 75 alleles clearing 50 test rows.
+
+The resulting minimum distance from any validation or test peptide to any training peptide is 4 substitutions (verified). That separation is real but not absolute — same-allele label similarity decays smoothly with distance, not in a step:
+
+| Distance | Same-allele label comparisons | Mean \|Δy\| | Spearman |
+|---:|---:|---:|---:|
+| 1 | 513 | 0.548 | 0.725 |
+| 2 | 384 | 0.483 | 0.764 |
+| 3 | 1,187 | 0.622 | 0.651 |
+| 4 (min cross-split) | 11,275 | 0.737 | 0.592 |
+| 5 | 91,636 | 0.815 | 0.512 |
+| unrelated background | 81,455 | 0.968 | 0.302 |
+
+At d=4 the Spearman rank correlation is 0.592, roughly halfway between unrelated pairs (0.302) and d=1 (0.725). No feasible threshold eliminates this residual similarity — it sits right at the percolation edge. Grouping reduces label leakage; it doesn't remove it. Stage 6 reporting accounts for this by stratifying test metrics by distance (see below).
+
+**Trade-off:** the test set contains no peptide pairs within 3 substitutions of each other across splits. This means the benchmark measures generalisation to distant sequences but cannot assess mutant ranking — scoring point mutants of a known binder, which is often the practically relevant question. A nested cross-validation inside the training split partially recovers this (see stage 6).
 
 Known residual: 15 of 75 alleles have too few total pairs to appear in all three splits. That reflects allele rarity, not the threshold, and bounds which alleles support per-allele claims.
 
@@ -155,6 +170,8 @@ Known residual: 15 of 75 alleles have too few total pairs to appear in all three
 - Evaluate the validation-selected models **once** on the held-out test set.
 - Report per-allele Spearman correlation (how well the model ranks peptides within each allele), with test-set sizes and a median/IQR summary across alleles. Use a common set of eligible alleles across models and report small or undefined cases explicitly.
 - Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** — of the top 10 predictions per allele, how many actually have a half-life above 2 hours? This directly measures whether the model identifies sufficiently stable peptides. Treat pooled metrics as secondary. Distinguish within-allele ranking from cross-allele effects.
+- **Stratify test metrics by nearest-neighbour distance to training.** For each test peptide, compute the Hamming distance to its closest training peptide and report metrics in three strata: d=4 (closest possible, ~52% of peptides), d=5 (~32%), and d≥6 (~16%). If label similarity decays as expected, performance should visibly differ across strata. If it doesn't, that's a strong signal the model genuinely generalises rather than exploiting residual similarity at the split boundary.
+- **Nested near-neighbour evaluation inside training.** Cross-validate mutant ranking on the d≤2 peptide clusters that live entirely within the training split. This recovers the question the grouped split cannot answer — can the model rank point mutants of a known binder? — without touching the test set or the frozen split assignments.
 - Use paired uncertainty estimates that keep peptide clusters together across alleles.
 - Report accuracy gains alongside extraction/training cost, **cost per 1,000 new predictions**, runtime, and prediction failures.
 - If a confidence interval crosses zero, the result is inconclusive — not negative. A strong negative result should rule out the predeclared minimum worthwhile gain. Bound every conclusion to the specific representation, data, split, and budget tested.
