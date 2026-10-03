@@ -401,7 +401,16 @@ Moving to full-length HLA with beta-2-microglobulin (the additional chain that s
 
 **Deliverable:** MSA manifest (**done** — `reports/msa_manifest.csv`, 75 alleles), hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
 
-**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). GPU chosen: **A10 at $0.018/complex**, $37 for 2,000 complexes, 2.6 h at 10 workers. Total benchmark spend ~$1.58 against the $15 ceiling. Pilot gate cleared: 3/3 in the groove at 0.13–0.42 Å peptide CA RMSD, PAE written, chain mapping verified. 44 folds, zero failures.
+**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Boltz-2 and ESMFold2 Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). Engine and GPU chosen: **Boltz-2 on A10 at $0.004/complex**, $8.00 for 2,000 complexes, 0.56 h at 10 workers. Total benchmark spend ~$2.64 against the $15 ceiling. Pilot gate cleared: 5/5 in the groove, median 0.29 Å peptide CA RMSD, PAE written, chain mapping verified. 68 folds, zero failures.
+
+Four findings constrain later stages:
+
+- **This stage's "keep models loaded across complexes" requirement was initially violated.** The first harness spawned a fresh `boltz predict` per complex, putting an 86% process-and-weight-load overhead inside every timed fold and overstating cost 4.6x ($0.018 vs $0.004). Fixed to one process per batch. Any future folding harness must verify that the model is resident across the timed region.
+- **Between-container variance (73%) dwarfs within-container variance (±1%).** The same GPU type gave 6.3 s and 10.9 s in two allocations, so the sweep's n=1 container per GPU cannot rank the middle cards. A10's lead and the H100 verdict survive it; the L40S/A100 ordering does not.
+- **Folding is not a budget constraint.** At $0.004/complex the whole 28,166-pair dataset costs ~$113, inside the $330 ceiling. Panel size is now a statistical and wall-clock decision, not a financial one.
+- **Peptide error is concentrated at P5–P7, not uniform.** Anchors (P1–P2, P8–P9) sit under 0.25 Å while central positions reach 3.3 Å on some complexes, in both Boltz-2 and ESMFold2. Stage 5 geometry features at central positions are intrinsically noisier than the same features at anchors.
+
+**ESMFold2 was evaluated and rejected** (not on principle — on three measurements): 26.0 GB peak removes the cheap 24 GB cards, its speed is indistinguishable from Boltz-2's inside the between-container range, and pose quality is worse at matched n=5 (median 0.68 Å vs 0.29 Å). It does expose `pair_chains_iptm`, the peptide-HLA interface ipTM this stage's confidence arm wants, which Boltz-2 gives only globally.
 
 **Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
 
