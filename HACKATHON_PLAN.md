@@ -71,7 +71,7 @@ The 34-position contact pseudosequence identifies which HLA positions are likely
 
 **Deliverable:** audit summary, saved split assignments, and a shared evaluation script.
 
-**Status: done.** `reports/audit_summary.md` (audit), `data/splits.csv` (frozen splits, committed; carries `cluster_id`, `split`, and `dist_to_train` per `pair_id`), `EVALUATION.md` (the predeclared contract), `pepstab/` + `scripts/evaluate.py` (shared scoring), `tests/test_contract.py` (30 guards). Load splits with `pepstab.data.load_with_splits()`; never recompute them.
+**Status: done.** `reports/audit_summary.md` (audit), `data/splits.csv` (frozen splits, committed; carries `cluster_id`, `split`, and `dist_to_train` per `pair_id`), `EVALUATION.md` (the predeclared contract), `pepstab/` + `scripts/evaluate.py` (shared scoring), `tests/test_contract.py` (51 guards). Load splits with `pepstab.data.load_with_splits()`; never recompute them.
 
 Two audit findings constrain later stages:
 
@@ -113,6 +113,38 @@ Known residual: 8 alleles fall below 50 test rows, 7 of them because they hold �
 - Use a modest, comparable tuning budget across approaches. Save predictions, configuration, validation performance, and training/inference time.
 
 **Deliverable:** reproducible sequence baselines and a first results table.
+
+**Status: done.** `reports/stage2_baselines.md` (results and reasoning), `scripts/baseline_sequence.py` (the full grid, ~10 CPU-minutes), `pepstab/features.py` + `pepstab/mlp.py`, `reports/stage2_runs.csv` (every run), `tests/test_baselines.py` (25 guards). Headline baseline in `preds/seq_baseline.csv`.
+
+Six arms — {one-hot, BLOSUM62} × {peptide, peptide+pseudosequence, peptide+domain} — each with the same budget: a 4-point MLP grid at 3 seeds plus a ridge alpha sweep. Validation median per-allele Spearman, mean over seeds:
+
+| Arm | MLP | Ridge |
+|---|---:|---:|
+| peptide + pseudosequence (one-hot) | **0.610** | 0.278 |
+| peptide + pseudosequence (BLOSUM) | 0.603 | 0.270 |
+| peptide + domain (one-hot) | 0.574 | 0.274 |
+| peptide + domain (BLOSUM) | 0.521 | 0.259 |
+| peptide only | 0.202–0.244 | 0.169–0.170 |
+| training allele mean | 0.000 | — |
+
+Three results clear the 0.05 bar on a paired cluster bootstrap, two are inconclusive:
+
+- **The model ranks within allele; the allele mean cannot.** +0.610 [+0.557, +0.656]. MAE 0.734 → 0.517, precision@10 at 2 h 0.359 → 0.70.
+- **Nonlinearity is most of the model.** Ridge on identical features reaches 0.278; MLP − ridge = +0.331 [+0.256, +0.414]. A linear model on one-hot residues is a position-weight matrix and cannot represent a peptide residue interacting with the pocket it sits in.
+- **The HLA input is the other half.** Peptide alone 0.202; adding the 34 contact residues +0.404 [+0.300, +0.474].
+- **34 contact residues vs 182 domain residues: unresolved.** +0.016 [−0.031, +0.084] (+0.035 on seed means). Both framings sit below the bar, so **the full-domain arm is a legitimate matching baseline** — any stage 3 win for domain embeddings must be checked against it, not only against the pseudosequence arm.
+- **One-hot vs BLOSUM62: unresolved.** +0.005 [−0.049, +0.061]. The other two arms separate in opposite directions, both within seed spread.
+
+Two constraints on later stages:
+
+- **Seed spread for the selected configs is 0.010–0.051**, the same order as the predeclared bar. Compare seed means, never single seeds; a gap under ~0.05 is not a result.
+- **Every model fits on the same 17,744 rows.** 10% of train (1,972 rows, 357 whole Hamming ≤ 3 clusters) is cut off as an inner stopping fold, so the minimum fit/dev peptide distance is 4 — the same guarantee the frozen splits give. Ridge picks alpha on that fold rather than refitting on all of train. Stage 3 heads must reuse `inner_folds()` or the comparison is confounded by training-set size.
+
+The stage 1 C67S finding was confirmed with a consequence attached: the pseudosequence arm predicts `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` bit-identically (max difference 0.00 across 41 shared validation peptides) while their measured labels correlate at only ρ = 0.708. The domain arm separates them (max difference 0.31). But per-allele Spearman is computed *within* an allele, so the collision barely moves the primary metric (pseudo 0.487/0.613 vs domain 0.508/0.498) — it caps cross-allele and shared-peptide discrimination, not within-allele ranking, and it is not why the two arms tie.
+
+Distance stratification is not answerable on validation: at the 20-row-per-allele bar the two strata share only 6 alleles and 499 of 2,817 rows. It waits for the test split at stage 6.
+
+**Cost:** CPU only, no credits. Feature build under 0.3 s per arm (cached per unique sequence), fit 0.4–28 s, **inference under 1 ms per 1,000 predictions**. That is the floor ESM-2 extraction and GPU folding have to justify themselves against.
 
 **Why:** this shows what the task's labelled data can teach a small model on its own. It's not a reproduction of NetMHCstabpan's training and shouldn't be described as one.
 

@@ -19,7 +19,23 @@ uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow
 | `data/splits.csv` | Frozen splits: `pair_id, allele, peptide, cluster_id, split, dist_to_train` |
 | [EVALUATION.md](EVALUATION.md) | Predeclared metrics, eligible alleles, 0.05 improvement threshold |
 | `pepstab/` | Shared library: data loading, splits, scoring |
-| `tests/test_contract.py` | 30 guards on the above |
+| `tests/test_contract.py` | 51 guards on the above |
+
+## Stage 2 output (done — the baseline stage 3 must beat)
+
+| Artifact | Description |
+|---|---|
+| [reports/stage2_baselines.md](reports/stage2_baselines.md) | Six sequence arms, paired CIs, cost, limitations |
+| `reports/stage2_runs.csv` | Every run in the grid; `stage2_summary.csv` is the selection |
+| `preds/seq_baseline.csv` | Headline baseline: MLP, one-hot, peptide + contact pseudosequence |
+| `pepstab/features.py` | One-hot and BLOSUM62 encodings, cached per unique sequence |
+| `pepstab/mlp.py` | Small numpy MLP; stops on a caller-supplied fold |
+| `tests/test_baselines.py` | 25 guards, including the fit/dev leakage check |
+
+Validation median per-allele Spearman: **0.610** (peptide + pseudosequence,
+one-hot MLP) against **0.000** for the training allele mean and **0.278** for
+ridge on identical features. Full-domain input ties the pseudosequence within
+noise, so stage 3 must compare domain embeddings against *both*.
 
 ## Quick start
 
@@ -49,10 +65,12 @@ it. `--per-allele` for the full table, `--by-distance` for distance strata.
 - Select on validation. **Test is scored once, at stage 6.**
 - No batch GPU job without a passing pilot on 3–5 examples.
 
-## Regenerating stage 1
+## Regenerating
 
 ```bash
-.venv/bin/python scripts/make_splits.py   # deterministic; rewrites data/splits.csv
-.venv/bin/python scripts/audit_data.py    # rewrites reports/audit_summary.md
+.venv/bin/python scripts/make_splits.py        # deterministic; rewrites data/splits.csv
+.venv/bin/python scripts/audit_data.py         # rewrites reports/audit_summary.md
+.venv/bin/python scripts/baseline_constant.py  # constant reference baselines
+.venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
 .venv/bin/python -m pytest tests/ -q
 ```

@@ -1,0 +1,36 @@
+{
+  "split": "val",
+  "model": "mlp_onehot_pep_pseudo_h256x64_l21e-05_lr0.001_s0",
+  "arm_file": "mlp_onehot_pep_pseudo",
+  "selected_on": "val median per-allele Spearman, mean over seeds",
+  "dev_fraction": 0.1,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "grid": {
+    "hidden": [
+      [
+        64
+      ],
+      [
+        256,
+        64
+      ]
+    ],
+    "l2": [
+      1e-05,
+      0.001
+    ],
+    "alpha": [
+      0.1,
+      1.0,
+      10.0,
+      100.0,
+      1000.0
+    ],
+    "max_epochs": 300,
+    "patience": 15
+  }
+}
