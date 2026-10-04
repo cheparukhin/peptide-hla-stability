@@ -387,4 +387,200 @@ a licence expiring 31 December 2026.
 
 ## Results
 
-*Empty by design. Nothing above this line changes once it is filled.*
+*Nothing above this line has changed since it was written. Below is what ran.*
+
+**Status: the arm is not scored.** Neither arm A (FoldX standalone) nor arm B
+(sequence + FoldX) has been fitted, because the feature table does not exist
+yet: the production pass was not run. What follows is the pre-production
+measurement sections 4 and 7 required, and one result that reverses a
+prediction made above.
+
+### R1. The binary executes, and the output is what the parser claims
+
+First execution of this build anywhere in this project. Section 7's checks:
+
+| Check | Result |
+|---|---|
+| `uname -m` | `x86_64` |
+| `ldd` | "not a dynamic executable" — static link confirmed |
+| `--version` | FoldX **5.1** |
+| `molecules/` located | yes, 15 fragment definitions |
+| SHA-256: local = in-container = section 8 | `faed5e54...4268`, all three agree |
+| `Interaction_*.fxout` header vs `parse_fxout` | **exact**, 32 columns, compared by eye against raw text |
+| `Group1`/`Group2` | `C` (peptide) vs `A` (HLA), the claimed orientation |
+| Terms vs reported energy | plain sum −6.71 against reported −9.99: same sign and order, as expected of a weighted sum |
+| Structures scored | 10/10 across both workspaces, zero failures |
+
+Check 3 — the plausibility window — is the one that does not pass, and that is
+the subject of R2.
+
+### R2. RepairPDB is required. Section 4 predicted the opposite, and was wrong
+
+Section 4 argued repair was unnecessary because Boltz-2 writes complete
+all-atom models: 0 of 5,745 residues short of a heavy atom, and genuine
+non-disulfide heavy-atom overlaps below 2.2 Å at 0.24 per fold. **Both
+measurements stand.** The inference drawn from them does not.
+
+FoldX's van der Waals clash term is a **soft** penalty that fires well above
+the 2.2 Å hard-overlap threshold section 4 measured. Boltz-2's side chains are
+complete but sit in slightly strained rotamers, so there is nothing to
+*rebuild* and a great deal to *relax*. "Complete side chains" and "relaxed side
+chains" are different properties, and section 4 conflated them.
+
+**The unrepaired arm is not a cheaper version of the same measurement — it
+measures Boltz-2 strain.** Three lines of evidence, 10 structures, both
+workspaces:
+
+1. **It ranks structures by strain inside the predicted HLA chain.** Spearman
+   between the unrepaired interaction energy and `IntraclashesGroup2` is
+   **+0.90** (exact permutation p=0.083, n=5), and **+0.80** against the
+   interface van der Waals clash term (p=0.133). `IntraclashesGroup2` is not an
+   interface quantity at all.
+2. **It returns a positive binding free energy on a measured binder.**
+   `A0101_AMVLDKKLY` scores **+0.679 kcal/mol** unrepaired — "does not bind" —
+   on a row with a finite measured half-life. Two more are near zero (−2.08,
+   −3.73). The three worst are exactly the three with the highest clash terms;
+   the two with the lowest clashes give plausible −13.4 and −13.2.
+3. **Repair strips the penalty without changing the packing.** Van der Waals
+   clashes fall 8.50 → 3.01 and intra-HLA clashes 27.18 → 12.46, interface
+   clashing residues go 1–2 → 0 in every case, while the genuine
+   `van_der_waals` term barely moves per structure (−16.63 → −15.89,
+   −19.18 → −19.75).
+
+The predeclared plausibility window in section 7 decides it cleanly, on a
+criterion fixed before any number existed: unrepaired energies span −13.4 to
++0.7 and fall **outside** the −10 to −30 kcal/mol window; repaired energies
+span −16.1 to −24.2 and fall **inside** it.
+
+**Section 4's decision rule is therefore satisfied.** Repair changes the
+ranking — `repair_preserves_order` is `False` on both workspaces, and the
+Spearman between the two orderings is **0.10** on the `a-cheparukhin` five.
+Whether it fits budget is R4.
+
+Caveat, plainly: the paired comparison is 10 structures, 5 per workspace, all
+`HLA-A*01:01`. n=5 cannot reach significance — the smallest attainable
+two-sided p is 0.017. A 48-structure, 48-allele paired pilot was launched to
+remove this limitation and was **aborted before its repair arm finished**, for
+a reason unrelated to the science. Its unrepaired arm completed; see R3.
+
+### R3. Runtime, measured, and a contention factor that corrects the forecast
+
+| Quantity | `a-cheparukhin` | `colleague` |
+|---|---:|---:|
+| Unrepaired, 5 procs on 6 cores | **3.62 s** | **3.41 s** |
+| Repaired, 5 procs on 6 cores | **256.95 s** | **235.01 s** |
+| Repair runtime multiple | **71.0×** | **68.9×** |
+
+**At the production container shape the unrepaired arm costs 6.91 s of process
+time per structure, not 3.62 s** — a measured **1.91×** contention penalty from
+running 32 FoldX processes on 32 reserved cores with no headroom, which a
+5-process smoke on 6 cores cannot see. Measured on 48 structures over 48
+alleles, 48/48 ok, 10.4 s wall.
+
+Any forecast built on the 5-process figure is optimistic by roughly that
+factor. **The repair arm's own contention factor was not measured** — the gap
+the aborted pilot would have closed — so the repaired forecast in R4 applies
+the unrepaired arm's 1.91× and is labelled derived accordingly.
+
+**Memory, measured, and the risk it retires:** **107 MB peak RSS per FoldX
+process, including RepairPDB.** 32 processes need about 3.4 GiB against 16 GiB
+reserved — 4.7× headroom. The concern that 0.5 GiB per process would OOM the
+repair arm is closed.
+
+### R4. Forecast, at the repo's metered rates
+
+`$0.04730`/core-hour and `$0.00800`/GiB-hour from
+`reports/ectodomain_rates.json`. Never published list rates.
+
+| Arm | Shape | Wall | Core-hours | Cost | Basis |
+|---|---|---:|---:|---:|---|
+| Unrepaired | 25×32c/32p | 0.09 h | 74 | **$3.80** | **measured** 32-proc |
+| Unrepaired | 40×64c/64p | 0.05 h | 118 | **$5.82** | **measured** 32-proc |
+| Repaired | 25×32c/32p | 4.62 h | 3,695 | **$189.54** | derived, 1.91× applied |
+| Repaired | 40×64c/64p | 1.46 h | 3,739 | **$184.32** | derived, 1.91× applied |
+
+Two things worth stating because they are easy to get backwards:
+
+- **Parallelism buys wall time, not money.** Cost is total work in core-hours,
+  set by 28,166 structures times single-threaded FoldX time. Going from 25×32c
+  to 40×64c cuts wall time 4.62 h → 1.46 h and leaves cost essentially flat;
+  widening further *raises* it, because Modal bills the cores a container
+  reserves for as long as it lives and each extra container adds its own
+  startup.
+- The repaired arm at ~$185 is **about 48% of the ~$387 remaining**.
+
+### R5. Spent so far
+
+About **$0.33**, derived from observed wall times at the metered rates above,
+not read from a billing dashboard: two smoke runs at roughly $0.03 each
+(6 cores / 12 GiB, both arms plus the binary probe and a fold listing) and the
+aborted 48-structure pilot at roughly $0.27 (32 cores / 16 GiB, ~10 minutes
+before abort). An estimate, with its method attached.
+
+### R6. Two defects found before they could cost anything
+
+Both would only ever have surfaced at the worst moment.
+
+- **`score` wrote one output filename for both arms.** `--repair` changed the
+  column but not the path, so running both arms — which is the plan — would
+  have had the $3.80 unrepaired run **silently overwrite** the ~$185 repaired
+  one, leaving a well-formed CSV behind. The repair setting is now in the
+  filename, with a regression test.
+- **`scripts/foldx_concat.py` did not exist**, although section 2 above and
+  `score`'s own closing message both direct the reader to it. Written, with the
+  asserts section 2 specifies (28,166 rows, zero duplicate `(allele, peptide)`,
+  exact cohort coverage, one binary SHA and one repair setting across both
+  halves), and verified end to end on synthetic full halves.
+
+Also confirmed: **`--dry-run` is not free.** It makes no worker call — an AST
+test proves no `.remote`/`.map`/`.starmap` precedes its return guard — but
+`modal run` builds and validates the 87 MB FoldX image layer before the
+entrypoint executes. The genuinely free path is `scripts/foldx_forecast.py`,
+which never imports `modal`. Every forecast above came from it.
+
+### R7. The awkward cases
+
+Section 6's six alleles are forced into the pilot's selection rather than
+sampled, by `pick_pilot_folds`, which also spreads over alleles
+deterministically under seed `20261004` — the metric is a per-allele Spearman,
+so a single-allele pilot cannot inform it. All six were present in the
+48-structure selection and all converted and scored without error in the
+unrepaired arm.
+
+One correction to a detail that would have failed silently: the cohort spells
+these alleles **`HLA-B*14:01(C67S)`**, with the suffix. An `isin` against the
+bare `HLA-B*14:01` matches nothing and reports the engineered constructs as
+absent. With the suffix the counts reproduce section 6 exactly — **1,135 C67S
+rows** and 1,103 borrowed-alpha3 rows.
+
+Per-allele energies for these six await the production pass.
+
+### R8. What would close this stage
+
+1. The repair arm's contention factor, from a ~32-structure paired pilot at the
+   production shape. About **$0.25**. Converts R4's derived repaired figure
+   into a measured one.
+2. The production pass, both arms, then `scripts/foldx_concat.py`. About
+   **$190** at 40×64c with ~1.5 h wall, on the derived figure.
+3. Arms A and B under section 5's protocol, which costs nothing but local CPU.
+
+Step 2 is the decision, and it is not only a budget question. Two independent
+results now bound what it can return, both measured after this protocol was
+written:
+
+- **Wet-lab affinity used directly ranks stability at ρ 0.580** against the
+  sequence baseline's 0.693 (section 1 above). The thermodynamic quantity is
+  below the baseline standing alone.
+- **Stage 5's structural arm is a conclusive negative on these same Boltz-2
+  poses**: seq + geometry + confidence scores **−0.0715 [−0.1228, −0.0251]**
+  against the baseline on validation, interval entirely below zero, and a
+  `seq_only` control through the identical pipeline beats it at all six L2
+  values tested — so the loss is the features, not the tuning.
+
+FoldX is a genuinely different quantity from pLDDT and PAE, so section 1's open
+question — whether an explicit energy decomposition adds anything on top of a
+trained sequence model — remains formally open and is bounded by neither
+figure. But these are two independent failures to extract an increment from
+these structures, and the cost of a third attempt rose rather than fell once
+contention was measured. R2 is a real and reportable result about empirical
+energy functions on predicted models, and it is already in hand.

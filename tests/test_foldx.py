@@ -592,3 +592,23 @@ def test_score_output_name_encodes_the_repair_arm():
     # The two arms must not resolve to the same path.
     for profile in app.PROFILES:
         assert concat.half_path(profile, False) != concat.half_path(profile, True)
+
+
+def test_repair_command_defaults_to_the_measured_command_line():
+    """The default must stay byte-identical to what the smoke measured."""
+    cmd = foldx.repair_command("/opt/foldx/fx", "x.pdb", "/in", "/out")
+    assert not any("repair_Interface" in c for c in cmd)
+    assert cmd == ["/opt/foldx/fx", "--command=RepairPDB", "--pdb=x.pdb",
+                   "--pdb-dir=/in", "--output-dir=/out"]
+
+
+def test_repair_command_passes_interface_scope_through():
+    cmd = foldx.repair_command("/opt/foldx/fx", "x.pdb", "/in", "/out",
+                               repair_interface="ONLY")
+    assert "--repair_Interface=ONLY" in cmd
+
+
+def test_repair_command_rejects_an_unknown_interface_scope():
+    with pytest.raises(ValueError, match="repair_interface"):
+        foldx.repair_command("/opt/foldx/fx", "x.pdb", "/in", "/out",
+                             repair_interface="INTERFACE")

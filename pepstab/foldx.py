@@ -419,21 +419,49 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def repair_command(binary: str, pdb: str, pdb_dir: str, out_dir: str) -> list[str]:
-    """``RepairPDB``: rebuild clashing side chains before scoring.
+#: ``RepairPDB --repair_Interface``: ALL repairs every residue (FoldX's own
+#: default), ONLY repairs just the interface, NONE leaves the interface alone.
+REPAIR_INTERFACE_CHOICES = ("ALL", "ONLY", "NONE")
+
+
+def repair_command(
+    binary: str,
+    pdb: str,
+    pdb_dir: str,
+    out_dir: str,
+    repair_interface: str = "ALL",
+) -> list[str]:
+    """``RepairPDB``: relax strained side chains before scoring.
 
     Whether this is needed is an empirical question the pilot answers, not an
     assumption -- it is the step that dominates runtime, and the input here is
     a predicted model with complete side chains rather than a crystal with
     missing ones. See ``reports/stage8_foldx.md``.
+
+    ``repair_interface`` is passed through to FoldX unchanged. ``ALL`` is
+    FoldX's default and the predeclared treatment; ``ONLY`` repairs just the
+    interface, which is cheaper but is **not** the same quantity -- it leaves
+    the rest of the chain strained. It may only be substituted for ``ALL`` on
+    measured evidence that it reproduces ``ALL``'s ranking, and the
+    substitution has to be recorded as a deviation from the protocol.
     """
-    return [
+    if repair_interface not in REPAIR_INTERFACE_CHOICES:
+        raise ValueError(
+            f"repair_interface must be one of {REPAIR_INTERFACE_CHOICES}, "
+            f"got {repair_interface!r}"
+        )
+    command = [
         binary,
         "--command=RepairPDB",
         f"--pdb={pdb}",
         f"--pdb-dir={pdb_dir}",
         f"--output-dir={out_dir}",
     ]
+    # Omitted entirely at the default, so the command line stays byte-identical
+    # to the one the smoke measured.
+    if repair_interface != "ALL":
+        command.append(f"--repair_Interface={repair_interface}")
+    return command
 
 
 def analyse_complex_command(
