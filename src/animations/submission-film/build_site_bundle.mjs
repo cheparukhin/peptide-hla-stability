@@ -1,4 +1,5 @@
-// Builds the submission film into site/film/ as a self-contained static page.
+// Builds two static pages into site/: the submission film (film/) and the
+// original 30-second pMHC interface animation (intro/).
 //
 // The dev page (index.html) fetches each .jsx and transforms it in the browser
 // with Babel standalone. That costs a 3 MB download and a visible transform
@@ -110,3 +111,82 @@ writeFileSync(join(OUT, 'index.html'), `<!DOCTYPE html>
 `, 'utf8');
 
 console.log('built ' + OUT);
+
+// ---------------------------------------------------------------------------
+// The original pMHC interface animation, as a live page rather than a video.
+//
+// Its scene root is window.PmhcVideoV2 and it reads its timing from CUES, so
+// it needs its own OM_SCENES. The original cue sheet is NOT in the repo — it
+// lived in the artifact host page — so these durations are derived from the
+// beat code's own lower bounds (the frame at which each beat's last callout,
+// pop or ripple finishes). They sum to 29.9s, which matches site/intro.mp4
+// exactly, so the pacing reproduces the original render rather than guessing.
+const INTRO_OUT = join(REPO, 'site', 'intro');
+const INTRO_CUES = [
+  ['Groove', 1.3, 'HLA surface, zoom toward the groove'],
+  ['Anatomy', 3.8, 'Groove anatomy: helices, floor, the nine residues'],
+  ['Candidates', 2.1, 'Four candidate peptides cycle through the groove'],
+  ['Lock', 1.0, 'One peptide forms a stable pair'],
+  ['Approach', 3.2, 'The T-cell receptor descends onto the complex'],
+  ['Interface', 2.1, 'V-domain ribbons; CDR loops read the peptide'],
+  ['Wobble', 4.6, 'A loose peptide escapes, then a stable one settles'],
+  ['Anchors', 2.1, 'Anchor residues seat in their pockets'],
+  ['Contact', 3.6, 'CDR3 contacts the peptide and the receptor signals'],
+  ['Activation', 1.5, 'The T cell activates'],
+  ['Expansion', 3.0, 'One clone expands out of the naive repertoire'],
+  ['Body', 1.6, 'The whole-body response'],
+];
+
+rmSync(INTRO_OUT, { recursive: true, force: true });
+mkdirSync(INTRO_OUT, { recursive: true });
+
+// Only the runtime and the scene itself — none of the film's acts or shell.
+const introChunks = SOURCES.slice(0, 2).map((src) =>
+  `/* ${src.replace(REPO + '/', '')} */\n` +
+  Babel.transform(readFileSync(src, 'utf8'), { presets: ['react'] }).code);
+writeFileSync(join(INTRO_OUT, 'intro.js'), introChunks.join('\n;\n'), 'utf8');
+
+cpSync(join(REPO, 'src/animations/pmhc-intro/shots'), join(INTRO_OUT, 'shots'), { recursive: true });
+mkdirSync(join(INTRO_OUT, 'vendor'), { recursive: true });
+for (const f of ['react.js', 'react-dom.js']) {
+  cpSync(join(HERE, 'vendor', f), join(INTRO_OUT, 'vendor', f));
+}
+
+writeFileSync(join(INTRO_OUT, 'index.html'), `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Peptide-MHC interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; background: #14151A; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="vendor/react.js"></script>
+<script src="vendor/react-dom.js"></script>
+<script>
+  window.OM_SCENES = JSON.stringify(${JSON.stringify(
+    INTRO_CUES.map(([name, dur, desc]) => ({ name, dur, desc })), null, 2)});
+  window.OM_PLAYBACK = '{"mode":"loop"}';
+  window.TWEAK_DEFAULTS = { labels: true, captions: true, motionEditor: false };
+
+  // Supplied by the artifact harness in development; stubbed here.
+  window.useTweaks = function (d) { return [d || {}, function () {}]; };
+  window.TweaksPanel = function () { return null; };
+  window.TweakSection = function () { return null; };
+  window.TweakToggle = function () { return null; };
+</script>
+<script src="intro.js"></script>
+<script>
+  ReactDOM.createRoot(document.getElementById('root'))
+    .render(React.createElement(window.PmhcVideoV2));
+</script>
+</body>
+</html>
+`, 'utf8');
+
+console.log('built ' + INTRO_OUT);

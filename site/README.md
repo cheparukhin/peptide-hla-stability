@@ -14,7 +14,8 @@ the built-in "/docs folder" source.
 | File | What it is |
 |---|---|
 | `index.html` | The page. Self-contained — all CSS inline, fonts from Google Fonts. |
-| `film/` | Generated — the two-minute film as a static page. Do not hand-edit. |
+| `film/` | Generated — the submission film as a static page. Do not hand-edit. |
+| `intro/` | Generated — the original 30-second animation, live. Do not hand-edit. |
 | `intro.mp4` | The intro animation, re-encoded for web: 1280×720, **H.264 Constrained Baseline, level 3.0**, yuv420p, faststart, no audio track (2.9 MB). The 20 MB source is `pMHC Intro v2.mp4` in the repo root. |
 | `intro.webm` | VP9 fallback for browsers that refuse the MP4 (2.0 MB). |
 | `poster.png` | Video poster frame. |
@@ -63,6 +64,21 @@ them with the vendored Babel at build time. Both matter:
 `src/animations/submission-film/index.html` is the development page: it fetches
 each `.jsx` and transforms in-browser, and carries the tweaks panel and a `?t=`
 seek used for frame review. The published page keeps `?t=` and stubs the panel.
+
+## The original animation
+
+The same build also emits `intro/` — the original pMHC interface animation
+running live rather than as `intro.mp4`. Both are kept: the MP4 is the
+no-JavaScript fallback and the download.
+
+Its cue sheet is **not** in the repo (it lived in the artifact host page), so
+the build derives each cue's duration from the lower bound the beat code
+itself implies — the frame at which that beat's last callout, residue pop or
+ripple finishes. Those bounds sum to **29.9 s, exactly the duration of
+`intro.mp4`**, which is the evidence that the reconstruction reproduces the
+original pacing rather than approximating it. If a beat's choreography is ever
+retimed, re-derive the bound rather than nudging the number until it looks
+right.
 
 ## Regenerating the intro video
 
