@@ -30,6 +30,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import tarfile
 import time
 from pathlib import Path
 
@@ -227,11 +228,24 @@ def download_weights(force: bool = False) -> dict:
 
     t0 = time.monotonic()
     snapshot_download(repo_id=HF_REPO, revision=HF_REVISION, local_dir=str(CACHE_DIR))
+    # The snapshot ships the CCD as `mols.tar`; Boltz reads the extracted
+    # `mols/` tree and unpacks it itself when the directory is absent. Doing it
+    # here, once, is not a convenience: `fold_shard` runs 10 containers over
+    # this one Volume, so leaving it to them means 10 racing extractions of the
+    # same 45k files. `a-cheparukhin` only has `mols/` because the pilot
+    # happened to extract it, which is why this went unnoticed until a second
+    # workspace ran `setup` -- `verify_workspace` then failed on the directory.
+    extracted = False
+    if not (CACHE_DIR / "mols").exists():
+        with tarfile.open(CACHE_DIR / "mols.tar") as tar:
+            tar.extractall(CACHE_DIR)
+        extracted = True
     weights_vol.commit()
     return {
         "revision": HF_REVISION,
         "status": "downloaded",
         "checkpoints": sorted(p.name for p in CACHE_DIR.glob("*.ckpt")),
+        "mols_extracted": extracted,
         "seconds": round(time.monotonic() - t0, 1),
     }
 
