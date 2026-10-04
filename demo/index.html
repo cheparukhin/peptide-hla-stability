@@ -378,24 +378,14 @@ body {
   transition: background .3s var(--ease);
 }
 .stage:active { cursor: grabbing; }
-.stage #viewport {
+.stage canvas {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   opacity: 0;
   animation: canvasFade .8s var(--ease) .15s forwards;
-}
-.stage .no-struct {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 11px;
-  color: var(--ink-3);
-  padding: 20px;
 }
 
 .stage-caption {
@@ -549,7 +539,7 @@ body {
     animation-duration: .001ms !important;
     transition-duration: .001ms !important;
   }
-  .stage #viewport { opacity: 1; animation: none; }
+  .stage canvas { opacity: 1; animation: none; }
 }
 </style>
 
@@ -593,8 +583,7 @@ body {
         <span class="tally" id="tally-struct"></span>
       </div>
       <div class="stage" id="stage">
-        <div id="viewport"></div>
-        <div id="no-struct" class="no-struct" hidden>Select a peptide with a structure</div>
+        <canvas id="canvas"></canvas>
         <div class="stage-caption">
           <b id="cap-seq"></b>
           <span id="cap-note">Drag to rotate</span>
@@ -616,17 +605,23 @@ body {
 
 </div>
 
-<script src="3Dmol-min.js"></script>
-<script src="structures_pdb.js"></script>
 <script src="payload.js"></script>
 <script>
 /* =========================================================================
    Groove - three-tier dashboard
    Tier 1 allele  ->  Tier 2 peptides ranked by half-life  ->  Tier 3 structure
 
-   The structure tier uses 3Dmol.js to render molecular structures.
-   It loads bundled PDB structures for known complexes, or converts
-   Boltz-2 Cα traces from the payload into PDB format for rendering.
+   The structure tier is a self-contained canvas renderer with no external
+   dependency. It draws a schematic MHC class I groove: two flanking helices,
+   a beta-sheet floor, and the selected peptide between them.
+
+   SWAPPING IN REAL COORDINATES
+   ----------------------------
+   Structure3D.load(atoms) takes an array of:
+       { x, y, z, chain, resi, el }
+   chain 'P' is drawn as the peptide and coloured by half-life; everything
+   else is drawn as scaffold. Parse a CIF/PDB into that shape and call load().
+   Structure3D.schematic(peptideSeq) regenerates the placeholder geometry.
    ========================================================================= */
 (function () {
   'use strict';
@@ -664,117 +659,266 @@ body {
   }
 
   /* =======================================================================
-     Viewer3D - 3Dmol.js viewer wrapper
+     Structure3D - dependency-free canvas renderer
      ===================================================================== */
-  var viewer3d = null;
-  var viewerReady = false;
-  var ROLECOL = { peptide: '#f72585', heavy: '#4895ef', b2m: '#80b918' };
-  var PDB_STRUCTS = window.__PDB_STRUCTURES__ || {};
+  var Structure3D = (function () {
+    var cv, ctx, stage;
+    var atoms = [], bonds = [];
+    var yaw = -0.5, pitch = -0.22, spin = 0, spinning = true;
+    var targetSpin = 0;       // for momentum deceleration
+    var spinVel = 0.003;      // radians per frame - smooth idle rate
+    var W = 0, H = 0, dpr = 1;
+    var reduce = window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function initViewer() {
-    var el = $('viewport');
-    if (!el || !window.$3Dmol) return;
-    var isDark = getComputedStyle(document.documentElement)
-                   .getPropertyValue('color-scheme').trim() === 'dark' ||
-                 document.documentElement.getAttribute('data-theme') === 'dark';
-    viewer3d = $3Dmol.createViewer(el, {
-      backgroundColor: isDark ? '#0A0A0A' : '#FAFAFA'
-    });
-    viewerReady = true;
-    window.addEventListener('resize', function () { if (viewer3d) viewer3d.resize(); });
-    if (window.ResizeObserver) {
-      new ResizeObserver(function () { if (viewer3d) viewer3d.resize(); }).observe(el);
+    function helix(axis, radius, phase, turns, n, lift) {
+      var pts = [];
+      for (var i = 0; i < n; i++) {
+        var f = i / (n - 1);
+        var a = phase + f * turns * Math.PI * 2;
+        pts.push({
+          x: -19 + f * 38,
+          y: lift + Math.sin(a) * radius,
+          z: axis + Math.cos(a) * radius
+        });
+      }
+      return pts;
     }
-  }
 
-  function updateViewerBg() {
-    if (!viewer3d) return;
-    var isDark = getComputedStyle(document.documentElement)
-                   .getPropertyValue('color-scheme').trim() === 'dark' ||
-                 document.documentElement.getAttribute('data-theme') === 'dark';
-    viewer3d.setBackgroundColor(isDark ? '#0A0A0A' : '#FAFAFA');
-    viewer3d.render();
-  }
+    /* Placeholder geometry. Shape only - not predicted coordinates. */
+    function schematic(seq) {
+      var A = [], B = [];
+      function chainOf(pts, chain, el) {
+        var base = A.length;
+        pts.forEach(function (p, i) {
+          A.push({ x: p.x, y: p.y, z: p.z, chain: chain, resi: i + 1, el: el });
+          if (i) B.push([base + i - 1, base + i]);
+        });
+      }
 
-  /* Convert Boltz-2 Cα trace (payload format) to PDB text for 3Dmol */
-  function caToPDB(atoms) {
-    var lines = [];
-    var AA1TO3 = { A:'ALA',R:'ARG',N:'ASN',D:'ASP',C:'CYS',Q:'GLN',E:'GLU',
-                   G:'GLY',H:'HIS',I:'ILE',L:'LEU',K:'LYS',M:'MET',F:'PHE',
-                   P:'PRO',S:'SER',T:'THR',W:'TRP',Y:'TYR',V:'VAL' };
-    atoms.forEach(function (a, i) {
-      var resn = AA1TO3[a.el] || 'ALA';
-      var chain = a.chain === 'H' ? 'A' : a.chain === 'B' ? 'B' : 'C';
-      var line = 'ATOM  ' +
-        String(i + 1).padStart(5) + '  CA  ' +
-        resn + ' ' + chain +
-        String(a.resi).padStart(4) + '    ' +
-        a.x.toFixed(3).padStart(8) +
-        a.y.toFixed(3).padStart(8) +
-        a.z.toFixed(3).padStart(8) +
-        '  1.00  0.00           C';
-      lines.push(line);
-    });
-    lines.push('END');
-    return lines.join('\n');
-  }
+      chainOf(helix(8.4, 2.2, 0, 5.2, 46, 3.4), 'A', 'C');     // alpha1
+      chainOf(helix(-8.4, 2.2, 1.6, 5.2, 46, 3.4), 'B', 'C');  // alpha2
 
-  /* Load a structure into the viewer with role-based colouring */
-  function loadIntoViewer(pdbText, fmt, pepColor) {
-    if (!viewer3d) return;
-    viewer3d.clear();
-    var model = viewer3d.addModel(pdbText, fmt || 'pdb');
-    var allAtoms = model.selectedAtoms({});
+      for (var s = 0; s < 8; s++) {                            // beta floor
+        var z = -7.4 + s * 2.1;
+        var strand = [];
+        for (var k = 0; k < 13; k++) {
+          strand.push({
+            x: -18 + k * 3,
+            y: -4.1 + Math.sin(k * 0.9 + s) * 0.5,
+            z: z
+          });
+        }
+        chainOf(strand, 'S', 'C');
+      }
 
-    /* Detect chains and roles */
-    var chainLens = {};
-    allAtoms.forEach(function (a) {
-      if (!a.hetflag) chainLens[a.chain] = (chainLens[a.chain] || 0) + 1;
-    });
-    var chainIds = Object.keys(chainLens);
-    var roles = {};
-    chainIds.forEach(function (c) {
-      var n = chainLens[c];
-      if (n >= 7 && n <= 25) roles[c] = 'peptide';
-      else if (n >= 85 && n <= 120) roles[c] = 'b2m';
-      else if (n >= 200) roles[c] = 'heavy';
-      else roles[c] = 'heavy';
-    });
+      var n = (seq || 'XXXXXXXXX').length;                     // peptide
+      var pep = [];
+      for (var i = 0; i < n; i++) {
+        var f = n > 1 ? i / (n - 1) : 0.5;
+        pep.push({
+          x: -13 + f * 26,
+          y: 0.5 + Math.sin(f * Math.PI) * 2.3,
+          z: Math.sin(f * Math.PI * 2) * 0.7
+        });
+      }
+      chainOf(pep, 'P', 'P');
+      load(A, B);
+    }
 
-    /* Style by role */
-    viewer3d.setStyle({}, {});
-    chainIds.forEach(function (c) {
-      var col = ROLECOL[roles[c]] || '#64748b';
-      viewer3d.setStyle(
-        { chain: c, hetflag: false },
-        { cartoon: { color: col, thickness: 0.3, arrows: true } }
-      );
-    });
+    function load(nextAtoms, nextBonds) {
+      atoms = nextAtoms || [];
+      if (nextBonds) { bonds = nextBonds; return; }
+      bonds = [];
+      for (var i = 1; i < atoms.length; i++) {
+        var a = atoms[i - 1], b = atoms[i];
+        if (a.chain !== b.chain) continue;
+        var d = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+        if (d < 5) bonds.push([i - 1, i]);
+      }
+    }
 
-    /* Peptide as sticks + labels */
-    var pepChains = chainIds.filter(function (c) { return roles[c] === 'peptide'; });
-    pepChains.forEach(function (pc) {
-      var stickCol = pepColor || ROLECOL.peptide;
-      viewer3d.addStyle(
-        { chain: pc },
-        { stick: { radius: 0.2, color: stickCol } }
-      );
-    });
+    function resize() {
+      if (!stage) return;
+      var r = stage.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.max(1, Math.round(r.width));
+      H = Math.max(1, Math.round(r.height));
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
 
-    /* Hide waters and common ligands */
-    viewer3d.setStyle(
-      { resn: ['HOH','DOD','SO4','PO4','GOL','EDO','CL','NA','MG'] },
-      {}
-    );
+    function project(p) {
+      var cy = Math.cos(yaw + spin), sy = Math.sin(yaw + spin);
+      var x1 = p.x * cy - p.z * sy;
+      var z1 = p.x * sy + p.z * cy;
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      var y1 = p.y * cp - z1 * sp;
+      var z2 = p.y * sp + z1 * cp;
+      var scale = Math.min(W, H * 1.55) / 46;
+      var persp = 190 / (190 + z2 * 2.4);
+      return {
+        sx: W / 2 + x1 * scale * persp,
+        sy: H / 2 - y1 * scale * persp,
+        depth: z2,
+        k: persp
+      };
+    }
 
-    /* Zoom to groove region */
-    var heavyChains = chainIds.filter(function (c) { return roles[c] === 'heavy'; });
-    var zoomSel = heavyChains.concat(pepChains);
-    if (zoomSel.length) viewer3d.zoomTo({ chain: zoomSel });
+    var colours = {};
+    function refreshColours() {
+      colours = {
+        scaffold: css('--rule-2') || '#666666',
+        floor:    css('--rule') || '#999999',
+        pep:      css('--h3') || '#2A78A0',
+        anchor:   css('--pick') || '#121212',
+        label:    css('--ink-3') || '#999999',
+        bg:       css('--paper') || '#FAFAFA'
+      };
+    }
 
-    viewer3d.spin('y');
-    viewer3d.render();
-  }
+    var pepColour = null;
+    function setPeptideColour(v) { pepColour = v; }
+
+    function draw() {
+      if (!ctx || !W) return;
+      ctx.clearRect(0, 0, W, H);
+      if (!atoms.length) return;
+
+      var pr = atoms.map(project);
+
+      // depth-sort bonds
+      var order = bonds.map(function (b, i) {
+        return { i: i, d: (pr[b[0]].depth + pr[b[1]].depth) / 2 };
+      }).sort(function (a, b) { return a.d - b.d; });
+
+      order.forEach(function (o) {
+        var b = bonds[o.i];
+        var a0 = atoms[b[0]], p0 = pr[b[0]], p1 = pr[b[1]];
+        var isPep = a0.chain === 'P';
+        // smoother depth fog with wider range
+        var fog = Math.max(0.12, Math.min(1, (o.d + 18) / 34));
+
+        ctx.globalAlpha = isPep ? 1 : 0.15 + fog * 0.55;
+        ctx.strokeStyle = isPep ? (pepColour || colours.pep)
+                        : (a0.chain === 'S' ? colours.floor : colours.scaffold);
+        ctx.lineWidth = (isPep ? 5.5 : (a0.chain === 'S' ? 1.8 : 2.6)) * p0.k;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(p0.sx, p0.sy);
+        ctx.lineTo(p1.sx, p1.sy);
+        ctx.stroke();
+      });
+
+      // peptide residues on top, anchors larger
+      var pepIdx = [];
+      atoms.forEach(function (a, i) { if (a.chain === 'P') pepIdx.push(i); });
+      var n = pepIdx.length;
+
+      pepIdx.forEach(function (i, k) {
+        var p = pr[i];
+        var anchor = (k === 1 || k === n - 1);
+        var r = (anchor ? 7.8 : 5) * p.k;
+        ctx.globalAlpha = 1;
+
+        // subtle glow behind peptide nodes
+        if (anchor) {
+          ctx.beginPath();
+          ctx.arc(p.sx, p.sy, r + 4, 0, Math.PI * 2);
+          ctx.fillStyle = (pepColour || colours.pep);
+          ctx.globalAlpha = 0.12;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2);
+        ctx.fillStyle = anchor ? colours.anchor : (pepColour || colours.pep);
+        ctx.fill();
+        if (anchor) {
+          ctx.lineWidth = 2.2 * p.k;
+          ctx.strokeStyle = colours.bg;
+          ctx.stroke();
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    var raf = null;
+    var dragVelX = 0, dragVelY = 0;
+    function tick() {
+      if (spinning && !reduce) {
+        // gentle sinusoidal breathing on the spin speed
+        spin += spinVel * (0.85 + 0.15 * Math.sin(spin * 0.7));
+      } else if (!spinning) {
+        // momentum decay after drag release
+        if (Math.abs(dragVelX) > 0.0001 || Math.abs(dragVelY) > 0.0001) {
+          yaw += dragVelX;
+          pitch += dragVelY;
+          pitch = Math.max(-1.2, Math.min(1.2, pitch));
+          dragVelX *= 0.94;
+          dragVelY *= 0.94;
+        }
+      }
+      draw();
+      raf = requestAnimationFrame(tick);
+    }
+
+    function attach(stageEl, canvasEl) {
+      stage = stageEl; cv = canvasEl; ctx = cv.getContext('2d');
+      refreshColours();
+      resize();
+      if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+      else window.addEventListener('resize', resize);
+
+      var dragging = false, lastX = 0, lastY = 0, lastT = 0;
+      stage.addEventListener('pointerdown', function (e) {
+        dragging = true; spinning = false;
+        dragVelX = 0; dragVelY = 0;
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = performance.now();
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = (e.clientX - lastX) * 0.0092;
+        var dy = (e.clientY - lastY) * 0.0068;
+        yaw += dx;
+        pitch += dy;
+        pitch = Math.max(-1.2, Math.min(1.2, pitch));
+        // track velocity for momentum
+        var now = performance.now();
+        var dt = Math.max(1, now - lastT);
+        dragVelX = dx * (16 / dt);   // normalise to ~60fps
+        dragVelY = dy * (16 / dt);
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = now;
+      });
+      function end(e) {
+        dragging = false;
+        if (e && e.pointerId != null && stage.hasPointerCapture &&
+            stage.hasPointerCapture(e.pointerId)) {
+          stage.releasePointerCapture(e.pointerId);
+        }
+      }
+      stage.addEventListener('pointerup', end);
+      stage.addEventListener('pointercancel', end);
+
+      if (raf == null) tick();
+    }
+
+    return {
+      attach: attach,
+      load: load,
+      schematic: schematic,
+      setPeptideColour: setPeptideColour,
+      refreshColours: refreshColours,
+      resetSpin: function () { spinning = true; dragVelX = 0; dragVelY = 0; }
+    };
+  })();
 
   /* =======================================================================
      State and rendering
@@ -873,52 +1017,27 @@ body {
     var hit = solvedFor[a.allele + '|' + state.peptide] || null;
     var tpl = a.tpl;
 
-    var pepCol = css(rampVar(norm(pep && pep.t, a.thalf_max)));
+    Structure3D.setPeptideColour(css(rampVar(norm(pep && pep.t, a.thalf_max))));
 
-    /* Priority: 1) Bundled PDB matching this exact pair
-                 2) Boltz-2 Cα trace from payload
-                 3) Bundled PDB template for the allele
-                 4) No-structure placeholder */
+    /* Load Boltz-2 Cα trace if available, otherwise fall back to schematic */
     var skey = structureKey(a.allele, state.peptide);
     var boltzAtoms = structures[skey];
     var hasBoltz = boltzAtoms && boltzAtoms.length > 0;
 
-    /* Map solved-pair PDB IDs to bundled structures */
-    var bundledPdb = null;
-    if (hit && hit.pdbs) {
-      hit.pdbs.some(function (id) {
-        if (PDB_STRUCTS[id.toUpperCase()]) { bundledPdb = id.toUpperCase(); return true; }
-      });
+    if (hasBoltz) {
+      Structure3D.load(boltzAtoms);
+    } else {
+      Structure3D.schematic(state.peptide);
     }
-    /* Fallback: use 1HHK as template for A*02:01 pairs */
-    var templatePdb = (!bundledPdb && !hasBoltz && a.allele === 'HLA-A*02:01' && PDB_STRUCTS['1HHK']) ? '1HHK' : null;
-
-    $('no-struct').hidden = true;
-    if (bundledPdb) {
-      loadIntoViewer(PDB_STRUCTS[bundledPdb].pdb, 'pdb', pepCol);
-    } else if (hasBoltz) {
-      loadIntoViewer(caToPDB(boltzAtoms), 'pdb', pepCol);
-    } else if (templatePdb) {
-      loadIntoViewer(PDB_STRUCTS[templatePdb].pdb, 'pdb', pepCol);
-    } else if (viewer3d) {
-      viewer3d.clear(); viewer3d.render();
-      $('no-struct').hidden = false;
-    }
+    Structure3D.resetSpin();
 
     $('cap-seq').textContent = state.peptide;
-    $('cap-note').textContent = bundledPdb
-      ? 'Crystal structure ' + bundledPdb + ' · drag to rotate'
-      : hasBoltz
-        ? 'Boltz-2 prediction · Cα trace · drag to rotate'
-        : templatePdb
-          ? 'Template ' + templatePdb + ' · drag to rotate'
-          : hit
-            ? 'Solved as ' + hit.pdbs[0] + ' (no 3D loaded)'
-            : 'No structure available';
-    $('tally-struct').textContent = bundledPdb ? 'crystal structure'
-      : hasBoltz ? 'Boltz-2 fold'
-      : templatePdb ? 'allele template'
-      : (hit ? 'solved complex' : 'no structure');
+    $('cap-note').textContent = hasBoltz
+      ? 'Boltz-2 prediction · Cα trace · drag to rotate'
+      : hit
+        ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
+        : 'Drag to rotate. Schematic geometry.';
+    $('tally-struct').textContent = hasBoltz ? 'Boltz-2 fold' : (hit ? 'solved complex' : 'allele template');
 
     var pdb = hit ? hit.pdbs[0] : (tpl ? tpl.pdb : null);
     var res = hit ? hit.res : (tpl ? tpl.res : null);
@@ -926,32 +1045,25 @@ body {
 
     var cells = [
       ['Half-life', pep ? hours(pep.t) : 'n/a'],
-      ['Source', bundledPdb || (hasBoltz ? 'Boltz-2' : (pdb || 'none'))],
-      ['Resolution', bundledPdb ? (PDB_STRUCTS[bundledPdb].title.match(/[\d.]+\s*Å/) || ['n/a'])[0] : (hasBoltz ? 'predicted' : (res != null ? res + ' Å' : 'n/a'))],
-      ['Chains', (bundledPdb || hasBoltz) ? 'H + β₂m + pep' : (year || 'n/a')]
+      ['Source', hasBoltz ? 'Boltz-2' : (pdb || 'none')],
+      ['Resolution', hasBoltz ? 'predicted' : (res != null ? res + ' Å' : 'n/a')],
+      ['Chains', hasBoltz ? 'H + β₂m + pep' : (year || 'n/a')]
     ];
     $('readouts').innerHTML = cells.map(function (c) {
       return '<div><dt>' + c[0] + '</dt><dd>' + esc(c[1]) + '</dd></div>';
     }).join('');
 
     var link = hit ? hit.link : (tpl ? tpl.link : null);
-    $('provenance').innerHTML = bundledPdb
-      ? 'Experimental crystal structure from RCSB PDB.' +
-        ' <a href="https://www.rcsb.org/structure/' + esc(bundledPdb) + '" target="_blank" rel="noopener">Open ' +
-        esc(bundledPdb) + ' on RCSB →</a>'
-      : hasBoltz
-        ? 'Boltz-2 ectodomain fold (3-chain: HLA α + β₂m + peptide). Cα backbone trace, centred on the peptide groove.' +
-          (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Compare with ' +
-                  esc(pdb) + ' on RCSB →</a>' : '')
-        : templatePdb
-          ? 'Allele template from ' + templatePdb + '; not the exact peptide complex.' +
-            ' <a href="https://www.rcsb.org/structure/' + esc(templatePdb) + '" target="_blank" rel="noopener">Open on RCSB →</a>'
-          : 'No 3D structure loaded.' +
-            (Object.keys(structures).length
-              ? ' Boltz-2 structures available for ' + Object.keys(structures).length + ' pairs.'
-              : '') +
-            (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
-                    esc(pdb) + ' on RCSB →</a>' : '');
+    $('provenance').innerHTML = hasBoltz
+      ? 'Boltz-2 ectodomain fold (3-chain: HLA α + β₂m + peptide). Cα backbone trace, centred on the peptide groove.' +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Compare with ' +
+                esc(pdb) + ' on RCSB →</a>' : '')
+      : 'Alleles, peptides and half-lives are measured. ' +
+        (Object.keys(structures).length
+          ? 'Boltz-2 structures available for ' + Object.keys(structures).length + ' pairs.'
+          : 'Run <code>fetch_structures.py</code> then <code>build_payload.py</code> to load Boltz-2 folds.') +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
+                esc(pdb) + ' on RCSB →</a>' : '');
   }
 
   /* ---- selection ---- */
@@ -976,11 +1088,11 @@ body {
     document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
     this.textContent = dark ? 'Dark' : 'Light';
     this.setAttribute('aria-pressed', String(!dark));
-    updateViewerBg();
+    Structure3D.refreshColours();
     paintStructure();
   });
 
-  initViewer();
+  Structure3D.attach($('stage'), $('canvas'));
 
   // open on a pair that has a solved structure, so tier 3 is full at rest
   var first = (D.overlap && D.overlap.length) ? D.overlap[0] : null;
