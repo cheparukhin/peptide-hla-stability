@@ -139,7 +139,36 @@ trend — it is two draws from a noisy statistic. See the two sections below on
 why this split cannot resolve the question and why the obvious alternative
 explanation cannot be ruled out.
 
-<!--WITHIN-->
+### The discriminating test, and the complete null
+
+The gap statistic is a difference of differences, which is why it is noisy. The
+better-powered question is a **single** difference: does an arm's score inside
+the far stratum genuinely beat the baseline's? Same 55-allele shared panel,
+2,000 cluster resamples, each stratum scored on its own rows.
+
+| Model vs `seq_ensemble_pep_pseudo` | within d=4 | 95% CI | within d>=5 | 95% CI |
+|---|---:|---|---:|---|
+| `esm_ensemble` | −0.0246 | [−0.0706, +0.0312] | −0.0049 | [−0.0804, +0.0632] |
+| `esm_plus_seq_ensemble` | −0.0339 | [−0.0707, +0.0383] | −0.0385 | [−0.1167, +0.0542] |
+| `esm_ensemble_150m` | −0.0466 | [−0.0906, +0.0166] | **+0.0219** | **[−0.0776, +0.0619]** |
+| `seq_ensemble_pep_domain` | −0.0397 | [−0.0821, +0.0141] | −0.0305 | [−0.1067, +0.0406] |
+
+The bolded row is the decisive one. The 150M arm's apparent far-stratum
+advantage — 0.6758 against the baseline's 0.6539 — is +0.0219 with an interval
+spanning [−0.078, +0.062]. It does not survive.
+
+**Twelve intervals in total bear on the distance question: four gap tests and
+eight within-stratum tests. Every one crosses zero.** The question was asked
+three different ways — gap, near stratum, far stratum — and this split answered
+none of them. That is a thorough null, not a single underpowered look.
+
+A note for anyone reading `reports/stage6_val_esm_stratum_ci.csv` directly: the
+150M d>=5 row has a point estimate of +0.0219 against an interval of
+[−0.0776, +0.0619], so the point estimate sits in the upper part of its own
+interval rather than at the centre. That is expected. The statistic is a median
+over a panel that is rebuilt on every resample, and the bootstrap distribution
+of a resampled-panel median is skewed. It is one more reason not to read a
+point estimate from this statistic without its interval attached.
 
 ## 3. Precision@10 at 2 hours
 

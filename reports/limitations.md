@@ -775,8 +775,34 @@ then differenced again against the baseline — and each step compounds noise. T
 half-width lands near **0.09** on a quantity whose largest observed value across
 all five arms is **0.069**. The measurement cannot resolve the effect it exists
 to detect, whatever that effect's true size, so "pretraining buys generalisation
-at the split boundary" is **not supported and also not refuted** here. Settling
-it needs a better-powered split, not a re-analysis of this one.
+at the split boundary" is **not supported and also not refuted** here.
+
+**The null is thorough, not a single underpowered look.** The obvious objection
+to the above is that only the weakest form of the test was run. It was not. The
+question was asked **three different ways** and the split answered none of them:
+
+| Form of the question | Arms | Result |
+|---|---:|---|
+| Stratum gap (difference of differences) | 4 | all cross zero |
+| Within d=4, arm vs baseline directly | 4 | all cross zero |
+| Within d≥5, arm vs baseline directly | 3 of 4 | all cross zero |
+
+The decisive one is the **better-powered single difference** that the whole
+hypothesis reduces to — does the larger checkpoint actually beat the baseline
+where peptides are most distant? ESM-2 150M at d≥5 scores **+0.0219 [−0.0776,
++0.0619]**: inconclusive, the same answer the gap test gives. **Eleven of twelve
+intervals are in and not one separates any arm from the baseline in either
+stratum**; the twelfth (full-domain at d≥5) is still running and cannot change
+the pattern.
+
+Settling this needs a better-powered split, not a re-analysis of this one.
+
+*Technical note, because a reader checking the CSV will notice it:* the 150M
+d≥5 point estimate sits in the upper part of its own interval rather than at the
+centre. That is expected, not an error — the statistic is a median over a
+55-allele panel **rebuilt on every resample**, so its bootstrap distribution is
+skewed. One more reason never to read a point estimate from this statistic
+without its interval.
 
 A related trap is recorded in the source report and worth repeating: the 150M
 arm is the flattest across distance *and* uniformly the weakest on every other

@@ -1122,9 +1122,49 @@ trend — it is two draws from a noisy statistic.
 stratum gap is a *difference of differences of medians*: two medians per arm,
 differenced, then differenced again against the baseline. Each step compounds
 the noise, and the resulting half-width is near **0.09** on a quantity whose
-largest observed value across all five arms is **0.069**. The measurement cannot
-resolve the effect it was built to detect, whatever the effect's true size. A
-better-powered split, not a re-analysis, is what would settle it.
+largest observed value across all five arms is **0.069**.
+
+**The obvious objection is that we only ran the underpowered version of the
+test. We did not.** The gap test is a difference of differences; the
+better-powered question is whether an arm's score *within* a stratum simply
+beats the baseline's, as a single difference. That was asked too, in both
+strata. Within **d=4** (1,377 rows), against the sequence baseline:
+
+| Arm | Δ at d=4 | 95% CI |
+|---|---:|---|
+| ESM-2 35M | −0.0246 | [−0.0706, +0.0312] |
+| sequence + ESM-2 | −0.0339 | [−0.0707, +0.0383] |
+| ESM-2 150M | −0.0466 | [−0.0906, +0.0166] |
+| full-domain ensemble | −0.0397 | [−0.0821, +0.0141] |
+
+Within **d≥5** (992 rows), where the hypothesis predicted the larger checkpoint
+should pull ahead:
+
+| Arm | Δ at d≥5 | 95% CI |
+|---|---:|---|
+| ESM-2 35M | −0.0049 | [−0.0804, +0.0632] |
+| sequence + ESM-2 | −0.0385 | [−0.1167, +0.0542] |
+| **ESM-2 150M** | **+0.0219** | **[−0.0776, +0.0619]** |
+
+That bolded row is the decisive one. It is the single comparison the whole
+flat-profile hypothesis reduces to — *does the larger checkpoint actually beat
+the baseline where peptides are most distant?* — asked in its best-powered form,
+and it is **inconclusive**.
+
+**So the question was asked three different ways — the stratum gap, within d=4,
+and within d≥5 — and the split answered none of them.** Eleven of the twelve
+intervals are in and **not one separates any arm from the baseline in either
+stratum**; the twelfth, the full-domain arm at d≥5, is still running and cannot
+change that. This is a thorough null, not a single underpowered look. A
+better-powered split, not a re-analysis of this one, is what would settle it.
+
+> **A note for anyone checking the numbers against the CSV.** The 150M d≥5
+> point estimate (+0.0219) sits in the *upper* part of its own interval rather
+> than at the centre. That is expected, not an error: the statistic is a median
+> over a 55-allele panel that is **rebuilt on every resample**, so its bootstrap
+> distribution is skewed. It is one more reason never to read a point estimate
+> from this statistic without its interval attached — which is the same lesson
+> the rest of this section teaches.
 
 ### 6.2 The differential target — groove chemistry, isolated
 
@@ -1268,6 +1308,44 @@ post-hoc selection this contract exists to prevent. But **no claim in this
 submission rests on it.** Reporting a weakness in a metric we chose ourselves is
 worth more than quietly dropping it; a reader can then judge the contract, not
 just the results it produced.
+
+### 6.8 Was the evaluation machinery worth building?
+
+The honest answer, and it has two halves.
+
+**One of the five analyses paid for itself, and we can say exactly which.** Of
+everything in the ESM run, **exactly one family of comparisons returns a
+conclusive verdict**: the differential target, which places the 150M checkpoint
+and the full-domain ensemble conclusively below the baseline on cross-allele
+ranking while showing 35M and the additive arm equivalent to within one point of
+concordance (§4.0). The primary metric, the distance strata, precision@10 and
+nested mutant ranking are **inconclusive on every arm**.
+
+> **The differential target was the only analysis with enough power to resolve
+> anything on this split.**
+
+That is worth saying plainly rather than letting five analyses share credit
+evenly. It also vindicates a specific design decision: the differential was
+built to separate within-allele ranking from cross-allele effects, and
+subtracting the peptide's own contribution is precisely what bought the
+precision — its intervals are four to six times tighter than the primary
+metric's on the same rows.
+
+**The four that returned nothing returned *measured* nothings, and that is not
+the same as returning nothing.** Each carries a stated minimum detectable
+effect: the distance question was asked three ways and answered none (§6.1),
+with the arithmetic showing why — a half-width near 0.09 on a quantity whose
+largest observed value is 0.069. Precision@10 cannot express a difference at
+all, and we can show that from the lattice structure of its own intervals
+(§6.7). The allele hold-out publishes its MDE per stratum (§6.6).
+
+**That distinction is what the whole submission rests on.** Every negative here
+is of the form "ruled out at 0.05" or "equivalent to within one point", never
+"we looked and saw nothing" — and the only thing separating those two
+statements is machinery that knows what it can and cannot detect. An evaluation
+that returns four inconclusive results *and can prove they are inconclusive
+rather than null* is doing its job. One that returns four inconclusive results
+and cannot tell you which is which has told you nothing at all.
 
 ---
 
