@@ -36,7 +36,7 @@ repeated here.
 |---|---|
 | **Atlas file** | `external/data_classI_all_peptides.txt` |
 | Source URL | `http://mhcmotifatlas.org/data/classI/all_peptides.txt` |
-| Where that link lives | the "Download all peptides" link on the Class I Alleles page of mhcmotifatlas.org. A browser flattens the `download` attribute path to `data_classI_all_peptides.txt`, which is the name `04_elution_stability_test.py` already expected. |
+| Where that link lives | the Class I Alleles page of mhcmotifatlas.org, which carries `<a href="data/classI/all_peptides.txt" download="data/classI/all_peptides.txt">`. Browsers sanitise that `download` path to `data_classI_all_peptides.txt`, which is the filename `04_elution_stability_test.py` already expected — so the local name is kept unchanged. |
 | Retrieved | 2026-10-04T02:59:55Z |
 | Server `Last-Modified` | 2025-02-25T14:56:59Z |
 | Size | 8,030,388 bytes |
@@ -55,9 +55,11 @@ confidence. Positives only.
 | SHA-256 | `dc8ef8cbf0fc1b857b3be9a559613533ec49824079fb057e31fdfcf578cb229a` |
 | Distinct 9-mer windows | 10,409,122 |
 
-`external/` is gitignored. Both hashes are re-computed into
-`reports/stage3c_provenance.json` on every run, so a changed input fails
-loudly rather than silently shifting the numbers.
+`external/` is gitignored, so neither file is in the repository — re-download
+the atlas from the URL above and check it against the hash. Both hashes are
+re-computed from the files on disk and written into
+`reports/stage3c_provenance.json` on every run, so any run's numbers can be
+traced to the exact inputs that produced them.
 
 `data/rasmussen_et_al_dataset.csv` is untouched; `(cd data && shasum -a 256 -c
 SHA256SUMS)` passes.
@@ -169,9 +171,11 @@ has ligands, so precision there cannot exceed 0.909).
 | `seq_baseline` | 0.9502 [0.9182, 0.9648] | 0.730 – 0.982 | 0.6676 [0.571, 0.813] | 0.877 | 9.65× | 0.630 | 6.93× |
 | *random scores (harness null)* | 0.4974 [0.4927, 0.5013] | 0.476 – 0.516 | 0.0911 | 0.089 | 0.98× | 0.090 | 0.99× |
 
-The null row is the same harness fed uniform random predictions through the
-`--scores` path; it returns chance on both metrics, which is what says the
-AUROC above is coming from the model and not from the scoring code.
+The null row is the same harness fed standard-normal random predictions through
+the `--scores` path (one draw per distinct `(allele, peptide)` pair, so a
+peptide keeps its score across both decoy designs). It returns chance on every
+metric, which is what says the numbers above come from the model and not from
+the scoring code.
 
 Every allele scores above chance. Under the ensemble, **no allele falls below
 0.80** and only three fall below 0.90: `HLA-A*30:02` (0.805), `HLA-B*13:02`
@@ -216,10 +220,11 @@ AUPRC falls further, from 0.780 to 0.557 for the ensemble, because precision is
 more sensitive to hard negatives than a rank statistic is.
 
 This is the expected and honest pattern: **substantially lower, but far above
-chance.** Roughly a twentieth of the AUROC is presentability rather than
-allele-specific discrimination; the rest survives negatives that are themselves
-presented peptides. Only one allele drops near chance — `HLA-A*30:02` at 0.644,
-the same allele that is weakest against proteome decoys.
+chance.** The **0.050 of AUROC** the swap costs is the part of the primary
+result attributable to generic presentability; everything above 0.5 in the
+swapped column survives negatives that are themselves presented peptides. One
+allele drops below 0.70 — `HLA-A*30:02` at 0.644 — and it is the same allele
+that is weakest against proteome decoys.
 
 ### The donor-distance gradient
 
@@ -236,8 +241,10 @@ same ligands against each half:
 The gradient runs the right way and is large: a ligand of a groove that
 resembles the target is a much harder negative than a ligand of a distant
 groove (−0.066 AUROC for the ensemble). This is a result in its own right —
-the model is reading groove chemistry, not just peptide chemistry, and it
-degrades smoothly as the grooves converge rather than collapsing. Per-allele
+the model is reading groove chemistry, not just peptide chemistry, and the
+discrimination degrades as the grooves converge without collapsing to chance.
+Only two bins were measured, so the shape of that decline is not established,
+only its direction and size. Per-allele
 tables: `reports/stage3c_donor_distance_seq_ensemble.csv`,
 `reports/stage3c_donor_distance_seq_baseline.csv`.
 
@@ -267,8 +274,9 @@ dissociation half-lives, trained under splits that keep every held-out peptide
 at least four substitutions from every training peptide, ranks
 immunopeptidomics-eluted ligands above matched decoys at median AUROC 0.966
 over 51 alleles, with 94% precision in its top 1%. The peptide universes are
-near-disjoint — 140 of ~147,000 pairs overlap, and even those are filtered out
-here — so this is transfer to a different assay measuring a different
+near-disjoint — 139 of the 146,161 atlas pairs on this panel have a measured
+half-life, and even those are filtered out here — so this is transfer to a
+different assay measuring a different
 biological event, not a restatement of within-dataset correlation. The
 discrimination is allele-specific: it survives negatives that are themselves
 eluted ligands (0.916), it degrades as the donor groove approaches the target
@@ -284,10 +292,10 @@ groove, and it largely disappears when the groove is swapped (0.697).
    and a model that had learned only "this peptide is abundant and ionises
    well" would also score well against proteome decoys. The allele-swapped
    control bounds this: it holds those four filters roughly constant on both
-   sides and costs 0.050 AUROC, so **about a twentieth of the proteome-decoy
-   AUROC is attributable to generic presentability** rather than to
-   allele-specific discrimination. That is a bound on this decoy design, not a
-   decomposition of the biology.
+   sides and costs **0.050 of AUROC**, which is the share of the proteome-decoy
+   result attributable to generic presentability rather than to allele-specific
+   discrimination. That is a bound on this decoy design, not a decomposition of
+   the biology.
 
 2. **It is not a ranking of stability within presented peptides.** The task
    here is ligand versus non-ligand, a binary discrimination. The project's
@@ -303,15 +311,18 @@ groove, and it largely disappears when the groove is swapped (0.697).
    serve as a comparator anywhere in this project — it trained on every peptide
    in our test split.)
 
-4. **The atlas has an error rate of roughly 2%.** The existing finding
-   estimated this from motif deconvolution artefacts: among 140 eluted ligands
-   with a measured half-life, three have a half-life of exactly zero, and
-   `FPEHIFPAL` appears with zero stability on *two* different alleles
-   (`HLA-B*51:01` and `HLA-B*08:01`) — a pattern more consistent with a peptide
-   being assigned to alleles it does not bind than with two independent
-   instances of unstable presentation. So roughly 2% of this pass's positives
-   are expected to be mislabelled, which puts a soft ceiling just under 1.0 on
-   any AUROC reported here and means the weakest alleles may be partly
+4. **The positive class carries roughly a 2% error rate.** Of the 140 eluted
+   ligands with a measured half-life, 2.1% have a half-life of exactly zero,
+   against 21.2% among non-eluted measured peptides — and at least one of those
+   is probably not biology: `FPEHIFPAL` appears with zero stability on *two*
+   different alleles (`HLA-B*51:01` and `HLA-B*08:01`), a pattern more
+   consistent with motif deconvolution assigning a peptide to alleles it does
+   not bind than with two independent instances of unstable presentation. That
+   2.1% is the fraction of eluted ligands that are *unstable*, which is an
+   upper bound on the mislabelling rate rather than an estimate of it — some of
+   those are real cases where cellular loading machinery sustains a complex
+   that falls apart in a cell-free assay. Either way it puts a soft ceiling
+   just under 1.0 on any AUROC here, and the weakest alleles may be partly
    measuring deconvolution quality rather than model quality.
 
 5. **Decoys are assumed negatives.** A proteome 9-mer absent from the atlas may
@@ -322,9 +333,10 @@ groove, and it largely disappears when the groove is swapped (0.697).
    one respect, conservative.
 
 6. **One release, one decoy draw.** Every number is from the 2025-02-25 atlas
-   release at seed 20261004. The seed sensitivity was not swept, though with
-   816,000 decoys per arm the draw-to-draw variation on a panel median should
-   be far below the differences reported.
+   release at seed 20261004. Seed sensitivity was not swept. With 816,000
+   decoys in the set the draw-to-draw variation on a panel median should be far
+   below the differences reported, but that is an expectation, not a
+   measurement.
 
 **The honest summary.** Elution is not a stability assay, and this is not a
 validation of stability prediction. It is evidence that what the model learned
@@ -362,9 +374,11 @@ The model under test is an argument, not a hard-coded assumption, so the ESM-2
 arm (or any other) can be measured on identical rows:
 
 ```
-# 1. write the exact scoring set — both decoy designs, 1,795,200 rows
+# 1. write the exact scoring set — both decoy designs, 1,795,200 rows,
+#    1,713,600 distinct (allele, peptide) pairs. 126 MB, so it goes to the
+#    gitignored external/ rather than into reports/.
 .venv/bin/python scripts/stage3c_elution_validation.py \
-    --emit-scoring-set reports/stage3c_scoring_set.csv
+    --emit-scoring-set external/stage3c_scoring_set.csv
 
 # 2. the other arm scores every distinct (allele, peptide) pair in it and
 #    writes allele,peptide,y_pred

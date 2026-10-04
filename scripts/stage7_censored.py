@@ -149,6 +149,28 @@ def floor_auroc(is_floor: np.ndarray, pred: np.ndarray) -> float:
     return float(u / (len(pos) * len(neg)))
 
 
+def brier_and_ece(p_floor: np.ndarray, is_floor: np.ndarray,
+                  n_bins: int = 10) -> tuple[float, float]:
+    """Brier score and expected calibration error for ``P(row is at the floor)``.
+
+    The two numbers answer different halves of "is this model calibrated at the
+    floor". Brier is a proper score, so it rewards being both confident and
+    right; ECE is the average gap between predicted and observed floor rate over
+    equal-count bins, so it catches a model that is reliably over- or
+    under-confident while being no worse at discrimination.
+
+    Reported for both arms, but only the censored arm produces ``p_floor`` from
+    its own fit -- the MSE arm's comes from a scale estimated after the fact, so
+    its numbers are a constructed comparator, not a property of that objective.
+    """
+    brier = float(np.mean((p_floor - is_floor.astype(float)) ** 2))
+    order = np.argsort(p_floor)
+    gap = 0.0
+    for idx in np.array_split(order, n_bins):
+        gap += len(idx) * abs(p_floor[idx].mean() - is_floor[idx].mean())
+    return brier, float(gap / len(p_floor))
+
+
 def calibration_row(name: str, pred: np.ndarray, y_val: np.ndarray,
                     is_floor: np.ndarray, threshold: float,
                     sigma: float | None = None,
@@ -176,8 +198,11 @@ def calibration_row(name: str, pred: np.ndarray, y_val: np.ndarray,
         "floor_auroc": floor_auroc(is_floor, pred),
     }
     if p_floor is not None:
+        brier, ece = brier_and_ece(p_floor, is_floor)
         row["mean_p_floor"] = float(p_floor.mean())
         row["p_floor_calibration_error"] = float(p_floor.mean() - is_floor.mean())
+        row["p_floor_brier"] = brier
+        row["p_floor_ece"] = ece
     if sigma is not None:
         row["sigma"] = float(sigma)
     return row

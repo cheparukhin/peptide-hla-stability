@@ -125,14 +125,20 @@ as peptide-interface confidence. A test asserts that no column containing
 
 Two disagreements, one of which matters.
 
-1. **`docs/BOLTZ_PIPELINE.md:375` is wrong.** It states that
+1. **`docs/BOLTZ_PIPELINE.md:375` was wrong — now corrected.** It stated that
    "`pair_chains_iptm` is the peptide-HLA interface ipTM … Boltz-2 exposes only
-   a global ipTM", and uses that as an argument in favour of ESMFold2. The
+   a global ipTM", and used that as an argument in favour of ESMFold2. The
    pinned `boltz==2.1.1` output contains `pair_chains_iptm` on **every one of
-   the 45 Boltz folds**. The line is stale; I have not edited that file. Note
-   this does not reopen the production decision — ESMFold2 failed its gate on
-   pose, not on confidence outputs — but the claim should not survive into the
-   write-up.
+   the 45 Boltz folds**. Flagged rather than edited (not my file); the owner
+   has since struck the sentence in place and recorded the orientation finding
+   beside it, so the trail shows an argument withdrawn rather than quietly
+   removed. It does not reopen the production decision — ESMFold2 failed its
+   gate on pose, not on confidence outputs.
+
+   One residual imprecision in the corrected text: `pair_chains_iptm` is a
+   **matrix of per-chain-pair scores**, not itself "the peptide-HLA interface
+   ipTM". In the three-chain arm-B complex only one of its nine entries is the
+   peptide-HLA pair, and that entry is direction-dependent (§1.4).
 2. **The contract's anticipated arm-B PAE shape and slices were right.** No
    change needed. It is verified rather than assumed, so a future construct
    change will fail loudly instead of silently.
@@ -288,11 +294,18 @@ rather than only one.
 
 ### 4.3 Seed and arm variation
 
-Full table: `reports/stage4c5_feature_variation.csv`. Production is seed 0 only
-and arm B only, so what matters is whether a feature is dominated by seed
-noise. It is not — **for 0 of 109 numeric features does the within-complex seed
-spread exceed the between-complex spread**, and the median seed share of total
-variance is 0.195.
+Full table: `reports/stage4c5_feature_variation.csv`, both models, seed / arm /
+between-complex spread per feature. Production is seed 0 and arm B only, so
+what matters is whether a feature is dominated by seed noise. It is not —
+**for 0 of 109 Boltz-2 features, and 0 of 94 ESMFold2 features, does the
+within-complex seed spread exceed the between-complex spread.** Median
+between/seed ratio: **5.05 for Boltz-2, 5.87 for ESMFold2**.
+
+(The counts differ because ESMFold2 emits only `ptm`, `iptm` and
+`pair_chains_iptm`, so 10 of Boltz's confidence scalars have no ESMFold2
+counterpart, and the 6 pair-ipTM columns are deliberately withheld for it on
+an unverified chain mapping. `global_ligand_iptm` is constant 0 for both —
+there is no ligand — so it has no ratio for either.)
 
 Boltz-2 arm B, standard deviation between complexes against standard deviation
 across the three seeds of the same complex:
@@ -368,7 +381,7 @@ using for the fold. The `pepstab-structures` Volume is mounted at
 The `--profile` / `MODAL_PROFILE` assertion was tested by deliberately
 mismatching them, and it refuses before any remote call.
 
-### 7.2 The bug the 90 pilot folds did not expose
+### 7.2 The bug the 90 pilot folds did not expose — and why the invariant earned its keep
 
 The first smoke failed **5 of 5** with `KeyError: 'seed'`. The production
 runner writes a different `metadata.json` schema from the pilot runner:
@@ -382,10 +395,32 @@ runner writes a different `metadata.json` schema from the pilot runner:
 | run id | absent | top level `run_id` |
 
 The two schemas are close enough to look identical and different enough to
-raise. The extractor now reads both, **raises rather than defaulting the seed
-to 0** (defaulting would invent provenance), and two regression tests pin both
-shapes. This is the entire argument for the incremental pass: the same bug at
-28,166 folds would have cost a full pass instead of five.
+raise.
+
+**This is direct evidence for the project invariant "no batch job without a
+passing end-to-end pilot on 3–5 examples", and for its clause that the rule
+applies to a new runner as well as a new model.** The reasoning is worth
+stating plainly, because the invariant costs something every time and this is
+a case where it paid:
+
+- Phase 1 validated the feature logic on 90 real folds and found nothing wrong
+  with it. The feature logic *was* correct. What phase 1 could not test was the
+  **production runner's metadata contract**, because no production fold existed
+  when it ran. A dry run against the data you have cannot exercise a schema you
+  have not seen.
+- The failure was total — 5 of 5 — not intermittent, so it would have been
+  caught by any size of pilot. The invariant's value here is not detection
+  sensitivity but **cost of detection**: five folds and about two minutes,
+  against a full pass over 28,166 folds.
+- It was also a *loud* failure, which is the design working. Had the extractor
+  defaulted a missing seed to 0 instead of raising, every row would have
+  carried a plausible, unverified seed and the full pass would have "succeeded"
+  while silently inventing provenance. The extractor now **raises** when
+  neither schema supplies a seed.
+
+The generalisable lesson for the rest of the project: a pilot validates the
+code path it actually exercises, and a runner change is a new code path even
+when the model, the construct and the feature definitions are all unchanged.
 
 ### 7.3 Validation of the 2,000 live rows
 
@@ -464,7 +499,76 @@ roughly 1.5 container-hours of CPU and memory across both workspaces,
 **under $0.15**. Nothing here is a material draw on the credit reserved for
 the fold.
 
-## 8. Limits of what this establishes
+## 8. Hand-off to stage 5
+
+### 8.1 The seed control, and a disagreement with the ProteinMPNN control
+
+Production is **seed 0 only**, so a feature dominated by seed noise would be
+unusable. Measuring between-complex spread against within-complex seed spread,
+on the 90 pilot folds:
+
+| Readout | Boltz-2 | ESMFold2 |
+|---|---:|---:|
+| My structural features, median between/seed ratio | 5.29 | **5.87** |
+| …features where seed noise dominates (ratio < 1) | **0 of 109** | **0 of 94** |
+| ProteinMPNN score (`mpnn_score`), between/seed ratio | 8.10 | **1.83** |
+| ProteinMPNN seed sd | 0.043 | **0.157** |
+
+**These two controls do not agree, and the project should not present them as
+independent confirmations of the same thing.** They agree for Boltz-2 (both
+comfortably signal-dominated). For ESMFold2 they diverge sharply: the
+ProteinMPNN score's signal-to-seed-noise ratio collapses to 1.8 — seed noise
+the same order as the between-complex signal — while my structural features
+are, if anything, marginally *more* seed-stable on ESMFold2 than on Boltz-2.
+
+The divergence is interpretable rather than contradictory, and localises
+ESMFold2's instability. ProteinMPNN scores a sequence against a backbone *and
+its side-chain context*, so it is sensitive to exactly the thing the stage-4c
+pilot identified as ESMFold2's failure: side-chain placement at an otherwise
+acceptable backbone. My features are mostly backbone geometry and confidence
+arrays, which are seed-stable in both models. §4.2 shows the same pattern from
+the other direction — the geometry features barely separate the two models
+while the confidence features separate them sharply.
+
+Two things follow for the write-up. First, the correct claim is **not** that
+the ProteinMPNN control "reached the opposite verdict for ESMFold2"; its
+between-complex spread still exceeds its seed spread, by 1.8x rather than 8x.
+That is a *marginal* verdict, not an inverted one. Second, the honest framing
+is that the two controls measure different properties and the disagreement is
+itself the finding. Since production is Boltz-2 only, neither control blocks
+anything — this matters for how ESMFold2 is described, not for what is run.
+
+### 8.2 Treat borrowed-alpha3 rows as a sensitivity check, not a headline
+
+1,103 cohort rows across 3 alleles, **124 of them validation** (§3.4). That is
+enough to test whether borrowed-alpha3 alleles behave differently and far too
+few to headline. Report it as a sensitivity check. HLA-A\*24:19 being the
+worst-ranked validation allele for the sequence baseline is n = 1 of 3 and
+stays a coincidence until the three are tested together.
+
+### 8.3 Filename for the structural arm's final predictions
+
+The validation-selected structural prediction file must be exactly
+`preds/boltz_structural.csv` in the frozen two-column format. The submission's
+cost-vs-accuracy figure auto-draws arms by that stem, so a different name
+removes the structural arm from the figure silently. Feature tables keep their
+own names; this applies only to the final prediction file.
+
+### 8.4 Rules that travel with the features
+
+- Select feature groups and heads on **validation**. The test split is scored
+  once, at stage 6.
+- Confidence columns are features, never a per-prediction row filter (§5).
+- Join on `(allele, peptide)`; `pair_id` is attached afterwards and is never a
+  positional index.
+- `global_iptm` is global. Any interface claim must name the chain pair and
+  the direction.
+- Rows with a non-`ok` `status` are unresolved structural failures and take
+  the declared sequence fallback; report primary results against the frozen
+  cohort with that fallback, and show common successful rows only as a
+  diagnostic.
+
+## 9. Limits of what this establishes
 
 - It validates **extraction and feature definitions**. It says nothing about
   whether these features predict half-life; no model was fitted and nothing

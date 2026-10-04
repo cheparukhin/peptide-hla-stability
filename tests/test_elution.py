@@ -167,8 +167,6 @@ def test_swapped_decoys_are_other_alleles_ligands_only():
         assert decoys <= set(ligands.peptide)   # every decoy is a real ligand
         assert not decoys & own                 # but never of the target allele
     # the positives are exactly the primary pass's, so only negatives differ
-    for label_set in (primary, swapped):
-        pass
     assert (swapped[swapped.label == 1].reset_index(drop=True).peptide
             .equals(primary[primary.label == 1].reset_index(drop=True).peptide))
     assert audit["seed"] == E.SEED
