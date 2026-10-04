@@ -397,7 +397,47 @@ Seed-to-seed spread for the selected MLP configs is **0.010–0.051**
 same order as the predeclared bar — both reflect what this dataset can resolve.
 **Compare seed means, never single seeds.**
 
-### 4.4 Arms must be ensembled identically or the comparison is manufactured
+### 4.4 Single-network figures are not reproducible to four decimals
+
+**Cause: BLAS thread count, not seed.** Re-running the same diagnostic through a
+committed code path moved single-network numbers — a healthy arm by **~0.02**, a
+collapsed arm by **~0.03**. The mechanism is **float32 reduction order**: a
+different number of BLAS threads sums the same products in a different order,
+and at float32 precision that is not bit-identical. BLAS threads were pinned to
+1 across every workstream mid-session, for machine-load reasons; that happened
+to make later runs internally consistent, but **numbers produced before and
+after the pinning are not bit-comparable.**
+
+**Why this is reassuring rather than alarming.** *Every number that reaches a
+published claim in this project is a 30-member ensemble with a bootstrap
+interval, and none of those moved.* Averaging 30 members and resampling 2,000
+times swamps a 0.02 reduction-order effect. No verdict in this submission
+depends on a single network.
+
+**The consequence, which does bind:** **single-network figures should not be
+read to four decimals**, and a reader comparing two of them that differ by
+~0.01 is reading noise. Specifically:
+
+- The **tuning-sensitivity table** in SUBMISSION §4.0 is single-network. Its
+  load-bearing figure — the **0.109** cost of transplanting the baseline's L2
+  ladder onto the ESM arm — is five times the noise scale, so the finding is
+  untouched. But the **baseline's −0.002** on the same table is inside the
+  noise, so the "~50×" sensitivity ratio those two numbers imply is not a
+  meaningful quantity. SUBMISSION §4.0 now states the contrast as *two orders of
+  magnitude apart, one of them indistinguishable from zero* rather than as a
+  ratio.
+- Stage 2's six-arm table and stage 2c's λ sweep are single-network, and every
+  comparison drawn from them is already reported with a paired interval far
+  wider than 0.03 — so the conclusions ("unresolved", "rules out 0.05") stand
+  as written.
+
+**Worth stating plainly because nobody checks it:** two runs of identical code
+at an identical seed, differing only in thread count, are not identical in
+float32. We did not find this ourselves — it surfaced from an independent branch
+re-running our diagnostics — and it is the kind of defect that hides precisely
+because it is invisible to a seed check.
+
+### 4.5 Arms must be ensembled identically or the comparison is manufactured
 
 **Ensembling alone is worth +0.074 mean SCC against the deployed single
 network, from no new information** — paired Δ median ρ +0.083 [+0.029, +0.124]
@@ -575,8 +615,10 @@ is a general methodological warning:
    SCC** and inflated seed spread from 0.013 to 0.110. At that setting ESM-2
    comes in 0.11 behind and the write-up says so with a straight face. **Tuning
    parity means equal budget, not equal values.** The check was applied
-   symmetrically: the baseline on its own extended ladder moves +0.002, so the
-   ESM arm is ~50× more sensitive to the range. Anyone comparing a dense
+   symmetrically: the baseline on its own extended ladder moves only +0.002,
+   which is itself inside float32 reduction-order noise (§4.4) — so read the
+   contrast as *two orders of magnitude apart, one indistinguishable from zero*
+   rather than as a precise ratio. Anyone comparing a dense
    pretrained representation against a sparse hand-built one should expect this.
 2. **The memory-driven PCA helped by +0.033**, so the negative cannot be blamed
    on a compression adopted for resource reasons.
@@ -645,6 +687,16 @@ have been.
 **What survives, in its narrow form only:** *ESM-2's 330 columns are more useful
 on this baseline than 306 columns of BLOSUM positional cross-encoding.* Nothing
 about what pure width costs.
+
+**One related question is closed, and it closes in our favour.** The ESM block's
+mean per-column standard deviation is 4.788 (max 54.5) against the baseline's
+0.084 — a ~57× disparity, and given the fragility above, a reasonable thing to
+suspect. **Rescaling the components to unit variance makes the arm worse**
+(0.5743 → 0.5049, a further ~0.07 against a 0.035–0.069 seed spread), because
+**PCA component magnitude is itself information**: unit-rescaling hands the
+256th component the same weight as the 1st. The disparity is doing work, and the
+additive null is **not** a scaling artifact. Run as a probe; the shipped arm was
+never refit (SUBMISSION §4.0, objection C).
 
 ### 5.5 ESMFold2's rejection is operational, not scientific
 

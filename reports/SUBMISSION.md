@@ -485,8 +485,12 @@ ladder is a handicap wearing the costume of fairness:
 | ESM-2, middle layer | 0.4994 | **0.110** | **0.6081** | 0.013 | **−0.109** |
 | baseline, one-hot | 0.6096 | 0.032 | 0.6116 | 0.044 | −0.002 |
 
-**The ESM arm is roughly 50× more sensitive to the regularisation range than the
-baseline.** Reported at stage 2's setting, frozen ESM-2 would have come in 0.11
+**The ESM arm's ladder costs 0.109; the baseline's costs nothing measurable.**
+(The baseline's −0.002 is a single-network difference well inside float32
+reduction-order noise — see [`limitations.md`](limitations.md) §4.4 — so read
+the contrast as "two orders of magnitude apart, one of them indistinguishable
+from zero", not as a precise ratio.) Reported at stage 2's setting, frozen
+ESM-2 would have come in 0.11
 behind and we would have shipped a confident negative that was purely an
 artifact of the ladder. The tell arrived before any comparison was made: at
 L2=1e-5 the ESM arm's three seeds ranged over **0.110**, far outside stage 2's
@@ -555,8 +559,32 @@ from **0.5679 to 0.0453**.
 > the sign: the network is demonstrably using the ESM block's
 > sequence-to-embedding correspondence, so the block is **not** inert padding.
 
-**Neither diagnostic rescues the arm, and that is the point.** They close the
-two readings under which the stage 3 null would have been uninformative.
+**Objection C: "the ESM block is 57× higher variance, so the additive result is
+a scaling artifact."** The ESM block's mean per-column standard deviation is
+**4.788 (max 54.5)** against the baseline's **0.084** — an expected consequence
+of PCA, but a large enough disparity to suspect. Rescaling the 330 components to
+unit variance makes the arm **worse**:
+
+| Variant | Median ρ | vs baseline-only |
+|---|---:|---:|
+| baseline only | 0.6109 | — |
+| ESM block **as shipped** | 0.5743 | −0.0365 |
+| ESM block rescaled to unit variance | 0.5049 | **−0.1060** |
+
+A further ~0.07, well outside the 0.035–0.069 seed spread. And the reason is a
+good one: **PCA component magnitude is itself information** — it encodes how
+much variance a direction carries — so unit-rescaling hands the 256th component
+the same weight as the 1st. The 57× disparity is not an accident the arm
+survives; it is **doing work**. So the additive null is **not a scaling
+artifact**.
+
+This was run as a **probe, not a re-selection**: the shipped arm was never
+refit, and the published −0.017 stands as published. We tested whether a concern
+was real without letting the test change the result.
+
+**None of the three diagnostics rescues the arm, and that is the point.** They
+close the three readings under which the stage 3 null would have been
+uninformative.
 
 #### This is not the whole story — see §4.1
 
@@ -1900,39 +1928,28 @@ Ordered by expected value per hour, not by appeal.
    perplexity features**, one of the three uses the brief names and which we did
    not test at all, and a **second pLM family**, since one family is a thin
    basis for a class-level claim.
-4. **Rescale the ESM block per component, then re-run the additive arm.** The
-   ESM block's mean per-column standard deviation is **4.788 (max 54.5)**
-   against the baseline's **0.084** — a **~57× disparity**, and an expected
-   consequence of PCA rather than a bug. Whether per-component rescaling would
-   change the additive result is **untested**, and this pipeline has
-   demonstrated fragility to high-variance columns
-   ([`limitations.md`](limitations.md) §5.4), so it is a real open question
-   rather than a nicety. **We did not re-run the shipped arm to find out**: the
-   additive arm's configuration was selected before this was measured, and
-   re-tuning it now against a known result would be exactly the post-hoc
-   selection this contract exists to prevent. It belongs here, not in §4.
-5. **Re-run the auxiliary-affinity ESM comparison with enough power to settle
+4. **Re-run the auxiliary-affinity ESM comparison with enough power to settle
    it.** §4.3 ran it and could not resolve it: the difference-in-differences
    floor is ≈0.071 and **straddles the 0.05 bar**, so the question is open
    rather than answered. The fix is not a better model but a better-powered
    design — more alleles, or a statistic that does not compound two deltas.
    "Cheap labels substitute for expensive pretraining" would still be a useful
    finding, and we have not yet earned the right to say it is false.
-6. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
+5. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
    §6.6 has already run it for the sequence arm and found a **0.403 deficit** on
    distant allotypes — the stratum where pretraining has the strongest prior of
    winning. A gain confined there would be real and reportable even if the
    pooled comparison came out flat. **Each arm must supply features and be refit
    across all 68 folds**; handing over a `preds/*.csv` would score a model on
    alleles it trained on and report the leak as generalisation.
-7. **Check the ProteinMPNN pose-triage signal on more than one failing
+6. **Check the ProteinMPNN pose-triage signal on more than one failing
    complex.** §4.6 is a promising observation resting on n=1, and it will stay
    that way until production structures exist and the QC sample runs. Until then
    it must not be called a failure detector and must not filter anything.
    **ESM-IF**, the brief's second inverse-folding model, was not attempted —
    machine contention, with the ESM-2 arm holding priority on the shared
    environment — and ProteinMPNN alone covers the class.
-8. **Pin down the noise ceiling, then ask how much headroom is left.** A
+7. **Pin down the noise ceiling, then ask how much headroom is left.** A
    post-hoc estimate from an independent branch puts the assay's reproducibility
    floor at **≥ ~0.90**, from allele pairs one contact residue apart — though it
    is the best four of twelve such pairs, the other eight running 0.657–0.838
@@ -1944,7 +1961,7 @@ Ordered by expected value per hour, not by appeal.
    we tested is a candidate. Doing it properly needs replicate measurements the
    dataset does not contain, which makes it an assay request rather than a
    modelling one.
-9. **Find post-2016 stability measurements.** The only honest route to a
+8. **Find post-2016 stability measurements.** The only honest route to a
    comparison against NetMHCstabpan is data it could not have trained on. Until
    then, no method-parity claim is available from this dataset at any stage.
 
