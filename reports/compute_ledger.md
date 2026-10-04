@@ -344,7 +344,7 @@ production:
 | Sequence ensemble, full domain | $7.9 × 10⁻⁷ | 0 | derived | 0.653 |
 | **ESM-2 (frozen representations)** | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** end to end | 0 (laptop `mps`) | **measured** | **0.683** (−0.0101 vs baseline; rules out 0.05) |
 | **Boltz-2 structural (arm B)** | **$6.90** measured / $8.91 with margin | 4.66 | measured unit cost | **‹HOLE B2›** |
-| ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.5 of SUBMISSION) |
+| ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.6 of SUBMISSION) |
 | *ESMFold2 structural (rejected)* | *$31.40* | *11.8* | *forecast only* | *not run* |
 
 Accuracy figures are **validation** medians from `stage2_baselines.md`; the test

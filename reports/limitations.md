@@ -87,7 +87,7 @@ checked, and it won on the primary metric.** The likely cause of the loss is the
 stopping rule rather than the loss itself (the censored arm's dev objective
 turns over at epoch ~10 against the MSE arm's ~27, so it is undertrained); that
 is reported as a **control without an interval**, not as a result. Full detail
-in `stage7_censored.md`; summary at SUBMISSION §4.6. This was previously tracked
+in `stage7_censored.md`; summary at SUBMISSION §4.7. This was previously tracked
 as stage 7a — `reports/stage7_censored.md` predeclares the
 loss, the detection threshold `c = log1p(0.1)` (justified from the 0.1 h
 reporting grid and the single row between 0 and 0.1 h, never from a validation
@@ -292,7 +292,7 @@ fixing it.
 
 ## 4. The comparators
 
-### 4.1 NetMHCstabpan is calibration, never a comparator
+### 4.2 NetMHCstabpan is calibration, never a comparator
 
 **NetMHCstabpan was trained on all 28,166 rows, including every peptide in our
 test split.** Any score it produces on our data is memorisation. The brief itself
@@ -328,7 +328,7 @@ below ~0.024 on the mean, about half the 0.045 gap. The remainder is consistent
 with the 5.2× training set, richer architecture diversity, and their scoring on
 the stopping fold — and we cannot separate those here.
 
-### 4.2 Validation scores are selection scores
+### 4.3 Validation scores are selection scores
 
 Every number quoted from stages 2, 2b and 2c is a **validation** score, and each
 arm's configuration was chosen on the number reported beside it. They are
@@ -338,14 +338,14 @@ validation, which is why the whole sweep is tabulated rather than its maximum:
 the peak one-hot cell beats the control by 0.004, a sixth of the seed spread
 (`stage2c_affinity.md`).
 
-### 4.3 Seed spread sets a floor on what counts as a difference
+### 4.4 Seed spread sets a floor on what counts as a difference
 
 Seed-to-seed spread for the selected MLP configs is **0.010–0.051**
 (`stage2_baselines.md`). Gaps under ~0.05 are within seed noise, which is the
 same order as the predeclared bar — both reflect what this dataset can resolve.
 **Compare seed means, never single seeds.**
 
-### 4.4 Arms must be ensembled identically or the comparison is manufactured
+### 4.5 Arms must be ensembled identically or the comparison is manufactured
 
 **Ensembling alone is worth +0.090 mean SCC from no new information**
 (`stage2_baselines.md`). An ensembled ESM-2 arm compared against a
@@ -452,7 +452,7 @@ Three constraints, none of which may be dropped:
 3. **Both conclusive verdicts come from secondary statistics.** The contract's
    median — the only statistic the predeclared verdict rule governs — stays
    inconclusive. **This caveat travels with the claim wherever it appears**,
-   including every summary table.
+   including every summary table. Full detail at SUBMISSION §4.1.
 
 **Bounded to:** *frozen* embeddings of peptide and HLA taken **separately**, at
 35M and 150M, with ridge and a small MLP head, under the frozen splits, on
@@ -758,7 +758,7 @@ established.
   reconciled to two decimal places — a coincidence of conventions. The surviving
   cross-validation is directional: removing seed noise from the numerator drops
   ESMFold2's ratio by -0.29 in **both** independently written pipelines while
-  barely moving Boltz-2's. See SUBMISSION §4.5.
+  barely moving Boltz-2's. See SUBMISSION §4.6.
 - **Quote the ProteinMPNN ratio as an envelope, not a point estimate.** Six
   defensible aggregations span 3.1-9.3 and 1.2-1.9; all return the same verdict,
   so the spread bears on no conclusion, but a single figure quoted without its
