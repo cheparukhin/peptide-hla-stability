@@ -1,0 +1,802 @@
+<title>Antigen Presentation Stability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground:      #F7F8FA;
+    --surface:     #FFFFFF;
+    --sunk:        #EFF1F4;
+    --ink:         #15191F;
+    --ink-2:       #474F5A;
+    --ink-3:       #717B88;
+    --rule:        #D9DEE4;
+    --rule-soft:   #E7EAEF;
+    --accent:      #0E7490;
+    --accent-deep: #0A5668;
+    --neg:         #B23A2E;
+    --neg-soft:    #F7ECEA;
+    --pos:         #2E6E43;
+    --pos-soft:    #E9F2EC;
+    --warn:        #8C5A0E;
+    --warn-soft:   #F8F0E2;
+
+    --col:      68ch;
+    --wide:     1080px;
+    --s1: 0.4rem; --s2: 0.75rem; --s3: 1.15rem;
+    --s4: 1.9rem; --s5: 3rem;   --s6: 4.5rem;
+
+    --serif: "Spectral", Georgia, "Times New Roman", serif;
+    --sans:  "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0E1116;
+      --surface:     #161A21;
+      --sunk:        #1C212A;
+      --ink:         #E6E9EE;
+      --ink-2:       #AEB6C2;
+      --ink-3:       #7D8795;
+      --rule:        #2A313C;
+      --rule-soft:   #222832;
+      --accent:      #3FA8C4;
+      --accent-deep: #7FCFE4;
+      --neg:         #E0766A;
+      --neg-soft:    #2A1B19;
+      --pos:         #6FBF8C;
+      --pos-soft:    #16251C;
+      --warn:        #D6A24A;
+      --warn-soft:   #261E11;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0E1116;
+    --surface:     #161A21;
+    --sunk:        #1C212A;
+    --ink:         #E6E9EE;
+    --ink-2:       #AEB6C2;
+    --ink-3:       #7D8795;
+    --rule:        #2A313C;
+    --rule-soft:   #222832;
+    --accent:      #3FA8C4;
+    --accent-deep: #7FCFE4;
+    --neg:         #E0766A;
+    --neg-soft:    #2A1B19;
+    --pos:         #6FBF8C;
+    --pos-soft:    #16251C;
+    --warn:        #D6A24A;
+    --warn-soft:   #261E11;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 0 var(--s4) var(--s6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s6);
+  }
+
+  .col { max-width: var(--col); }
+
+  p { margin: 0 0 var(--s3); }
+  p:last-child { margin-bottom: 0; }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 var(--s2);
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s5) 0 var(--s4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.016em;
+    text-wrap: balance;
+    margin: 0;
+    max-width: 22ch;
+  }
+
+  .standfirst {
+    font-family: var(--serif);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 58ch;
+    margin: 0;
+  }
+
+  .byline {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1) var(--s3);
+  }
+
+  /* ---------- the question ---------- */
+
+  .question {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: var(--s4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s3);
+  }
+
+  .question h2 {
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+    max-width: 48ch;
+    text-wrap: balance;
+  }
+
+  .question .task-body { max-width: var(--col); color: var(--ink-2); }
+  .question strong { color: var(--ink); font-weight: 600; }
+
+  .spec {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule-soft);
+    border: 1px solid var(--rule-soft);
+    margin-top: var(--s1);
+  }
+  .spec div {
+    background: var(--surface);
+    padding: var(--s2) var(--s3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .spec dt {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-3);
+  }
+  .spec dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- formulas ---------- */
+
+  .formulas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--s3);
+    margin: 0;
+  }
+  .formulas div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+    border-top: 2px solid var(--rule);
+    padding-top: var(--s2);
+  }
+  .formulas dt {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-3);
+  }
+  .formulas dd { margin: 0; }
+  .formulas .f {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .formulas sub { font-style: normal; font-size: 0.62em; }
+
+  /* ---------- approach bullets ---------- */
+
+  .arm-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+    max-width: var(--col);
+    color: var(--ink-2);
+  }
+  .arm-list li::marker { color: var(--accent); }
+
+  /* ---------- section scaffolding ---------- */
+
+  section { display: flex; flex-direction: column; gap: var(--s4); }
+
+  .shead { display: flex; flex-direction: column; gap: var(--s2); }
+
+  h2.title {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 30ch;
+  }
+
+  .lede { color: var(--ink-2); max-width: var(--col); }
+
+  /* ---------- video ---------- */
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: var(--s2); }
+
+  .video-frame {
+    background: #0B0E12;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    line-height: 0;
+  }
+  video, .figure-img { width: 100%; height: auto; display: block; }
+
+  /* The matplotlib figures are white-ground PNGs: sit them on an explicit
+     white card so they never glare against a dark page ground. */
+  .plate {
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    padding: var(--s2);
+    line-height: 0;
+  }
+
+  figcaption {
+    font-size: 0.86rem;
+    color: var(--ink-3);
+    max-width: 62ch;
+    line-height: 1.55;
+  }
+  figcaption b { color: var(--ink-2); font-weight: 600; }
+
+  .beats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--s3);
+    counter-reset: beat;
+  }
+  .beats li {
+    counter-increment: beat;
+    border-top: 2px solid var(--rule);
+    padding-top: var(--s2);
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .beats li::before {
+    content: counter(beat);
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  /* ---------- approach list ---------- */
+
+  .approaches { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+
+  .approach {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 300px) 110px;
+    gap: var(--s3);
+    align-items: baseline;
+    padding: var(--s3) 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .approach .name {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .approach .kind {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .approach .what {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .approach .score {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 500;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .approach .score small {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .approach.is-best { background: var(--pos-soft); }
+  .approach.is-best .score { color: var(--pos); }
+  .approach.is-best .score small { color: var(--pos); }
+  .approach.is-neg .score { color: var(--neg); }
+  .approach.is-neg .score small { color: var(--neg); }
+  .approach.is-null .score small { color: var(--ink-3); }
+  .approach.is-best .name::after {
+    content: "best in project";
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pos);
+  }
+  .approach.is-best { padding-left: var(--s3); padding-right: var(--s3); }
+
+  /* ---------- tables ---------- */
+
+  .scroller { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1rem;
+    min-width: 580px;
+  }
+  caption {
+    text-align: left;
+    padding: var(--s3) var(--s3) var(--s2);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  th, td { padding: 0.6rem var(--s3); text-align: left; vertical-align: top; }
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  tbody tr + tr td { border-top: 1px solid var(--rule-soft); }
+  td.num {
+    font-family: var(--mono);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  tbody tr.row-best td { background: var(--pos-soft); font-weight: 600; }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    white-space: nowrap;
+    border-radius: 2px;
+  }
+  .chip.neg  { background: var(--neg-soft);  color: var(--neg); }
+  .chip.null { background: var(--sunk);      color: var(--ink-2); }
+  .chip.pos  { background: var(--pos-soft);  color: var(--pos); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+
+  /* ---------- callout ---------- */
+
+  .note {
+    border-left: 2px solid var(--rule);
+    padding-left: var(--s3);
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    max-width: var(--col);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+  }
+  .note.flag { border-left-color: var(--warn); }
+
+  /* ---------- next steps ---------- */
+
+  .steps { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+
+  .step {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--s3);
+    padding: var(--s4) 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .step .rank {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    padding-top: 5px;
+    font-weight: 500;
+  }
+  .step .body { display: flex; flex-direction: column; gap: var(--s2); max-width: var(--col); }
+  .step h3 {
+    font-family: var(--serif);
+    font-size: 1.22rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .step p { font-size: 0.95rem; color: var(--ink-2); margin: 0; }
+  .step .answers {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    border-top: 1px dashed var(--rule);
+    padding-top: var(--s2);
+    line-height: 1.5;
+  }
+  .step .answers b {
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+  }
+
+  .closed summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--ink-3);
+    padding: var(--s2) 0;
+    list-style: none;
+  }
+  .closed summary::-webkit-details-marker { display: none; }
+  .closed summary::before { content: "▸ "; color: var(--accent); }
+  .closed[open] summary::before { content: "▾ "; }
+  .closed summary:hover { color: var(--ink); }
+  .closed ul {
+    margin: 0 0 var(--s3);
+    padding-left: var(--s3);
+    font-size: 0.89rem;
+    color: var(--ink-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+  }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--s4);
+    font-size: 0.84rem;
+    color: var(--ink-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    max-width: var(--col);
+  }
+  footer code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--sunk);
+    padding: 1px 5px;
+  }
+
+  @media (max-width: 760px) {
+    .approach { grid-template-columns: 1fr auto; }
+    .approach .what { grid-column: 1 / -1; }
+    .step { grid-template-columns: 1fr; gap: var(--s2); }
+    .wrap { padding-left: var(--s3); padding-right: var(--s3); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">London AI × Science · logic binders team · 3–4 October 2026</p>
+    <h1>Antigen Presentation Stability: Sequence Is All You Need?</h1>
+    <p class="standfirst">
+      <b>TL;DR:</b> We tested language-model embeddings, predicted structures, inverse folding
+      and energies predictions against a supervised model trained on sequences. None of them won.
+    </p>
+  </header>
+
+  <!-- ========== 1. VIDEO ========== -->
+  <section id="intro">
+    <div class="shead">
+      <h2 class="title">Peptide–MHC interface</h2>
+    </div>
+
+    <figure>
+      <div class="video-frame">
+        <video controls preload="metadata" playsinline poster="poster.png">
+          <source src="intro.mp4" type="video/mp4">
+          Your browser cannot play this video. The source file is
+          <code>pMHC Intro v2.mp4</code> in the repository.
+        </video>
+      </div>
+    </figure>
+  </section>
+
+  <!-- ========== 2. THE TASK ========== -->
+  <section id="task">
+    <div class="question">
+      <p class="eyebrow">The task</p>
+      <h2>Stability is different from affinity.</h2>
+      <dl class="formulas">
+        <div>
+          <dt>Stability — how long it stays bound</dt>
+          <dd><span class="f">t<sub>½</sub> = ln 2 / k<sub>off</sub></span></dd>
+        </div>
+        <div>
+          <dt>Affinity — how readily it binds</dt>
+          <dd><span class="f">K<sub>d</sub> = k<sub>off</sub> / k<sub>on</sub></span></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ========== 3. APPROACHES TESTED ========== -->
+  <section id="approaches">
+    <div class="shead">
+      <h2 class="title">Our approach</h2>
+    </div>
+
+    <ul class="arm-list">
+      <li>Allele-mean (sanity floor)</li>
+      <li>Single sequence MLP (peptide + HLA contact residues)</li>
+      <li>Sequence ensemble (30 networks)</li>
+      <li>ESM-2 35M embeddings, alone</li>
+      <li>ESM-2 150M embeddings, alone</li>
+      <li>ESM-2 + sequence features</li>
+      <li>Boltz-2 structure — geometry only</li>
+      <li>Boltz-2 structure — confidence only</li>
+      <li>Boltz-2 structure — seq + geometry + confidence</li>
+      <li>FoldX energy + sequence</li>
+    </ul>
+  </section>
+
+  <!-- ========== 4. RESULTS TABLE ========== -->
+  <section id="results">
+    <div class="shead">
+      <p class="eyebrow">Main result</p>
+      <h2 class="title">Pretrained features versus the baseline</h2>
+      <p class="lede">
+        <b>Held-out test split</b>, median per-allele Spearman, higher is better. Scored once,
+        after every modelling decision was frozen. An interval crossing zero is
+        <em>inconclusive</em>; a strong negative <em>rules out</em> the 0.05 bar.
+      </p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <caption>Test split &middot; 5,565 rows &middot; 67 alleles &middot; paired cluster bootstrap, 2,000 resamples</caption>
+        <thead>
+          <tr>
+            <th scope="col">Approach</th>
+            <th scope="col" style="text-align:right">Score</th>
+            <th scope="col">Verdict vs. baseline (0.706)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-best">
+            <td>Sequence ensemble (30 networks)</td>
+            <td class="num">0.7064</td>
+            <td><span class="chip pos">best in project</span></td>
+          </tr>
+          <tr>
+            <td>ESM-2 35M embeddings, alone</td>
+            <td class="num">0.6979</td>
+            <td><span class="chip null">&minus;0.009 [&minus;0.029, +0.023] &middot; rules out 0.05</span></td>
+          </tr>
+          <tr>
+            <td>Sequence ensemble, full domain</td>
+            <td class="num">0.6904</td>
+            <td><span class="chip null">&minus;0.016 [&minus;0.039, +0.004] &middot; rules out 0.05</span></td>
+          </tr>
+          <tr>
+            <td>ESM-2 + sequence features</td>
+            <td class="num">0.6816</td>
+            <td><span class="chip null">&minus;0.025 [&minus;0.046, +0.007] &middot; rules out 0.05</span></td>
+          </tr>
+          <tr>
+            <td>Single sequence MLP (peptide + contact residues)</td>
+            <td class="num">0.6181</td>
+            <td><span class="chip neg">worse: &minus;0.088 [&minus;0.120, &minus;0.055]</span></td>
+          </tr>
+          <tr>
+            <td>Boltz-2 &mdash; seq + geometry + confidence</td>
+            <td class="num">0.5947</td>
+            <td><span class="chip neg">worse: &minus;0.112 [&minus;0.134, &minus;0.057]</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p>
+        <b>The structural arm is conclusively worse.</b> Its interval sits entirely below zero, and
+        a sequence-only control through the <em>identical</em> pipeline beats it at every tuning
+        setting — so the loss is the structural features, not the fit.
+      </p>
+      <p>
+        <b>The ESM-2 arms are inconclusive at zero.</b> They neither replace nor improve the
+        baseline, and the intervals are tight enough to rule out a worthwhile gain.
+      </p>
+      <p>
+        <b>We do not claim "pretraining helps."</b> ESM-2 only <em>ties</em> the cheap 34-residue
+        contact-sequence baseline. Both beat a weaker full-domain encoding by similar margins —
+        a fact about the weak encoding, not evidence for pretraining.
+      </p>
+    </div>
+
+    <div class="note">
+      <p>
+        <b>One strong positive.</b> With no retraining, the sequence model ranked 81,600 naturally
+        presented peptides above 816,000 matched decoys — a different assay, a different biological
+        event — at <strong>median AUROC 0.966</strong>. That is the evidence it learned real
+        biology rather than dataset artefacts.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== 5. NEXT STEPS ========== -->
+  <section id="next">
+    <div class="shead">
+      <h2 class="title">Next steps</h2>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Proposed experiment</th>
+            <th scope="col">Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>ESM-C with concatenated sequences</b></td>
+            <td>Feed peptide&ndash;linker&ndash;MHC &alpha;1&alpha;2 into ESM-C as one sequence, so each
+                partner is represented in the context of the other. Compare against encoding them
+                separately.</td>
+          </tr>
+          <tr>
+            <td><b>Separate embeddings + cross-attention</b></td>
+            <td>Keep peptide and MHC embeddings separate, then add a trainable cross-attention
+                module that connects individual peptide positions with groove positions. Compare
+                against concatenated embeddings + a small MLP, keeping the embeddings unchanged.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== 6. METHODS ========== -->
+  <section id="methods">
+    <div class="shead">
+      <h2 class="title">Methods</h2>
+    </div>
+
+    <div class="note">
+      <p>
+        <b>The rules were fixed before any modelling.</b> Splits are frozen 70/10/20 with peptides
+        grouped by similarity, so no peptide within 3 substitutions appears in two splits. The
+        primary metric is median per-allele Spearman &mdash; ranking peptides <em>within</em> each
+        allele. The 0.05 bar is not a preference: below it, this benchmark cannot separate a real
+        difference from noise.
+      </p>
+      <p>
+        Every arm uses the same rows, the same 30-network ensembling, and an equal tuning
+        <em>budget</em>. Scores are median per-allele Spearman.
+      </p>
+      <p>
+        <b>NetMHCstabpan is not used as a comparator.</b> The published model for this task was
+        trained on our entire dataset, including our test peptides &mdash; any score it posts here
+        is memorisation, not prediction.
+      </p>
+    </div>
+
+    <dl class="spec">
+      <div><dt>Measured pairs</dt><dd>28,166</dd></div>
+      <div><dt>Unique peptides</dt><dd>5,633</dd></div>
+      <div><dt>HLA alleles</dt><dd>75</dd></div>
+      <div><dt>Peptide length</dt><dd>9 exact</dd></div>
+      <div><dt>Labels at 0 h</dt><dd>20.2%</dd></div>
+      <div><dt>Worthwhile bar</dt><dd>&Delta;&rho; &ge; 0.05</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <p class="eyebrow">Credits</p>
+    <p>
+      <b>logic binders team</b> &middot; London AI &times; Science, Protein Engineering Track
+      &middot; 3&ndash;4 October 2026.
+    </p>
+    <p>
+      <b>The headline table is the held-out test split</b>, scored once and last, under a
+      single-pass rule fixed in writing before any test number existed. Secondary experiments
+      and the external-validation AUROC are validation numbers.
+    </p>
+    <p>
+      Detail lives in <code>reports/REPORT.md</code> (concise) and <code>reports/SUBMISSION.md</code>
+      (long form); the evaluation contract in <code>EVALUATION.md</code>, costs in
+      <code>reports/compute_ledger.md</code>, and forward plan in <code>NEXT_STEPS.md</code>.
+    </p>
+  </footer>
+
+</div>
