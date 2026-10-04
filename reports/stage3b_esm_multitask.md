@@ -13,7 +13,7 @@ floor that establishes that rather than forcing a conclusion.
 Scope: validation split only. The test split is not read; a structural test
 (`tests/test_stage3b.py::test_harness_scores_validation_only`) checks that.
 
-Code: `scripts/stage3b_esm_multitask.py`, `tests/test_stage3b.py` (22 guards).
+Code: `scripts/stage3b_esm_multitask.py`, `tests/test_stage3b.py` (29 guards).
 
 ---
 
@@ -452,15 +452,213 @@ sampling noise. That is the honest shape of the floor, not a defect in the
 degradation model, which `tests/test_stage3b.py` checks is monotone in
 expectation.
 
-### 6.4 What is still open
+### 6.4 What §6 does not answer
 
 The question stage 3b exists to answer — whether affinity helps the **ESM** arm
 *differently* — is untouched by the above. The sequence result bounds only the
 sequence arm, and stage 2c's redundancy explanation (affinity is redundant with
 what a *sequence* model extracts) makes no prediction about ESM-2 features.
+§7 runs that comparison.
 
-Pending, once the representation is confirmed: the `additive` and `esm` arms at
-the same five λ, then the difference-in-differences Δ_esm − Δ_seq with a single
-paired interval. The sequence predictions above will be **reused, not refitted**
-(`--reuse-arms seq`), so the difference-in-differences is computed against
-exactly the numbers reported here.
+---
+
+## 7. Results — ESM arms and the difference-in-differences
+
+Run: `scripts/stage3b_esm_multitask.py --arms additive esm --reuse-arms seq
+--n-boot 2000`. 300 networks, 47.8 min of fitting (68 min wall including the
+bootstraps), one worker, BLAS pinned — confirmed: the module sets all five
+thread variables to 1 before numpy is imported, and the process held one core
+at 97–99% throughout.
+
+The sequence arm was **reused, not refitted** (`--reuse-arms seq`), joined on
+`pair_id`. Its five reloaded rows reproduce §6.1 exactly — 0.6876 / 0.6844 /
+0.6833 / 0.6822 / 0.6702 — and its four reloaded deltas reproduce §6.1's table
+to the last digit, so the difference-in-differences sits against precisely the
+published sequence numbers rather than a refit.
+
+### 7.1 The λ sweep
+
+| λ | `seq` (reused) | `additive` | `esm` |
+|---:|---:|---:|---:|
+| **0** | **0.6876** | **0.6761** | **0.6830** |
+| 0.1 | 0.6844 | 0.6849 | 0.6820 |
+| 0.3 | 0.6833 | 0.6840 | **0.6871** |
+| 1.0 | 0.6822 | 0.6849 | 0.6838 |
+| 3.0 | 0.6702 | **0.6868** | 0.6821 |
+
+The λ=0 column is the control that makes the rest interpretable: 0.6761 and
+0.6830 are the stage 3 additive and ESM-only headlines to four decimals (§3.4).
+
+### 7.2 Within-arm paired deltas against λ=0 (2,000 resamples, 68 alleles)
+
+| λ | `seq` Δ | `additive` Δ | 95% CI | `esm` Δ | 95% CI |
+|---:|---:|---:|---|---:|---|
+| 0.1 | −0.0031 | **+0.0089** | [−0.0246, +0.0196] | −0.0011 | [−0.0177, +0.0298] |
+| 0.3 | −0.0043 | **+0.0079** | [−0.0230, +0.0246] | +0.0041 | [−0.0179, +0.0281] |
+| 1.0 | −0.0054 | **+0.0089** | [−0.0253, +0.0243] | +0.0008 | [−0.0218, +0.0253] |
+| 3.0 | −0.0174 | **+0.0107** | [−0.0212, +0.0305] | −0.0010 | [−0.0247, +0.0257] |
+
+Every one of the twelve intervals crosses zero and every upper bound is below
+the 0.05 bar.
+
+Two directional patterns are worth recording even though neither is resolved.
+The **additive** arm moves *positive* at all four λ while the sequence arm moves
+*negative* at all four — the only sign-consistent contrast in the table, and the
+gap widens with λ because the sequence arm degrades (−0.0174 at λ=3) rather than
+because the additive arm improves much. The **ESM-only** arm does neither: it
+sits within ±0.004 of its own λ=0 at every weight.
+
+### 7.3 The difference-in-differences
+
+`additive` against `seq`, all four arms scored on the same resampled peptide
+clusters so the four-way correlation is carried through
+(`reports/stage3b_difference_in_differences.csv`):
+
+| λ | Δ_esm | Δ_seq | **DiD** | 95% CI | CI half-width | conclusive |
+|---:|---:|---:|---:|---|---:|---|
+| 0.1 | +0.0089 | −0.0031 | **+0.0120** | [−0.0372, +0.0285] | 0.0328 | no |
+| 0.3 | +0.0079 | −0.0043 | **+0.0122** | [−0.0309, +0.0345] | 0.0327 | no |
+| 1.0 | +0.0089 | −0.0054 | **+0.0143** | [−0.0346, +0.0368] | 0.0357 | no |
+| 3.0 | +0.0107 | −0.0174 | **+0.0281** | [−0.0277, +0.0422] | 0.0350 | no |
+
+All four point estimates are positive and all four intervals cross zero. Every
+upper bound is below 0.05.
+
+### 7.3b The ESM-only arm, the same comparison
+
+`main()` computes the DiD for `additive` only. The ESM-only arm answers a
+different question — *can* ESM features replace sequence features, rather than
+do they add on top — and stage 3b's question is live for both, so it gets the
+same estimator, the same paired clusters and the same reused sequence
+predictions (`reports/stage3b_difference_in_differences_esm.csv`):
+
+| λ | Δ_esm-only | Δ_seq | **DiD** | 95% CI | conclusive |
+|---:|---:|---:|---:|---|---|
+| 0.1 | −0.0011 | −0.0031 | **+0.0021** | [−0.0296, +0.0371] | no |
+| 0.3 | +0.0041 | −0.0043 | **+0.0084** | [−0.0255, +0.0385] | no |
+| 1.0 | +0.0008 | −0.0054 | **+0.0062** | [−0.0304, +0.0359] | no |
+| 3.0 | −0.0010 | −0.0174 | **+0.0164** | [−0.0333, +0.0388] | no |
+
+Smaller than the additive arm's at every λ, and for a reason visible in §7.2:
+the ESM-only arm's own Δ never leaves ±0.004, so essentially the whole DiD is
+the *sequence* arm's degradation rather than any ESM movement. At λ=3 that is
+explicit — +0.0164 of which −0.0174 is the sequence arm falling and −0.0010 is
+the ESM arm. Reading that as "affinity helps ESM-2" would invert the mechanism.
+
+### 7.4 This is an unresolved measurement, not a null
+
+Read the two right-hand columns of §7.3 together. **Every CI half-width
+(0.0327–0.0357) is larger than every point estimate (0.0120–0.0281.)** A design
+whose noise floor exceeds the effect it is estimating cannot distinguish that
+effect from zero *whatever the truth is*, so "the interval crosses zero" here
+carries no information about the ESM arm.
+
+That was predicted before the run, and the prediction is what makes this
+reportable rather than merely disappointing:
+
+- The **single-delta** MDE measured in §6.3 is **≈ 0.037, bracketed in
+  (0.018, 0.037]** — the smallest realised Δ whose paired interval excluded
+  zero, on these same 2,817 rows, 68 alleles and 510 peptide clusters.
+- A **difference of two** such deltas is noisier still (§5.1), which the
+  observed half-widths confirm directly: the twelve single-delta intervals in
+  §7.2 average a half-width of **0.0240** (range 0.0221–0.0258), the four DiD
+  intervals average **0.0340** — a ratio of **1.42**, close to the √2 ≈ 1.41 a
+  difference of two equally-noisy, weakly-correlated deltas would give. So §5.1's
+  claim that the single-delta floor does not transfer is not a caution, it is a
+  measured 42% inflation.
+
+### 7.4b The DiD's floor, measured directly on the DiD statistic
+
+The two arguments above are indirect — one compares an interval width to a
+point estimate, the other extrapolates from the single-delta floor. The floor
+is therefore also measured **on the DiD statistic itself**, by the method of
+§5.1: a *known* Δ_esm is manufactured by blending the additive arm's λ=0
+predictions toward a within-allele shuffle, the real sequence arm is held at
+its published λ=0 and λ=0.1, and the paired DiD interval is taken
+(`reports/stage3b_did_mde.csv`, 500 resamples per level):
+
+| blend *t* | injected Δ_esm | realised DiD | 95% CI | detected |
+|---:|---:|---:|---|---|
+| 0.05 | −0.0028 | +0.0004 | [−0.0345, +0.0232] | no |
+| 0.10 | −0.0136 | −0.0105 | [−0.0423, +0.0235] | no |
+| 0.15 | −0.0087 | −0.0056 | [−0.0545, +0.0151] | no |
+| **0.20** | −0.0350 | **−0.0319** | [−0.0694, +0.0105] | **no** |
+| **0.30** | −0.0745 | **−0.0714** | [−0.1122, −0.0249] | **yes** |
+| 0.45 | −0.1628 | −0.1596 | [−0.2250, −0.1185] | yes |
+
+**DiD MDE ≈ 0.071, bracketed in (0.032, 0.071].** Against the single-delta
+floor of ≈ 0.037 in (0.018, 0.037], the difference-in-differences needs an
+effect roughly **twice as large** before this evaluation can see it.
+
+This turns the verdict from an inference into a direct observation:
+
+> A difference-in-differences of **−0.0319 was injected into these exact rows
+> and this exact estimator, and was not detected.** Every DiD stage 3b observed
+> — +0.0120, +0.0122, +0.0143, +0.0281 — is **smaller in magnitude than that
+> undetected effect.**
+
+No extrapolation is required. The observed values lie inside a region the
+design has been shown, by construction, to be blind to.
+
+### 7.4c What can and cannot be claimed
+
+> Across λ = 0.1 to 3, Δ_esm − Δ_seq is estimated at **+0.012 to +0.028**, with
+> a consistently positive sign at all four weights and on both ESM arms.
+> **The design cannot resolve an effect of that size.** Whether the small
+> positive differential is real or noise is not answered by this experiment,
+> and no run of this design would answer it — it needs a larger validation
+> panel or a lower-variance statistic.
+
+One caveat on the standard verdict line, because it would otherwise be read as
+stronger than it is. Every DiD interval's upper bound (+0.0285 to +0.0422) sits
+below the predeclared 0.05, so by `EVALUATION.md`'s frozen rule these read as
+"inconclusive at 0, rules out a worthwhile gain". That exclusion is valid — it
+is a property of the observed interval. But the **measured DiD floor, (0.032,
+0.071], straddles 0.05**, so this design's *power* to detect a true 0.05
+differential is itself unestablished. The 0.05 exclusion therefore rests on the
+width of the intervals actually obtained, not on demonstrated sensitivity at
+that effect size. Stated plainly: **a worthwhile differential is ruled out by
+these intervals, but this experiment should not be cited as having been
+*able* to find one.**
+
+The distinction matters for how the finding is used downstream, and it is
+sharper than the sequence half's. §6.3 established that the *single-delta*
+design resolves 0.05, which is what earns §6.1's "rules out a 0.05 gain"
+verdicts. The difference-in-differences does not inherit that; it is a noisier
+statistic and needed its own floor measured, which is the methodological point
+§5.1 predicted and §7.4b confirmed.
+
+The distinction also matters for how the finding is used downstream.
+"Affinity does not help ESM-2 more than it helps the baseline" would be a claim
+about biology, and stage 3b does not support it. What stage 3b establishes is
+narrower: **the observed differential is positive at every λ on both ESM arms,
+too small for this evaluation to resolve, and bounded above by intervals that
+exclude a worthwhile 0.05 gain.** Anyone citing this should cite the bound, not
+a null.
+
+### 7.5 The auxiliary task was learned, so the comparison is clean
+
+| arm | λ=0 | λ ≥ 0.1 |
+|---|---:|---:|
+| `seq` | +0.0090 | +0.437 → +0.616 |
+| `additive` | **+0.0056** | +0.576 → +0.581 |
+| `esm` | **+0.0002** | +0.568 → +0.583 |
+
+At λ=0 all three heads read as never trained, which is the control the
+diagnostic is interpreted against. The ensemble means above are means over 30
+members, and the mechanism behind them is worth stating precisely rather than
+rounding to "the head is dead": at λ=0 the head receives only L2 decay, and in
+**20 of 30** ESM-only members (23/30 additive, 26/30 sequence) it decays to a
+literal constant, scoring the frozen `UNRANKED_CONTRIBUTION` of exactly 0. The
+remaining members retain a trace of their initialisation and scatter about zero
+(ESM-only range −0.2246 to +0.0894), which is what pulls the mean to +0.0002
+rather than to 0 exactly. Both halves say the same thing — no affinity signal —
+but the second is the honest description of the per-network distribution.
+
+At λ ≥ 0.1 every shared trunk predicts held-out affinity at ρ ≈ 0.57–0.58 — as
+well as the sequence trunk does — while the stability predictions move by less
+than the noise floor.
+
+So the ESM arms fail to show a differential *despite* learning the auxiliary
+task as well as the sequence arm did. Whatever the explanation, "the affinity
+head never trained on ESM features" is not it.
