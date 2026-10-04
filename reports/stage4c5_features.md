@@ -1,11 +1,12 @@
 # Stage 4c.5: structural feature extraction
 
-4 October 2026. **Status: phase 1 complete; phase 2 validated at real scale,
-final full pass pending the fold.** The extractor is validated against all 90
-stage-4c pilot folds locally, has passed a 5-prediction CPU-only smoke in
-**both** Modal workspaces, and has extracted **2,000 live production folds
-(1,000 per half) with zero failures**. The final full pass waits for the fold
-to finish (~10:55 BST).
+4 October 2026. **Status: complete.** The extractor was validated against all
+90 stage-4c pilot folds locally, smoked in both Modal workspaces, and then run
+over the full production cohort: **28,166 of 28,166 folds extracted, zero
+failures.** The stage 5 ablation ran on that table and returned a **clear,
+well-powered negative** — Boltz-2 structural features do not improve on the
+sequence baseline, and adding them to it costs about 0.07 median per-allele
+Spearman with the 95% interval entirely below zero (§9).
 
 This implements the "Feature contract for stage 5" section of
 [`stage4c_ectodomain_pilot.md`](stage4c_ectodomain_pilot.md). Nothing here
@@ -19,7 +20,11 @@ invents a feature definition the contract already fixed.
 | `tests/test_structural_features.py` | 36 tests, all passing |
 | `reports/stage4c5_pilot_features.csv` | 90 folds x 129 columns |
 | `reports/stage4c5_feature_variation.csv` | seed / arm / between-complex spread per feature |
-| `reports/stage4c5_features_production_<profile>.csv` | live partial extract, 1,000 rows per half |
+| `reports/stage4c5_features_production.csv` | **the full cohort: 28,166 rows x 156 columns** |
+| `reports/stage4c5_features_production_<profile>.csv` | 14,083 rows per half, before concatenation |
+| `reports/stage5_structural_{grid,interior,val,bootstrap}.csv` | stage 5 selection, gate record, scores, paired intervals |
+| `reports/stage5_structural_alpha3_sensitivity.csv` | the 124 borrowed-alpha3 validation rows |
+| `preds/boltz_structural.csv` | the frozen arm: seq+geometry+confidence |
 | `reports/stage4c5_features_smoke_<profile>.csv` | the 5-prediction smoke in each workspace |
 
 ## 1. The verified mapping, and the evidence that verified it
@@ -698,7 +703,164 @@ own names; this applies only to the final prediction file.
   cohort with that fallback, and show common successful rows only as a
   diagnostic.
 
-## 9. Limits of what this establishes
+## 9. Production extraction and the stage 5 result
+
+### 9.1 Extraction, realised
+
+| Profile | Extracted | Failed | Wall | Realised cost |
+|---|---:|---:|---:|---:|
+| `a-cheparukhin` | 14,083 / 14,083 | **0** | 1,044.9 s | ~$0.55 |
+| `colleague` | 14,083 / 14,083 | **0** | 1,206.1 s | ~$0.63 |
+| **Total** | **28,166** | **0** | — | **≈ $1.18** |
+
+Against a $0.78 forecast. **The overrun is chunk sizing, not the data**:
+14,083 folds at `chunk=400` is 36 chunks against 30 containers, so a second
+wave ran only 6 chunks wide and still cost a full wave of wall time.
+`chunk = ceil(n / containers)` would have been one wave at roughly $0.70.
+
+**The final failure rate is 0.000, measured after the run rather than
+projected from a prefix.** A fold with an unexpected layout becomes a recorded
+`status` row rather than a crash, so a late-shard surprise would have been
+counted, not hidden. There was none.
+
+`concat --require-full` asserted **28,166** rows, 0 cohort pairs missing, 0
+rows outside the cohort, both profiles present. The same guard refused the
+2,000-row partial earlier, so the assertion is known to fire as well as pass.
+
+Full-table validation: 156 columns, `status == ok` on all 28,166, 75 alleles,
+0 duplicate keys, 0 non-finite values, 0 unmatched `pair_id`, and
+`metadata_pair_id` independently reproduces the `(allele, peptide)` join on
+every row.
+
+**The chain boundaries are verified on all 28,166 folds**, not spot-checked:
+383 tokens, 275 / 99 / 9 on every row, each re-derived from the mmCIF with the
+pLDDT↔B-factor token check. **And the PAE asymmetry is universal, not a
+tendency: peptide→groove exceeds groove→peptide on 99.99% of rows** (median
+1.815 against 0.970). The contract's "both directions" is vindicated at full
+scale; a reader should not assume one block is the other's transpose.
+
+### 9.2 The result: a well-powered negative
+
+Validation only, 2,817 rows, **100% structural coverage so no row took the
+sequence fallback**. Paired peptide-cluster bootstrap against
+`seq_ensemble_pep_pseudo` (+0.6931), 30 networks per arm, identical folds.
+Geometry and confidence were tested separately before any combination, as the
+plan requires.
+
+| Arm | median SCC | Δ vs sequence | 95% CI | Verdict |
+|---|---:|---:|---|---|
+| geometry | +0.2677 | −0.4254 | [−0.4995, −0.3518] | worse |
+| confidence | +0.3926 | −0.3006 | [−0.3693, −0.2270] | worse |
+| geometry+confidence | +0.4209 | −0.2722 | [−0.3378, −0.2051] | worse |
+| seq+geometry | +0.6143 | −0.0788 | [−0.1157, −0.0268] | worse |
+| seq+confidence | +0.5958 | −0.0973 | [−0.1116, −0.0200] | worse |
+| **seq+geometry+confidence** | **+0.6216** | **−0.0715** | [−0.1228, −0.0251] | worse |
+
+**Every interval lies entirely below zero.** This is a negative result, not an
+inconclusive one. Confidence beats geometry consistently, which matches §4.2:
+the geometry features barely separate even Boltz-2 from ESMFold2.
+
+`preds/boltz_structural.csv` holds **seq+geometry+confidence**, the strongest
+arm. Validation picked the combination after the separate tests, which is the
+protocol working rather than post-hoc selection — the test split is untouched
+and the choice is made before it is scored. Freezing the strongest version
+also means the structural hypothesis gets its best shot before the single test
+pass.
+
+### 9.3 The control that makes the result attributable
+
+The additive arms initially differed from the committed sequence baseline in
+**three** ways at once — one encoding instead of two, a different L2
+selection, and the structural columns — so a drop could not be pinned on the
+features. A `seq_only` control was added, not in the original spec: same
+pipeline, ladder, folds and 30 networks, structural columns removed.
+
+MLP dev MSE against L2 (diagnostic; the committed ladder was not changed):
+
+| group | 1e-6 | 1e-5 | 1e-4 | 1e-3 | 1e-2 | 1e-1 |
+|---|---|---|---|---|---|---|
+| `seq_only` | **0.5336** | 0.5517 | 0.5337 | 0.5364 | 0.5458 | 0.8176 |
+| `seq+geometry+confidence` | 0.5813 | 0.5939 | 0.5934 | 0.5584 | **0.5503** | 0.7082 |
+
+**`seq_only` beats `seq+geometry+confidence` at every one of the six L2 values
+tested.** The −0.07 is the structural features, not a tuning artifact. Without
+this control the result would have been wide open to "you tuned it badly".
+
+Note also that the additive arms' own selection, `l2 = 0.01`, is **interior and
+is their true optimum** — the arms that produce the result were never
+handicapped.
+
+### 9.4 The interior gate fired twice and was overridden by a reasoned decision
+
+Recorded explicitly, because a gate that is quietly relaxed is worse than no
+gate.
+
+**First refusal — the ridge reference.** Two groups selected `alpha = 1`, the
+ladder minimum. Ridge dev MSE across eight decades:
+
+| group | 1e-3 | 1e-2 | 1e-1 | 1 | 10 | 100 | 1e3 | 1e4 |
+|---|---|---|---|---|---|---|---|---|
+| geometry | 1.1049 | 1.1049 | 1.1049 | 1.1049 | 1.1048 | **1.1047** | 1.1060 | 1.1167 |
+| confidence | 0.9852 | 0.9852 | **0.9852** | 0.9853 | 0.9892 | 0.9969 | 1.0149 | 1.0336 |
+| geometry+confidence | 0.9586 | 0.9586 | 0.9586 | **0.9584** | 0.9606 | 0.9668 | 0.9800 | 0.9982 |
+
+The objective moves by 2 × 10⁻⁴ over five decades. **Decision: drop the ridge
+from the hard gate, keep it as a reported diagnostic, gate only the MLP that
+builds the arm.** Gating a linear reference that generates no predictions was
+protection applied to the wrong object.
+
+**Second refusal — `seq_only`'s MLP L2**, the gated quantity, at the ladder
+minimum. The §9.3 table shows the same picture: flat and non-monotone across
+four decades (0.534–0.552), so the argmin at the edge is noise on a plateau.
+**Decision: report, do not gate.** The arms that produce the result select
+interior, and the ordering holds across all six L2 values regardless.
+
+**The underlying flaw, stated so it is not lost.** `check_interior` assumes
+the objective has an interior optimum, so it reads "selection at an edge" as
+"ladder truncated". On a flat objective those are different things: the ladder
+may cover the plateau perfectly while the argmin lands on an edge by noise.
+The ESM-arm case the gate was built from was the genuine kind — a real slope
+running off the edge — and the gate must keep catching that.
+
+**The correct fix, identified and deliberately not implemented:** flag a
+boundary hit only when the improvement toward the edge exceeds a declared
+tolerance. It is not implemented here because choosing that threshold now,
+after seeing the result it would decide, is exactly the post-hoc selection the
+gate exists to prevent. It belongs in next steps, with the threshold declared
+first. **The same flaw exists in `scripts/stage3b_esm_multitask.check_interior`**
+and is noted rather than changed.
+
+### 9.5 Borrowed-alpha3 sensitivity check — not a headline
+
+124 validation rows across 3 alleles. The structural arms underperform there
+too (`seq+confidence` −0.093, `seq+geometry+confidence` −0.188 against
+sequence's +0.623 on those rows), broadly in line with the full-cohort deltas.
+**Three alleles cannot separate "borrowed alpha3 is worse" from noise**, so no
+conclusion is drawn — in particular none about HLA-A\*24:19.
+
+### 9.6 What the negative means
+
+This is a **well-powered negative result, not a failed experiment.** The fold
+succeeded completely: 28,166 of 28,166, zero failures, poses reproducing the
+pilot within 0.04 Å, and the sentinel B\*07:02 IPRRNVATL at 0.315 Å where arm
+A was 2.300 Å. So this is not structures failing to be computed. It is **good
+structures failing to carry half-life signal beyond sequence.**
+
+That is what `docs/STRUCTURES.md` predicted from first principles before any
+compute was spent: a static co-folded pose estimates **well depth**, and the
+label is a **barrier height**. Two complexes with identical binding affinity
+can have very different off-rates, and class I dissociation is thought to
+proceed by partial unthreading from the anchor pockets rather than by the
+interface melting uniformly. A single static structure has little to say about
+that pathway.
+
+What this does **not** establish: that no structural representation could
+help. An ensemble over seeds, a dynamics-derived feature, or an explicit
+unthreading coordinate are all untested here, and the single pose per pair is
+the cheapest possible structural representation. The claim is bounded to the
+features in §3, on one seed, one construct, one model.
+
+## 10. Limits of what this establishes
 
 - It validates **extraction and feature definitions**. It says nothing about
   whether these features predict half-life; no model was fitted and nothing

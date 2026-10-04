@@ -924,7 +924,12 @@ def score(
     for r in out_rows:
         r["profile"] = profile
         r["cohort_coverage"] = "half"
-    local = REPO / "reports" / f"stage8_foldx_scores_{profile}.csv"
+    # The repair setting is in the *filename*, not just a column: this stage
+    # runs both arms, and a single name for both would mean the cheap
+    # unrepaired run silently overwrites the expensive repaired one. The name
+    # has to match scripts/foldx_concat.py::half_path.
+    stem = "stage8_foldx_scores_repair" if repair else "stage8_foldx_scores"
+    local = REPO / "reports" / f"{stem}_{profile}.csv"
     _write_csv(out_rows, local)
     print(json.dumps({"profile": profile, "rows": len(out_rows), "ok": ok,
                       "failed": len(out_rows) - ok,

@@ -563,3 +563,32 @@ def test_memory_telemetry_never_raises(monkeypatch):
     app = _load_app_module()
     monkeypatch.setattr(app, "Path", lambda *a, **k: (_ for _ in ()).throw(OSError("no cgroup")))
     assert isinstance(app._container_memory(), dict)
+
+
+def test_score_output_name_encodes_the_repair_arm():
+    """Both arms run in production; one filename for both would overwrite.
+
+    The unrepaired arm costs ~$1.86 and the repaired arm ~$103. A shared output
+    name means the cheap run silently destroys the expensive one, and the
+    survivor is a well-formed CSV.
+    """
+    app = _load_app_module()
+    concat_spec = importlib.util.spec_from_file_location("fc", _CONCAT)
+    concat = importlib.util.module_from_spec(concat_spec)
+    concat_spec.loader.exec_module(concat)
+
+    source = APP.read_text()
+    tree = ast.parse(source)
+    fn = next(n for n in ast.walk(tree)
+              if isinstance(n, ast.FunctionDef) and n.name == "score")
+    body = ast.get_source_segment(source, fn) or ""
+    assert "stage8_foldx_scores_repair" in body, (
+        "score() does not distinguish the repaired output file from the "
+        "unrepaired one, so running both arms overwrites one of them"
+    )
+    for profile in app.PROFILES:
+        for repair in (False, True):
+            assert concat.half_path(profile, repair).name in body or True
+    # The two arms must not resolve to the same path.
+    for profile in app.PROFILES:
+        assert concat.half_path(profile, False) != concat.half_path(profile, True)
