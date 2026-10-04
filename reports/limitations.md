@@ -784,6 +784,27 @@ metric. "Nothing to lose" and "genuinely distance-robust" make identical
 predictions for every quantity this split can measure, so they are not
 separable here.
 
+**Provenance of the flat-profile hypothesis — recorded now, before any test
+number exists.** The idea that a *larger checkpoint* might have a flatter
+distance profile was **generated on validation**, by looking at the point
+estimates above. It was **not predeclared**. `HACKATHON_PLAN.md` now records
+this.
+
+The consequence is a rule that binds whichever way the test comes out:
+
+> If a flatter distance profile for the larger checkpoint reappears in the test
+> results, it is a **validation-generated hypothesis tested once** — not a
+> predeclared prediction confirmed — and it must be labelled that way. If it
+> fails to reappear, that is equally a single test of a post-hoc idea, not a
+> refutation of a standing prediction.
+
+This matters because the asymmetry is the whole trap: a hypothesis read off one
+split and then "confirmed" on another looks exactly like a prediction that was
+made in advance, unless the order of events is written down. It is written down
+here, **before the test set has been scored**, so the record cannot be
+reconstructed favourably afterwards. The same rule applies to any other pattern
+first noticed on validation.
+
 ### Precision@10 is quantised past the point of usefulness
 
 **This is a criticism of a metric we predeclared.** Against the sequence

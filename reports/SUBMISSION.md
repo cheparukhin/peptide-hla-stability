@@ -13,6 +13,12 @@ existed), [`figures/`](figures/).
 > 4c pilot are complete and reported below with sources. Three results are in
 > flight and appear as explicitly marked holes — `‹HOLE …›` — never as estimates.
 > Nothing in this document is a predicted number.
+>
+> **Every number in this document is a validation number.** The frozen test set
+> has not been scored. It is scored **once**, at stage 6, under
+> [`TEST_SCORING_RUNBOOK.md`](TEST_SCORING_RUNBOOK.md), with every model
+> together — so nothing here may be read as a held-out test result, including
+> the comparisons that return conclusive verdicts.
 
 **Where the judging criteria are answered.** The brief asks for *"a watertight
 evaluation considering ML best practices, engineering & compute requirements
@@ -487,23 +493,10 @@ positions touch the peptide — and that hand-built feature is what ESM-2 has to
 beat, not the naive full-domain encoding. **Both halves of that sentence are
 load-bearing** and neither should be quoted without the other.
 
-#### Where you read the embedding matters more than which model produced it
-
-The mean-pooled HLA arm scores 0.177–0.270 against the 34-contact arm's
-0.469–0.499. The natural explanation — pooling over 182 residues discards
-information — is **wrong**, and this dataset can prove it. There are only **75
-distinct HLA domain sequences**, so any HLA representation has rank ≤ 74. Both
-representations measure rank 74, both are **losslessly** representable in 74
-components, and both separate all 75 alleles exactly. **They carry identical
-information**; an unconstrained model could not tell them apart.
-
-The entire 0.3 gap is **similarity geometry** — contact-position embeddings
-place alleles with similar binding pockets near each other, mean-pooled
-embeddings place alleles with similar overall sequence near each other, and only
-the first is the right notion of "similar" for this task. For a practitioner
-this is the most transferable finding in the stage: **where you read a
-foundation model's embedding from matters more than which foundation model
-produced it.**
+*One further result from this stage is a transferable lesson about **using**
+foundation models rather than evidence for or against the verdict above, so it
+has its own section: **§9**, on why where you read an embedding from matters
+more than which model produced it.*
 
 #### Verification, and one measured engineering constraint
 
@@ -580,7 +573,8 @@ is a prediction. ([`stage2b_augmentation.md`](stage2b_augmentation.md))
 
 ### 4.2 Auxiliary affinity training does not help, and we know the ceiling
 
-**7,281 pairs across 58 allotypes** carry both an affinity measurement (how
+All numbers in this section are **validation**. **7,281 pairs across 58
+allotypes** carry both an affinity measurement (how
 strongly a peptide binds) and a half-life (how long it stays) — 5,135 of them in
 the training split. Does training a second prediction head on affinity improve
 the stability head? **20 paired comparisons — 5 λ settings × 2 encodings
@@ -941,6 +935,9 @@ everything but the objective.
 | `log1p`-MSE (the baseline) | **0.6931** | **0.4734** | 0.070 | 0.0561 | 0.8862 |
 | censored @ 0.1 h | 0.6518 | 0.5763 | **0.168** | **0.0422** | 0.8853 |
 | *observed* | — | — | *0.196* | — | — |
+
+All figures in this section are **validation**, 2,802 scored rows over 68
+eligible alleles; the test split was not read.
 
 **Δ median per-allele Spearman = −0.0414, 95% CI [−0.0780, −0.0062].** The
 interval lies **entirely below zero**, so under the predeclared reading this is
@@ -1431,7 +1428,40 @@ reader's interpretation most:
 
 ---
 
-## 9. What we would do next
+## 9. A finding that transfers: where you read the embedding matters more than which model produced it
+
+On **validation**, the mean-pooled HLA arm scores 0.177–0.270 against the
+34-contact arm's 0.469–0.499. The natural explanation — pooling over 182 residues discards
+information — is **wrong**, and this dataset can prove it. There are only **75
+distinct HLA domain sequences**, so any HLA representation has rank ≤ 74. Both
+representations measure rank 74, both are **losslessly** representable in 74
+components, and both separate all 75 alleles exactly. **They carry identical
+information**; an unconstrained model could not tell them apart.
+
+The entire 0.3 gap is **similarity geometry** — contact-position embeddings
+place alleles with similar binding pockets near each other, mean-pooled
+embeddings place alleles with similar overall sequence near each other, and only
+the first is the right notion of "similar" for this task. For a practitioner
+this is the most transferable finding in the stage: **where you read a
+foundation model's embedding from matters more than which foundation model
+produced it.**
+
+**Why this generalises past this dataset.** The proof above depends on a quirk —
+only 75 distinct HLA sequences, so rank is bounded at 74 and "lossless" is
+checkable directly. But the *lesson* does not depend on the quirk. Any time a
+pretrained embedding is pooled over a long sequence to score a local
+interaction, the pooling is choosing a similarity geometry, and that choice can
+cost more than the choice of model. Here it cost **0.3 of Spearman** — six times
+the predeclared worthwhile gain, and far more than the gap between ESM-2 35M and
+150M, or between ESM-2 and the sequence baseline.
+
+For a practitioner picking a foundation model for a binding-site problem, the
+ordering of concerns this project measured is: **read the right residues first,
+then worry about which checkpoint.**
+
+---
+
+## 10. What we would do next
 
 Ordered by expected value per hour, not by appeal.
 
