@@ -1,0 +1,13 @@
+comparison,statistic,delta,ci_low,ci_high,n_boot,reading
+esm_ensemble vs seq_ensemble_pep_pseudo,stratum gap (d=4 minus d>=5),-0.0197,-0.0973,0.08,2000,negative = the arm loses LESS at distance than the baseline
+esm_plus_seq_ensemble vs seq_ensemble_pep_pseudo,stratum gap (d=4 minus d>=5),0.0046,-0.0803,0.1235,2000,negative = the arm loses LESS at distance than the baseline
+esm_ensemble_150m vs seq_ensemble_pep_pseudo,stratum gap (d=4 minus d>=5),-0.0685,-0.1188,0.0625,2000,negative = the arm loses LESS at distance than the baseline
+seq_ensemble_pep_domain vs seq_ensemble_pep_pseudo,stratum gap (d=4 minus d>=5),-0.0091,-0.0888,0.0847,2000,negative = the arm loses LESS at distance than the baseline
+esm_ensemble vs seq_ensemble_pep_pseudo,median rho within d=4,-0.0246,-0.0706,0.0312,2000,"55-allele shared stratum panel, d=4 rows only"
+esm_plus_seq_ensemble vs seq_ensemble_pep_pseudo,median rho within d=4,-0.0339,-0.0707,0.0383,2000,"55-allele shared stratum panel, d=4 rows only"
+esm_ensemble_150m vs seq_ensemble_pep_pseudo,median rho within d=4,-0.0466,-0.0906,0.0166,2000,"55-allele shared stratum panel, d=4 rows only"
+seq_ensemble_pep_domain vs seq_ensemble_pep_pseudo,median rho within d=4,-0.0397,-0.0821,0.0141,2000,"55-allele shared stratum panel, d=4 rows only"
+esm_ensemble vs seq_ensemble_pep_pseudo,median rho within d>=5,-0.0049,-0.0804,0.0632,2000,"55-allele shared stratum panel, d>=5 rows only"
+esm_plus_seq_ensemble vs seq_ensemble_pep_pseudo,median rho within d>=5,-0.0385,-0.1167,0.0542,2000,"55-allele shared stratum panel, d>=5 rows only"
+esm_ensemble_150m vs seq_ensemble_pep_pseudo,median rho within d>=5,0.0219,-0.0776,0.0619,2000,"55-allele shared stratum panel, d>=5 rows only"
+seq_ensemble_pep_domain vs seq_ensemble_pep_pseudo,median rho within d>=5,-0.0305,-0.1067,0.0406,2000,"55-allele shared stratum panel, d>=5 rows only"

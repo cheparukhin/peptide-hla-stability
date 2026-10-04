@@ -89,9 +89,11 @@ arm whose selected L2 sits at the edge of its own ladder. A boundary hit means
 the ladder was truncated, so the selected value is not the best available and
 the arm is being handicapped.
 
-Verified interior before any fit (`reports/stage3b_tuning_parity.csv`):
+Verified interior before any fit (`reports/stage3b_tuning_parity.csv`). These
+are the ladders **as first declared**, before the union audit; §3.2 corrects
+two of the three arms and gives the ladders the ESM run actually used.
 
-| Arm | Group | hidden | selected L2 | ladder | interior |
+| Arm | Group | hidden | selected L2 | ladder as first declared | interior |
 |---|---|---|---|---:|---|
 | additive | one-hot | 256×64 | 0.01 | 0.001 \| 0.01 \| 0.1 | yes |
 | additive | BLOSUM62 | 256×64 | 0.01 | 0.001 \| 0.01 \| 0.1 | yes |
@@ -99,6 +101,9 @@ Verified interior before any fit (`reports/stage3b_tuning_parity.csv`):
 | seq | BLOSUM62 | 256×64 | 1e-05 | 1e-07 … 0.1 (5 pts) | yes |
 | esm | mid | 256×64 | 0.01 | 1e-05 … 10 (6 pts) | yes |
 | esm | final | 256×64 | 0.01 | 1e-05 … 10 (6 pts) | yes |
+
+The sequence half in §6 was fitted on the `seq` rows above, which the audit
+left unchanged, so those results stand exactly as reported.
 
 ### 3.1 A two-point ladder cannot satisfy the gate — budget parity needs ≥ 3 values
 
@@ -336,6 +341,23 @@ panel and the same peptide clusters the real comparisons use.
 The MDE is the smallest realised |Δ| whose CI excludes 0. If that floor sits
 above the predeclared **0.05** worthwhile-gain bar, this comparison cannot
 resolve the effect we care about — and *that* is the finding.
+
+### 5.1 The single-delta floor does not transfer to the difference-in-differences
+
+`measure_mde()` measures what **one** paired delta can resolve. The stage 3b
+headline is a *difference of two* deltas, and a difference of two noisy
+quantities is noisier than either. Quoting the single-delta floor beside a DiD
+would therefore understate what the design needs, in the one place where
+understating it does the most damage: it would license calling a small DiD a
+null when it is really an unresolved measurement.
+
+So the DiD's floor is measured **directly, on the DiD statistic itself**, by
+the same injection method. The additive arm's λ=0 predictions are blended
+toward a within-allele shuffle to manufacture a *known* Δ_esm; the real
+sequence arm is held fixed at its published λ=0 and λ=0.1; and the paired
+interval is taken on the resulting DiD. The floor is the smallest |DiD| whose
+interval excludes zero. Both numbers are reported side by side in §7, and the
+DiD one is the one the verdict is read against.
 
 ---
 
