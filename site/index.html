@@ -1,8 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Antigen Presentation Stability</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 
+</head>
+<body>
 <style>
   :root {
     --ground:      #F7F8FA;
@@ -579,21 +586,27 @@
     </p>
   </header>
 
-  <!-- ========== 1. VIDEO ========== -->
+  <!-- ========== 1. FILM ========== -->
   <section id="intro">
     <div class="shead">
-      <h2 class="title">Peptide–MHC interface</h2>
+      <h2 class="title">The two-minute version</h2>
     </div>
 
     <figure>
+      <!-- The film runs live rather than as a recording: it is the same
+           composition the repo renders, with every number read at runtime from
+           film/film_data.js, which is generated from the frozen result tables.
+           Sandboxed in an iframe so its globals cannot collide with this page. -->
       <div class="video-frame">
-        <video controls muted playsinline preload="auto" poster="poster.png"
-               width="1280" height="720">
-          <source src="intro.mp4" type="video/mp4; codecs=avc1.42E01E">
-          <source src="intro.webm" type="video/webm">
-          <a href="intro.mp4">Download the intro video (MP4, 2.9 MB)</a>
-        </video>
+        <iframe src="film/" title="Sequence Is All You Need? - the submission film"
+                loading="lazy" allowfullscreen
+                style="width:100%;aspect-ratio:16/9;border:0;display:block"></iframe>
       </div>
+      <figcaption class="note">
+        Plays in the browser. <a href="film/">Open it full-screen</a> &middot;
+        the original 30-second interface animation is
+        <a href="intro.mp4">still here as an MP4</a>.
+      </figcaption>
     </figure>
   </section>
 
@@ -811,3 +824,6 @@
   </footer>
 
 </div>
+
+</body>
+</html>

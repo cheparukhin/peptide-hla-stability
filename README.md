@@ -8,9 +8,9 @@ a supervised model trained on sequences. None of them won.
 
 ### Start here
 
-- **[The one-pager →](https://claude.ai/artifact/VDSMa967oxqnZNH6TnU6Cg)** — the
-  whole result in one scrolling page, with the intro animation. The fastest way
-  to see what we found.
+- **[The one-pager →](https://cheparukhin.github.io/peptide-hla-stability/)** —
+  the whole result in one scrolling page, opening with the two-minute film. The
+  fastest way to see what we found.
 - **[pMHC-I Stability Explorer →](https://claude.ai/artifact/HzCqEa1HBXMKywcoNiN2tT)**
   — browse the measured peptides for any of the 75 alleles, ordered by
   half-life, with a rotatable 3D view of the peptide in the HLA groove.
@@ -184,7 +184,7 @@ Measured half-lives from Rasmussen et al.; see [docs/DATASETS.md](docs/DATASETS.
 | [docs/README.md](docs/README.md) | The data: dataset stats, splits, structures, augmentation. |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, reproduction commands, repo rules. |
 | [HACKATHON_PLAN.md](HACKATHON_PLAN.md) | Scope and stage order. |
-| [site/](site/README.md) | Local source for the one-pager, with the intro animation. |
+| [site/](site/README.md) | Source for the published one-pager and the two-minute film. |
 
 ## Status
 

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Submission film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; background: #14151A; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Vendored so the page runs offline and a headless snapshot never races a CDN. -->
+<script src="vendor/react.js"></script>
+<script src="vendor/react-dom.js"></script>
+<script src="vendor/babel.js"></script>
+
+<script>
+  // Authored running order. Durations must match ACTS in film-scene.jsx and the
+  // intro cue sum, or the stage timeline and the act offsets drift apart.
+  window.OM_SCENES = JSON.stringify([
+    { name: 'ColdOpen',   dur: 6,   desc: 'The headline: Sequence Is All You Need? and the TL;DR' },
+    { name: 'Groove',     dur: 1.8, desc: 'HLA surface, zoom toward the groove' },
+    { name: 'Anatomy',    dur: 3.6, desc: 'Groove anatomy: helices, floor, the nine residues' },
+    { name: 'Candidates', dur: 3.0, desc: 'Candidate peptides cycle through the groove' },
+    { name: 'Lock',       dur: 1.4, desc: 'One peptide forms a stable pair' },
+    { name: 'Approach',   dur: 1.6, desc: 'The T-cell receptor descends onto the complex' },
+    { name: 'Interface',  dur: 1.2, desc: 'V-domain ribbons at the interface' },
+    { name: 'Wobble',     dur: 0.6, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Anchors',    dur: 0.3, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Contact',    dur: 0.2, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Activation', dur: 0.1, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Expansion',  dur: 0.1, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Body',       dur: 0.1, desc: 'Trimmed out of the results-first cut' },
+    { name: 'Question',   dur: 12,  desc: 'The task: stability is different from affinity' },
+    { name: 'Approaches', dur: 12,  desc: 'The ten arms we tested' },
+    { name: 'Verdict',    dur: 20,  desc: 'Main result: the decision rule, six scores, paired intervals' },
+    { name: 'Transfer',   dur: 16,  desc: 'The one strong positive: elution transfer and its controls' },
+    { name: 'NextSteps',  dur: 14,  desc: 'Three proposed experiments' }
+  ]);
+  // Must be a STRING, like OM_SCENES — the runtime parses it and the host's
+  // write-back anchors on the exact literal.
+  window.OM_PLAYBACK = '{"mode":"loop"}';
+  window.TWEAK_DEFAULTS = { labels: true, captions: true, motionEditor: false };
+
+  // ?t=SECONDS pins the stage to one authored second (frame review, stills).
+  // ?panel=0 hides the tweaks panel so a screenshot is clean.
+  (function () {
+    const q = new URLSearchParams(location.search);
+    const t = parseFloat(q.get('t'));
+    window.__FILM_T__ = Number.isFinite(t) ? t : null;
+    window.__FILM_PANEL__ = q.get('panel') !== '0';
+  })();
+
+  // useTweaks / TweaksPanel / TweakSection / TweakToggle live in the artifact
+  // host harness, NOT in animations-v3.jsx. This page is not that harness, so
+  // it supplies its own minimal equivalents or the scene throws on mount.
+  window.useTweaks = function (defaults) {
+    const [state, setState] = React.useState(defaults || {});
+    const setTweak = React.useCallback(
+      (k, v) => setState((s) => Object.assign({}, s, { [k]: v })), []);
+    return [state, setTweak];
+  };
+  window.TweaksPanel = function (props) {
+    return React.createElement('div', {
+      style: { position: 'fixed', right: 16, top: 16, zIndex: 20, padding: '12px 14px',
+        background: 'rgba(20,21,26,0.92)', border: '1px solid #3A3C48', borderRadius: 6,
+        font: '500 13px "IBM Plex Mono", monospace', color: '#E9EBEF', minWidth: 190 }
+    }, props.children);
+  };
+  window.TweakSection = function (props) {
+    return React.createElement('div', {
+      style: { opacity: 0.55, textTransform: 'uppercase', letterSpacing: '0.08em',
+        fontSize: 11, margin: '6px 0 4px' }
+    }, props.label);
+  };
+  window.TweakToggle = function (props) {
+    return React.createElement('label', {
+      style: { display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', cursor: 'pointer' }
+    }, React.createElement('input', {
+      type: 'checkbox', checked: props.value !== false,
+      onChange: function (e) { props.onChange(e.target.checked); }
+    }), props.label);
+  };
+</script>
+
+<!-- film_data.js defines window.__FILM__. Acts guard against its absence, so the
+     page still runs before the generator has been executed. -->
+<script src="film_data.js" onerror="console.warn('film_data.js missing - data acts will render empty')"></script>
+
+<script>
+  // Evaluation order matters: runtime, then the intro scene (whose helpers the
+  // acts and the shell reuse), then the acts, then the shell.
+  var FILM_SOURCES = [
+    'animations-v3.jsx',     // symlink -> ../pmhc-intro/animations-v3.jsx
+    'pmhc-scene-v2.jsx',     // symlink -> ../pmhc-intro/pmhc-scene-v2.jsx
+    'act0-coldopen.jsx',
+    'act2-approach.jsx',
+    'act5-verdict.jsx',
+    'act6-transfer.jsx',
+    'act7-next.jsx',
+    'film-scene.jsx'
+    // act5b-caveat.jsx ("what the result does not say") is cut — the
+    // double-negative framing read as confusing. One line to restore.
+    // act3-data.jsx and act4-race.jsx are intentionally not loaded: method
+    // beats, cut from the results-first edit. Files kept for a longer cut.
+  ];
+
+  // Load problems are collected and rendered into the page, not just logged —
+  // a headless --dump-dom run has no console, and a silent blank stage is the
+  // single most expensive failure mode to debug here.
+  window.__FILM_ERRORS__ = [];
+
+  // React 18 commits concurrently, so a throw inside render surfaces here and
+  // NOT in the try/catch around createRoot().render().
+  function filmNote(stage, url, msg) {
+    window.__FILM_ERRORS__.push({ stage: stage, url: url, msg: msg });
+    const el = document.getElementById('film-errors');
+    if (el) el.textContent += '\n\n[' + stage + '] ' + url + '\n    ' + msg;
+  }
+  window.addEventListener('error', function (e) {
+    filmNote('runtime', (e.filename || 'window').split('/').pop() + ':' + (e.lineno || '?'),
+      String(e.message || e.error));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    filmNote('promise', 'window', String((e.reason && e.reason.message) || e.reason));
+  });
+
+  (async function () {
+    const chunks = [];
+    for (const url of FILM_SOURCES) {
+      let src;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        src = await res.text();
+      } catch (err) {
+        window.__FILM_ERRORS__.push({ url: url, stage: 'fetch', msg: String(err && err.message || err) });
+        continue;
+      }
+      try {
+        chunks.push('/* ' + url + ' */\n'
+          + Babel.transform(src, { presets: ['react'] }).code);
+      } catch (err) {
+        window.__FILM_ERRORS__.push({ url: url, stage: 'transform', msg: String(err && err.message || err) });
+      }
+    }
+
+    // One eval, not one per file. `let`/`const` declared inside an eval live in
+    // that eval's own scope and vanish when it returns — only `function`
+    // declarations leak to the global object. Evaluating per file therefore
+    // loses every shared `const` (FONT, C, MOTION, tw, ...) from the intro
+    // scene while appearing to work, because its components still resolve.
+    try {
+      (0, eval)(chunks.join('\n;\n'));
+    } catch (err) {
+      window.__FILM_ERRORS__.push({ url: '(combined)', stage: 'eval', msg: String(err && err.message || err) });
+    }
+
+    const root = document.getElementById('root');
+    const report = () => window.__FILM_ERRORS__.map(
+      (e) => '[' + e.stage + '] ' + e.url + '\n    ' + e.msg).join('\n\n');
+
+    if (typeof window.SubmissionFilm !== 'function') {
+      root.innerHTML = '<pre id="film-errors" style="color:#F7A8A8;font:13px/1.5 monospace;'
+        + 'padding:24px;white-space:pre-wrap">film-scene.jsx did not mount.\n\n'
+        + (report() || '(no load errors recorded - SubmissionFilm was never assigned)')
+        + '</pre>';
+      return;
+    }
+    try {
+      ReactDOM.createRoot(root).render(React.createElement(window.SubmissionFilm));
+    } catch (err) {
+      root.innerHTML = '<pre id="film-errors" style="color:#F7A8A8;font:13px/1.5 monospace;'
+        + 'padding:24px;white-space:pre-wrap">render threw: ' + String(err && err.message || err) + '</pre>';
+      return;
+    }
+    if (window.__FILM_ERRORS__.length) {
+      const warn = document.createElement('pre');
+      warn.id = 'film-errors';
+      warn.style.cssText = 'position:fixed;left:0;bottom:0;max-height:38vh;overflow:auto;margin:0;'
+        + 'z-index:30;background:rgba(20,21,26,0.95);color:#F7A8A8;font:12px/1.45 monospace;'
+        + 'padding:12px 16px;white-space:pre-wrap;max-width:60vw';
+      warn.textContent = window.__FILM_ERRORS__.length + ' act(s) failed to load:\n\n' + report();
+      document.body.appendChild(warn);
+    }
+  })();
+</script>
+</body>
+</html>
