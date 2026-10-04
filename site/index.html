@@ -574,8 +574,8 @@
     <p class="eyebrow">London AI × Science · logic binders team · 3–4 October 2026</p>
     <h1>Antigen Presentation Stability:<br>Sequence Is All You Need?</h1>
     <p class="standfirst">
-      <b>TL;DR:</b> We tested language-model embeddings, predicted structures, inverse folding
-      and energies predictions against a supervised model trained on sequences. None of them won.
+      <b>TL;DR:</b> We tested language-model embeddings and predicted structures against a
+      supervised model trained on sequences. None of them won.
     </p>
   </header>
 
@@ -745,6 +745,12 @@
             <td>Keep peptide and MHC embeddings separate, then add a trainable cross-attention
                 module that connects individual peptide positions with groove positions. Compare
                 against concatenated embeddings + a small MLP, keeping the embeddings unchanged.</td>
+          </tr>
+          <tr>
+            <td><b>Inverse-folding and energy features</b></td>
+            <td>Score each predicted complex with ProteinMPNN peptide likelihoods and FoldX
+                interaction energies, and test them as half-life features. Compare against the
+                sequence ensemble, keeping the same folds and tuning budget.</td>
           </tr>
         </tbody>
       </table>
