@@ -626,6 +626,26 @@ established.
   is fixed.
 - **Thermodynamic-flavoured, kinetic label.** Sequence–backbone compatibility is
   the softer form of the §7.0 mismatch. Nothing in this pilot overturns it.
+- **Its seed control disagrees with our other seed control on ESMFold2**, and
+  the two must not be cited as confirming each other there. The 109 structural
+  features give 5.29 (Boltz-2) / 5.87 (ESMFold2); ProteinMPNN gives 3.1-9.3 /
+  1.2-1.9. They agree on Boltz-2, which is what production runs. The divergence
+  is attributed to granularity — ProteinMPNN reads **backbone only** (N, CA, C,
+  O plus a *virtual* CB; it never sees a real side-chain coordinate) at fine
+  resolution, while the structural features are coarse aggregates robust to
+  sub-Angstrom jitter, and ESMFold2's CA jitter is 2.5-5.2x Boltz-2's. **An
+  earlier attribution of this divergence to side-chain sensitivity was wrong and
+  is retracted**, as was a separate claim that the two implementations
+  reconciled to two decimal places — a coincidence of conventions. The surviving
+  cross-validation is directional: removing seed noise from the numerator drops
+  ESMFold2's ratio by -0.29 in **both** independently written pipelines while
+  barely moving Boltz-2's. See SUBMISSION §4.5.
+- **Quote the ProteinMPNN ratio as an envelope, not a point estimate.** Six
+  defensible aggregations span 3.1-9.3 and 1.2-1.9; all return the same verdict,
+  so the spread bears on no conclusion, but a single figure quoted without its
+  convention is not checkable. The two reports state the Boltz-2 upper bound
+  differently (8.1 vs 9.3) depending on whether a `ddof=0` aggregation is
+  counted; the ESMFold2 range, which carries the verdict, agrees exactly.
 
 **Operational consequence:** the QC sample's reference points are descriptive,
 drawn from a single complex. They **must not filter the production cohort**,

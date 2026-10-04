@@ -130,10 +130,19 @@ every arm.
 
 **Worked example, validation, 55-allele shared panel at a 10-row bar:**
 
-<!--STRATA-->
+| Arm | Stratum | Rows | Alleles | Median per-allele rho | IQR | MAE log1p | Median P@10 |
+|---|---|---:|---:|---:|---|---:|---:|
+| `seq_baseline` | d=4 | 1,377 | 55 | 0.6578 | 0.527–0.747 | 0.5507 | 0.60 |
+| `seq_baseline` | d>=5 | 992 | 55 | 0.5749 | 0.367–0.699 | 0.5506 | 0.50 |
+| `seq_ensemble_pep_pseudo` | d=4 | 1,377 | 55 | **0.7360** | 0.624–0.804 | 0.4981 | 0.70 |
+| `seq_ensemble_pep_pseudo` | d>=5 | 992 | 55 | **0.6539** | 0.483–0.756 | 0.4776 | 0.50 |
+| `allele_mean` (control) | d=4 / d>=5 | | 55 | 0.0000 / 0.0000 | | 0.7718 / 0.7433 | 0.41 / 0.38 |
+| `global_mean` (control) | d=4 / d>=5 | | 55 | 0.0000 / 0.0000 | | 0.9650 / 0.8858 | 0.41 / 0.38 |
 
-Both model arms lose ground moving away from training, by a similar amount, and
-the two controls are flat at 0 by construction. A gap of this shape is the
+Both model arms lose ground moving away from training, and by almost exactly
+the same amount — 0.083 for the baseline, 0.082 for the ensemble. The two
+controls are flat at 0 by construction, which confirms the strata are not
+manufacturing a gap on their own. A gap of this shape is the
 expected consequence of the residual similarity stage 1 measured (same-allele
 label Spearman 0.592 at d=4 versus 0.302 for unrelated pairs); it is evidence
 that the stratification is sensitive, not that a model is cheating. What would
@@ -178,7 +187,16 @@ comparisons over 1,372 distinct allele pairs, of which 755 are undecidable and
 
 **Worked example, validation:**
 
-<!--DIFFERENTIAL-->
+| Arm | Decidable | Concordance | Peptide-weighted | Pooled rho(delta) | Allele pairs | Median allele-pair rho | MAE(delta) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `seq_baseline` | 9,610 | 0.8017 | 0.8152 | 0.7442 | 268 | 0.6066 | 0.6308 |
+| `seq_ensemble_pep_pseudo` | 9,610 | **0.8262** | **0.8318** | **0.7864** | 268 | **0.6854** | **0.5771** |
+| `allele_mean` (control) | 9,610 | 0.6982 | 0.6915 | 0.4916 | 268 | **0.0000** | 0.8434 |
+| `global_mean` (control) | 9,610 | **0.5000** | **0.5000** | undefined | 268 | **0.0000** | 0.9541 |
+
+Paired, 500 cluster resamples: the ensemble's concordance gain over the baseline
+is **+0.0245, 95% CI [+0.0141, +0.0346]** — conclusive, and a tighter signal
+than the median-Spearman comparison gives on the same data.
 
 The two controls are the reason to trust the metric:
 
@@ -227,7 +245,22 @@ choice.
 
 **Worked example, validation, 2,000 resamples:**
 
-<!--CI-->
+| Statistic | Model vs `seq_baseline` | Delta | 95% CI | Verdict |
+|---|---|---:|---|---|
+| median per-allele rho | `seq_ensemble_pep_pseudo` | +0.0833 | [+0.0288, +0.1235] | real, size unresolved against the 0.05 bar |
+| mean per-allele rho | `seq_ensemble_pep_pseudo` | +0.0740 | [+0.0470, +0.1036] | (mean; the verdict rule applies to the median) |
+| differential concordance | `seq_ensemble_pep_pseudo` | +0.0245 | [+0.0141, +0.0346] | conclusive |
+| median precision@10 | `seq_ensemble_pep_pseudo` | 0.0000 | [−0.0500, +0.1500] | inconclusive |
+| median per-allele rho | `allele_mean` (control) | −0.6098 | [−0.6560, −0.5569] | worse, CI entirely below 0 |
+| median per-allele rho | `global_mean` (control) | −0.6098 | [−0.6560, −0.5569] | worse, CI entirely below 0 |
+
+103 of the 2,000 resamples lost at least one of the 68 alleles to missing label
+spread; those alleles leave that resample's panel for both arms at once rather
+than being scored 0, and the count is reported rather than buried.
+
+Median precision@10 is the bluntest of the four: it moves in steps of 0.1 and
+68 alleles give a coarse median, so it returns "inconclusive" on a comparison
+the other three call. That is a property of the statistic, not of the models.
 
 ### Mean as well as median
 
@@ -308,7 +341,18 @@ allele, to within 1e-12, so `median_lift` is exactly 0.
 
 **Worked example, validation:**
 
-<!--PRECISION-->
+| Arm | Alleles | Median P@10 | Median base rate | Median lift | Median ceiling share | At ceiling | No positives | Below base rate |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `seq_baseline` | 68 | 0.700 | 0.359 | 0.229 | 0.900 | 24 | 1 | 1 |
+| `seq_ensemble_pep_pseudo` | 68 | 0.700 | 0.359 | **0.291** | 0.900 | **29** | 1 | **0** |
+| `allele_mean` (control) | 68 | 0.359 | 0.359 | **0.000** | 0.385 | 1 | 1 | 4 |
+| `global_mean` (control) | 68 | 0.359 | 0.359 | **0.000** | 0.385 | 1 | 1 | 4 |
+
+The median precision is identical (0.700) for the two model arms while the
+median *lift* separates them (0.229 vs 0.291) and the ensemble reaches the
+ceiling on 29 alleles against 24. That is the argument for reporting lift and
+ceiling share rather than precision alone: on a coarse 10-slot statistic over
+68 alleles the medians collide, and the comparison lives in the other columns.
 
 Both controls land exactly on the base rate, as designed. `allele_mean` is
 constant *within* an allele, so it is indistinguishable from `global_mean` on
@@ -387,7 +431,13 @@ between arms, never as an absolute claim about mutant ranking.**
 
 **Worked example, validation run, ridge reference arm:**
 
-<!--NESTED-->
+| Arm | Available | Scored | Decidable | Concordance | d=1 | d=2 | Concordance − 0.5 | 95% CI |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `ridge_pep_pseudo_blosum` (reference) | 608 | 490 | 402 | 0.5224 | 0.5188 | 0.5276 | +0.0224 | [−0.0448, +0.0939] |
+| `constant` (control) | 608 | 490 | 402 | **0.5000** | 0.5000 | 0.5000 | — | — |
+
+118 of the 608 comparisons are dropped because both members landed in the same
+fold; 88 of the 490 scored are undecidable (equal labels on that allele).
 
 Read this as a property of the harness and of a weak reference arm together, not
 as a result about mutant ranking. The same ridge out-of-fold predictions score a

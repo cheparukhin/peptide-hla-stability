@@ -27,6 +27,7 @@ stage,item,hardware,cpu_minutes,gpu_type,gpu_hours,wall_clock,usd,status,source
 7a,Censored (Tobit) likelihood: 60 networks (2 arms x 30),laptop CPU,,,,,0,PLACEHOLDER_in_flight_S7a,reports/stage7_censored.md (protocol predeclared; results pending)
 5,"ProteinMPNN inverse-folding pilot: 90 folds + circularity matrix + wrong-backbone control",laptop CPU,28.3,,,481 s + 1107 s + 107 s,0,measured,reports/stage5_inverse_folding.md
 5,"ProteinMPNN aborted cross-peptide sweep (killed under memory pressure, output discarded)",laptop CPU,13,,,~780 s,0,measured_wasted,reports/stage5_inverse_folding.md
+5,"ProteinMPNN ::forecast + --dry-run checks (assumed free; --dry-run started a container and would have failed against a missing production root)",Modal CPU,,,,minutes,,measured_not_separately_metered,reports/stage5_inverse_folding.md
 5,"ProteinMPNN QC sample: 2000 folds at 16 decoding orders (approved, not spent)",Modal CPU,990,,,0.8 h at 20 containers,1.04,FORECAST_approved_not_spent,reports/stage5_inverse_folding.md
 5,"ProteinMPNN full-cohort regression scoring (declined on evidence)",Modal CPU,13920,,,2.9 h parallel,14.68,FORECAST_declined,reports/stage5_inverse_folding.md
 4c5,"Structural feature extraction, both halves (approved, not spent); Volume-read-bound 1.57 s wall vs 0.096 s CPU per fold",Modal CPU,738,,,~12.3 min parallel,0.78,FORECAST_approved_not_spent,reports/stage4c5_features.md section 7.6

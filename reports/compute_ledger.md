@@ -165,6 +165,22 @@ The aborted sweep is recorded rather than quietly dropped — it is 780 s of
 compute that produced nothing, and a ledger that only lists successful runs is
 not a ledger.
 
+**A second entry in the same spirit: the `--dry-run` that everyone assumed was
+free.** It was written, reviewed and scheduled as a zero-cost check, and both
+the implementing agent and the orchestrator referred to it that way. It was not
+free: it called `list_folds.remote()`, which **starts a container** — and
+against a production root that does not yet exist it would have raised
+`FileNotFoundError` instead of printing a plan. **The "free check we can run any
+time" would have failed at exactly the moment it was needed.** Nobody had run
+it; it was fixed only because it was finally executed, hours before the window
+rather than inside it. `--dry-run` is now purely local and never lists the
+Volume.
+
+This is the project's own standing lesson — *verify a harness measures what it
+claims* — applied to a harness written for this ledger's own forecasts. It is
+the third time that discipline has paid out here, after the 4.6x fold-cost error
+and the rate check below.
+
 **Forecast** from the measured 14.70 s mean per arm-B fold at 16 decoding
 orders, priced at the repo's metered rates:
 
@@ -370,6 +386,14 @@ number — is why every figure above carries its source.
 | **B3** | Actual production spend | the Modal production session | Metered `before`/`after` billing snapshots per workspace, realised GPU-hours, realised wall clock, failure count, and whether 10 concurrent A10Gs were actually granted in each workspace |
 | **S6** | Stage 6 scoring cost | `eval-harness` | CPU-minutes for the single test pass plus the paired cluster bootstraps |
 | **S7a** | Censored (Tobit) likelihood cost | stage 7a | CPU-minutes for 60 networks (2 arms × 30) plus the paired bootstrap; protocol is predeclared in `stage7_censored.md`, §6 is still "pending" |
+| **R1** | **Realised** spend for the two approved-but-unspent items | stage 4c.5 / stage 5 | Actual cost of the ProteinMPNN QC sample (forecast $1.04) and the 4c.5 full extraction pass (forecast $0.78), against those forecasts. Both are gated on the fold completing, and the QC sample additionally on `::smoke` in each workspace |
+
+**No workspace-access blocker remains.** `::forecast --profile colleague`
+created both functions in `sofyaleyn` (`ap-GUceVVHdiPHrNHQlCz3fFY`). That check
+was worth doing early: Modal validates every function at creation time, and a
+workspace without a verified payment method cannot declare one at all. Stage 4c
+had ruled that out for the GPU fold app but never for this one, and it would
+otherwise have surfaced at fold completion with everyone waiting.
 
 `reports/ectodomain-20261004/production_<profile>.jsonl` now exist for both
 profiles and are **empty** — the runner has been wired up but no shard has

@@ -1,0 +1,149 @@
+{
+  "arms": {
+    "allele_mean": {
+      "bytes": 69148,
+      "mtime": "2026-10-03T15:55:27.361886+00:00",
+      "path": "preds/allele_mean.csv",
+      "sha256": "cb7ab674706c9011069d7d75a3d71302cfa5862cab9df0c5f165cdb8d25d11f0"
+    },
+    "global_mean": {
+      "bytes": 69323,
+      "mtime": "2026-10-03T15:55:27.359489+00:00",
+      "path": "preds/global_mean.csv",
+      "sha256": "056d822cd0e8f424604439d8e3fd3e34ef65b104a0173590e7f1fddd39d6dc19"
+    },
+    "seq_baseline": {
+      "bytes": 44947,
+      "mtime": "2026-10-03T17:58:46.398015+00:00",
+      "path": "preds/seq_baseline.csv",
+      "sha256": "cc2fc0f5966ad6d66eb59c629c4c864e00d9f4943d00cb8ce4ab85368e2000f5"
+    },
+    "seq_ensemble_pep_pseudo": {
+      "bytes": 44829,
+      "mtime": "2026-10-03T18:26:55.399022+00:00",
+      "path": "preds/seq_ensemble_pep_pseudo.csv",
+      "sha256": "d2b0c1f75181e49654383bda5170026ccf2d23adf6faf9dd9780ed70d013ac94"
+    }
+  },
+  "bootstrap_seed": 20261003,
+  "differential": {
+    "min_peptides_per_allele_pair": 10,
+    "n_allele_pairs": 1372,
+    "n_pairs": 10365,
+    "n_peptides": 394,
+    "n_undecidable": 755
+  },
+  "distance_strata": {
+    "common_alleles": [
+      "HLA-A*02:01",
+      "HLA-A*02:03",
+      "HLA-A*02:10",
+      "HLA-A*02:11",
+      "HLA-A*02:12",
+      "HLA-A*02:16",
+      "HLA-A*02:19",
+      "HLA-A*02:50",
+      "HLA-A*03:01",
+      "HLA-A*11:01",
+      "HLA-A*23:01",
+      "HLA-A*24:02",
+      "HLA-A*24:03",
+      "HLA-A*24:07",
+      "HLA-A*24:19",
+      "HLA-A*25:01",
+      "HLA-A*26:01",
+      "HLA-A*26:02",
+      "HLA-A*26:03",
+      "HLA-A*29:02",
+      "HLA-A*30:01",
+      "HLA-A*30:02",
+      "HLA-A*31:01",
+      "HLA-A*32:07",
+      "HLA-A*33:03",
+      "HLA-A*43:01",
+      "HLA-A*66:01",
+      "HLA-A*68:01",
+      "HLA-A*68:23",
+      "HLA-A*74:01",
+      "HLA-A*80:01",
+      "HLA-B*07:02",
+      "HLA-B*08:01",
+      "HLA-B*15:01",
+      "HLA-B*15:02",
+      "HLA-B*15:10",
+      "HLA-B*15:17",
+      "HLA-B*18:01",
+      "HLA-B*27:02",
+      "HLA-B*27:03",
+      "HLA-B*27:05",
+      "HLA-B*27:20",
+      "HLA-B*35:01",
+      "HLA-B*39:01",
+      "HLA-B*39:02",
+      "HLA-B*39:06(C67S)",
+      "HLA-B*40:01",
+      "HLA-B*41:01",
+      "HLA-B*44:05",
+      "HLA-B*45:01",
+      "HLA-B*46:01",
+      "HLA-B*57:01",
+      "HLA-B*57:02",
+      "HLA-B*57:03",
+      "HLA-B*58:01"
+    ],
+    "n_common_alleles": 55,
+    "n_eligible": {
+      "d=4": 68,
+      "d>=5": 55
+    },
+    "n_peptides_at_d6_plus": 3,
+    "n_rows": {
+      "d=4": 1730,
+      "d>=5": 1087
+    },
+    "n_rows_at_d6_plus": 15,
+    "row_coverage": {
+      "d=4": 0.7959537572254335,
+      "d>=5": 0.9126034958601656
+    }
+  },
+  "elapsed_seconds": 1103.7,
+  "eligible_row_coverage": 0.9946751863684771,
+  "files": [
+    "reports/stage6_val_summary.csv",
+    "reports/stage6_val_per_allele.csv",
+    "reports/stage6_val_distance_census.csv",
+    "reports/stage6_val_distance_strata.csv",
+    "reports/stage6_val_differential.csv",
+    "reports/stage6_val_differential_allele_pairs.csv",
+    "reports/stage6_val_precision_summary.csv",
+    "reports/stage6_val_precision_per_allele.csv",
+    "reports/stage6_val_paired_ci.csv",
+    "reports/stage6_val_resampling_units.csv",
+    "reports/stage6_val_nested_mutant.csv"
+  ],
+  "min_rows_per_allele": 20,
+  "n_boot": 2000,
+  "n_clusters": 510,
+  "n_eligible_alleles": 68,
+  "n_peptides": 567,
+  "n_rows": 2817,
+  "nested": {
+    "arm_files": {},
+    "arms": [
+      "ridge_pep_pseudo_blosum[reference]"
+    ],
+    "groups_spanning_splits": 0,
+    "n_alleles": 68,
+    "n_clusters_all_pairs": 115,
+    "n_clusters_scored": 96,
+    "n_folds": 5,
+    "n_mutant_pairs": 608,
+    "n_pairs_cross_fold": 490,
+    "paired": null,
+    "radius": 2,
+    "seed": 20261004
+  },
+  "split": "val",
+  "stratum_min_rows": 10
+}

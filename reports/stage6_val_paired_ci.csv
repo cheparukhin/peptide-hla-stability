@@ -1,0 +1,13 @@
+statistic,baseline,model,delta,ci_low,ci_high,verdict,n_boot,n_resamples_with_dropped_alleles
+median_per_allele_spearman,seq_baseline,seq_ensemble_pep_pseudo,0.08333829475571497,0.028818013449273056,0.12351533511318771,"real improvement, but whether it clears the 0.05 bar is unresolved (CI straddles 0.05)",2000,103.0
+mean_per_allele_spearman,seq_baseline,seq_ensemble_pep_pseudo,0.07400505209422636,0.04703571925982999,0.10363338155631312,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_baseline,seq_ensemble_pep_pseudo,0.024453694068678478,0.014129668243029518,0.034564869835714045,conclusive,500,
+median_precision_at_10,seq_baseline,seq_ensemble_pep_pseudo,0.0,-0.050000000000000044,0.15000000000000013,inconclusive (CI crosses 0),500,
+median_per_allele_spearman,seq_baseline,allele_mean,-0.6097810426885671,-0.6560463506389552,-0.5569239872361941,worse: CI entirely below 0,2000,103.0
+mean_per_allele_spearman,seq_baseline,allele_mean,-0.5711699775831437,-0.5953179408606085,-0.5194458610810447,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_baseline,allele_mean,-0.10348595213319456,-0.12643366112633755,-0.08102233609086835,conclusive,500,
+median_precision_at_10,seq_baseline,allele_mean,-0.34078947368421053,-0.43722688896469386,-0.24058134920634924,conclusive,500,
+median_per_allele_spearman,seq_baseline,global_mean,-0.6097810426885671,-0.6560463506389552,-0.5569239872361941,worse: CI entirely below 0,2000,103.0
+mean_per_allele_spearman,seq_baseline,global_mean,-0.5711699775831437,-0.5953179408606085,-0.5194458610810447,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_baseline,global_mean,-0.3017169614984391,-0.3173085974330313,-0.28907853261642974,conclusive,500,
+median_precision_at_10,seq_baseline,global_mean,-0.34078947368421053,-0.43722688896469386,-0.24058134920634924,conclusive,500,

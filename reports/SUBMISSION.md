@@ -637,9 +637,68 @@ wherever it is quoted.
 
 One further result worth keeping: ProteinMPNN's seed control **independently
 corroborates the stage 4c rejection of ESMFold2 without using a crystal
-structure at all** — between-complex over within-complex seed spread is ~8× for
-Boltz-2 and 1.1–2.4× for ESMFold2, i.e. at the noise floor. Two unrelated routes
-to one rejection is worth more than either alone.
+structure at all.** Between-complex spread over within-complex seed spread sits
+at **3.1–9.3 for Boltz-2 and 1.2–1.9 for ESMFold2** — quoted as an envelope over
+six defensible aggregations rather than a point estimate, because the
+aggregation choice moves the number and every choice returns the same verdict.
+Stage 4c rejected ESMFold2 on peptide heavy-atom RMSD *against crystal
+structures*; this measurement uses no crystal at all, and asks instead whether
+the predicted backbone is self-consistent with the sequence that produced it.
+Two unrelated routes to one rejection is worth more than either alone. Note that
+1.9 is a **marginal** verdict, not an inverted one — ESMFold2's between-complex
+spread still exceeds its seed spread.
+
+#### Two of our own controls disagree, and the disagreement is the finding
+
+Honesty requires reporting this rather than quoting whichever control is
+convenient. The stage 4c.5 workstream ran its own seed control on the same 90
+folds, over its 109 structural features, and got a **different answer for
+ESMFold2**:
+
+| Readout on the same 90 folds | Boltz-2 | ESMFold2 |
+|---|---:|---:|
+| 109 structural features, median between/seed ratio | 5.29 | **5.87** |
+| ProteinMPNN `pep_ll`, envelope over six aggregations | 3.1 – 9.3 | **1.2 – 1.9** |
+
+They agree on Boltz-2 — both comfortably signal-dominated, which is what
+matters operationally, since **production is Boltz-2 only**. For ESMFold2 they
+diverge: ProteinMPNN falls to the noise floor while the structural features are
+if anything *marginally more* seed-stable on ESMFold2 than on Boltz-2. **These
+two controls must not be presented as confirming each other on ESMFold2. They do
+not.**
+
+**The mechanism is granularity.** ProteinMPNN reads **backbone geometry only** —
+its featuriser takes N, CA, C and O plus a *virtual* CB computed from N/CA/C, so
+it never sees a real side-chain coordinate. It is a fine-grained reader:
+inter-atomic distances to 48 neighbours, with the virtual-CB direction set by
+backbone dihedrals. The 109 structural features are coarse aggregates — block
+means over hundreds of residue pairs, atom counts, a buried-area fraction — that
+sub-Angstrom jitter does not move. And ESMFold2's backbone genuinely is
+seed-unstable at that scale: its **CA** jitter is **2.5-5.2x Boltz-2's**, and
+its seed variation is *backbone-dominated* (heavy/CA = 1.0) where Boltz-2's is
+*side-chain-dominated* (2.45-3.63). A fine-grained backbone reader is exactly the
+instrument that sees this; a coarse aggregate is exactly the one that does not.
+
+**The explanation was cross-validated, which is why it is offered as an
+explanation rather than a story.** Holding the denominator fixed and varying
+only the numerator convention — averaging the three seeds before measuring
+between-complex spread, which removes seed noise from the numerator — ESMFold2's
+ratio falls by **-0.29 in both independently written pipelines, identical to two
+decimals**, while Boltz-2's barely moves (-0.03 in one, +0.12 in the other, and
+in *opposite directions*, which is what "barely moves" should look like). A
+*directional, magnitude-asymmetric* prediction borne out on two separate
+implementations is evidence; two numbers landing near each other is not. This
+project has already retracted one claim that failed exactly that test — an
+earlier note that the two implementations reconciled to two decimal places,
+which was a coincidence of two different conventions landing nearby, and is
+withdrawn in both reports. **Neither set of figures has been reproduced to the
+digit by the other, and neither report claims otherwise.**
+
+So: **complementary, not redundant.** Each readout integrates over a different
+scale, and the disagreement localises where ESMFold2's instability lives — in
+fine backbone detail, not in the coarse pose descriptors. Nothing material turns
+on it, since production is Boltz-2 only; it governs how ESMFold2 is *described*,
+not what runs.
 
 ---
 
