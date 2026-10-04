@@ -402,6 +402,51 @@ def test_cli_emits_every_table(tmp_path):
     assert (tmp_path / "smoke_manifest.json").exists()
 
 
+def test_cli_manifest_fingerprints_every_prediction_file(tmp_path):
+    """Arms get regenerated; a delta against a stale file must be detectable."""
+    import hashlib
+    import json
+    import subprocess
+
+    cmd = [sys.executable, str(REPO_ROOT / "scripts" / "stage6_report.py"),
+           "--split", "val", "--skip-ci", "--out-dir", str(tmp_path),
+           "--prefix", "fp", f"a={BASELINE}"]
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
+    assert proc.returncode == 0, proc.stderr
+    manifest = json.loads((tmp_path / "fp_manifest.json").read_text())
+    entry = manifest["arms"]["a"]
+    assert entry["sha256"] == hashlib.sha256(BASELINE.read_bytes()).hexdigest()
+    assert entry["bytes"] == BASELINE.stat().st_size
+    assert "mtime" in entry
+
+
+def test_cli_nested_accepts_two_arms_and_pairs_them(tmp_path, train):
+    """The arm-vs-arm nested comparison the incoming arms will need."""
+    import subprocess
+
+    paths = []
+    for name, values in (("armA", train[TARGET].to_numpy()),
+                         ("armB", np.roll(train[TARGET].to_numpy(), 7))):
+        p = tmp_path / f"{name}.csv"
+        pd.DataFrame({"pair_id": train["pair_id"].to_numpy(),
+                      "y_pred": values}).to_csv(p, index=False)
+        paths.append(f"{name}={p}")
+    cmd = [sys.executable, str(REPO_ROOT / "scripts" / "stage6_report.py"),
+           "--split", "val", "--skip-ci", "--nested", "--n-boot", "20",
+           "--out-dir", str(tmp_path), "--prefix", "nst",
+           "--nested-arm", paths[0], "--nested-arm", paths[1],
+           str(BASELINE)]
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
+    assert proc.returncode == 0, proc.stderr
+    paired = pd.read_csv(tmp_path / "nst_nested_mutant_paired.csv")
+    assert paired.loc[0, "baseline"] == "armA"
+    assert paired.loc[0, "model"] == "armB"
+    table = pd.read_csv(tmp_path / "nst_nested_mutant.csv")
+    assert set(table["model"]) == {"armA", "armB", "constant[control]"}
+    # armA is the labels themselves, so it must score a perfect concordance
+    assert table.set_index("model").loc["armA", "concordance"] == pytest.approx(1.0)
+
+
 def test_cli_refuses_duplicate_arm_names(tmp_path):
     import subprocess
 

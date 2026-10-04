@@ -504,41 +504,104 @@ the fold.
 ### 8.1 The seed control, and a disagreement with the ProteinMPNN control
 
 Production is **seed 0 only**, so a feature dominated by seed noise would be
-unusable. Measuring between-complex spread against within-complex seed spread,
+unusable. Measuring between-complex spread against within-complex seed spread
 on the 90 pilot folds:
 
 | Readout | Boltz-2 | ESMFold2 |
 |---|---:|---:|
 | My structural features, median between/seed ratio | 5.29 | **5.87** |
 | …features where seed noise dominates (ratio < 1) | **0 of 109** | **0 of 94** |
-| ProteinMPNN score (`mpnn_score`), between/seed ratio | 8.10 | **1.83** |
+| ProteinMPNN `mpnn_score`, pooled over arms | 8.10 | **1.83** |
 | ProteinMPNN seed sd | 0.043 | **0.157** |
 
-**These two controls do not agree, and the project should not present them as
-independent confirmations of the same thing.** They agree for Boltz-2 (both
-comfortably signal-dominated). For ESMFold2 they diverge sharply: the
-ProteinMPNN score's signal-to-seed-noise ratio collapses to 1.8 — seed noise
-the same order as the between-complex signal — while my structural features
-are, if anything, marginally *more* seed-stable on ESMFold2 than on Boltz-2.
+**Definitions, so two numbers for "the ProteinMPNN seed control" cannot be
+confused.** My row uses the column `mpnn_score`, with seed spread as the mean
+over `(complex_id, arm)` groups of the within-group sd, against between-complex
+spread as the mean over `(arm, seed)` groups of the within-group sd — pooled
+across all three arms. The `inverse-folding` workstream reports `pep_ll_total`
+**per arm** and gets 10.0 / 8.0 / 6.8 for Boltz-2 and 1.1 / 2.4 / 1.2 for
+ESMFold2. Different column, different aggregation, same story; neither number
+is wrong and both should be labelled wherever they appear. (`mpnn_score` and
+`pep_ll_mean` are the same quantity up to sign, and `pep_ll_total` is
+`pep_ll_mean × 9`.)
 
-The divergence is interpretable rather than contradictory, and localises
-ESMFold2's instability. ProteinMPNN scores a sequence against a backbone *and
-its side-chain context*, so it is sensitive to exactly the thing the stage-4c
-pilot identified as ESMFold2's failure: side-chain placement at an otherwise
-acceptable backbone. My features are mostly backbone geometry and confidence
-arrays, which are seed-stable in both models. §4.2 shows the same pattern from
-the other direction — the geometry features barely separate the two models
-while the confidence features separate them sharply.
+**These two controls do not agree, and they should not be presented as
+independent confirmations of each other.** They agree for Boltz-2 — both
+comfortably signal-dominated. For ESMFold2 they diverge: the ProteinMPNN score
+falls to 1.8, while my structural features are if anything marginally *more*
+seed-stable on ESMFold2 than on Boltz-2. Note also that 1.8 is a **marginal**
+verdict, not an inverted one: ESMFold2's between-complex spread still exceeds
+its seed spread.
 
-Two things follow for the write-up. First, the correct claim is **not** that
-the ProteinMPNN control "reached the opposite verdict for ESMFold2"; its
-between-complex spread still exceeds its seed spread, by 1.8x rather than 8x.
-That is a *marginal* verdict, not an inverted one. Second, the honest framing
-is that the two controls measure different properties and the disagreement is
-itself the finding. Since production is Boltz-2 only, neither control blocks
-anything — this matters for how ESMFold2 is described, not for what is run.
+The divergence localises the instability rather than contradicting anything.
+ProteinMPNN scores a sequence against a backbone **and its side-chain
+context**, so it is sensitive to exactly what stage 4c identified as
+ESMFold2's failure — side-chain placement on an acceptable backbone. My
+features are mostly backbone geometry and confidence arrays, which are
+seed-stable in both models. §4.2 is the same finding from the other side:
+geometry barely separates the models (contacts 345–366, buried fraction
+0.776–0.789 across every model and arm) while confidence separates them
+sharply. **Two controls disagreeing, with the disagreement pinning down where
+the instability lives, is a better result than two controls agreeing.**
 
-### 8.2 Treat borrowed-alpha3 rows as a sensitivity check, not a headline
+Production is Boltz-2 only, so none of this blocks anything. It governs how
+ESMFold2 is described, not what is run.
+
+### 8.2 My features rank the error but do not isolate the failure — ProteinMPNN does
+
+Stage 4c recorded this gap on two features. It holds across all 109.
+
+Of the 45 Boltz folds, **6 have peptide heavy-atom RMSD > 2 Å, and all 6 are
+the same complex** — B\*07:02 IPRRNVATL in arms A and C, three seeds each. So
+this is one failing complex with a 2-arm × 3-seed replicate structure, not six
+independent failures, and any claim here is n = 1 complex.
+
+There is, however, a genuine within-complex control: **the same complex in arm
+B folds correctly** (0.299 Å). A real failure detector should therefore place
+B\*07:02 arm B with the good folds, not with its own arms A and C.
+
+| Readout | bad folds | good folds | B\*07:02 **arm B** (correct pose) |
+|---|---|---|---|
+| `pae_pep_rows_groove_cols_mean` | [1.376, 1.552] | [1.136, 2.196] | inside, and the bad range is *interior* to the good one |
+| `pep_plddt_mean` | [0.973, 0.976] | [0.969, 0.990] | likewise interior |
+| ProteinMPNN `pep_ll_mean` | [−3.180, −2.984] | [−2.513, −1.881] | **−2.388, inside the good range** |
+
+The gap for `pep_ll_mean` is **0.471 nats per residue**, which is the same
+thing as the **4.238 nats** quoted elsewhere in `pep_ll_total` units — the
+peptide is 9 residues. State the column when quoting it.
+
+**Two of my 109 features appear to separate the 6 bad folds cleanly, and both
+are artifacts.** `pep_plddt_p3` and `pep_plddt_p5` have fully disjoint ranges
+and even pass the arm-B control. But applying the identical test to the A+C
+folds of *every* complex shows how cheap that is:
+
+| Complex (arms A+C) | features of 94 that "fully separate" it |
+|---|---:|
+| A\*02:01 LLWNGPMAV | 7 |
+| A\*11:01 KTFPPTEPK | 9 |
+| **B\*07:02 IPRRNVATL** (the real failure) | **2** |
+| B\*08:01 ELRRKMMYM | 13 |
+| B\*15:01 ILGPPGSVY | 2 |
+
+Every complex is "separated" by a handful of features, and the genuinely
+failing one is separated by the *fewest*. Clean separation of a 6-fold group
+is a statement about complex identity, not about pose quality. Searching 94
+features for one that splits a single group will always find some.
+
+`pep_ll_mean` is different in the way that matters: it separates the failing
+complex **and produces zero false positives on the other four**. It is the
+only readout tested here that does.
+
+**The conclusion for stage 5.** These are complementary, not competing. My
+confidence features **rank** error (Spearman +0.635 PAE, −0.540 pLDDT) but do
+not isolate the failure. ProteinMPNN's likelihood **isolates** this failure but
+carries no label signal (Spearman −0.100 against half-life at p = 0.87, n = 5 —
+`inverse-folding`'s measurement, not re-derived here). The write-up should say
+so explicitly rather than ranking them against each other. Both claims rest on
+one failing complex and five complexes total; neither is a general property of
+either method.
+
+### 8.3 Treat borrowed-alpha3 rows as a sensitivity check, not a headline
 
 1,103 cohort rows across 3 alleles, **124 of them validation** (§3.4). That is
 enough to test whether borrowed-alpha3 alleles behave differently and far too
@@ -546,7 +609,7 @@ few to headline. Report it as a sensitivity check. HLA-A\*24:19 being the
 worst-ranked validation allele for the sequence baseline is n = 1 of 3 and
 stays a coincidence until the three are tested together.
 
-### 8.3 Filename for the structural arm's final predictions
+### 8.4 Filename for the structural arm's final predictions
 
 The validation-selected structural prediction file must be exactly
 `preds/boltz_structural.csv` in the frozen two-column format. The submission's
@@ -554,7 +617,7 @@ cost-vs-accuracy figure auto-draws arms by that stem, so a different name
 removes the structural arm from the figure silently. Feature tables keep their
 own names; this applies only to the final prediction file.
 
-### 8.4 Rules that travel with the features
+### 8.5 Rules that travel with the features
 
 - Select feature groups and heads on **validation**. The test split is scored
   once, at stage 6.

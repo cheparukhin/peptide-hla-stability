@@ -372,8 +372,13 @@ Two results worth retaining:
   B1501 degraded 1.35 -> 1.72 A while fold time rose 32%. Single-sequence is
   better in these tested cases; this is not evidence to omit MSAs from the
   agreed full-construct comparison.
-- **`pair_chains_iptm` is the peptide-HLA interface ipTM** that stage 5 wants as
-  a confidence feature. ~~Boltz-2 exposes only a global ipTM. If that feature
+- **`pair_chains_iptm` contains the peptide-HLA interface ipTM** that stage 5
+  wants as a confidence feature. It is a per-chain-pair **matrix**, not a
+  scalar: in the three-chain arm-B construct exactly one entry is the
+  peptide-HLA pair, and that entry is direction-dependent. The original wording
+  here ("is the peptide-HLA interface ipTM") was accurate for the two-chain
+  context it was written in and is misleading for arm B.
+  ~~Boltz-2 exposes only a global ipTM. If that feature
   earns its place, ESMFold2 is the cheaper way to get it.~~ **Corrected 4
   October 2026: that is wrong.** Boltz 2.1.1 emits `pair_chains_iptm` on all 45
   pilot folds alongside `global_iptm`, verified at stage 4c.5. The claim is

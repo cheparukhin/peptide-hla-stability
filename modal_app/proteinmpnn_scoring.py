@@ -78,10 +78,49 @@ CHUNK = 200
 MAX_CONTAINERS = 20
 CONTAINER_STARTUP_S = 25.0
 
-# Modal's published on-demand rates. CONFIRM ON THE PRICING PAGE BEFORE
-# LAUNCH -- these are not measured by this repo, unlike STEADY_S_PER_FOLD.
-USD_PER_CORE_SECOND = 0.0000131
-USD_PER_GIB_SECOND = 0.00000222
+# Rates metered from this workspace, read from the repo rather than from a
+# pricing page: reports/ectodomain_rates.json, the same source the stage 4c
+# forecast used. The project has already been bitten by a published-rate
+# estimate that was off by 4.6x, so published numbers are not trusted here.
+# (For the record, on CPU and memory they agreed to within 0.3% this time.)
+_RATES = json.loads((REPO / "reports" / "ectodomain_rates.json").read_text())
+USD_PER_CORE_HOUR = float(_RATES["cpu_hour_cost"])      # measured: 0.04730
+USD_PER_GIB_HOUR = float(_RATES["mem_gib_hour_cost"])   # measured: 0.00800
+
+# ---------------------------------------------------------------------------
+# PREDECLARED QC SAMPLE -- fixed before any production score was looked at.
+# ---------------------------------------------------------------------------
+# Purpose: estimate how much of the cohort scores in the range where every
+# known-bad pilot fold sat. This is NOT a calibrated pose-failure rate: the
+# thresholds come from one failure mode on five training complexes.
+#
+# Draw: simple random sample without replacement over the *sorted* fold paths
+# of ONE COMPLETE half. Sorting makes the draw reproducible; requiring a
+# complete half is what makes it unbiased, because shards are ordered by
+# allele, so any sample taken mid-run covers only the alleles folded so far.
+QC_SAMPLE_N = 2000
+QC_SAMPLE_SEED = 20261004
+QC_SAMPLE_ORDERS = 16  # matches the pilot, so the thresholds below transfer
+
+# From reports/stage5_inverse_folding.md, measured on the 45 Boltz-2 pilot
+# folds: the 6 folds with peptide heavy RMSD > 2.0 A spanned -28.62..-26.86,
+# the 39 good folds -22.62..-16.93, a 4.24-nat gap with no overlap.
+QC_BAD_MAX = -26.858   # worst-case: the best-scoring known-bad pilot fold
+QC_GAP_MIDPOINT = -24.740  # secondary, the midpoint of the observed gap
+# Neither threshold may be used to drop a row from the cohort.
+
+
+def qc_sample(folders: list[str], n: int = QC_SAMPLE_N,
+              seed: int = QC_SAMPLE_SEED) -> list[str]:
+    """The predeclared draw. Deterministic given the fold list and the seed."""
+    import numpy as np
+
+    pool = sorted(folders)
+    if len(pool) <= n:
+        return pool
+    rng = np.random.default_rng(seed)
+    idx = rng.choice(len(pool), size=n, replace=False)
+    return [pool[i] for i in sorted(idx)]
 
 out_vol = modal.Volume.from_name("pepstab-structures", create_if_missing=False)
 
@@ -150,10 +189,8 @@ def forecast_usd(n_folds: int, n_orders: int = N_ORDERS) -> dict:
     n_chunks = max(1, -(-n_folds // CHUNK))
     container_s += n_chunks * CONTAINER_STARTUP_S
     core_hours = container_s * WORKER_CPU / 3600
-    usd = (
-        container_s * WORKER_CPU * USD_PER_CORE_SECOND
-        + container_s * (WORKER_MEMORY / 1024) * USD_PER_GIB_SECOND
-    )
+    gib_hours = container_s * (WORKER_MEMORY / 1024) / 3600
+    usd = core_hours * USD_PER_CORE_HOUR + gib_hours * USD_PER_GIB_HOUR
     wall_h = container_s / max(1, min(MAX_CONTAINERS, n_chunks)) / 3600
     return {
         "n_folds": n_folds,
@@ -163,7 +200,8 @@ def forecast_usd(n_folds: int, n_orders: int = N_ORDERS) -> dict:
         "core_hours": round(core_hours, 1),
         "wall_hours_at_max_containers": round(wall_h, 2),
         "usd": round(usd, 2),
-        "rates_verified": False,
+        "rates_source": "reports/ectodomain_rates.json (metered)",
+        "s_per_fold_source": "stage 4c pilot, measured",
     }
 
 

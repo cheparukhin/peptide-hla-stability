@@ -609,6 +609,13 @@ def _pair_iptm(fold: Fold, chain_index: dict[str, int], names: dict[str, str]) -
 
 
 # --- Discovery --------------------------------------------------------------
+#
+# SHARED API. :func:`is_excluded` and :func:`discover_folds` have a second
+# consumer: the stage-5 inverse-folding workstream delegates its own
+# ``find_predictions`` to them rather than keeping a second copy of the
+# exclusion rule, since two implementations would be two chances to ingest
+# harness folds as cohort rows. Changing either signature or its semantics
+# has to be announced, not just made.
 
 
 def is_excluded(path: Path, root: Path) -> bool:

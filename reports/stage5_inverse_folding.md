@@ -115,8 +115,31 @@ claim, and none is made.
 ### Seed control — the critical gate
 
 If the score moves more across seeds of one complex than it does between
-complexes, the feature is noise. Ratio of between-complex s.d. to mean
-within-complex seed s.d. of `pep_ll_total`:
+complexes, the feature is noise.
+
+**Definition of the quoted ratio.** Between-complex s.d. divided by the mean
+within-complex seed s.d., computed **per arm**, on the **`pep_ll_total`**
+column, with `ddof=1`. Stating this matters because the same control can be
+computed several defensible ways and this report is not the only place it
+appears:
+
+| Aggregation (all on `pep_ll_total`, = `mpnn_score` — see below) | Boltz-2 | ESMFold2 |
+|---|---:|---:|
+| **Per arm, `ddof=1` (quoted throughout this report)** | **10.0 / 8.0 / 6.8** | **1.1 / 2.4 / 1.2** |
+| Pooled over arms, (complex, arm) as unit, `ddof=1` | 7.81 | 1.56 |
+| Pooled over arms, (complex, arm) as unit, `ddof=0` | 9.24 | 1.84 |
+| Pooled ignoring arm entirely, `ddof=1` | 3.13 | 1.33 |
+
+`mpnn_score` and `pep_ll_total` give **numerically identical ratios**, because
+`mpnn_score = -pep_ll_total / 9` is an affine transform and a ratio of standard
+deviations is invariant under it. So the column never matters here; only the
+aggregation does, and every aggregation tells the same story. The stage 4c.5
+workstream quotes 8.10 / 1.83 for this control from the `mpnn_score` column
+pooled; the ESMFold2 figure reconciles with the `ddof=0` pooled row above
+(1.84) to two decimal places. Nothing disagrees — the numbers are the same
+measurement under different conventions.
+
+Per arm, `ddof=1`:
 
 | Model | Arm A | Arm B | Arm C |
 |---|---:|---:|---:|
@@ -127,14 +150,63 @@ within-complex seed s.d. of `pep_ll_total`:
 mean seed s.d. 0.248 nats against a between-complex s.d. of 1.98 nats. Worst
 seed range on any Boltz-2 arm-B complex is 0.97 nats.
 
-**ESMFold2 fails**, sitting at the noise floor (1.1–2.4x), with seed ranges up
-to 7.3 nats. It is worth being explicit about what this is: **an independent
-corroboration of the stage 4c production decision, reached by a completely
-different measurement.** Stage 4c rejected ESMFold2 on peptide heavy-atom RMSD
-against crystal structures. This measurement uses no crystal structure at all —
-it asks a third-party model whether the predicted backbone is self-consistent
-with the sequence that produced it — and reaches the same verdict. A rejection
-reached twice by unrelated routes is much stronger than either route alone.
+**ESMFold2 fails this control**, sitting near the noise floor (1.1–2.4x per
+arm; 1.56–1.84 pooled), with seed ranges up to 7.3 nats.
+
+Two precisions on how far that goes.
+
+**It is marginal, not inverted.** ESMFold2's between-complex spread still
+*exceeds* its seed spread — by roughly 1.6–1.8x pooled rather than Boltz-2's
+~8x. The correct statement is that the margin collapses to the point where the
+feature is not usable, not that the ordering reverses.
+
+**What it does and does not corroborate.** It *does* independently corroborate
+the stage 4c production decision: stage 4c rejected ESMFold2 on peptide
+heavy-atom RMSD against crystal structures, whereas this measurement uses **no
+crystal structure at all** — it asks a third-party model whether the predicted
+backbone is self-consistent with the sequence that produced it — and reaches the
+same verdict. Two unrelated routes to one rejection is worth more than either
+alone.
+
+It does **not** corroborate the stage 4c.5 structural-feature seed control, and
+this report should not be read as claiming it does. That control reports
+**5.87** between/seed on ESMFold2 against **5.29** on Boltz-2 — marginally
+*more* seed-stable on ESMFold2 — while ProteinMPNN collapses to 1.83 on the same
+folds. The two controls agree on Boltz-2 and **diverge on ESMFold2**.
+
+**The divergence is the more interesting result, and it is mechanistically
+explicable.** ProteinMPNN reads **backbone geometry only**: its featuriser takes
+N, CA, C and O, plus a *virtual* CB computed from N/CA/C
+(`protein_mpnn_utils.py:970`). It never sees a real side-chain coordinate. So
+the explanation cannot be side-chain sensitivity. What it is instead: the two
+measurements differ in *granularity*. ProteinMPNN is a fine-grained readout of
+local backbone geometry — inter-atomic distances to 48 neighbours, with the
+virtual-CB direction set by backbone dihedrals — whereas the 109 structural
+features are coarse aggregates (contacts, burial, confidence means) that are
+robust to sub-Ångström jitter.
+
+And ESMFold2's backbone genuinely is seed-unstable at that scale. Mean
+within-complex seed s.d. of peptide RMSD, from `pilot_pose_scores.csv`:
+
+| Model | arm | CA seed s.d. (Å) | heavy seed s.d. (Å) |
+|---|---|---:|---:|
+| ESMFold2 | A / B / C | 0.114 / 0.085 / 0.119 | 0.117 / 0.096 / 0.111 |
+| Boltz-2 | A / B / C | 0.046 / 0.016 / 0.037 | 0.113 / 0.044 / 0.135 |
+
+ESMFold2's **backbone** moves 2–7x more between seeds than Boltz-2's, and its
+seed variation is backbone-dominated (heavy/CA ratio ≈ 1.1) where Boltz-2's is
+side-chain-dominated (≈ 2.8 on arm B). A backbone-only, fine-grained reader is
+exactly the instrument that would see this and a coarse aggregate is exactly the
+one that would not. The two controls are therefore **complementary rather than
+redundant**, and their disagreement localises where ESMFold2's instability
+lives: in fine backbone detail, not in the coarse pose descriptors.
+
+One caveat on that explanation: the granularity account is consistent with every
+number above, but it is an interpretation of five complexes, not a controlled
+experiment. Stage 4c separately attributed ESMFold2's *accuracy* failure to
+side-chain placement (its backbone passes at max 1.57 Å CA RMSD while
+heavy-atom RMSD fails); that is a different question from *seed stability*, and
+the two should not be conflated.
 
 ### Arm control, and the sentinel
 
@@ -261,9 +333,13 @@ predictor is **untested**, and this pilot cannot test it.
 
 ## Recommendation
 
-1. **Report the ESMFold2 corroboration and the pose-failure filter as results
-   in their own right.** Both are independently verified, both are negative or
-   methodological rather than predictive, and the brief values that.
+1. **Report the ESMFold2 seed-control result and the pose-failure filter as
+   results in their own right.** Both are verified, both are negative or
+   methodological rather than predictive, and the brief values that. The
+   ESMFold2 result corroborates stage 4c's crystal-based verdict without using
+   a crystal; it does **not** corroborate the stage 4c.5 structural-feature
+   seed control, which diverges from it — see that subsection for why the
+   divergence is the more informative finding.
 2. **Treat `pep_ll_total` as a structural-QC covariate**, not as a kinetic
    feature — a per-prediction flag for "Boltz-2 probably got this peptide
    wrong", which stage 4c explicitly lacked. One caution: it is validated
@@ -271,8 +347,10 @@ predictor is **untested**, and this pilot cannot test it.
    on 45 folds of one failure is an encouraging observation, not a calibrated
    threshold, and it must not be used to filter the production cohort until it
    has been checked on more than one kind of failure.
-3. **Only then consider it as a regression feature**, on validation, at the same
-   ensemble size and tuning budget as every other arm, per `EVALUATION.md`.
+3. **Do not buy it as a regression feature.** Decided and recorded above: the
+   n=5 label correlation is zero and the usable variation is thin. If it is
+   ever revisited, it must be on validation at the same ensemble size and
+   tuning budget as every other arm, per `EVALUATION.md`.
 
 ## Production scoring: prepared, forecast, not launched
 
@@ -302,30 +380,87 @@ fold at `n_orders=16` on 2 threads — the same 383-residue construct production
 folds. Peak RSS 1.2 GiB at `batch_rows=5`. Chunks of 200 folds, `cpu=2.0`,
 `memory=4096`, up to 20 containers.
 
-| | folds | core-hours | wall at 20 containers | cost |
+**Rates are the repo's metered figures**, read at runtime from
+`reports/ectodomain_rates.json` — the same source the stage 4c forecast used —
+not from a pricing page: **$0.04730/core-hour** and **$0.00800/GiB-hour**. This
+project has already been bitten by a published-rate estimate that was off by
+4.6x, so published numbers are not trusted here. For the record, on CPU and
+memory the published list rates happened to agree this time, to within **0.3%**
+(CPU 1.0030x, memory 1.0010x); the figures below are the metered ones anyway.
+
+What is measured and what is derived: the **14.70 s/fold and the core-hours are
+measured**; the **dollar figures are derived** from measured seconds times
+metered rates. Nothing here is a list-price estimate.
+
+| | folds | core-hours | wall | cost |
 |---|---:|---:|---:|---:|
-| Per profile, `n_orders=16` | 14,083 | 116 | 2.9 h | **$7.32** |
-| Both profiles, `n_orders=16` | 28,166 | 232 | 2.9 h in parallel | **$14.65** |
-| Both profiles, `n_orders=8` | 28,166 | 117 | 1.5 h in parallel | **$7.39** |
+| **QC sample, `n_orders=16` (the approved buy)** | **2,000** | **16.5** | **0.8 h** | **$1.04** |
+| QC sample, `n_orders=8` | 2,000 | 8.3 | 0.4 h | $0.53 |
+| Per profile, `n_orders=16` | 14,083 | 116.0 | 2.9 h | $7.34 |
+| Both profiles, `n_orders=16` | 28,166 | 232.0 | 2.9 h in parallel | $14.68 |
+| Both profiles, `n_orders=8` | 28,166 | 117.0 | 1.5 h in parallel | $7.39 |
 
-Cost is linear in `n_orders`. At 8 orders the decoding-order standard error
-rises from 0.12 to 0.17 nats, still an order of magnitude below the 1.98-nat
-between-complex spread, so **8 orders is the better buy** if this runs at all.
+Cost is linear in `n_orders`. The QC sample uses **16** rather than 8 so that
+its scores are directly comparable to the pilot thresholds, which were measured
+at 16; the extra $0.51 buys that comparability.
 
-Two honest qualifications on these numbers:
-
-- **The dollar figures use Modal's published list rates**
-  ($0.0000131/core·s CPU, $0.00000222/GiB·s memory), which this repo has not
-  measured and which are not verified here. The core-hours are measured; the
-  dollars are not. Confirm the rates before launching.
-- **The `modal` package is not installed in this `.venv`**, so this entrypoint
-  has not been dry-run, let alone smoke-tested. Per the project invariant it
-  must pass its `::smoke` on 5 real folds in each workspace before any full
-  pass, and `::forecast` and `--dry-run` spawn nothing and should be run first.
+**The `modal` package is not installed in this `.venv`**, so this entrypoint has
+not been dry-run, let alone smoke-tested, and installing it was deliberately
+deferred rather than risk perturbing the shared environment while the ESM-2 arm
+holds it. Per the project invariant the sequence before any batch job is:
+install `modal`, `::forecast`, `--dry-run`, then `::smoke` on 5 real folds **in
+each workspace**.
 
 `--profile` must match `MODAL_PROFILE`; the runner asserts it, because the two
 halves are disjoint. Each half is scored separately and concatenated locally
 with a row-count assertion — a half-sized table looks like nothing is wrong.
+
+### Decision: no regression feature; buy the QC sample
+
+**Agreed outcome: do not score the production cohort as a regression feature.**
+Spearman(`pep_ll_total`, t½) = -0.100 at p = 0.87 on n = 5 is no evidence of a
+half-life feature, and the usable per-pair variation is thin next to the
+sequence-recovery effect it rides on. Spending $7–15 to add a feature with no
+label correlation would be buying a number to put in a table.
+
+**Agreed outcome: buy the QC sample, ~$1.** Stage 4c recorded that no PAE or
+pLDDT threshold catches the pose failure without flagging accurate predictions,
+and the project currently has **no cohort-wide way to estimate the pose-failure
+rate at all**. Stage 5 requires reporting coverage and outright failures.
+
+### Predeclared QC sample protocol
+
+**Everything in this subsection was fixed and written down before any
+production fold was scored, and before any production score was looked at.** It
+is mirrored in code as module constants in `modal_app/proteinmpnn_scoring.py`
+(`QC_SAMPLE_N`, `QC_SAMPLE_SEED`, `QC_SAMPLE_ORDERS`, `QC_BAD_MAX`,
+`QC_GAP_MIDPOINT`, `qc_sample()`), so the draw is reproducible from the repo
+rather than from this prose.
+
+| Parameter | Value |
+|---|---|
+| Sample size | **2,000 folds** |
+| Draw | simple random sample **without replacement** over the **sorted** fold paths of one half |
+| RNG | `numpy.random.default_rng(20261004)`, `rng.choice(..., replace=False)` |
+| Decoding orders | **16** (matches the pilot, so the thresholds transfer) |
+| Primary threshold | `pep_ll_total <= -26.858` — the *best-scoring* known-bad pilot fold |
+| Secondary threshold | `pep_ll_total <= -24.740` — the midpoint of the observed 4.24-nat gap |
+
+**The sample must be drawn from a COMPLETE half, not a partial run.** Shards are
+ordered by allele, so ten committed shards is five of seventy-five alleles and
+any mid-run sample is allele-biased. `qc_sample()` is called only after the
+fold count for that profile is checked against 14,083.
+
+**What will be reported: a distribution, not a rate.** The deliverable is the
+histogram of `pep_ll_total` over the 2,000 sampled folds, plus the count falling
+below each threshold, phrased as *"n of 2,000 sampled folds score in the range
+where all six known-bad pilot folds sat"*. That is **an extrapolation from one
+failure mode on five training complexes**, not a calibrated pose-failure rate,
+and it will carry that provenance wherever it is quoted. Realised allele
+coverage will be reported as a diagnostic.
+
+**No row is dropped on this score.** The thresholds are descriptive. They must
+not filter the production cohort, and nothing downstream may condition on them.
 
 ## Runtime and cost
 

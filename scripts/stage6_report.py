@@ -39,9 +39,11 @@ for _var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
     os.environ.setdefault(_var, "1")
 
 import argparse  # noqa: E402
+import hashlib  # noqa: E402
 import json  # noqa: E402
 import sys  # noqa: E402
 import time  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
@@ -70,6 +72,21 @@ def parse_arm(spec: str) -> tuple[str, Path]:
         return name.strip(), Path(path.strip())
     p = Path(spec)
     return p.stem, p
+
+
+def _fingerprint(path: Path) -> dict:
+    """Identify the exact prediction file a number came from.
+
+    Arms get regenerated -- a retuned baseline rewrites its ensemble's
+    predictions -- and a delta computed against yesterday's file is silently
+    wrong. Recording the digest means a stale comparison is detectable from the
+    manifest rather than only by remembering.
+    """
+    data = path.read_bytes()
+    return {"path": str(path), "sha256": hashlib.sha256(data).hexdigest(),
+            "bytes": len(data),
+            "mtime": datetime.fromtimestamp(path.stat().st_mtime,
+                                            tz=timezone.utc).isoformat()}
 
 
 def _rel(path: Path) -> str:
@@ -106,9 +123,13 @@ def main() -> int:
     ap.add_argument("--nested", action="store_true",
                     help="also run the nested near-neighbour evaluation inside "
                          "the training split (analysis 5)")
-    ap.add_argument("--nested-arm", metavar="[NAME=]OOF.csv", default=None,
-                    help="out-of-fold predictions for the nested evaluation; "
-                         "defaults to the built-in ridge reference arm")
+    ap.add_argument("--nested-arm", metavar="[NAME=]OOF.csv", action="append",
+                    default=None,
+                    help="out-of-fold predictions for the nested evaluation, "
+                         "repeatable. Defaults to the built-in ridge reference "
+                         "arm. With two or more, the paired arm-vs-arm interval "
+                         "is taken between the first two -- the only nested "
+                         "comparison this dataset has the power for")
     ap.add_argument("--skip-ci", action="store_true")
     args = ap.parse_args()
 
@@ -146,7 +167,8 @@ def main() -> int:
         "n_eligible_alleles": len(alleles),
         "eligible_row_coverage": float(frame.allele.isin(alleles).mean()),
         "min_rows_per_allele": MIN_ROWS_BY_SPLIT[args.split],
-        "arms": {n: str(parse_arm(s)[1]) for n, s in zip(names, args.arms)},
+        "arms": {n: _fingerprint(parse_arm(spec)[1])
+                 for n, spec in zip(names, args.arms)},
         "n_boot": args.n_boot,
         "bootstrap_seed": evaluation.BOOTSTRAP_SEED,
         "stratum_min_rows": args.stratum_min_rows,
@@ -334,50 +356,88 @@ def main() -> int:
               f"{mut.cluster_id.nunique()} peptide clusters; "
               f"{stage6.NESTED_FOLDS} folds by peptide")
 
-        if args.nested_arm:
-            nname, npath = parse_arm(args.nested_arm)
+        nested_arms: list[tuple[str, pd.Series]] = []
+        fingerprints: dict[str, dict] = {}
+        for spec in (args.nested_arm or []):
+            nname, npath = parse_arm(spec)
             oof_frame = pd.read_csv(npath)
-            oof = pd.Series(oof_frame["y_pred"].to_numpy(dtype=float),
-                            index=oof_frame["pair_id"].to_numpy())
-        else:
-            nname = "ridge_pep_pseudo_blosum[reference]"
-            oof = stage6.ridge_oof_predictions(train, folds)
+            nested_arms.append((nname, pd.Series(
+                oof_frame["y_pred"].to_numpy(dtype=float),
+                index=oof_frame["pair_id"].to_numpy())))
+            fingerprints[nname] = _fingerprint(npath)
+        if not nested_arms:
+            nested_arms.append(("ridge_pep_pseudo_blosum[reference]",
+                                stage6.ridge_oof_predictions(train, folds)))
 
-        rows = [stage6.score_mutant_ranking(nname, mut, oof, fold_map),
-                stage6.score_mutant_ranking(
-                    "constant[control]", mut,
-                    pd.Series(np.zeros(len(train)),
-                              index=train["pair_id"].to_numpy()), fold_map)]
+        rows = [stage6.score_mutant_ranking(n, mut, oof, fold_map)
+                for n, oof in nested_arms]
+        rows.append(stage6.score_mutant_ranking(
+            "constant[control]", mut,
+            pd.Series(np.zeros(len(train)),
+                      index=train["pair_id"].to_numpy()), fold_map))
         nested = pd.DataFrame(rows)
-        print(nested.to_string(index=False))
 
         use = mut[(fold_map.reindex(mut.pair_id_a.to_numpy()).to_numpy()
                    != fold_map.reindex(mut.pair_id_b.to_numpy()).to_numpy())
                   ].reset_index(drop=True)
-        dp = (oof.reindex(use.pair_id_b.to_numpy()).to_numpy()
-              - oof.reindex(use.pair_id_a.to_numpy()).to_numpy())
-        rb = stage6.paired_cluster_delta(
-            use.cluster_id.to_numpy(), stage6.mutant_concordance_statistic(use),
-            np.zeros(len(use)), dp, n_boot=args.n_boot,
-            label="mutant_concordance_minus_chance")
-        nested.loc[nested.model == nname, "concordance_minus_chance"] = rb["delta"]
-        nested.loc[nested.model == nname, "ci_low"] = rb["ci95"][0]
-        nested.loc[nested.model == nname, "ci_high"] = rb["ci95"][1]
-        print(f"\nconcordance - 0.5 = {rb['delta']:+.4f}  95% CI "
-              f"[{rb['ci95'][0]:+.4f}, {rb['ci95'][1]:+.4f}] over "
-              f"{rb['n_clusters']} peptide clusters "
-              f"-- {'conclusive' if rb['conclusive'] else 'inconclusive'}")
+        stat = stage6.mutant_concordance_statistic(use)
+
+        def pair_delta(oof: pd.Series) -> np.ndarray:
+            return (oof.reindex(use.pair_id_b.to_numpy()).to_numpy()
+                    - oof.reindex(use.pair_id_a.to_numpy()).to_numpy())
+
+        # Against the chance floor, for each arm. Underpowered by construction
+        # -- see the half-widths in reports/stage6_evaluation_machinery.md --
+        # so this is reported as a bound, never as an absolute claim.
+        for n, oof in nested_arms:
+            rb = stage6.paired_cluster_delta(
+                use.cluster_id.to_numpy(), stat, np.zeros(len(use)),
+                pair_delta(oof), n_boot=args.n_boot,
+                label="mutant_concordance_minus_chance")
+            nested.loc[nested.model == n, "concordance_minus_chance"] = rb["delta"]
+            nested.loc[nested.model == n, "chance_ci_low"] = rb["ci95"][0]
+            nested.loc[nested.model == n, "chance_ci_high"] = rb["ci95"][1]
+        print(nested.to_string(index=False))
+        print(f"  ({rb['n_clusters']} independent peptide clusters behind "
+              f"{len(use)} scored comparisons -- an interval against the chance "
+              "floor this narrow a dataset can barely resolve; prefer the "
+              "paired arm-vs-arm row below.)")
+
+        paired = None
+        if len(nested_arms) >= 2:
+            (na, oa), (nb, ob) = nested_arms[0], nested_arms[1]
+            rp = stage6.paired_cluster_delta(
+                use.cluster_id.to_numpy(), stat, pair_delta(oa), pair_delta(ob),
+                n_boot=args.n_boot, label="mutant_concordance")
+            paired = {"baseline": na, "model": nb,
+                      "statistic": "mutant_concordance", "delta": rp["delta"],
+                      "ci_low": rp["ci95"][0], "ci_high": rp["ci95"][1],
+                      "n_clusters": rp["n_clusters"], "n_boot": rp["n_boot"],
+                      "verdict": ("conclusive" if rp["conclusive"]
+                                  else "inconclusive (CI crosses 0)")}
+            print(f"\npaired, {nb} vs {na}: delta {rp['delta']:+.4f}  95% CI "
+                  f"[{rp['ci95'][0]:+.4f}, {rp['ci95'][1]:+.4f}] -- "
+                  f"{paired['verdict']}")
+            _write(pd.DataFrame([paired]), out_dir, prefix,
+                   "nested_mutant_paired", written)
+        else:
+            print("\n  only one nested arm given; pass --nested-arm twice for "
+                  "the paired arm-vs-arm interval, which is the comparison "
+                  "this dataset has the most power for.")
+
         _write(nested, out_dir, prefix, "nested_mutant", written)
         manifest["nested"] = {
             "radius": stage6.MUTANT_RADIUS, "n_folds": stage6.NESTED_FOLDS,
             "seed": stage6.NESTED_SEED,
             "n_mutant_pairs": int(len(mut)),
             "n_pairs_cross_fold": int(len(use)),
-            "n_clusters": int(mut.cluster_id.nunique()),
+            "n_clusters_all_pairs": int(mut.cluster_id.nunique()),
+            "n_clusters_scored": int(use.cluster_id.nunique()),
             "n_alleles": int(mut.allele.nunique()),
             "groups_spanning_splits": check["n_groups_spanning_splits"],
-            "reference_arm": nname,
-            "ci95_concordance_minus_chance": list(rb["ci95"]),
+            "arms": [n for n, _ in nested_arms],
+            "arm_files": fingerprints,
+            "paired": paired,
         }
 
     manifest["elapsed_seconds"] = round(time.time() - started, 1)

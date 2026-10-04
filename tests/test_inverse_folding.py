@@ -180,4 +180,30 @@ def test_forecast_is_linear_in_decoding_orders():
     a = pm.forecast_usd(1000, 16)
     b = pm.forecast_usd(1000, 8)
     assert a["s_per_fold"] == pytest.approx(2 * b["s_per_fold"])
-    assert a["rates_verified"] is False  # list prices, not measured here
+    # Rates must come from the repo's metered figures, never a pricing page.
+    assert "ectodomain_rates.json" in a["rates_source"]
+    assert pm.USD_PER_CORE_HOUR == pytest.approx(0.04730)
+    assert pm.USD_PER_GIB_HOUR == pytest.approx(0.00800)
+
+
+def test_qc_sample_is_predeclared_and_reproducible():
+    """The QC draw must be fixed by seed, not by whoever runs it."""
+    pytest.importorskip("modal")
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "pm_scoring", REPO / "modal_app" / "proteinmpnn_scoring.py"
+    )
+    pm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pm)
+    assert pm.QC_SAMPLE_N == 2000 and pm.QC_SAMPLE_SEED == 20261004
+    assert pm.QC_SAMPLE_ORDERS == 16  # must match the pilot for thresholds to transfer
+    pool = [f"/p/{i:05d}" for i in range(14083)]
+    a = pm.qc_sample(pool)
+    b = pm.qc_sample(list(reversed(pool)))  # order of the input must not matter
+    assert a == b
+    assert len(a) == 2000 and len(set(a)) == 2000
+    assert a == sorted(a)
+    # Thresholds are the pilot's measured values, not round numbers.
+    assert pm.QC_BAD_MAX == pytest.approx(-26.858, abs=1e-3)
+    assert pm.QC_GAP_MIDPOINT == pytest.approx(-24.740, abs=1e-3)
