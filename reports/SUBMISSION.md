@@ -52,11 +52,14 @@ HLA positions touch the peptide arrive at the same place. That is this project's
 answer to *"are foundation models useful for this problem"*; §4.0 and §4.1 are
 the evidence for it.
 
-**Two caveats travel with that table wherever it is quoted.** Both improvements
-are conclusive on these two *secondary* statistics and **inconclusive on the
-contract's predeclared primary metric**, the median per-allele Spearman; and
-neither establishes the predeclared 0.05 worthwhile gain. The full detail, and
-the third constraint, are in **§4.1**.
+**Three caveats travel with that table wherever it is quoted.** Both
+improvements are conclusive only on these two *secondary* statistics and
+**inconclusive on the contract's predeclared primary metric**, the median
+per-allele Spearman. Neither establishes the predeclared 0.05 worthwhile gain.
+And because *both* rows conclusively beat the full-domain arm while **ESM-2
+against the pseudosequence arm stays null**, the conclusive finding is about the
+**weakness of full-domain one-hot encoding**, not the strength of pretraining.
+Full detail in **§4.1**.
 
 ---
 
@@ -369,7 +372,9 @@ booked, then the structural engine comparison. Every one came back negative, and
 
 This is the submission's central question, and it is now answered for the
 protein-language-model class ([`stage3_esm.md`](stage3_esm.md)). Validation,
-2,817 rows, 68 eligible alleles, **30 ensemble members in every arm**, paired
+**2,817 validation rows, of which 2,802 sit on the 68 eligible alleles**
+(74 alleles appear in validation; 68 clear the 20-row, 2-distinct-label bar),
+**30 ensemble members in every arm**, paired
 cluster bootstrap at 2,000 resamples.
 
 | Arm | median per-allele ρ | Δ vs baseline | 95% CI |
@@ -551,50 +556,65 @@ hand-built feature that already works.**
 All three came back negative, **and the intervals are tight enough to say what
 kind of negative**.
 
-### 4.1 The project's one positive result — and its three constraints
+### 4.1 The one conclusive comparison — and what it is actually about
 
-Against the **full-domain** sequence ensemble, on matching input, ESM-2 is
-**conclusively ahead on two of three statistics**:
+ESM-2 beats the **full-domain** sequence ensemble, on matching input. On the
+contract's primary metric the comparison is **inconclusive**; it resolves only
+on two secondary statistics:
 
 | Statistic | Δ | 95% CI | Verdict |
 |---|---:|---|---|
-| median per-allele ρ — **the contract's primary metric** | +0.0301 | [−0.0084, +0.0757] | inconclusive |
-| mean per-allele ρ | +0.0312 | **[+0.0082, +0.0540]** | **conclusive** |
-| differential concordance | +0.0152 | **[+0.0046, +0.0241]** | **conclusive** |
+| **median per-allele ρ — the contract's primary metric** | **+0.0301** | **[−0.0084, +0.0757]** | **inconclusive** |
+| mean per-allele ρ *(secondary)* | +0.0312 | [+0.0082, +0.0540] | conclusive |
+| differential concordance *(secondary)* | +0.0152 | [+0.0046, +0.0241] | conclusive |
 
-The additive arm shows the same thing: sequence + ESM-2 against the domain
-ensemble is **+0.0111 [+0.0012, +0.0207]** on the differential, also conclusive.
+The additive arm agrees: sequence + ESM-2 against the domain ensemble is
+**+0.0111 [+0.0012, +0.0207]** on the differential, also conclusive.
 
-**The bounded claim is this:** *given the same 182 HLA residues, ESM-2 extracts
-more usable signal from them than a one-hot or BLOSUM encoding does.*
+**It was a designed comparison, not one found by looking.** The full-domain arm
+was added at **stage 1**, before any model existed, precisely so that "more
+input sequence" could never be mistaken for "benefit of pretraining" (§2, §3).
 
-**And this was a designed comparison, not one found by looking.** The
-full-domain arm was added at **stage 1**, before any model existed, for exactly
-this purpose — so that "more input sequence" could never be mistaken for
-"benefit of pretraining" (§2 and §3). The comparison that produced this result
-is the one the contract was built to make.
+#### What this result is actually about
 
-Three constraints. **None may be dropped**, and the third is the one a reader
-will miss.
+The tempting reading is *"pretraining works"*. **The control says otherwise.**
+The pseudosequence ensemble also conclusively beats the full-domain arm, on the
+same statistic and by a margin whose interval overlaps ESM-2's almost entirely:
 
-**1. This is not a claim that ESM-2 beats the best sequence arm — and the
-margins say why.** The pseudosequence ensemble beats the full-domain arm by a
-*comparable* amount on the same two statistics (+0.0348 mean, +0.0124
-concordance), and ESM-2 does **not** beat the pseudosequence ensemble (−0.0036
-mean, +0.0028 concordance, both inconclusive). Put those side by side:
+| Comparison against the full-domain ensemble | Differential concordance | Verdict |
+|---|---:|---|
+| ESM-2 on the same 182 residues | +0.0152 [+0.0046, +0.0241] | conclusive |
+| **the 34 hand-picked contact residues** | **+0.0124 [+0.0061, +0.0186]** | **conclusive** |
+| *ESM-2 vs those 34 hand-picked residues* | *+0.0028 [−0.0052, +0.0102]* | ***null*** |
 
-| Improvement over the full-domain ensemble | Mean ρ | Concordance |
-|---|---:|---:|
-| from **pretraining** (ESM-2 on the same 182 residues) | +0.0312 | +0.0152 |
-| from **picking 34 residues by hand** (the pseudosequence) | +0.0348 | +0.0124 |
+Read the three rows together and the conclusion inverts:
 
-> **Hand-picking the 34 contact residues recovers what pretraining buys here.**
+> **The conclusive finding here is that full-domain one-hot encoding is a weak
+> arm — not that pretraining is a strong one.** Two quite different things beat
+> it by the same amount, and the comparison that would actually matter — ESM-2
+> against the best sequence arm — stays null.
 
-That sentence is the honest summary of this entire project, and it belongs
-right next to the result rather than three paragraphs later. A protein language
-model and a 1990s-era piece of domain knowledge about which positions touch the
-peptide arrive at the same place, and the domain knowledge costs about 500×
-less (§7.2).
+So this is a **real, bounded, designed** result and it is **not** the project's
+headline finding. The bounded claim is: *given the same 182 HLA residues, ESM-2
+extracts more usable signal from them than a one-hot or BLOSUM encoding does.*
+What it is not is evidence that a protein language model helps on this task,
+because its own control shows a hand-built encoding doing the same job.
+
+| Improvement over the full-domain ensemble | Mean ρ | Concordance | Cost / 1,000 |
+|---|---:|---:|---:|
+| from **pretraining** — ESM-2, same 182 residues | +0.0312 | +0.0152 | $4.7 × 10⁻⁴ |
+| from **picking 34 residues by hand** | +0.0348 | +0.0124 | $9.6 × 10⁻⁷ |
+
+> **Hand-picking the 34 contact residues recovers what pretraining buys here —
+> at about 500× less compute (§7.2).**
+
+Three constraints follow. **None may be dropped**, and the third is the one a
+reader will miss.
+
+**1. This is not a claim that ESM-2 beats the best sequence arm.** The table
+above is the evidence: ESM-2 does **not** beat the pseudosequence ensemble
+(−0.0036 mean, +0.0028 concordance, both inconclusive), and the pseudosequence
+arm clears full-domain by as much as ESM-2 does.
 
 **2. It does not establish the predeclared 0.05 bar.** The mean interval runs to
 **+0.0540**, so it contains values below the bar as well as above it.
@@ -1072,8 +1092,9 @@ everything but the objective.
 | censored @ 0.1 h | 0.6518 | 0.5763 | **0.168** | **0.0422** | 0.8853 |
 | *observed* | — | — | *0.196* | — | — |
 
-All figures in this section are **validation**, 2,802 scored rows over 68
-eligible alleles; the test split was not read.
+All figures in this section are **validation** — 2,817 rows in the split, of
+which **2,802 sit on the 68 eligible alleles** and are scored. The test split
+was not read.
 
 **Δ median per-allele Spearman = −0.0414, 95% CI [−0.0780, −0.0062].** The
 interval lies **entirely below zero**, so under the predeclared reading this is
@@ -1142,7 +1163,7 @@ do not answer.
 | Censored (Tobit) likelihood | same features, censored loss | 0.6518 | **−0.0414 [−0.0780, −0.0062]** | **worse, conclusively** | $9.6 × 10⁻⁷ |
 | **ESM-2 only** (30-net) | pretrained sequence embeddings | **0.6830** | **−0.0101 [−0.0382, +0.0352]** | **inconclusive, rules out 0.05** | **$4.7 × 10⁻⁴** |
 | **sequence + ESM-2** (30-net) | both | **0.6761** | **−0.0170 [−0.0468, +0.0320]** | **inconclusive, rules out 0.05** | $4.7 × 10⁻⁴ |
-| **ESM-2 only vs the full-domain ensemble** | matching input — the project's one positive | 0.6830 | median **+0.0301 [−0.0084, +0.0757]**; mean **+0.0312 [+0.0082, +0.0540]**; concordance **+0.0152 [+0.0046, +0.0241]** | **conclusive on both secondaries, inconclusive on the contract's primary** — and the pseudosequence arm beats full-domain by as much (§4.1) | $4.7 × 10⁻⁴ |
+| **ESM-2 only vs the full-domain ensemble** | matching input — the one conclusive comparison | 0.6830 | median **+0.0301 [−0.0084, +0.0757]**; mean **+0.0312 [+0.0082, +0.0540]**; concordance **+0.0152 [+0.0046, +0.0241]** | **conclusive on both secondaries, inconclusive on the contract's primary** — and since the pseudosequence arm *also* conclusively beats full-domain (+0.0124 [+0.0061, +0.0186]), this is about **full-domain being weak**, not pretraining being strong (§4.1) | $4.7 × 10⁻⁴ |
 | ESM-2 150M only | larger checkpoint | 0.6737 | −0.0194 [−0.0599, +0.0195] | inconclusive, rules out 0.05 | 2.6× the 35M extraction |
 | **Boltz-2, structural features** | **predicted 3D complex + confidence** | **‹HOLE B2›** | **‹HOLE B2›** | **‹HOLE B2›** | **$6.90** |
 
@@ -1818,11 +1839,13 @@ Ordered by expected value per hour, not by appeal.
    one of the three uses the brief names and which we did not test at all, and a
    **second pLM family**, since one family is a thin basis for a class-level
    claim.
-4. **Re-run the auxiliary-affinity probe on the ESM-2 arm.** The machinery is
-   protocol-agnostic and the leakage audit is already done (64,226 admissible
-   rows). Affinity is redundant with what a *sequence* model extracts; that says
-   nothing about ESM-2 features. "Cheap labels substitute for expensive
-   pretraining" would be a genuinely useful finding.
+4. **Re-run the auxiliary-affinity ESM comparison with enough power to settle
+   it.** §4.3 ran it and could not resolve it: the difference-in-differences
+   floor is ≈0.071 and **straddles the 0.05 bar**, so the question is open
+   rather than answered. The fix is not a better model but a better-powered
+   design — more alleles, or a statistic that does not compound two deltas.
+   "Cheap labels substitute for expensive pretraining" would still be a useful
+   finding, and we have not yet earned the right to say it is false.
 5. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
    §6.6 has already run it for the sequence arm and found a **0.403 deficit** on
    distant allotypes — the stratum where pretraining has the strongest prior of
@@ -1837,7 +1860,19 @@ Ordered by expected value per hour, not by appeal.
    **ESM-IF**, the brief's second inverse-folding model, was not attempted —
    machine contention, with the ESM-2 arm holding priority on the shared
    environment — and ProteinMPNN alone covers the class.
-7. **Find post-2016 stability measurements.** The only honest route to a
+7. **Pin down the noise ceiling, then ask how much headroom is left.** A
+   post-hoc estimate from an independent branch puts the assay's reproducibility
+   floor at **≥ ~0.90**, from allele pairs one contact residue apart — though it
+   is the best four of twelve such pairs, the other eight running 0.657–0.838
+   ([`limitations.md`](limitations.md) §1.2). If something like it holds, our
+   best arm at ρ ≈ 0.69 leaves **roughly 0.2 of headroom unexplained** — a
+   larger gap than every between-arm difference in this study combined. **That
+   reframes the question.** This project asked which model class closes a gap of
+   0.05; the more useful question may be what closes a gap of 0.2, and nothing
+   we tested is a candidate. Doing it properly needs replicate measurements the
+   dataset does not contain, which makes it an assay request rather than a
+   modelling one.
+8. **Find post-2016 stability measurements.** The only honest route to a
    comparison against NetMHCstabpan is data it could not have trained on. Until
    then, no method-parity claim is available from this dataset at any stage.
 

@@ -121,7 +121,7 @@ shrinks them toward the conditional mean, and weak-call recall collapses to
 0.263 at precision 0.823 (`stage2b_augmentation.md`). A censored likelihood is
 the recorded fix there too.
 
-### 1.2 No replicates, so no noise ceiling
+### 1.2 No replicates, so no noise ceiling — and one post-hoc estimate of one
 
 The supplied file has one value per pair. 98.74% of labels sit on a 0.1-hour
 grid; the 354 finer values concentrate in the most-measured alleles and are
@@ -130,6 +130,41 @@ likely replicate averages, but the replicates themselves are not supplied
 irreducible assay noise**, so we cannot say how close any model is to the best
 achievable score. Every "ruled out" in this project is ruled out against the
 0.05 bar, never against a noise ceiling.
+
+**A post-hoc estimate from an independent branch, recorded but not adopted into
+the contract.** A colleague's session derived a reproducibility floor of
+**≥ ~0.90** from allele pairs differing at a single contact residue — the idea
+being that two alleles one substitution apart should rank the same peptides
+almost identically, so the observed concordance between them bounds how
+reproducible the assay can be.
+
+This is reported here because it is informative, **with three qualifications,
+the first of which its own authors did not state**:
+
+1. **It is the best four of twelve.** There are **12 pairs at Hamming 1, not
+   4**; the other eight run **0.657–0.838**. The lower-bound logic does survive
+   that — reproducibility ≥ *max* observed concordance, since the maximum is the
+   pair where the biology changed least — but "≥ 0.90" reads very differently
+   once you know it is the top third of the available pairs rather than the
+   whole set.
+2. **It is post hoc and from a separate branch**, computed after results
+   existed, not predeclared.
+3. **`EVALUATION.md` is frozen and is not reopened for it.** It still states
+   that there are no replicates and therefore no noise ceiling, which is the
+   correct statement about *this dataset's* contents.
+
+**No verdict in this submission is restated against this ceiling.** Every
+"ruled out at 0.05" was made against a predeclared bar and stands as made;
+re-reading them against a post-hoc estimate from a different branch would be
+exactly the kind of moving target the frozen contract exists to prevent.
+
+**One implication is worth stating once.** If the floor holds, our best arm at
+median per-allele ρ ≈ 0.69 leaves roughly **0.2 of measured headroom
+unexplained**. That is a more interesting statement about **the task** than
+about any arm in this study — it says the gap between what we predict and what
+the assay could in principle support is larger than every between-arm difference
+we measured, combined. It belongs in the next-steps list (SUBMISSION §10), not
+in a verdict.
 
 ### 1.3 Stability is not affinity, and neither is the unbinding barrier
 
@@ -483,12 +518,17 @@ so that "more input" could never be mistaken for "benefit of pretraining".
 
 Three constraints, none of which may be dropped:
 
-1. **It is not a claim that ESM-2 beats the best sequence arm.** The
-   pseudosequence ensemble beats the full-domain arm by a *comparable* margin on
-   the same two statistics (+0.0348 mean, +0.0124 concordance), and ESM-2 does
-   not beat the pseudosequence ensemble (−0.0036 mean, +0.0028 concordance, both
-   inconclusive). **Hand-picking the 34 contact residues recovers what
-   pretraining buys here** — that is the honest summary of the whole project.
+1. **It is not a claim that ESM-2 beats the best sequence arm — and read
+   properly, it is not a claim about pretraining at all.** The pseudosequence
+   ensemble *also conclusively* beats the full-domain arm on differential
+   concordance, **+0.0124 [+0.0061, +0.0186]** against ESM-2's +0.0152, with
+   intervals that overlap almost entirely. Meanwhile ESM-2 does **not** beat the
+   pseudosequence ensemble (−0.0036 mean, +0.0028 concordance, both
+   inconclusive). **So the conclusive finding is that full-domain one-hot
+   encoding is a weak arm, not that pretraining is a strong one** — two quite
+   different things beat it by the same margin, and the comparison that would
+   matter stays null. **Hand-picking the 34 contact residues recovers what
+   pretraining buys here** is the honest summary of the whole project.
 2. **It does not establish the 0.05 bar.** The mean interval runs to +0.0540, so
    it admits values below the bar as well as above it. "Conclusively better than
    the full-domain arm" and "worth 0.05" are different statements.
