@@ -1,9 +1,10 @@
 # Stage 4c: matched ectodomain pilot
 
-4 October 2026. **Status: the 90-fold matched pilot is complete. Boltz-2 passed
-its gate; ESMFold2 failed. Production is frozen as Boltz-2, arm B, the full
-28,166-pair cohort, split across two Modal workspaces. It has not been
-launched.**
+4 October 2026. **Status: complete. The 90-fold matched pilot gated the
+configuration — Boltz-2 passed, ESMFold2 failed — and the production fold has
+since run: Boltz-2, arm B, all 28,166 pairs across two Modal workspaces,
+28,166/28,166 folded with zero failures in 7 h 32 min for $212.71. Results and
+verification are in "Production run: results" below.**
 
 Both models received the same A/B/C constructs and prepared MSA rows. The pilot
 was five training complexes × three arms × three seeds × two models = 90
@@ -259,9 +260,10 @@ a-cheparukhin, `ap-DKtON3889mN3pbGNYmKcyn` on sofyaleyn): the app deploys, all
 four functions are created, and each profile resolves its own 141 shards /
 14,083 folds. This matters for `sofyaleyn` in particular, because Modal
 validates every function at creation time and a workspace without a payment
-method cannot declare a `gpu=` function at all — that is now ruled out. Still
-unverified: whether each workspace is actually granted 10 concurrent A10Gs. If
-fewer are available the forecast scales linearly in wall time, not in cost.
+method cannot declare a `gpu=` function at all — that is now ruled out.
+Whether each workspace is actually granted 10 concurrent A10Gs was unverifiable
+before launch; it is now **confirmed**, by counting 10 running `fold_shard`
+containers in each workspace seven minutes into the production run.
 
 **Smoke status.** `::smoke` passed on `a-cheparukhin`: **5/5 ok, 17.0 s steady
 folds, peak GPU 6.08 GiB**, matching the pilot's 16.76 s and 6.11 GiB. It found
@@ -272,9 +274,140 @@ died on import before executing anything. Modal imports the whole module in ever
 container; the earlier dry runs passed because they only exercised
 `completed_shards`. Both are fixed.
 
-`::smoke` has **not** yet been run on `sofyaleyn`. Its MSA slice is uploaded
-and the app deploys there, but no GPU fold has been executed in that workspace.
-Run it before launching that half.
+`::smoke` has since passed on `sofyaleyn` too: **5/5 ok, 16.7 s steady folds,
+peak GPU 6.11 GiB**, against the pilot's 16.76 s and 6.11 GiB.
+
+Getting there required fixing a third defect, found by running `::setup` on a
+second workspace for the first time. `download_weights` used
+`CACHE_DIR/"mols"` as its cache sentinel, but nothing ever created that
+directory: the pinned HF snapshot ships the CCD as `mols.tar`, and Boltz
+extracts it on demand at predict time. `a-cheparukhin` only had `mols/` because
+the pilot had already run there and extracted it, so the gap was invisible until
+a fresh workspace tried — `verify_workspace` then failed on
+`assert (CACHE_DIR / "mols").exists()`. `download_weights` now extracts the tar
+once during setup.
+
+This mattered beyond setup. `fold_shard` runs 10 containers over one shared
+Volume, so relying on Boltz's on-demand extraction would have meant up to 10
+concurrent unpackings of the same ~45,000 files onto the same Volume path. The
+sentinel was load-bearing; it was just never satisfied by anything.
+
+## Production run: results
+
+Launched 04:00:22 BST, complete 11:32:24 BST on 4 October 2026. **28,166 of
+28,166 pairs folded, zero failures**, 282 of 282 shards. No retry pass was
+needed; nothing had to be resumed.
+
+| | `a-cheparukhin` | `colleague` (sofyaleyn) | Total |
+|---|---:|---:|---:|
+| Folds | 14,083 / 14,083 | 14,083 / 14,083 | **28,166** |
+| Shards | 141 / 141 | 141 / 141 | 282 |
+| Failed | **0** | **0** | **0** |
+| Median steady fold | 16.90 s | 18.75 s | — |
+| GPU-hours | 70.1 | 73.5 | 143.6 |
+| Spend | $103.83 | $108.88 | **$212.71** |
+
+Both profiles are under the $150 per-workspace ceiling. The total is 5.9% over
+the $200.84 nominal forecast and comfortably inside the $251 with-margin
+figure. Steady folds across the whole run: p50 17.0 s, p99 19.2 s, maximum
+32.9 s, with no non-first fold above 60 s. Peak GPU stayed in a 6.08–6.13 GiB
+band over all 28,166 folds, against the pilot's 6.11 GiB. `cgroup_peak_gb` is
+`None` throughout, as in the pilot.
+
+### Where the forecast was wrong, and why
+
+Wall time was **7 h 32 min against a 6.8 h forecast** — inside the declared
+8.5 h margin, but the nominal figure was optimistic for a reason worth
+recording, because it looks like arithmetic rather than an assumption.
+
+The forecast divided total GPU-seconds by 10 workers. That silently assumes
+100% packing. Measured worker utilization was **84% on `a-cheparukhin` and 88%
+on `colleague`**: each wave of 10 shards turned over in ~35.7 min against a
+~29.5 min shard, with the remainder going to container scheduling and Volume
+reload between shards. 6.8 h / 0.86 ≈ 7.9 h, which is most of the gap. The
+rest is model load, measured at **67–79 s per shard (p50 74 s)** rather than
+the assumed 57 s. The lesson is quantitative: dividing GPU-seconds by worker
+count is a cost estimate, not a wall-clock estimate, and the error is
+approximately the packing loss.
+
+One asymmetry worth noting for future shape choices: `colleague`/sofyaleyn ran
+**11% slower per fold** (18.75 s vs 16.90 s), consistently across all 14,083 of
+its folds rather than as noise. Same A10G request, same image, same inputs. It
+accounts for its $5 higher spend, and it is why the two halves finished within
+minutes of each other despite `a-cheparukhin` leading throughout.
+
+### Verification
+
+Four independent checks, none of which rely on the progress counters.
+
+**Shard markers on the Volumes.** 141 of 141 in each workspace, and **no
+`_failed` directory in either**. A marker is written only when a shard is 100%
+successful, so 282 markers independently confirm the fold counts.
+
+**Per-allele output counts match the frozen cohort**, spot-checked across the
+full size range and in both workspaces. The two halves also sum correctly to
+the cohort totals: B\*15:01 535+535 = 1,070; A\*02:01 512+511 = 1,023;
+A\*68:02 8+8 = 16; B\*13:02 3+4 = 7. All 75 allele directories are present in
+each workspace, as expected since the interleaving is pair-by-pair.
+
+**Whole-run scan of all 28,166 fold records.** Zero `ok=False`, zero PAE or
+pLDDT shape anomalies, zero non-zero return codes, no captured stderr. And for
+the disjoint-halves invariant specifically: **zero duplicate pairs, zero pairs
+folded in the wrong shard, zero folded by the wrong profile, and zero identity
+mismatches** (`complex_id`, `pair_id`, `allele`, `peptide`, `split`) against
+`data/structural_cohort.csv`. Neither workspace folded any part of the other's
+half. Saved as `reports/ectodomain-20261004/production_verification.json`.
+
+**Pose accuracy against crystals.** All five pilot complexes are training pairs
+in the cohort and were folded in production, so they were re-scored with the
+same `scripts/ectodomain_pose_check.py` against the same crystals. Peptide
+heavy-atom RMSD (A):
+
+| Complex | PDB | Production | Pilot arm-B median |
+|---|---|---:|---:|
+| A\*02:01 LLWNGPMAV | 5N6B | 0.223 | 0.228 |
+| A\*11:01 KTFPPTEPK | 1X7Q | 0.583 | 0.625 |
+| **B\*07:02 IPRRNVATL** | 7LFZ | **0.315** | **0.318** |
+| B\*08:01 ELRRKMMYM | 4QRU | 0.349 | 0.368 |
+| B\*15:01 ILGPPGSVY | 1XR9 | 0.443 | 0.424 |
+
+Every value is within 0.04 A of the pilot median. The sentinel is the one that
+matters: **0.315 A in production where arm A was 2.300 A**, so the ectodomain
+construct benefit that selected arm B reproduces at production scale and is not
+an artifact of the 90-fold pilot. The pilot's gate criteria also hold on these
+production folds — maximum peptide CA RMSD 0.398 A, maximum P2 0.160 A,
+maximum P9 0.215 A. Saved as
+`reports/ectodomain-20261004/production_crystal_check.json`.
+
+**This is a pose and pipeline check, not an accuracy benchmark.** All five are
+training pairs, so training-set recall is possible, exactly as the pilot
+section states. It establishes that production reproduces the gated
+configuration; it does not establish held-out structural accuracy.
+
+### Feature layout, verified rather than anticipated
+
+The feature contract below anticipated a 383x383 arm-B PAE with slices HLA
+0:275, beta2m 275:374, peptide 374:383, and said to verify rather than
+hard-code it. Verified, on nine production folds, by parsing chain order and
+per-chain residue counts out of the mmCIF: **chain order is A, B, C and those
+slices are correct**. Keep the assertion anyway — it is cheap and the contract
+is now load-bearing for every downstream feature.
+
+Two further findings for extraction:
+
+- **The peptide/groove PAE blocks are genuinely asymmetric.** On
+  A0101_AADSFATSY, peptide-to-groove is 2.20 and groove-to-peptide 1.36. The
+  contract's instruction to take both directions is load-bearing, not
+  redundant.
+- **Production `metadata.json` differs from the pilot's schema.** The seed is
+  at `settings.seed`, with no top-level `seed`, and there is no `pdb_id` at all
+  (the pilot cases carried one). Both had to be injected to reuse the pilot
+  scorer. Extraction should read `settings.seed`.
+
+Per-pair output sits at
+`/stage4c/ectodomain-20261004/boltz2/production/<allele_slug>/<complex_id>/`,
+where `allele_slug` replaces `*` and `:` with `_`. Extraction must skip the
+`_smoke/` and `_shards/` siblings under the production root.
 
 ## Feature contract for stage 5
 
@@ -339,9 +472,19 @@ folds.
 - `reports/ectodomain-20261004/colleague_boltz2_arm_comparison.jpg`: the
   independent Boltz-2 figure discussed above.
 
-This section records what exists. Production outputs and feature/coverage
-tables are listed because they are where those artifacts will land, not as
-evidence that they already exist — the run has not been launched.
+Production outputs now exist: 28,166 per-pair directories across the two
+`pepstab-structures` Volumes, plus 282 shard markers and the two per-shard
+JSONL logs. Feature and coverage tables are still listed as destinations
+rather than as evidence — stage 4c.5 extraction had not run when this was
+written.
+
+Added by the production run:
+
+- `reports/ectodomain-20261004/production_verification.json`: the whole-run
+  scan, per-profile totals, timing and resource distributions, and the verified
+  feature layout.
+- `reports/ectodomain-20261004/production_crystal_check.json`: the five
+  crystal-backed production folds re-scored against the pilot.
 
 Generation used the existing local `boltz==2.2.1` CPU search environment;
 inference and its preprocessing are pinned to `boltz==2.1.1`, weight revision

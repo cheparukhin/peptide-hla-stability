@@ -1,0 +1,101 @@
+{
+  "run_id": "ectodomain-20261004",
+  "model": "boltz2",
+  "arm": "B",
+  "seed": 0,
+  "launched_bst": "2026-10-04T04:00:22",
+  "completed_bst": "2026-10-04T11:32:24",
+  "wall_hours": 7.534,
+  "folds_total": 28166,
+  "failed_total": 0,
+  "shards_total": 282,
+  "usd_total": 212.71,
+  "per_profile": {
+    "a-cheparukhin": {
+      "shards": 141,
+      "folds": 14083,
+      "failed": 0,
+      "median_steady_fold_s": 16.9,
+      "gpu_hours": 70.1,
+      "usd": 103.83
+    },
+    "colleague": {
+      "shards": 141,
+      "folds": 14083,
+      "failed": 0,
+      "median_steady_fold_s": 18.75,
+      "gpu_hours": 73.51,
+      "usd": 108.88
+    }
+  },
+  "checks": {
+    "records_ok_false": 0,
+    "pae_shape_anomalies": 0,
+    "plddt_shape_anomalies": 0,
+    "identity_mismatch_vs_cohort": 0,
+    "duplicate_pairs": 0,
+    "folded_in_wrong_shard": 0,
+    "folded_by_wrong_profile": 0,
+    "nonzero_returncodes": 0,
+    "shards_with_stderr": 0,
+    "shard_markers_on_volume": {
+      "a-cheparukhin": 141,
+      "colleague": 141
+    },
+    "failed_dir_present": {
+      "a-cheparukhin": false,
+      "colleague": false
+    },
+    "allele_dirs_on_volume": {
+      "a-cheparukhin": 75,
+      "colleague": 75
+    }
+  },
+  "timing": {
+    "steady_fold_s": {
+      "min": 16.4,
+      "p50": 17.0,
+      "p99": 19.2,
+      "max": 32.9
+    },
+    "shard_first_fold_s": {
+      "p50": 74.0,
+      "max": 95.7
+    },
+    "peak_gpu_gb": {
+      "min": 6.08,
+      "max": 6.13
+    },
+    "worker_utilization": {
+      "a-cheparukhin": 0.84,
+      "colleague": 0.88
+    }
+  },
+  "verified_feature_layout": {
+    "chain_order": [
+      "A",
+      "B",
+      "C"
+    ],
+    "pae_shape": [
+      383,
+      383
+    ],
+    "slices": {
+      "hla": [
+        0,
+        275
+      ],
+      "beta2m": [
+        275,
+        374
+      ],
+      "peptide": [
+        374,
+        383
+      ]
+    },
+    "verified_on_folds": 9,
+    "pae_asymmetric": true
+  }
+}

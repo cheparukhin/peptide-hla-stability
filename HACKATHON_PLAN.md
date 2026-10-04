@@ -660,13 +660,28 @@ interleaved pair-by-pair across the `a-cheparukhin` and `colleague`
 splits and either half alone stays unbiased. 141 shards of 100 pairs per
 profile, A10G at the pilot-measured $1.4812/h shape.
 
-| | Per profile | Total |
-|---|---:|---:|
-| Pairs | 14,083 | 28,166 |
-| Forecast | 67.8 GPU-h, $100.4 | 135.6 GPU-h, $200.8 |
-| With 25% margin | $125.5 (ceiling $150) | **$251** |
-| Wall at 10 workers | 6.8 h | **~6.8 h in parallel** (8.5 h with margin) |
-| Output | ~11 GB | ~22 GB |
+**The run is complete. Forecast and actuals, side by side:**
+
+| | Forecast per profile | Actual per profile | Forecast total | **Actual total** |
+|---|---:|---:|---:|---:|
+| Pairs | 14,083 | 14,083 / 14,083 | 28,166 | **28,166 / 28,166** |
+| Failed | — | **0** | — | **0** |
+| Cost | $100.4 | $103.83 `a-cheparukhin`<br>$108.88 `colleague` | $200.8 | **$212.71** |
+| Wall at 10 workers | 6.8 h | — | ~6.8 h parallel | **7 h 32 min** |
+| Output | ~11 GB | — | ~22 GB | — |
+
+Both profiles finished under the **$150 per-workspace ceiling** and the total
+sits under the **$251 with-margin** figure. No retry pass was needed and
+nothing had to be resumed.
+
+**The forecast missed wall time by 44 minutes, for a quantifiable reason worth
+recording.** Dividing total GPU-seconds by worker count silently assumes 100%
+packing. Measured utilization was **84–88%** — each wave of 10 shards turned
+over in ~35.7 min against a 29.5 min shard, with the difference going to
+container scheduling and Volume reload — and 6.8 / 0.86 ≈ 7.9 h accounts for
+most of the gap. The rest is model load at **67–79 s** against the assumed 57 s.
+Cost overran by only 6.4% because packing loss costs wall time, not GPU time.
+
 
 Forecasts use the pilot's measured 16.76 s steady fold and 57 s shard startup.
 **Production runs the pilot's exact `boltz predict` command**, and the 5-case
