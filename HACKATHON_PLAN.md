@@ -1146,12 +1146,14 @@ ESM-2 comparison is complete and did not wait on any of it.
 - Save code, data, MSAs, splits, features, checkpoints, and results locally
   before temporary Antigravity event resources are deleted after the event on
   Sunday, October 4. Keep credentials out of exported artifacts.
-- **Stage 4c structures are the exception: they stay on Modal.** 22 GB lives on
-  the `pepstab-structures` Volume in each of the two workspaces, which are
-  personal accounts and are not deleted with the event resources. Analysis runs
-  on Modal with the Volume mounted rather than against a local copy; share
-  access by inviting people to both workspaces. A Volume cannot span
-  workspaces, so there is no single shared Volume for the whole cohort.
+- **Stage 4c structures are the exception: they stay on Modal.** All 28,166
+  folds (22.7 GB) are on the `pepstab-structures` Volume in the
+  `a-cheparukhin` workspace, a personal account not deleted with the event
+  resources. Each workspace folded its own half; the `colleague` half was then
+  copied across and verified (`modal_app/merge_structures.py`, see
+  [reports/stage4c_ectodomain_pilot.md](reports/stage4c_ectodomain_pilot.md)).
+  Analysis runs on Modal with that Volume mounted rather than against a local
+  copy; share access by inviting people to `a-cheparukhin`.
 
 ## Stretch work and stopping rules
 

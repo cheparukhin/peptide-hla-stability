@@ -206,24 +206,43 @@ workspace).
 
 ### Where the outputs live
 
-Structures stay on Modal and are **not** downloaded. Each shard commits to the
+Structures stay on Modal and are **not** downloaded. Each shard committed to the
 `pepstab-structures` Volume in the workspace that folded it, under
-`/stage4c/ectodomain-20261004/boltz2/production/<allele>/<complex_id>/`. The
+`/stage4c/ectodomain-20261004/boltz2/production/<allele>/<complex_id>/`. Each
+pair folder holds one prediction (seed 0, one diffusion sample): the mmCIF,
+the full PAE and pLDDT arrays, the confidence JSON and `metadata.json`. The
 only local artifact is `reports/ectodomain-20261004/production_<profile>.jsonl`,
 one small line per shard.
 
-A Modal Volume belongs to one workspace, so there are two: `a-cheparukhin`
-holds one half and `sofyaleyn` the other. There is no cross-workspace Volume.
-To give the team access, invite them to **both** workspaces — Modal workspaces
-support email invites, though a workspace must have a verified payment method
-before it can invite members.
+**The full cohort is now on one Volume: `pepstab-structures` in the
+`a-cheparukhin` workspace.** A Modal Volume belongs to one workspace, so the
+fold left two disjoint halves. `modal_app/merge_structures.py` then copied the
+`colleague` (sofyaleyn) half into `a-cheparukhin` on 4 October, Volume to
+Volume, without routing through a laptop: a CPU function in `sofyaleyn` mounts
+its own Volume read-only and writes with `batch_upload` through a client built
+from the `a-cheparukhin` token, which is passed as an ephemeral Secret rather
+than saved in the other workspace. It copies exactly the cohort's colleague
+complex IDs and never overwrites a path. The two halves' shard markers collide
+by name (both profiles numbered from 0), so the colleague's are kept as
+`_shards_colleague/` and `_smoke_colleague/`.
 
-Analysis should therefore run **on Modal with the Volume mounted**, not against
-a local copy: at 22 GB, pulling everything down to score poses is slower than
-running the scorer next to the data. Pull individual files with
-`modal volume get` when something needs eyeballing locally. If a single shared
-location is later required, `CloudBucketMount` onto S3/R2 can be mounted from
-both workspaces, at the cost of an external bucket and a Secret in each.
+| | Result |
+|---|---|
+| 5-pair smoke | 25/25 files sha256-identical after the copy; scratch prefix removed |
+| Pairs copied | 14,083 / 14,083, 0 skipped, 11.33 GB |
+| Cost | 0.50 container-hours, about $0.03 at the metered CPU rate |
+| `::verify` | 0 of 70,582 source files missing, 0 size mismatches; 28,166 pair folders; 22.67 GB in the production tree |
+
+The full-copy check compares paths and sizes, not content; content was
+byte-compared on the smoke pairs. The `sofyaleyn` Volume still holds its
+original half (about 10.6 GiB) until someone deletes it.
+
+Analysis should run **on Modal with the `a-cheparukhin` Volume mounted**, not
+against a local copy: at 22.7 GB, pulling everything down to score poses is
+slower than running the scorer next to the data. Pull individual files with
+`modal volume get` when something needs eyeballing locally. Giving the team
+access now means inviting them to `a-cheparukhin` only; a workspace must have a
+verified payment method before it can invite members.
 
 ### Running it
 
@@ -472,8 +491,9 @@ folds.
 - `reports/ectodomain-20261004/colleague_boltz2_arm_comparison.jpg`: the
   independent Boltz-2 figure discussed above.
 
-Production outputs now exist: 28,166 per-pair directories across the two
-`pepstab-structures` Volumes, plus 282 shard markers and the two per-shard
+Production outputs now exist: 28,166 per-pair directories, all on the
+`a-cheparukhin` `pepstab-structures` Volume after the merge (the `sofyaleyn`
+Volume keeps its original half), plus 282 shard markers and the two per-shard
 JSONL logs. Feature and coverage tables are still listed as destinations
 rather than as evidence — stage 4c.5 extraction had not run when this was
 written.
