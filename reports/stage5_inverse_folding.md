@@ -150,13 +150,42 @@ analytically.
 **The aggregation does matter, and I report the envelope rather than a single
 number.** Across the defensible choices above, ESMFold2 lands between **1.2 and
 1.9** and Boltz-2 between **3.1 and 9.3**. The stage 4c.5 workstream quotes
-**8.10 / 1.83** (`ddof=1`, pooled). That sits inside this envelope, but I was
-**not** able to reproduce it exactly under any of the six aggregations I tried,
-so some further detail of its pipeline differs and I have not chased it: every
-aggregation returns the same verdict, so the difference has no bearing on any
-conclusion. An earlier draft of this report claimed its 1.83 reconciled with
-the `ddof=0` row (1.84); **that was a coincidence and the claim was wrong** —
-its figure is `ddof=1`, and `ddof=0` on its side gives 2.00.
+**8.10 / 1.83** (`ddof=1`, pooled), inside this envelope.
+
+**The difference between the two implementations is mostly one definitional
+choice, with a small remainder.** The axis is what counts as a unit in the
+numerator: each *fold* (45 units), or each *(complex, arm)* after averaging its
+three seeds (15 units). Holding the denominator fixed and varying only that,
+on my own data:
+
+| Numerator unit | Boltz-2 | ESMFold2 |
+|---|---:|---:|
+| Each fold a unit | 7.69 | **1.85** |
+| Seeds averaged first | 7.81 | **1.56** |
+| *(stage 4c.5, same two conventions)* | *8.10 → 8.07* | *1.83 → 1.54* |
+
+**The shape of the effect confirms the explanation rather than merely fitting
+it.** Averaging seeds first strips seed noise out of the numerator, so it must
+pull the ratio down hard for the *noisier* model and barely move the *quieter*
+one. That is exactly what happens, in both implementations independently:
+ESMFold2 falls by **-0.29** in mine and **-0.29** in theirs — identical to two
+decimals — while Boltz-2 moves by +0.12 and -0.03 respectively. A directional,
+magnitude-asymmetric prediction borne out on two separately-written pipelines
+is an explanation; a pair of numbers that merely land near each other is not.
+
+What remains unexplained is small and confined to Boltz-2: our ESMFold2 figures
+agree to 0.02 under both conventions, our Boltz-2 figures differ by 0.3–0.4.
+Deliberately not chased — every aggregation either implementation has tried
+returns the same verdict (ESMFold2 marginal, Boltz-2 comfortable), production
+is Boltz-2 only regardless, and the residual touches no conclusion. **Neither
+set of figures was reproduced to the digit by the other**, and this report does
+not claim otherwise.
+
+An earlier draft claimed its 1.83 reconciled with the `ddof=0` row above
+(1.84); **that was wrong** — its figure is `ddof=1`, and `ddof=0` on its side
+gives 2.00. Two different conventions had landed near the same number, which
+is precisely the coincidence the asymmetry test above is designed to
+distinguish from a real explanation.
 
 Per arm, `ddof=1`:
 
