@@ -3,9 +3,17 @@
 4 October 2026. **Status: pilot complete on all 90 stage 4c folds. The seed
 control passes for Boltz-2 and fails for ESMFold2. The circularity control came
 back with a result I did not expect, and it changes what this feature is for:
-the ProteinMPNN peptide log-likelihood works as a crystal-free detector of
-Boltz-2 pose failure, and there is no evidence from this pilot that it predicts
-half-life. Production scoring is prepared but not launched.**
+the ProteinMPNN peptide log-likelihood behaves as a crystal-free triage signal
+for Boltz-2 pose failure, and there is no evidence from this pilot that it
+predicts half-life. A ~$1 QC sample is approved; full production scoring as a
+regression feature is not, and nothing has been launched.**
+
+**The single most important limit, stated before anything else:** the pilot
+contains exactly **one** complex that folded badly (B*07:02/IPRRNVATL, in arms
+A and C). Every claim below about detecting pose failure rests on that one
+complex, measured three ways. It is suggestive and it is well controlled, but
+it is not a general property of the method, and no number in this report should
+be quoted without that caveat attached.
 
 This closes the third of the three protein-foundation-model classes named in
 the challenge brief. The project already tests structure prediction (Boltz-2,
@@ -288,31 +296,81 @@ ProteinMPNN recovers the sequence only when the backbone is actually correct.
 The controls together say something more specific — and more useful — than the
 framing the plan started from.
 
-Across all 45 Boltz-2 folds, six have peptide heavy-atom RMSD above 2.0 Å: the
-three arm-A and three arm-C folds of B*07:02/IPRRNVATL. Ranking all 45 by
-`pep_ll_total`, **the six lowest are exactly those six folds**:
+**Units first, because three columns are one quantity.** `mpnn_score` =
+−`pep_ll_mean`, and `pep_ll_total` = `pep_ll_mean` × 9. This section quotes
+**`pep_ll_mean`** (nats per residue) throughout, because that is the unit the
+stage 4c.5 workstream uses and a figure without its unit is not checkable.
 
-| | range of `pep_ll_total` | clean separation? |
-|---|---|---|
-| 6 bad folds (RMSD > 2 Å) | -28.62 to -26.86 | — |
-| 39 good folds | -22.62 to -16.93 | **yes, 4.24-nat gap** |
-| Boltz-2 peptide↔groove PAE | bad 1.376–1.552 inside good 1.136–2.196 | **no, fully overlapping** |
-| Boltz-2 peptide pLDDT | bad 0.973–0.976 inside good 0.969–0.990 | **no, fully overlapping** |
+**The scope of the evidence, stated before the result.** Across all 45 Boltz-2
+folds, six have peptide heavy-atom RMSD above 2.0 Å. **All six are the same
+complex** — B*07:02/IPRRNVATL, arms A and C, three seeds each. The effective
+sample is therefore **one failing complex out of five**, not six independent
+failures. Any sentence of the form "the six lowest of 45" reads as six
+successes and would overstate this; it is one.
 
-This lands exactly on an open problem stage 4c recorded. That report concluded:
-confidence "does not isolate the bulge failure... No PAE threshold catches the
-failure without flagging accurate predictions", and recommended keeping
-confidence features but *not* using them as a per-prediction failure filter.
-ProteinMPNN's peptide log-likelihood does what PAE and pLDDT could not, on the
-same 45 folds, and it needs no crystal structure to do it.
+### The within-complex control
+
+This is the argument, and it is the wrong-backbone control from the previous
+section made a second way. Hold the allele and the peptide fixed and vary only
+the construct:
+
+| B*07:02 IPRRNVATL | mean heavy RMSD | `pep_ll_mean` |
+|---|---:|---:|
+| Arm A | 2.272 Å | **-3.061** |
+| Arm C | 2.251 Å | **-3.076** |
+| **Arm B** | **0.299 Å** | **-2.388** |
+| (the other four complexes, all 36 folds) | — | -2.513 to -1.881 |
+
+When the *same complex* folds correctly in arm B, its score moves **inside the
+good range**. Same allele, same peptide, same model, same seeds. **The score
+tracks the pose, not the complex.** That is stronger than any gap statistic
+because it holds identity fixed, and it is the same shape of evidence as the
++13.15 → −0.45 margin collapse above: two independent routes to the same
+conclusion.
+
+### The claim is specificity, not separation
+
+The naive claim — "the bad folds separate cleanly, with a 0.471 nats/residue
+gap" — is **not the right claim, and on its own it would be unsound.** The
+stage 4c.5 workstream tested exactly that on its 109 structural features and
+found a multiple-comparisons artefact: 2 of 109 features appear to isolate this
+failure, but repeating the test on the A+C folds of *every* complex yields
+**7, 9, 2, 13 and 2** "fully separating" features respectively. Every complex
+is separated by a handful of features, and the genuinely failing one by the
+**fewest**. Searching ~100 features for one that splits a six-fold group will
+always succeed, so clean separation of that group measures **complex identity,
+not pose quality**. Their conclusion: **none of the 109 structural features
+isolates the failure**, which extends stage 4c's two-feature finding to all of
+them.
+
+Against that backdrop the defensible claim is specificity:
+
+> `pep_ll_mean` flags the one complex that actually folded badly, **with zero
+> false positives among the 36 folds of the other four complexes**. It is the
+> only readout tested that does so.
+
+Two things make this not the same artefact. First, `pep_ll_mean` was **a single
+predeclared quantity** — fixed in the module docstring before any score
+existed — not one survivor of a search over ~100 candidates. Second, the
+within-complex control above shows the score moving *within* the failing
+complex when its pose is fixed, which complex identity cannot explain.
+
+For comparison, on the same 45 folds Boltz-2's own confidence outputs do not
+separate the failing folds at all: peptide↔groove PAE bad 1.376–1.552 sits
+inside good 1.136–2.196, and peptide pLDDT bad 0.973–0.976 inside good
+0.969–0.990. Stage 4c recorded this as an open problem — confidence "does not
+isolate the bulge failure... No PAE threshold catches the failure without
+flagging accurate predictions."
 
 So the honest description of this feature is:
 
-> **An unsupervised, crystal-free detector of peptide pose failure in a
-> co-folded pMHC complex.**
+> **An unsupervised, crystal-free indicator of peptide pose failure in a
+> co-folded pMHC complex — demonstrated on one failing complex out of five.**
 
 That is a structural-QC quantity, not a kinetic one. Caveat 2 above still
-stands in full.
+stands in full. And the limit is load-bearing, not decorative: **one failing
+complex is not a general property of the method.** The same limit applies to
+the stage 4c.5 negative result, and both write-ups say so.
 
 ### How much of the signal could still be artefact
 
@@ -333,20 +391,20 @@ predictor is **untested**, and this pilot cannot test it.
 
 ## Recommendation
 
-1. **Report the ESMFold2 seed-control result and the pose-failure filter as
-   results in their own right.** Both are verified, both are negative or
+1. **Report the ESMFold2 seed-control result and the pose-triage specificity
+   result as results in their own right.** Both are verified, both are negative or
    methodological rather than predictive, and the brief values that. The
    ESMFold2 result corroborates stage 4c's crystal-based verdict without using
    a crystal; it does **not** corroborate the stage 4c.5 structural-feature
    seed control, which diverges from it — see that subsection for why the
    divergence is the more informative finding.
-2. **Treat `pep_ll_total` as a structural-QC covariate**, not as a kinetic
-   feature — a per-prediction flag for "Boltz-2 probably got this peptide
-   wrong", which stage 4c explicitly lacked. One caution: it is validated
-   against a *single* failure mode on *five* training complexes. A 4.24-nat gap
-   on 45 folds of one failure is an encouraging observation, not a calibrated
-   threshold, and it must not be used to filter the production cohort until it
-   has been checked on more than one kind of failure.
+2. **Treat `pep_ll_mean` as a structural-QC triage signal**, not as a kinetic
+   feature and not as a classifier — a way to rank folds for inspection, which
+   stage 4c and the 109 structural features both lack. The caution is
+   load-bearing: it is demonstrated on **one failing complex out of five**, so
+   it is an encouraging observation and not a calibrated threshold. It must not
+   filter the production cohort, and it must not be described as a failure
+   detector until it has been checked on more than one failing complex.
 3. **Do not buy it as a regression feature.** Decided and recorded above: the
    n=5 label correlation is zero and the usable variation is thin. If it is
    ever revisited, it must be on validation at the same ensemble size and
@@ -442,25 +500,35 @@ rather than from this prose.
 | Sample size | **2,000 folds** |
 | Draw | simple random sample **without replacement** over the **sorted** fold paths of one half |
 | RNG | `numpy.random.default_rng(20261004)`, `rng.choice(..., replace=False)` |
-| Decoding orders | **16** (matches the pilot, so the thresholds transfer) |
-| Primary threshold | `pep_ll_total <= -26.858` — the *best-scoring* known-bad pilot fold |
-| Secondary threshold | `pep_ll_total <= -24.740` — the midpoint of the observed 4.24-nat gap |
+| Decoding orders | **16** (matches the pilot, so the reference range transfers) |
+| Primary reference | `pep_ll_mean <= -2.984` (= `pep_ll_total <= -26.858`) — the *best-scoring* fold of the one known-bad complex |
+| Secondary reference | `pep_ll_mean <= -2.749` (= `pep_ll_total <= -24.740`) — midpoint of the observed 0.471 nats/residue gap |
+
+These are **reference points from a single complex, not calibrated
+thresholds**, and the report will not call them thresholds.
 
 **The sample must be drawn from a COMPLETE half, not a partial run.** Shards are
 ordered by allele, so ten committed shards is five of seventy-five alleles and
 any mid-run sample is allele-biased. `qc_sample()` is called only after the
 fold count for that profile is checked against 14,083.
 
-**What will be reported: a distribution, not a rate.** The deliverable is the
-histogram of `pep_ll_total` over the 2,000 sampled folds, plus the count falling
-below each threshold, phrased as *"n of 2,000 sampled folds score in the range
-where all six known-bad pilot folds sat"*. That is **an extrapolation from one
-failure mode on five training complexes**, not a calibrated pose-failure rate,
-and it will carry that provenance wherever it is quoted. Realised allele
-coverage will be reported as a diagnostic.
+**What will be reported: a distribution and a triage list — never a failure
+count or a failure rate.** The deliverable is the distribution of
+`pep_ll_mean` over the 2,000 sampled folds. Folds sitting far below the pilot's
+good range are reported as **a triage list warranting inspection**, not as
+failures: nothing in this pilot can tell a bad pose from an unusual-but-correct
+one at the level of an individual production fold.
 
-**No row is dropped on this score.** The thresholds are descriptive. They must
-not filter the production cohort, and nothing downstream may condition on them.
+The one sanctioned sentence form is: *"N of 2,000 sampled folds score in the
+range where the one known-bad complex sat, from a single-complex reference."*
+The words "failure rate" must not appear. The single-complex provenance travels
+with the number wherever it is quoted.
+
+Realised allele coverage will be reported as a diagnostic.
+
+**No row is dropped on this score.** The reference points are descriptive. They
+must not filter the production cohort, and nothing downstream may condition on
+them.
 
 ## Runtime and cost
 

@@ -90,9 +90,11 @@ USD_PER_GIB_HOUR = float(_RATES["mem_gib_hour_cost"])   # measured: 0.00800
 # ---------------------------------------------------------------------------
 # PREDECLARED QC SAMPLE -- fixed before any production score was looked at.
 # ---------------------------------------------------------------------------
-# Purpose: estimate how much of the cohort scores in the range where every
-# known-bad pilot fold sat. This is NOT a calibrated pose-failure rate: the
-# thresholds come from one failure mode on five training complexes.
+# Purpose: produce a DISTRIBUTION of pep_ll_mean over the cohort and a triage
+# list of folds worth inspecting. This is NOT a pose-failure rate and must
+# never be reported as one: the reference points below come from exactly ONE
+# badly-folded complex (B*07:02/IPRRNVATL, arms A and C) out of the five in the
+# pilot, all of them training rows.
 #
 # Draw: simple random sample without replacement over the *sorted* fold paths
 # of ONE COMPLETE half. Sorting makes the draw reproducible; requiring a
@@ -102,12 +104,17 @@ QC_SAMPLE_N = 2000
 QC_SAMPLE_SEED = 20261004
 QC_SAMPLE_ORDERS = 16  # matches the pilot, so the thresholds below transfer
 
-# From reports/stage5_inverse_folding.md, measured on the 45 Boltz-2 pilot
-# folds: the 6 folds with peptide heavy RMSD > 2.0 A spanned -28.62..-26.86,
-# the 39 good folds -22.62..-16.93, a 4.24-nat gap with no overlap.
-QC_BAD_MAX = -26.858   # worst-case: the best-scoring known-bad pilot fold
-QC_GAP_MIDPOINT = -24.740  # secondary, the midpoint of the observed gap
-# Neither threshold may be used to drop a row from the cohort.
+# Reference points, NOT thresholds. From reports/stage5_inverse_folding.md,
+# measured on the 45 Boltz-2 pilot folds. The 6 folds with peptide heavy RMSD
+# > 2.0 A are all the SAME complex in arms A and C; they spanned pep_ll_mean
+# -3.180..-2.984 against the 39 good folds' -2.513..-1.881 (a 0.471
+# nats/residue gap). Quoted here in pep_ll_total = pep_ll_mean * 9, the units
+# score_folder emits. Note pep_ll_total = 9 * pep_ll_mean = -9 * mpnn_score:
+# one quantity, three units.
+QC_BAD_MAX = -26.858       # = pep_ll_mean -2.984, best-scoring known-bad fold
+QC_GAP_MIDPOINT = -24.740  # = pep_ll_mean -2.749, midpoint of the gap
+# Neither may be used to drop a row from the cohort, and neither is calibrated:
+# they describe one complex.
 
 
 def qc_sample(folders: list[str], n: int = QC_SAMPLE_N,

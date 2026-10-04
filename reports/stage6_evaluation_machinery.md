@@ -323,6 +323,14 @@ assignments.
 
 ### Finding: this question is underpowered in this dataset
 
+**The nested evaluation is the right design for the question the grouped split
+cannot answer, and this dataset does not contain enough independent peptide
+clusters to answer it.** That is a dataset limitation, not a method failure,
+and it is worth saying plainly because the instinct on reading it is that we
+should have tried harder. There is nothing to try harder at: the radius cannot
+exceed 2 without the groups straddling a split, and at radius 2 the training
+split contains every mutant comparison that exists.
+
 This is the result, not a caveat on one. The plan expects the nested evaluation
 to "recover the question the grouped split cannot answer". It recovers the
 question; it does not deliver enough evidence to answer it in absolute terms.
@@ -363,18 +371,50 @@ resolve a 0.07 effect. The alpha sweep (0.1, 1, 10, 100) moves mutant
 concordance only between 0.488 and 0.527, so the reading is not an artifact of
 the regularisation strength.
 
-**What to do with it at stage 6.** Run the selected arms through
-`--nested --nested-arm NAME=oof.csv` and report the paired comparison between
-them, with the half-widths above quoted next to it. If no arm clears 0.57,
-the honest statement is: *on the 490 mutant comparisons this dataset supports,
-none of the arms tested ranks point mutants measurably better than chance, and
-the comparison cannot resolve differences below about 0.055 concordance.*
+**What to do with it at stage 6.** Pass `--nested` with `--nested-arm
+NAME=oof.csv` **twice** and report the paired arm-vs-arm row
+(`*_nested_mutant_paired.csv`), with the 0.055 half-width quoted beside every
+number. The per-arm "concordance minus chance" column is emitted too, but it is
+the weaker question and must never be stated as an absolute claim about mutant
+ranking. If no arm clears 0.57, the honest statement is: *on the 490 mutant
+comparisons this dataset supports, none of the arms tested ranks point mutants
+measurably better than chance, and the comparison cannot resolve differences
+below about 0.055 concordance.*
 
 ---
 
+## Provenance, and arms that have not arrived yet
+
+Every delta here is a statement about two specific prediction **files**, and
+arms get regenerated — a retuned baseline rewrites its ensemble's predictions
+and silently invalidates every comparison taken against the old one. So the
+manifest records a SHA-256, a byte count and an mtime for each prediction file
+it read, under `arms`. A stale comparison is then detectable from the artefact
+rather than only by remembering.
+
+The numbers in this document are tied to the digests in
+`reports/stage6_val_manifest.json`. If `preds/seq_ensemble_pep_pseudo.csv`
+changes, the CLI re-runs in about twelve minutes and every table regenerates;
+nothing here is hand-maintained.
+
+The CLI is already general over arms: the first positional argument is the
+baseline every paired interval is taken against, so the headline comparison for
+an additive arm is
+
+```
+scripts/stage6_report.py --split test \
+    seq_ensemble_pep_pseudo=preds/seq_ensemble_pep_pseudo.csv \
+    esm_ensemble=preds/esm_ensemble.csv \
+    esm_plus_seq=preds/esm_plus_seq_ensemble.csv \
+    boltz=preds/boltz_structural.csv --nested ...
+```
+
+and `--nested-arm` is repeatable so the nested analysis takes a paired
+arm-vs-arm interval between the first two out-of-fold files given.
+
 ## Guards
 
-`tests/test_stage6.py`, 33 tests, all on validation and train. Grouped by what
+`tests/test_stage6.py`, 35 tests, all on validation and train. Grouped by what
 they protect:
 
 - **Contract parity.** `score_strata` equals `evaluation.score_by_distance` at
@@ -393,7 +433,10 @@ they protect:
   pairs apart; no Hamming <= 2 group straddles a split; the bootstrap keeps
   clusters whole and is deterministic; non-finite and incomplete prediction
   files are rejected.
-- **CLI.** Every table is emitted; duplicate arm names are refused.
+- **CLI.** Every table is emitted; duplicate arm names are refused; the
+  manifest carries a SHA-256 of each prediction file; two `--nested-arm` files
+  produce a paired arm-vs-arm row, and an arm fed the labels themselves scores
+  a perfect 1.000 mutant concordance.
 
 ## Limitations
 

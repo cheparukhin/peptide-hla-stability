@@ -633,8 +633,8 @@ def mode_ensemble(args) -> int:
 
     # --- matched comparison against the stage 2 ensembles -------------------
     comparisons = []
-    for base_name, base_file in (("seq_ensemble_pep_pseudo", "seq_ensemble_pep_pseudo.csv"),
-                                 ("seq_ensemble_pep_domain", "seq_ensemble_pep_domain.csv")):
+    pairs = [(b, f"{b}.csv") for b in args.baselines]
+    for base_name, base_file in pairs:
         path = PRED_DIR / base_file
         if not path.exists():
             print(f"  (missing {base_file}; skipping)")
@@ -724,6 +724,10 @@ def main() -> int:
     e.add_argument("--selected", default=None,
                    help="JSON mapping axis key -> [hidden, l2] from the grid")
     e.add_argument("--name", default=None)
+    e.add_argument("--baselines", nargs="*",
+                   default=["seq_ensemble_pep_pseudo", "seq_ensemble_pep_domain"],
+                   help="prediction stems in preds/ to compare against with a "
+                        "paired cluster bootstrap")
 
     args = ap.parse_args()
     return {"sweep": mode_sweep, "grid": mode_grid, "ensemble": mode_ensemble}[args.mode](args)
