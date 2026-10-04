@@ -1,0 +1,789 @@
+<title>Peptide Groove Explorer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  color-scheme: light;
+  --bg: #FBFCFD;
+  --surface: #FFFFFF;
+  --surface-2: #F6F8FA;
+  --surface-3: #EDF1F5;
+  --ink: #0B1220;
+  --ink-2: #44515F;
+  --ink-3: #7B8794;
+  --line: #E3E8ED;
+  --line-2: #C3CBD4;
+  --accent: #0B6E99;
+  --accent-soft: #DCEEF6;
+  --accent-ink: #FFFFFF;
+  --hot: #B3421C;
+  --hot-soft: #FBE4DA;
+  --cool: #2B59C3;
+  --cool-soft: #DFE7FB;
+  --good: #0F7A4E;
+  --good-soft: #D8F0E3;
+  --mid: #9A5B06;
+  --mid-soft: #FBEBD2;
+  --bad: #B32218;
+  --bad-soft: #FADFDC;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --shadow: 0 1px 2px rgba(15,23,36,.06), 0 8px 24px rgba(15,23,36,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #070B11; --surface: #0F151E; --surface-2: #141C27; --surface-3: #1B2534;
+    --ink: #E8EEF5; --ink-2: #A3B1C0; --ink-3: #74828F;
+    --line: #212C3A; --line-2: #35434F;
+    --accent: #4FB3DE; --accent-soft: #0D2634; --accent-ink: #03141D;
+    --hot: #FF9A72; --hot-soft: #3A1A10;
+    --cool: #8FABFF; --cool-soft: #15204A;
+    --good: #4ADE9B; --good-soft: #0C2E22;
+    --mid: #F5C054; --mid-soft: #342508;
+    --bad: #FF8A7A; --bad-soft: #3A1512;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #070B11; --surface: #0F151E; --surface-2: #141C27; --surface-3: #1B2534;
+  --ink: #E8EEF5; --ink-2: #A3B1C0; --ink-3: #74828F;
+  --line: #212C3A; --line-2: #35434F;
+  --accent: #4FB3DE; --accent-soft: #0D2634; --accent-ink: #03141D;
+  --hot: #FF9A72; --hot-soft: #3A1A10;
+  --cool: #8FABFF; --cool-soft: #15204A;
+  --good: #4ADE9B; --good-soft: #0C2E22;
+  --mid: #F5C054; --mid-soft: #342508;
+  --bad: #FF8A7A; --bad-soft: #3A1512;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.4);
+}
+
+*,*::before,*::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: 16px; padding-right: 16px; padding-block: 0 64px; }
+
+/* ---------- head ---------- */
+.top { position: relative; padding-block: 26px 16px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-3); margin: 0 0 12px;
+}
+h1 {
+  font-size: clamp(22px,4.4vw,34px); line-height: 1.15; letter-spacing: -.015em;
+  font-weight: 600; margin: 0 0 12px; max-width: 24ch;
+}
+h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: clamp(15px,2vw,17px); color: var(--ink-2); margin: 0; max-width: 64ch; }
+.lede strong { color: var(--ink); font-weight: 600; }
+.theme-btn {
+  position: absolute; top: 18px; right: 0;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--surface); color: var(--ink-2); border: 1px solid var(--line);
+  border-radius: 999px; padding: 7px 13px; min-height: 34px; cursor: pointer;
+}
+
+.readout {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(112px,1fr)); gap: 1px;
+  background: var(--line); border: 1px solid var(--line); border-radius: 10px;
+  overflow: hidden; margin-top: 20px;
+}
+.readout > div { background: var(--surface); padding: 11px 13px; min-width: 0; }
+.readout .k {
+  display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.readout .v {
+  display: block; margin-top: 3px; font-family: var(--mono); font-size: 17px;
+  font-weight: 600; font-variant-numeric: tabular-nums;
+}
+
+/* ---------- step nav ---------- */
+.rail {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  margin: 22px -16px 0; padding: 0 16px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.rail-in { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.rail-in::-webkit-scrollbar { display: none; }
+.rail a {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  padding: 13px 12px; font-size: 13px; font-weight: 500; color: var(--ink-2);
+  text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; min-height: 46px;
+}
+.rail a .n {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  width: 19px; height: 19px; border-radius: 5px; display: inline-flex;
+  align-items: center; justify-content: center; background: var(--surface-3); color: var(--ink-2);
+}
+.rail a.current { color: var(--ink); border-bottom-color: var(--accent); }
+.rail a.current .n { background: var(--accent); color: var(--accent-ink); }
+
+/* ---------- sections ---------- */
+.step { padding-block: 34px 8px; scroll-margin-top: 58px; }
+.step-kicker {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 6px;
+}
+.step h2 { font-size: clamp(20px,3vw,26px); font-weight: 600; letter-spacing: -.01em; margin: 0 0 8px; }
+.step > p.intro { margin: 0 0 18px; color: var(--ink-2); max-width: 68ch; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px; box-shadow: var(--shadow); min-width: 0;
+}
+.panel h3 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.panel .sub { font-size: 12.5px; color: var(--ink-3); margin: 5px 0 14px; }
+.tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-3); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
+}
+.phead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.note { font-size: 12.5px; color: var(--ink-3); margin: 13px 0 0; }
+
+/* answer table */
+table.dt { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+table.dt th {
+  text-align: left; font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 600; color: var(--ink-3);
+  padding: 7px 10px; border-bottom: 1px solid var(--line-2); white-space: nowrap;
+}
+table.dt td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.dt tr:last-child td { border-bottom: none; }
+table.dt .n { text-align: right; font-family: var(--mono); white-space: nowrap; }
+.scroll-x { overflow-x: auto; }
+
+/* ---------- triptych ---------- */
+.tri {
+  display: grid; gap: 14px; margin-top: 4px;
+  grid-template-columns: minmax(0,0.9fr) minmax(0,1fr) minmax(0,1.25fr);
+}
+.tri > * { min-width: 0; }
+.col-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px; margin-bottom: 10px;
+}
+.col-head h3 { margin: 0; }
+.count { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+.search {
+  width: 100%; font-family: var(--sans); font-size: 13px; color: var(--ink);
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+  padding: 9px 11px; min-height: 38px; margin-bottom: 8px;
+}
+.search::placeholder { color: var(--ink-3); }
+
+.list { max-height: 420px; overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+.list li { margin: 0 0 4px; }
+.row-btn {
+  width: 100%; text-align: left; display: flex; align-items: center; gap: 8px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; cursor: pointer; font-family: var(--sans); color: var(--ink);
+  min-height: 40px;
+}
+.row-btn:hover { border-color: var(--line-2); }
+.row-btn[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.row-main { min-width: 0; flex: 1; }
+.row-t { font-family: var(--mono); font-size: 12.5px; font-weight: 600; display: block; }
+.row-s { font-size: 11px; color: var(--ink-3); display: block; }
+.row-num {
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+.pill {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase;
+  font-weight: 600; padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+}
+.p-near { background: var(--good-soft); color: var(--good); }
+.p-intermediate { background: var(--mid-soft); color: var(--mid); }
+.p-distant { background: var(--bad-soft); color: var(--bad); }
+.p-xtal { background: var(--cool-soft); color: var(--cool); }
+.p-a { background: var(--good-soft); color: var(--good); }
+.p-b { background: var(--mid-soft); color: var(--mid); }
+.p-c { background: var(--bad-soft); color: var(--bad); }
+
+/* structure panel */
+.struct-id {
+  font-family: var(--mono); font-size: 26px; font-weight: 600; letter-spacing: -.01em;
+  margin: 0; line-height: 1.1;
+}
+.struct-title { font-size: 12.5px; color: var(--ink-2); margin: 6px 0 0; }
+.kv {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px;
+  background: var(--line); border: 1px solid var(--line); border-radius: 9px;
+  overflow: hidden; margin-top: 14px;
+}
+.kv > div { background: var(--surface-2); padding: 9px 11px; min-width: 0; }
+.kv .k {
+  display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.kv .v {
+  display: block; margin-top: 2px; font-family: var(--mono); font-size: 14px;
+  font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.link-out {
+  display: inline-flex; align-items: center; gap: 7px; margin-top: 14px;
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase;
+  font-weight: 600; text-decoration: none;
+  background: var(--accent); color: var(--accent-ink);
+  border-radius: 8px; padding: 10px 14px; min-height: 40px;
+}
+
+/* groove map */
+.groove-wrap { margin-top: 16px; }
+.groove-wrap svg { display: block; width: 100%; height: auto; }
+.gv-label { fill: var(--ink-3); font-family: var(--mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+.gv-res { font-family: var(--mono); font-size: 10.5px; font-weight: 600; }
+.gv-pep { font-family: var(--mono); font-size: 13px; font-weight: 600; fill: var(--accent-ink); }
+.gv-pos { fill: var(--ink-3); font-family: var(--mono); font-size: 8.5px; }
+.gv-anchor { fill: var(--ink-2); font-family: var(--mono); font-size: 9px; }
+
+.empty {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-height: 160px; color: var(--ink-3); font-size: 13px; padding: 20px;
+  background: var(--surface-2); border: 1px dashed var(--line-2); border-radius: 10px;
+}
+
+/* next */
+.next-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); }
+.next-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 17px; border-top: 3px solid var(--accent); box-shadow: var(--shadow); min-width: 0;
+}
+.next-card .rank {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-3); margin: 0 0 5px;
+}
+.next-card h4 { font-size: 15px; font-weight: 600; margin: 0 0 7px; }
+.next-card p { font-size: 13px; color: var(--ink-2); margin: 0 0 11px; }
+.status {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px; display: inline-block;
+  background: var(--surface-3); color: var(--ink-2);
+}
+.s-live { background: var(--good-soft); color: var(--good); }
+.s-queued { background: var(--mid-soft); color: var(--mid); }
+.s-blocked { background: var(--bad-soft); color: var(--bad); }
+
+.closing {
+  margin-top: 22px; background: var(--surface); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent); border-radius: 12px; padding: 20px;
+}
+.closing p { margin: 0 0 9px; font-size: clamp(15px,2.2vw,18px); line-height: 1.45; }
+.closing p:last-child { margin-bottom: 0; font-size: 13.5px; color: var(--ink-2); }
+.closing b { color: var(--accent); }
+
+footer.foot {
+  margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 6px 16px;
+}
+
+@media (max-width: 920px) {
+  .tri { grid-template-columns: 1fr 1fr; }
+  .tri > :last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .tri { grid-template-columns: 1fr; }
+  .tri > :last-child { grid-column: auto; }
+  .theme-btn { position: static; margin-bottom: 12px; }
+  .top { padding-top: 18px; }
+  .list { max-height: 300px; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <button class="theme-btn" id="theme-btn" type="button" aria-pressed="false">Dark mode</button>
+    <p class="eyebrow">London AI &times; Science Hackathon &middot; Serova Protein Engineering Track &middot; 3&ndash;4 Oct 2026</p>
+    <h1>Which HLA alleles hold which peptides &mdash; and <em>what the groove looks like</em></h1>
+    <p class="lede">
+      28,166 measured dissociation half-lives across 75 HLA-I alleles, with the crystallographic
+      template for every allele. <strong>The model ranks peptides within an allele well when it has
+      seen a close relative, and falls off a cliff when it has not</strong> &mdash; and that cliff is
+      what the structures explain.
+    </p>
+
+    <div class="readout">
+      <div><span class="k">Pairs</span><span class="v" id="ro-pairs">&mdash;</span></div>
+      <div><span class="k">Alleles</span><span class="v" id="ro-alleles">&mdash;</span></div>
+      <div><span class="k">Xtal templates</span><span class="v" id="ro-tpl">&mdash;</span></div>
+      <div><span class="k">Exact groove</span><span class="v" id="ro-tiera">&mdash;</span></div>
+      <div><span class="k">Measured + solved</span><span class="v" id="ro-ov">&mdash;</span></div>
+      <div><span class="k">Contact residues</span><span class="v">34</span></div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Steps">
+    <div class="rail-in">
+      <a href="#found" class="current"><span class="n">1</span>What we found</a>
+      <a href="#next"><span class="n">2</span>What&rsquo;s next</a>
+    </div>
+  </nav>
+
+  <!-- ================= WHAT WE FOUND ================= -->
+  <section class="step" id="found">
+    <p class="step-kicker">Step 1</p>
+    <h2>What we found</h2>
+    <p class="intro">
+      Pick an allele, then a peptide it was measured against, and the groove that holds it.
+      Everything here is measured &mdash; half-lives from the assay, structures from the PDB,
+      model scores from the frozen validation split.
+    </p>
+
+    <div class="panel" style="margin-bottom:14px">
+      <div class="phead">
+        <h3>The headline, in one table</h3>
+        <span class="tag">validation &middot; same comparator &middot; same bootstrap</span>
+      </div>
+      <p class="sub">Both rows are improvements over the full-domain sequence ensemble.</p>
+      <div class="scroll-x">
+        <table class="dt">
+          <thead>
+            <tr><th>Improvement over full-domain</th><th class="n">Mean per-allele &rho;</th><th class="n">&Delta; concordance</th><th class="n">Cost / 1k</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>From pretraining</strong> &mdash; ESM-2 on the same 182 residues</td><td class="n">+0.0312</td><td class="n">+0.0152</td><td class="n">$4.7&times;10<sup>&minus;4</sup></td></tr>
+            <tr><td><strong>From 34 hand-picked contact residues</strong> &mdash; the pseudosequence</td><td class="n">+0.0348</td><td class="n">+0.0124</td><td class="n">$9.6&times;10<sup>&minus;7</sup></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        Hand-picking the 34 contact residues recovers what pretraining buys here, at about
+        <strong>500&times; less compute</strong>. Both are conclusive on these two secondary statistics
+        and inconclusive on the predeclared primary metric; neither clears the 0.05 worthwhile-gain bar.
+      </p>
+    </div>
+
+    <div class="tri">
+      <!-- alleles -->
+      <div class="panel">
+        <div class="col-head">
+          <h3>HLA allele</h3>
+          <span class="count" id="c-alleles"></span>
+        </div>
+        <input class="search" id="q-allele" type="search" placeholder="Filter alleles&hellip;" aria-label="Filter alleles">
+        <ul class="list" id="allele-list"></ul>
+        <p class="note" id="allele-note"></p>
+      </div>
+
+      <!-- peptides -->
+      <div class="panel">
+        <div class="col-head">
+          <h3>Peptide</h3>
+          <span class="count" id="c-peps"></span>
+        </div>
+        <input class="search" id="q-pep" type="search" placeholder="Filter peptides&hellip;" aria-label="Filter peptides">
+        <ul class="list" id="pep-list"></ul>
+        <p class="note" id="pep-note"></p>
+      </div>
+
+      <!-- structure -->
+      <div class="panel">
+        <div class="col-head">
+          <h3>Structure</h3>
+          <span class="count" id="c-struct"></span>
+        </div>
+        <div id="struct-body"></div>
+      </div>
+    </div>
+
+    <p class="note" style="max-width:78ch">
+      The groove map is drawn from the allele&rsquo;s real 34-residue contact pseudosequence and the
+      selected peptide&rsquo;s own sequence; <strong>it is a contact schematic, not predicted
+      coordinates</strong>. The 3D structure opens at the RCSB entry listed for that allele.
+    </p>
+  </section>
+
+  <!-- ================= WHAT'S NEXT ================= -->
+  <section class="step" id="next">
+    <p class="step-kicker">Step 2</p>
+    <h2>What&rsquo;s next</h2>
+    <p class="intro">
+      Ordered by expected value per hour, not by appeal. The framework is the product &mdash; every
+      new arm plugs into the same frozen splits and faces the same &delta; = 0.05 bar.
+    </p>
+
+    <div class="next-grid">
+      <div class="next-card">
+        <p class="rank">Priority 1</p>
+        <h4>Score the test set, once</h4>
+        <p>Finish the in-flight arms and run the single scoring pass. Everything else is downstream of
+        knowing whether the expensive arms clear 0.05.</p>
+        <span class="status s-live">Machinery complete</span>
+      </div>
+      <div class="next-card" style="border-top-color:var(--cool)">
+        <p class="rank">Priority 2</p>
+        <h4>Chimeric ESM-2 input</h4>
+        <p>The separate-embedding arm is flat, so the model never saw the interaction. A
+        peptide&ndash;linker&ndash;groove construct is the sharpest version of the question and the
+        biggest risk to this negative result &mdash; which is why it is worth running.</p>
+        <span class="status s-queued">Queued</span>
+      </div>
+      <div class="next-card" style="border-top-color:var(--mid)">
+        <p class="rank">Priority 3</p>
+        <h4>Leave-allele-out on every arm</h4>
+        <p>The sequence arm already shows a <strong>0.403 deficit</strong> on distant allotypes &mdash;
+        the stratum where pretraining has the strongest prior of winning. A gain confined there would
+        be real even if the pooled comparison stays flat.</p>
+        <span class="status s-queued">Contract written</span>
+      </div>
+      <div class="next-card" style="border-top-color:var(--good)">
+        <p class="rank">Priority 4</p>
+        <h4>Censored likelihood, done properly</h4>
+        <p>The Tobit loss was conclusively worse on ranking, but it was undertrained &mdash; its dev
+        objective turns over around epoch 10. A predeclared re-run with the MSE stopping rule recovers
+        almost all the ranking and halves calibration error.</p>
+        <span class="status s-queued">Predeclaration needed</span>
+      </div>
+      <div class="next-card" style="border-top-color:var(--bad)">
+        <p class="rank">Priority 5</p>
+        <h4>Full structural coverage</h4>
+        <p>Boltz-2 production is the open hole. Coverage and the declared sequence fallback must be
+        reported on the frozen cohort, not on whatever happened to fold.</p>
+        <span class="status s-blocked">Fold in progress</span>
+      </div>
+      <div class="next-card" style="border-top-color:var(--ink-3)">
+        <p class="rank">Priority 6</p>
+        <h4>Post-2016 stability data</h4>
+        <p>NetMHCstabpan trained on this exact dataset, so it can never be a comparator here. The only
+        honest route to method parity is measurements it could not have seen.</p>
+        <span class="status s-blocked">Data needed</span>
+      </div>
+    </div>
+
+    <div class="closing">
+      <p><b>Domain knowledge is not dead yet.</b> Foundation models <em>do</em> encode biology &mdash;
+      that is the genuine insight. But encoding what we already know is not the same as extending it.</p>
+      <p>And the most transferable finding is smaller and more useful than the headline: <strong>where
+      you read a foundation model&rsquo;s embedding from mattered more than which model produced
+      it</strong> &mdash; reading the 34 contact positions instead of mean-pooling 182 was worth about
+      0.3 of Spearman, six times the worthwhile-gain bar.</p>
+    </div>
+
+    <footer class="foot">
+      <span>Rasmussen et al. 2016</span>
+      <span>All figures: validation split</span>
+      <span>Test set scored once</span>
+      <span>Team of 3</span>
+    </footer>
+  </section>
+</div>
+
+<script src="payload.js"></script>
+<script>
+(function () {
+  'use strict';
+  var D = window.__DATA__;
+  if (!D) return;
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  function el(t, a, txt) {
+    var n = document.createElementNS(SVGNS, t);
+    for (var k in a) if (a[k] != null) n.setAttribute(k, a[k]);
+    if (txt !== undefined) n.textContent = txt;
+    return n;
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function f3(v) { return v == null ? '\u2014' : v.toFixed(3); }
+  function thalf(v) {
+    if (v == null) return '\u2014';
+    if (v === 0) return '0';
+    return v >= 10 ? v.toFixed(1) : v.toFixed(2);
+  }
+
+  /* ---------- theme ---------- */
+  var tb = document.getElementById('theme-btn');
+  tb.addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    tb.textContent = dark ? 'Dark mode' : 'Light mode';
+    tb.setAttribute('aria-pressed', String(!dark));
+    if (state.allele) renderStruct();
+  });
+
+  /* ---------- readout ---------- */
+  var T = D.totals;
+  document.getElementById('ro-pairs').textContent = T.pairs.toLocaleString();
+  document.getElementById('ro-alleles').textContent = T.alleles;
+  document.getElementById('ro-tpl').textContent = T.templates;
+  document.getElementById('ro-tiera').textContent = T.tier_a;
+  document.getElementById('ro-ov').textContent = T.structure_pairs;
+
+  /* ---------- step rail ---------- */
+  (function () {
+    var links = [].slice.call(document.querySelectorAll('.rail a'));
+    var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    if (!('IntersectionObserver' in window)) return;
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var i = secs.indexOf(e.target);
+        if (i < 0) return;
+        links.forEach(function (a, j) { a.classList.toggle('current', i === j); });
+      });
+    }, { rootMargin: '-55px 0px -65% 0px', threshold: 0 });
+    secs.forEach(function (s) { if (s) obs.observe(s); });
+  })();
+
+  /* ---------- state ---------- */
+  var state = { allele: null, peptide: null };
+  var byAllele = {};
+  D.alleles.forEach(function (a) { byAllele[a.allele] = a; });
+
+  var aList = document.getElementById('allele-list');
+  var pList = document.getElementById('pep-list');
+  var qA = document.getElementById('q-allele');
+  var qP = document.getElementById('q-pep');
+  var cA = document.getElementById('c-alleles');
+  var cP = document.getElementById('c-peps');
+  var cS = document.getElementById('c-struct');
+  var aNote = document.getElementById('allele-note');
+  var pNote = document.getElementById('pep-note');
+  var sBody = document.getElementById('struct-body');
+
+  /* ---------- allele list ---------- */
+  function renderAlleles() {
+    var q = qA.value.trim().toUpperCase();
+    var items = D.alleles.filter(function (a) {
+      return !q || a.allele.toUpperCase().indexOf(q) >= 0;
+    });
+    cA.textContent = items.length + ' of ' + D.alleles.length;
+    aList.innerHTML = '';
+    items.forEach(function (a) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'row-btn';
+      b.setAttribute('aria-selected', String(a.allele === state.allele));
+      var strat = a.holdout ? a.holdout.stratum : null;
+      b.innerHTML =
+        '<span class="row-main">' +
+          '<span class="row-t">' + esc(a.allele) + '</span>' +
+          '<span class="row-s">' + a.n_pairs.toLocaleString() + ' peptides' +
+            (strat ? ' \u00b7 <span class="pill p-' + strat + '">' + strat + '</span>' : '') +
+          '</span>' +
+        '</span>' +
+        '<span class="row-num">' + (a.val ? f3(a.val.rho) : '\u2014') + '</span>';
+      b.addEventListener('click', function () { selectAllele(a.allele); });
+      li.appendChild(b);
+      aList.appendChild(li);
+    });
+    aNote.innerHTML = 'Right-hand number is per-allele validation Spearman &rho; for the ' +
+      '30-network sequence baseline. Badge is distance to the nearest training allele under ' +
+      'leave-one-allele-out.';
+  }
+
+  /* ---------- peptide list ---------- */
+  function renderPeps() {
+    var a = byAllele[state.allele];
+    if (!a) {
+      pList.innerHTML = '';
+      cP.textContent = '';
+      pNote.textContent = 'Select an allele first.';
+      return;
+    }
+    var q = qP.value.trim().toUpperCase();
+    var items = a.peptides.filter(function (p) {
+      return !q || p.p.toUpperCase().indexOf(q) >= 0;
+    });
+    cP.textContent = 'top ' + a.peptides.length + ' of ' + a.n_pairs.toLocaleString();
+    pList.innerHTML = '';
+    items.forEach(function (p) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'row-btn';
+      b.setAttribute('aria-selected', String(p.p === state.peptide));
+      b.innerHTML =
+        '<span class="row-main">' +
+          '<span class="row-t">' + esc(p.p) + '</span>' +
+          '<span class="row-s">' + (p.s ? '<span class="pill p-xtal">solved</span>' : 'measured') + '</span>' +
+        '</span>' +
+        '<span class="row-num">' + thalf(p.t) + ' h</span>';
+      b.addEventListener('click', function () { state.peptide = p.p; renderPeps(); renderStruct(); });
+      li.appendChild(b);
+      pList.appendChild(li);
+    });
+    pNote.innerHTML = 'Measured dissociation half-life, longest first. ' +
+      '<span class="pill p-xtal">solved</span> marks a pair that also has an experimental ' +
+      'structure in the PDB. ' + a.n_floor + ' of this allele&rsquo;s ' +
+      a.n_pairs.toLocaleString() + ' peptides sit at the assay floor.';
+  }
+
+  /* ---------- structure panel ---------- */
+  var ANCHOR = { 2: 'anchor', 9: 'anchor' };
+
+  function grooveSVG(a, pepSeq) {
+    var W = 420, H = 196;
+    var svg = el('svg', {
+      viewBox: '0 0 ' + W + ' ' + H, role: 'img',
+      'aria-label': 'Contact schematic: the 34 HLA contact residues around the ' +
+        pepSeq.length + '-residue peptide'
+    });
+    var ps = a.pseudoseq.split('');
+    var n = ps.length;                 // 34
+    var pep = pepSeq.split('');
+    var m = pep.length;
+
+    var padL = 14, padR = 14;
+    var innerW = W - padL - padR;
+
+    svg.appendChild(el('text', { x: padL, y: 14, 'class': 'gv-label' },
+      a.pseudoseq.length + ' contact residues'));
+
+    /* two arcs of contact residues, above and below the peptide */
+    var half = Math.ceil(n / 2);
+    var topRes = ps.slice(0, half), botRes = ps.slice(half);
+
+    function drawArc(res, yBase, offset, flip) {
+      var step = innerW / res.length;
+      res.forEach(function (r, i) {
+        var cx = padL + step * i + step / 2;
+        var lift = Math.sin((i + 0.5) / res.length * Math.PI) * 14;
+        var cy = yBase + (flip ? lift : -lift);
+        svg.appendChild(el('circle', {
+          cx: cx, cy: cy, r: 9.5,
+          fill: 'var(--surface-3)', stroke: 'var(--line-2)', 'stroke-width': 1
+        }));
+        var t = el('text', {
+          x: cx, y: cy + 3.6, 'text-anchor': 'middle', 'class': 'gv-res',
+          fill: 'var(--ink-2)'
+        }, r);
+        svg.appendChild(t);
+        svg.appendChild(el('text', {
+          x: cx, y: flip ? cy + 20 : cy - 14, 'text-anchor': 'middle', 'class': 'gv-pos'
+        }, String(offset + i + 1)));
+      });
+    }
+
+    drawArc(topRes, 54, 0, false);
+    drawArc(botRes, 150, half, true);
+
+    /* the peptide, centre */
+    var pstep = innerW / m;
+    pep.forEach(function (aa, i) {
+      var cx = padL + pstep * i + pstep / 2;
+      var isAnchor = ANCHOR[i + 1] || (i + 1) === m;
+      svg.appendChild(el('rect', {
+        x: cx - Math.min(pstep / 2 - 2, 15), y: 90, rx: 5,
+        width: Math.min(pstep - 4, 30), height: 26,
+        fill: isAnchor ? 'var(--hot)' : 'var(--accent)'
+      }));
+      svg.appendChild(el('text', {
+        x: cx, y: 107.5, 'text-anchor': 'middle', 'class': 'gv-pep'
+      }, aa));
+      svg.appendChild(el('text', {
+        x: cx, y: 128, 'text-anchor': 'middle', 'class': 'gv-anchor'
+      }, 'P' + (i + 1)));
+    });
+
+    svg.appendChild(el('text', {
+      x: W - padR, y: H - 4, 'text-anchor': 'end', 'class': 'gv-label'
+    }, 'orange = anchor positions'));
+
+    return svg;
+  }
+
+  function renderStruct() {
+    var a = byAllele[state.allele];
+    if (!a) {
+      cS.textContent = '';
+      sBody.innerHTML = '<div class="empty">Select an allele to see its crystallographic template.</div>';
+      return;
+    }
+    var t = a.tpl;
+    var ov = null;
+    if (state.peptide) {
+      ov = (D.overlap || []).filter(function (o) {
+        return o.allele === a.allele && o.peptide === state.peptide;
+      })[0] || null;
+    }
+    var pdb = ov ? ov.pdbs[0] : (t ? t.pdb : null);
+    var link = ov ? ov.link : (t ? t.link : null);
+    var tierCls = t ? ('p-' + t.tier.toLowerCase()) : '';
+    cS.textContent = ov ? 'exact complex' : 'allele template';
+
+    var html = '';
+    html += '<p class="struct-id">' + esc(pdb || '\u2014') + '</p>';
+    if (ov) {
+      html += '<p class="struct-title"><strong>' + esc(a.allele) + ' \u00b7 ' + esc(state.peptide) +
+        '</strong> \u2014 this exact peptide\u2013HLA complex has been solved experimentally' +
+        (ov.tcr ? ', in complex with a TCR' : '') + '.</p>';
+    } else if (t) {
+      html += '<p class="struct-title">' + esc(t.title) + '</p>';
+    }
+
+    html += '<div class="kv">';
+    if (ov) {
+      html += '<div><span class="k">Resolution</span><span class="v">' + ov.res + ' \u00c5</span></div>';
+      html += '<div><span class="k">Year</span><span class="v">' + esc(ov.year) + '</span></div>';
+      html += '<div><span class="k">Measured t\u00bd</span><span class="v">' + thalf(ov.thalf) + ' h</span></div>';
+      html += '<div><span class="k">Entries</span><span class="v">' + ov.pdbs.length + '</span></div>';
+    } else if (t) {
+      html += '<div><span class="k">Resolution</span><span class="v">' + (t.res != null ? t.res + ' \u00c5' : '\u2014') + '</span></div>';
+      html += '<div><span class="k">Year</span><span class="v">' + esc(t.year) + '</span></div>';
+      html += '<div><span class="k">Exact entries</span><span class="v">' + t.n_exact + '</span></div>';
+      html += '<div><span class="k">TCR complexes</span><span class="v">' + t.tcr + '</span></div>';
+    }
+    html += '</div>';
+
+    if (t) {
+      html += '<p class="note"><span class="pill ' + tierCls + '">' + esc(t.tier_text) + '</span> ';
+      html += t.mismatch === 0
+        ? 'The template&rsquo;s \u03b11/\u03b12 groove is 100% identical to this allele, so it can be used directly.'
+        : t.mismatch + ' of the 34 peptide-contact positions differ from the nearest solved structure.';
+      html += '</p>';
+    }
+
+    if (link) {
+      html += '<a class="link-out" href="' + esc(link) + '" target="_blank" rel="noopener">' +
+        'View 3D structure \u2197</a>';
+    }
+
+    html += '<div class="groove-wrap" id="groove"></div>';
+    sBody.innerHTML = html;
+
+    var g = document.getElementById('groove');
+    if (state.peptide) {
+      g.appendChild(grooveSVG(a, state.peptide));
+    } else {
+      g.innerHTML = '<div class="empty">Select a peptide to map it into this groove.</div>';
+    }
+  }
+
+  function selectAllele(name) {
+    state.allele = name;
+    var a = byAllele[name];
+    state.peptide = a && a.peptides.length ? a.peptides[0].p : null;
+    qP.value = '';
+    renderAlleles();
+    renderPeps();
+    renderStruct();
+  }
+
+  qA.addEventListener('input', renderAlleles);
+  qP.addEventListener('input', renderPeps);
+
+  /* open on an allele that has a solved exact complex, so the panel is full at rest */
+  var opening = (D.overlap && D.overlap.length) ? D.overlap[0].allele : D.alleles[0].allele;
+  renderAlleles();
+  selectAllele(opening);
+  if (D.overlap && D.overlap.length && D.overlap[0].allele === opening) {
+    state.peptide = D.overlap[0].peptide;
+    renderPeps();
+    renderStruct();
+  }
+})();
+</script>
