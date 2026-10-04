@@ -329,15 +329,25 @@ def score(
     limit: int = 0,
     dry_run: bool = False,
 ):
-    """Score one workspace's half. ``--dry-run`` prints the plan and stops."""
+    """Score one workspace's half. ``--dry-run`` prints the plan and stops.
+
+    ``--dry-run`` is **purely local**: it forecasts against the frozen cohort
+    size and never calls ``list_folds``, which would spawn a container (and
+    would fail outright before production has written anything). Creating the
+    app's functions is all that touching the workspace amounts to here, which
+    is the same free check stage 4c used.
+    """
     check_profile(profile)
+    if dry_run:
+        n = limit or PAIRS_PER_PROFILE
+        print(json.dumps(forecast_usd(n, n_orders), indent=2))
+        print(f"dry run: nothing spawned; forecast assumes the frozen "
+              f"{n} folds for profile {profile!r}, not a Volume listing")
+        return
     folders = list_folds.remote(root)
     if limit:
         folders = folders[:limit]
     print(json.dumps(forecast_usd(len(folders), n_orders), indent=2))
-    if dry_run:
-        print("dry run: nothing spawned")
-        return
     if len(folders) != PAIRS_PER_PROFILE and not limit:
         print(f"warning: {len(folders)} folds, expected {PAIRS_PER_PROFILE} for "
               f"one profile. Production may be incomplete -- a partial half is "

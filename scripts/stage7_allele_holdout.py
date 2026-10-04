@@ -85,13 +85,29 @@ def _run_one(allele: str) -> tuple[dict, list[dict], np.ndarray, np.ndarray]:
 
 
 def parse_npy(specs: list[str]) -> tuple[FeatureSource, ...]:
-    """``NAME=matrix.npy:pair_ids.npy`` -> feature sources."""
+    """``NAME=matrix.npy:pair_ids.npy`` -> feature sources.
+
+    Rejects a prediction file outright. A file in ``preds/`` holds the output of
+    a model that was fitted on **every** allele, so scoring it here would score
+    a model on alleles it trained on and report the leak as pan-allele
+    generalisation -- a number that would look like a win. Leave-allele-out
+    refits 68 times, so an arm has to supply *features*, not predictions.
+    """
     out = []
     for spec in specs:
         if "=" not in spec or ":" not in spec:
             raise SystemExit(f"--npy expects NAME=matrix.npy:pair_ids.npy, got {spec!r}")
         name, paths = spec.split("=", 1)
         matrix_path, pair_id_path = paths.rsplit(":", 1)
+        for path in (matrix_path, pair_id_path):
+            if path.endswith(".csv") or "preds/" in path:
+                raise SystemExit(
+                    f"{path!r} looks like a prediction file. Stage 7b refits a "
+                    "model per held-out allele, so it needs a feature matrix, "
+                    "not predictions: a preds/*.csv was produced by a model "
+                    "fitted on every allele, and scoring it here would report "
+                    "that leak as pan-allele generalisation. Supply "
+                    "NAME=features.npy:pair_ids.npy instead.")
         out.append(FeatureSource(name=name, kind="npy", matrix_path=matrix_path,
                                  pair_id_path=pair_id_path))
     return tuple(out)
@@ -202,6 +218,12 @@ def main() -> int:
             "contract": "stage 7b leave-allele-out -- separate from EVALUATION.md",
             "arm": arm.name,
             "representations": [s.name for s in arm.sources],
+            # Recorded explicitly: the sequence arm inherits its L2 from
+            # stage 2's selected grid, and that grid is being extended
+            # downward. If the baseline moves, this field says whether this run
+            # predates the move.
+            "configs": {k: {"hidden": list(v[0]), "l2": v[1]}
+                        for k, v in arm.configs.items()},
             "seeds": list(seeds),
             "ensemble_members_per_fold": arm.n_members(),
             "cohort_splits": sorted(cohort["split"].unique().tolist()),

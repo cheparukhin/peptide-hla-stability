@@ -366,3 +366,26 @@ def test_paired_bootstrap_can_restrict_to_one_stratum(info):
                                      n_boot=500)
     assert out["n_alleles"] == 20
     assert out["stratum"] == "distant (d>=4)"
+
+
+# --- arms must supply features, not predictions -----------------------------
+
+def test_prediction_files_are_rejected_as_an_arm():
+    """A preds/*.csv came from a model fitted on every allele. Scoring it under
+    a leave-allele-out contract would report that leak as pan-allele
+    generalisation -- a number that would look like a win."""
+    from scripts.stage7_allele_holdout import parse_npy
+
+    for spec in ("esm=preds/esm_ensemble.csv:preds/ids.csv",
+                 "esm=features/esm.npy:preds/esm_ensemble.csv"):
+        with pytest.raises(SystemExit, match="prediction file"):
+            parse_npy([spec])
+
+
+def test_npy_arm_specs_are_accepted():
+    from scripts.stage7_allele_holdout import parse_npy
+
+    got = parse_npy(["esm=features/esm2.npy:features/esm2_pair_ids.npy"])
+    assert len(got) == 1
+    assert got[0].name == "esm" and got[0].kind == "npy"
+    assert got[0].matrix_path.endswith("esm2.npy")

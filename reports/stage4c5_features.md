@@ -287,10 +287,15 @@ Pooled over all five complexes, by model and arm:
 
 Note the **geometry features barely separate the models** (contacts 345–366,
 buried fraction 0.776–0.789 across every model and arm) while the confidence
-features separate them sharply. That is consistent with the pilot's finding
-that ESMFold2's error is in side-chain placement at an otherwise correct
-backbone pose, and it is a reason to carry both kinds of feature into stage 5
+features separate them sharply. That is consistent with the pilot's **accuracy**
+finding — ESMFold2's error is in side-chain placement at an otherwise correct
+backbone pose — and it is a reason to carry both kinds of feature into stage 5
 rather than only one.
+
+This is an *accuracy* observation, about agreement with crystal structures. It
+is a different question from *seed stability*, where ESMFold2's variation is
+backbone-dominated rather than side-chain-dominated (§8.1). Both are true; they
+should not be used to explain each other.
 
 ### 4.3 Seed and arm variation
 
@@ -515,37 +520,67 @@ on the 90 pilot folds:
 | ProteinMPNN seed sd | 0.043 | **0.157** |
 
 **Definitions, so two numbers for "the ProteinMPNN seed control" cannot be
-confused.** My row uses the column `mpnn_score`, with seed spread as the mean
-over `(complex_id, arm)` groups of the within-group sd, against between-complex
-spread as the mean over `(arm, seed)` groups of the within-group sd — pooled
-across all three arms. The `inverse-folding` workstream reports `pep_ll_total`
-**per arm** and gets 10.0 / 8.0 / 6.8 for Boltz-2 and 1.1 / 2.4 / 1.2 for
-ESMFold2. Different column, different aggregation, same story; neither number
-is wrong and both should be labelled wherever they appear. (`mpnn_score` and
-`pep_ll_mean` are the same quantity up to sign, and `pep_ll_total` is
-`pep_ll_mean × 9`.)
+confused.** My row uses `mpnn_score`, seed spread as the mean over
+`(complex_id, arm)` groups of the within-group s.d., between-complex spread as
+the mean over `(arm, seed)` groups of the within-group s.d., **pooled across
+all three arms, `ddof=1`** (the pandas default). The `inverse-folding`
+workstream reports **per arm**: 10.0 / 8.0 / 6.8 for Boltz-2 and
+1.1 / 2.4 / 1.2 for ESMFold2.
+
+Only the aggregation ever mattered. An s.d. ratio is invariant under affine
+transform, and `mpnn_score = −pep_ll_mean` and `pep_ll_total = pep_ll_mean × 9`
+are affine transforms of one quantity, so all three columns give **identical**
+ratios — verified: 8.10 / 1.83 for both `mpnn_score` and `pep_ll_total` at
+`ddof=1`. For completeness, pooled at `ddof=0` gives 8.88 / 2.00. (A note in
+circulation attributes my 1.83 to `ddof=0`; it is `ddof=1`.)
 
 **These two controls do not agree, and they should not be presented as
 independent confirmations of each other.** They agree for Boltz-2 — both
-comfortably signal-dominated. For ESMFold2 they diverge: the ProteinMPNN score
-falls to 1.8, while my structural features are if anything marginally *more*
-seed-stable on ESMFold2 than on Boltz-2. Note also that 1.8 is a **marginal**
-verdict, not an inverted one: ESMFold2's between-complex spread still exceeds
-its seed spread.
+comfortably signal-dominated. For ESMFold2 they diverge: ProteinMPNN falls to
+1.8 while my structural features are, if anything, marginally *more*
+seed-stable on ESMFold2 than on Boltz-2. And 1.8 is a **marginal** verdict,
+not an inverted one: ESMFold2's between-complex spread still exceeds its seed
+spread.
 
-The divergence localises the instability rather than contradicting anything.
-ProteinMPNN scores a sequence against a backbone **and its side-chain
-context**, so it is sensitive to exactly what stage 4c identified as
-ESMFold2's failure — side-chain placement on an acceptable backbone. My
-features are mostly backbone geometry and confidence arrays, which are
-seed-stable in both models. §4.2 is the same finding from the other side:
-geometry barely separates the models (contacts 345–366, buried fraction
-0.776–0.789 across every model and arm) while confidence separates them
-sharply. **Two controls disagreeing, with the disagreement pinning down where
-the instability lives, is a better result than two controls agreeing.**
+**The mechanism is granularity, not side chains.** An earlier draft of this
+section attributed the divergence to ProteinMPNN being sensitive to
+side-chain placement. **That is wrong and is retracted.** ProteinMPNN's
+featuriser reads only N, CA, C, O and a *virtual* CB computed from N/CA/C
+geometry (`external/ProteinMPNN/protein_mpnn_utils.py:970`); it never sees a
+real side-chain coordinate, so it cannot be sensitive to one.
 
-Production is Boltz-2 only, so none of this blocks anything. It governs how
-ESMFold2 is described, not what is run.
+What the pose scores actually show is that the two models' seed jitter differs
+in both size and kind. Mean within-complex seed s.d. of peptide RMSD, over the
+five complexes:
+
+| Model | Arm | CA | heavy | heavy/CA |
+|---|---|---:|---:|---:|
+| Boltz-2 | A | 0.046 | 0.113 | 2.45 |
+| Boltz-2 | B | **0.016** | 0.044 | **2.65** |
+| Boltz-2 | C | 0.037 | 0.135 | 3.63 |
+| ESMFold2 | A | 0.114 | 0.117 | 1.03 |
+| ESMFold2 | B | **0.085** | 0.096 | **1.12** |
+| ESMFold2 | C | 0.119 | 0.111 | 0.93 |
+
+ESMFold2's **backbone** moves 2.5–5.2x more between seeds than Boltz-2's, and
+its seed variation is backbone-dominated (heavy/CA ≈ 1.0) where Boltz-2's is
+side-chain-dominated (2.45–3.63). ProteinMPNN is a **fine-grained backbone
+reader** — distances to 48 neighbours, with the virtual-CB direction set by
+backbone dihedrals — so sub-Ångström backbone jitter moves its score. My 109
+features are coarse aggregates (block means over hundreds of residue pairs,
+atom counts, a buried-area fraction) and are robust to it. That is the
+divergence, and it is a property of what each readout integrates over.
+
+Stage 4c's side-chain attribution for ESMFold2 concerns **accuracy** — heavy-
+atom RMSD against crystal while the backbone passes. This section concerns
+**seed stability**. Different questions, so the two are not in conflict; §4.2
+is the accuracy-side observation and should not be read as evidence for the
+mechanism here.
+
+**Two controls disagreeing, with the disagreement pinning down what each one
+integrates over, is a better result than two controls agreeing.** Production
+is Boltz-2 only, so none of this blocks anything; it governs how ESMFold2 is
+described, not what is run.
 
 ### 8.2 My features rank the error but do not isolate the failure — ProteinMPNN does
 
