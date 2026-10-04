@@ -12,9 +12,14 @@ Reads only committed, frozen inputs:
   reports/stage6_val_esm_per_allele.csv                per-allele validation Spearman
   reports/stage7_allele_holdout_per_allele_*.csv       leave-one-allele-out
 
+  demo/structures.json (optional)                      Boltz-2 Cα traces
+
 Nothing here recomputes splits or writes to `data/`. Run from anywhere:
 
     python3 demo/build_payload.py
+
+To include Boltz-2 structures, run ``fetch_structures.py`` first to produce
+``demo/structures.json``, then rebuild the payload.
 """
 
 from __future__ import annotations
@@ -144,13 +149,21 @@ def build() -> dict:
             }
         )
 
+    # --- Boltz-2 structures (optional, from fetch_structures.py) ---
+    structures = {}
+    structs_path = Path(__file__).resolve().parent / "structures.json"
+    if structs_path.exists():
+        structures = json.loads(structs_path.read_text())
+
     return {
         "alleles": alleles,
         "overlap": overlap,
+        "structures": structures,
         "totals": {
             "pairs": sum(len(v) for v in per.values()),
             "alleles": len(per),
             "structure_pairs": len(overlap),
+            "structures_loaded": len(structures),
             "templates": len(templates),
             "tier_a": sum(1 for v in templates.values() if v["tier"] == "A"),
         },
@@ -171,6 +184,8 @@ def main() -> None:
         f"{t['structure_pairs']} measured-and-solved pairs"
     )
     print(f"  {scored} alleles carry a validation score")
+    if t["structures_loaded"]:
+        print(f"  {t['structures_loaded']} Boltz-2 structures embedded")
 
 
 if __name__ == "__main__":

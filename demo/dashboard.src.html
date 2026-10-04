@@ -1,34 +1,38 @@
 <title>Groove</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root {
   color-scheme: light;
 
-  --paper:    #F5F7F9;
+  --paper:    #FAFAFA;
   --panel:    #FFFFFF;
-  --sunk:     #EDF1F4;
-  --ink:      #1A2433;
-  --ink-2:    #4F6070;
-  --ink-3:    #8494A3;
-  --rule:     #DDE4EA;
-  --rule-2:   #B8C5CF;
+  --sunk:     rgba(18, 18, 18, 0.04);
+  --ink:      #121212;
+  --ink-2:    rgba(18, 18, 18, 0.76);
+  --ink-3:    rgba(18, 18, 18, 0.65);
+  --rule:     rgba(18, 18, 18, 0.25);
+  --rule-2:   rgba(18, 18, 18, 0.40);
 
   /* selection / interaction accent */
-  --pick:     #4338CA;
-  --pick-soft:#EEF2FF;
-  --pick-sunk:#E0E7FF;
+  --pick:     #121212;
+  --pick-soft: rgba(18, 18, 18, 0.08);
+  --pick-sunk: rgba(18, 18, 18, 0.06);
   --pick-ink: #FFFFFF;
 
-  /* half-life ramp: pale = unstable, deep = holds */
-  --h0: #E8F4F8;
-  --h1: #9DD1DF;
-  --h2: #4DA8C4;
-  --h3: #1A7A9B;
-  --h4: #0B4D6C;
+  /* status dot */
+  --dot:      #54BB6D;
 
-  --ui:   'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
-  --seq:  'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* half-life ramp: pale = unstable, deep = holds */
+  --h0: #E8F0F2;
+  --h1: #A0C8D4;
+  --h2: #5A9EB2;
+  --h3: #2A78A0;
+  --h4: #134B66;
+
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ui:   var(--mono);
+  --seq:  var(--mono);
 
   --ease: cubic-bezier(.23, 1, .32, 1);
 }
@@ -36,19 +40,20 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --paper:  #0C1117;
-    --panel:  #141C24;
-    --sunk:   #1A242E;
-    --ink:    #E4ECF2;
-    --ink-2:  #A0B0BD;
-    --ink-3:  #6E7F8E;
-    --rule:   #243040;
-    --rule-2: #364858;
-    --pick:     #818CF8;
-    --pick-soft:#1E1B4B;
-    --pick-sunk:#272360;
-    --pick-ink: #0C0A2A;
-    --h0: #152830;
+    --paper:  #0A0A0A;
+    --panel:  #141414;
+    --sunk:   rgba(255, 255, 255, 0.05);
+    --ink:    #E8E8E8;
+    --ink-2:  rgba(255, 255, 255, 0.72);
+    --ink-3:  rgba(255, 255, 255, 0.50);
+    --rule:   rgba(255, 255, 255, 0.18);
+    --rule-2: rgba(255, 255, 255, 0.30);
+    --pick:     #E8E8E8;
+    --pick-soft: rgba(255, 255, 255, 0.08);
+    --pick-sunk: rgba(255, 255, 255, 0.06);
+    --pick-ink: #0A0A0A;
+    --dot:      #54BB6D;
+    --h0: #15252C;
     --h1: #1C4E62;
     --h2: #358CA8;
     --h3: #62BDD6;
@@ -57,19 +62,20 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper:  #0C1117;
-  --panel:  #141C24;
-  --sunk:   #1A242E;
-  --ink:    #E4ECF2;
-  --ink-2:  #A0B0BD;
-  --ink-3:  #6E7F8E;
-  --rule:   #243040;
-  --rule-2: #364858;
-  --pick:     #818CF8;
-  --pick-soft:#1E1B4B;
-  --pick-sunk:#272360;
-  --pick-ink: #0C0A2A;
-  --h0: #152830;
+  --paper:  #0A0A0A;
+  --panel:  #141414;
+  --sunk:   rgba(255, 255, 255, 0.05);
+  --ink:    #E8E8E8;
+  --ink-2:  rgba(255, 255, 255, 0.72);
+  --ink-3:  rgba(255, 255, 255, 0.50);
+  --rule:   rgba(255, 255, 255, 0.18);
+  --rule-2: rgba(255, 255, 255, 0.30);
+  --pick:     #E8E8E8;
+  --pick-soft: rgba(255, 255, 255, 0.08);
+  --pick-sunk: rgba(255, 255, 255, 0.06);
+  --pick-ink: #0A0A0A;
+  --dot:      #54BB6D;
+  --h0: #15252C;
   --h1: #1C4E62;
   --h2: #358CA8;
   --h3: #62BDD6;
@@ -82,8 +88,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--ui);
-  font-size: 15px;
+  font-family: var(--mono);
+  font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,11 +97,11 @@ body {
 }
 
 .shell {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-block: 0 48px;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-block: 0 36px;
 }
 
 /* ---------------- masthead ---------------- */
@@ -106,23 +112,22 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px 32px;
-  padding-block: 32px 20px;
-  border-bottom: 1px solid var(--rule);
+  padding-block: 28px 20px;
 }
 .masthead h1 {
-  font-size: clamp(22px, 2.8vw, 34px);
+  font-size: 25px;
   line-height: 1.15;
-  letter-spacing: -.02em;
-  font-weight: 700;
+  letter-spacing: .01em;
+  font-weight: 600;
+  text-transform: uppercase;
   margin: 0;
-  max-width: 22ch;
-  text-wrap: balance;
+  max-width: 40ch;
 }
 .standfirst {
-  margin: 8px 0 0;
-  color: var(--ink-2);
-  max-width: 56ch;
-  font-size: 14px;
+  margin: 6px 0 0;
+  color: var(--ink-3);
+  max-width: 64ch;
+  font-size: 12px;
   line-height: 1.6;
 }
 .masthead-side {
@@ -132,39 +137,35 @@ body {
 }
 
 .ghost {
-  font-family: var(--ui);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .02em;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   color: var(--ink-2);
   background: var(--panel);
   border: 1px solid var(--rule);
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 7px 16px;
-  min-height: 34px;
+  min-height: 32px;
   cursor: pointer;
-  transition: border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease);
+  transition: border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
 }
-.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); }
 .ghost:active { transform: scale(.97); }
 
 /* ---------------- the three tiers ---------------- */
 
 .tiers {
   display: grid;
-  grid-template-columns: 244px minmax(0, 1fr) minmax(0, 1.45fr);
-  grid-template-rows: minmax(560px, calc(100vh - 200px));
+  grid-template-columns: 310px minmax(0, 1fr) minmax(0, 1.4fr);
+  grid-template-rows: minmax(580px, calc(100vh - 180px));
   gap: 0;
   margin-top: 20px;
   background: var(--panel);
   border: 1px solid var(--rule);
-  border-radius: 14px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,.02),
-    0 2px 4px rgba(0,0,0,.03),
-    0 8px 24px rgba(0,0,0,.04);
-  transition: box-shadow .4s var(--ease);
 }
 .tier {
   display: flex;
@@ -178,26 +179,37 @@ body {
 
 .tier-top {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 14px 16px 10px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--rule);
-  background: var(--panel);
+  background: var(--sunk);
   position: sticky;
   top: 0;
   z-index: 1;
 }
 .tier-top h2 {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .06em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .09em;
   text-transform: uppercase;
   margin: 0;
-  color: var(--ink-3);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tier-top h2::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+  flex: 0 0 auto;
 }
 .tally {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 10.5px;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
@@ -205,36 +217,35 @@ body {
 }
 
 .sieve {
-  margin: 10px 14px 4px;
-  width: calc(100% - 28px);
-  font-family: var(--ui);
-  font-size: 13px;
+  margin: 10px 16px 4px;
+  width: calc(100% - 32px);
+  font-family: var(--mono);
+  font-size: 12px;
   color: var(--ink);
-  background: var(--sunk);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 8px 12px;
-  min-height: 36px;
-  transition: border-color .25s var(--ease), background .25s var(--ease), box-shadow .3s var(--ease);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-height: 34px;
+  transition: border-color .25s var(--ease), background .25s var(--ease);
 }
 .sieve::placeholder { color: var(--ink-3); opacity: .7; }
 .sieve:focus {
   border-color: var(--pick);
   background: var(--panel);
   outline: none;
-  box-shadow: 0 0 0 3px var(--pick-soft), 0 1px 2px rgba(0,0,0,.04);
 }
 
 .scroller {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 8px 12px;
+  padding: 7px;
   min-height: 0;
   scroll-behavior: smooth;
 }
-.scroller::-webkit-scrollbar { width: 5px; }
+.scroller::-webkit-scrollbar { width: 4px; }
 .scroller::-webkit-scrollbar-track { background: transparent; }
-.scroller::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 3px; }
+.scroller::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 2px; }
 
 /* ---------------- tier 1: alleles ---------------- */
 
@@ -244,38 +255,31 @@ body {
   text-align: left;
   background: none;
   border: 0;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  padding: 10px 10px;
+  margin-bottom: 2px;
   cursor: pointer;
-  font-family: var(--ui);
+  font-family: var(--mono);
   color: var(--ink);
   position: relative;
-  transition: background .22s var(--ease), transform .18s var(--ease), box-shadow .22s var(--ease);
+  transition: background .22s var(--ease), transform .18s var(--ease);
 }
 .allele:hover { background: var(--sunk); }
 .allele:active { transform: scale(.985); }
 .allele[aria-pressed="true"] {
   background: var(--pick-sunk);
+  border-left-color: var(--pick);
   animation: fadeSelect .32s var(--ease);
 }
-.allele[aria-pressed="true"]::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 8px; bottom: 8px;
-  width: 3px;
-  border-radius: 1.5px;
-  background: var(--pick);
-  animation: slideIn .3s var(--ease);
-  transform-origin: center top;
-}
 .allele-name {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 500;
   display: block;
 }
 .allele-sub {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--ink-3);
   display: block;
   margin-top: 2px;
@@ -307,10 +311,12 @@ body {
   text-align: left;
   background: none;
   border: 0;
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 2px;
   cursor: pointer;
-  font-family: var(--ui);
+  font-family: var(--mono);
   color: var(--ink);
   transition: background .22s var(--ease), transform .18s var(--ease);
 }
@@ -318,10 +324,11 @@ body {
 .rank:active { transform: scale(.992); }
 .rank[aria-pressed="true"] {
   background: var(--pick-sunk);
+  border-left-color: var(--pick);
   animation: fadeSelect .32s var(--ease);
 }
 .rank-ord {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 11px;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
@@ -329,22 +336,22 @@ body {
 }
 .rank-body { min-width: 0; }
 .rank-seq {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: .04em;
+  letter-spacing: .1em;
   display: block;
 }
 .bar {
-  height: 3px;
-  border-radius: 1.5px;
+  height: 4px;
+  border-radius: 2px;
   margin-top: 5px;
   background: var(--h2);
   min-width: 2px;
   transition: width .4s var(--ease), background .3s var(--ease);
 }
 .rank-val {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -356,8 +363,7 @@ body {
   margin-left: 6px;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--pick);
-  box-shadow: 0 0 0 2px var(--pick-soft);
+  background: var(--dot);
 }
 
 /* ---------------- tier 3: structure ---------------- */
@@ -392,18 +398,19 @@ body {
   pointer-events: none;
 }
 .stage-caption b {
-  font-family: var(--seq);
+  font-family: var(--mono);
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: .03em;
+  font-weight: 500;
+  letter-spacing: .1em;
   color: var(--ink);
 }
-.stage-caption span { font-size: 11px; color: var(--ink-3); letter-spacing: .01em; }
+.stage-caption span { font-size: 10.5px; color: var(--ink-3); letter-spacing: .01em; }
 
 .readouts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   border-top: 1px solid var(--rule);
+  background: var(--sunk);
 }
 .readouts > div {
   padding: 10px 14px;
@@ -412,16 +419,16 @@ body {
 }
 .readouts > div:last-child { border-right: 0; }
 .readouts dt {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: .06em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--ink-3);
   margin: 0;
 }
 .readouts dd {
-  font-family: var(--seq);
-  font-size: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   margin: 3px 0 0;
@@ -435,31 +442,34 @@ body {
   padding: 24px;
   text-align: center;
   color: var(--ink-3);
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: .06em;
 }
 
 /* ---------------- footnote ---------------- */
 
 .footnote {
   margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
   display: flex;
   flex-wrap: wrap;
   gap: 8px 28px;
   align-items: baseline;
-  font-size: 12px;
+  font-size: 10.5px;
   color: var(--ink-3);
   line-height: 1.6;
 }
 .footnote p { margin: 0; max-width: 72ch; }
 .footnote a {
-  color: var(--pick);
+  color: var(--ink);
   text-decoration: none;
   transition: color .2s var(--ease);
 }
 .footnote a:hover { text-decoration: underline; }
 .footnote code {
-  font-family: var(--seq);
-  font-size: 10.5px;
+  font-family: var(--mono);
+  font-size: 10px;
   background: var(--sunk);
   border: 1px solid var(--rule);
   border-radius: 4px;
@@ -471,7 +481,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--ink-3);
 }
 .ramp {
@@ -502,12 +512,13 @@ body {
 /* ---------------- responsive ---------------- */
 
 @media (max-width: 1080px) {
-  .tiers { grid-template-columns: 210px minmax(0, 1fr); }
+  .tiers { grid-template-columns: 260px minmax(0, 1fr); }
   .tier-structure {
     grid-column: 1 / -1;
     border-top: 1px solid var(--rule);
     border-right: 0;
   }
+  .shell { padding-left: 24px; padding-right: 24px; }
 }
 @media (max-width: 680px) {
   .tiers {
@@ -520,6 +531,7 @@ body {
   .tier-peptides .scroller { max-height: 300px; }
   .stage { min-height: 320px; }
   .masthead { padding-block: 20px 14px; }
+  .shell { padding-left: 16px; padding-right: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -535,10 +547,9 @@ body {
 
   <header class="masthead">
     <div>
-      <h1>Which peptides does an HLA allele hold on to?</h1>
+      <h1>pMHC-I Stability Explorer</h1>
       <p class="standfirst">
-        Every measured peptide for 75 HLA-I alleles, ranked by how long it stays bound, with the
-        groove that holds it.
+        Every measured peptide for 75 HLA-I alleles, ranked by dissociation half-life, with the groove that holds it.
       </p>
     </div>
     <div class="masthead-side">
@@ -758,12 +769,12 @@ body {
     var colours = {};
     function refreshColours() {
       colours = {
-        scaffold: css('--rule-2') || '#B8C5CF',
-        floor:    css('--rule') || '#DDE4EA',
-        pep:      css('--h3') || '#1A7A9B',
-        anchor:   css('--pick') || '#4338CA',
-        label:    css('--ink-3') || '#8494A3',
-        bg:       css('--sunk') || '#EDF1F4'
+        scaffold: css('--rule-2') || '#666666',
+        floor:    css('--rule') || '#999999',
+        pep:      css('--h3') || '#2A78A0',
+        anchor:   css('--pick') || '#121212',
+        label:    css('--ink-3') || '#999999',
+        bg:       css('--paper') || '#FAFAFA'
       };
     }
 
@@ -976,7 +987,9 @@ body {
         '<span class="rank-ord">' + (i + 1) + '</span>' +
         '<span class="rank-body">' +
           '<span class="rank-seq">' + esc(p.p) +
-            (p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
+            (structures[structureKey(a.allele, p.p)]
+              ? '<span class="solved" title="Boltz-2 structure available"></span>'
+              : p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
           '</span>' +
           '<span class="bar" style="width:' + Math.max(3, f * 100) + '%;background:var(' +
             rampVar(f) + ')"></span>' +
@@ -988,6 +1001,13 @@ body {
   }
 
   /* ---- tier 3 ---- */
+
+  /* Boltz-2 structure lookup. complex_id format: A0101_PEPTIDE */
+  var structures = D.structures || {};
+  function structureKey(allele, peptide) {
+    return allele.replace('HLA-', '').replace(/\*/g, '').replace(/:/g, '') + '_' + peptide;
+  }
+
   function paintStructure() {
     var a = byAllele[state.allele];
     if (!a || !state.peptide) return;
@@ -998,14 +1018,26 @@ body {
     var tpl = a.tpl;
 
     Structure3D.setPeptideColour(css(rampVar(norm(pep && pep.t, a.thalf_max))));
-    Structure3D.schematic(state.peptide);
+
+    /* Load Boltz-2 Cα trace if available, otherwise fall back to schematic */
+    var skey = structureKey(a.allele, state.peptide);
+    var boltzAtoms = structures[skey];
+    var hasBoltz = boltzAtoms && boltzAtoms.length > 0;
+
+    if (hasBoltz) {
+      Structure3D.load(boltzAtoms);
+    } else {
+      Structure3D.schematic(state.peptide);
+    }
     Structure3D.resetSpin();
 
     $('cap-seq').textContent = state.peptide;
-    $('cap-note').textContent = hit
-      ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
-      : 'Drag to rotate. Schematic geometry.';
-    $('tally-struct').textContent = hit ? 'solved complex' : 'allele template';
+    $('cap-note').textContent = hasBoltz
+      ? 'Boltz-2 prediction · Cα trace · drag to rotate'
+      : hit
+        ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
+        : 'Drag to rotate. Schematic geometry.';
+    $('tally-struct').textContent = hasBoltz ? 'Boltz-2 fold' : (hit ? 'solved complex' : 'allele template');
 
     var pdb = hit ? hit.pdbs[0] : (tpl ? tpl.pdb : null);
     var res = hit ? hit.res : (tpl ? tpl.res : null);
@@ -1013,20 +1045,25 @@ body {
 
     var cells = [
       ['Half-life', pep ? hours(pep.t) : 'n/a'],
-      ['Entry', pdb || 'none'],
-      ['Resolution', res != null ? res + ' Å' : 'n/a'],
-      ['Solved', year || 'n/a']
+      ['Source', hasBoltz ? 'Boltz-2' : (pdb || 'none')],
+      ['Resolution', hasBoltz ? 'predicted' : (res != null ? res + ' Å' : 'n/a')],
+      ['Chains', hasBoltz ? 'H + β₂m + pep' : (year || 'n/a')]
     ];
     $('readouts').innerHTML = cells.map(function (c) {
       return '<div><dt>' + c[0] + '</dt><dd>' + esc(c[1]) + '</dd></div>';
     }).join('');
 
     var link = hit ? hit.link : (tpl ? tpl.link : null);
-    $('provenance').innerHTML =
-      'Alleles, peptides and half-lives are measured. The groove is placeholder geometry pending ' +
-      'real coordinates — swap them in with <code>Structure3D.load(atoms)</code>.' +
-      (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
-              esc(pdb) + ' on RCSB →</a>' : '');
+    $('provenance').innerHTML = hasBoltz
+      ? 'Boltz-2 ectodomain fold (3-chain: HLA α + β₂m + peptide). Cα backbone trace, centred on the peptide groove.' +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Compare with ' +
+                esc(pdb) + ' on RCSB →</a>' : '')
+      : 'Alleles, peptides and half-lives are measured. ' +
+        (Object.keys(structures).length
+          ? 'Boltz-2 structures available for ' + Object.keys(structures).length + ' pairs.'
+          : 'Run <code>fetch_structures.py</code> then <code>build_payload.py</code> to load Boltz-2 folds.') +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
+                esc(pdb) + ' on RCSB →</a>' : '');
   }
 
   /* ---- selection ---- */
