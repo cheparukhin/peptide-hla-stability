@@ -235,7 +235,8 @@ parity is supported. Matching their network count is not matching their method.
 |---|---|---|
 | Split grouping, at equal training rows | Δ median ρ **−0.005 [−0.035, +0.046]**; Δ mean ρ **−0.000 [−0.024, +0.024]** | **no conclusive advantage; bounds it below ~0.024 on the mean** |
 | Ensembling (3 seeds) | +0.042 | measured |
-| Ensembling (30-network CV) | +0.090 | measured |
+| Ensembling (30-network CV), vs the mean of its own 30 members | +0.090 | measured |
+| Ensembling (30-network CV), vs the deployed single network | **+0.074** | measured — **this is the one the parity rule needs** |
 | The paper's `2^(-t0/th)` target | −0.022 to −0.034 | measured, worse here |
 
 **No conclusive grouping advantage — and the earlier +0.018 is retracted.**
@@ -293,6 +294,22 @@ domain) — more than the +0.042 from 3 seeds alone, because CV folds add
 training-data coverage on top of seed averaging. Members score 0.511–0.555; the
 ensemble reaches 0.645. Paired cluster bootstrap vs the single network:
 **Δ median per-allele ρ = +0.083 [+0.029, +0.124]**.
+
+**Read those two numbers carefully — they use different references.** The
++0.090 is the ensemble minus **the mean of its own 30 members** (0.645 −
+0.555). The table four rows above gives the ensemble at 0.645 and the single
+network at 0.573, which subtracts to **+0.074** — the ensemble minus **the
+single network we would otherwise ship**. Both are correct and neither is an
+error, but they answer different questions, and quoting +0.090 next to a table
+that subtracts to +0.074 invites a reader to conclude one of them is wrong.
+
+The +0.074 figure is the one that warrants the ensemble-parity rule, and it is
+also the more conservative of the two for a second reason: each ensemble member
+fits on **15,773 rows against the single network's 17,744** (verified from
+`stage2_ensemble_pep_pseudo.csv`), so members are weaker partly because each
+sees ~11% fewer rows. The ensemble-minus-mean-member gap bundles that
+training-row difference in with the averaging effect; the
+ensemble-minus-single-network gap does not.
 
 PCC here puts **both** predictions and labels on the paper's `2^(-1/th)` scale,
 converting through half-life so arms trained on different targets land on one
