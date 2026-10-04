@@ -659,6 +659,35 @@ Global three-chain ipTM must not be presented as peptide-interface confidence.
 - If time remains, add an allele-held-out evaluation (train without some alleles, test on them), stratified by how similar the held-out alleles are to training alleles. Only then make any new-allele generalisation claim — and report the confound described in the out-of-scope register alongside it.
 - The original assay panel was partly selected by predicted affinity, so broader biological or clinical claims need additional evidence.
 
+**The single-pass rule, predeclared 4 October 2026 before any test number existed.**
+The test set is scored **once**, in one pass, covering every arm whose
+validation-selected configuration is frozen at the cutoff. This creates a real
+scheduling tension worth stating plainly: the structural fold lands ~10:50 BST
+and feature extraction follows it, while the sequence and ESM-2 arms are ready
+much earlier. Scoring test early would forfeit any structural test number;
+waiting indefinitely risks scoring nothing. The rule resolves it in advance:
+
+1. **Cutoff.** Freeze arms at a cutoff set **three hours before the submission
+   deadline**, leaving time for the pass itself, uncertainty estimates, figures,
+   and the write-up. Nothing is scored on test before the cutoff, and nothing
+   is added after it.
+2. **Any arm not frozen by the cutoff is reported on validation only**, and the
+   report says so explicitly rather than omitting the arm. A missing test number
+   is a scheduling fact, not a result, and must not be presented as one.
+3. **The cutoff does not move because an arm is nearly ready.** That is the
+   failure mode this rule exists to prevent: an arm that slips past the cutoff
+   and is then waited for is an arm selected by its own convenience.
+4. **Partial structural coverage is admissible; convenience subsets are not.**
+   The two Modal halves are interleaved pair-by-pair, so a single completed half
+   is balanced across alleles and splits and may be scored as a labelled,
+   pre-declared half-cohort diagnostic. Whichever pairs merely *happened to
+   finish* by the cutoff is **not** an admissible subset, and the declared
+   sequence-model fallback covers unresolved structural rows.
+5. **Arms are matched or they are not compared.** Any arm entering the pass
+   carries the same ensemble size, seed protocol and tuning budget as the arms
+   it is compared against. An unmatched arm is reported, but separately, and
+   labelled as not comparable.
+
 **Deliverable:** reproducible code and configs, final comparison table, limitations section, and a concise presentation.
 
 **Why:** the submission should show what helped, where it helped, and what it cost. A gain on unseen peptides for familiar alleles is useful even without a new-allele result.
