@@ -234,18 +234,27 @@ def main() -> int:
               f"{evaluation.BOOTSTRAP_SEED}, whole peptide clusters) ===")
         ci_rows = []
         for n, p in arms[1:]:
-            r = paired_cluster_bootstrap(frame.cluster_id, frame["allele"],
-                                         y_true, base_pred, p, alleles,
-                                         n_boot=args.n_boot)
-            lo, hi = r["ci95"]
-            ci_rows.append({
-                "statistic": "median_per_allele_spearman", "baseline": base_name,
-                "model": n, "delta": r["delta_median_spearman"],
-                "ci_low": lo, "ci_high": hi, "verdict": describe_delta(r),
-                "n_boot": r["n_boot"],
-                "n_resamples_with_dropped_alleles":
-                    r.get("n_resamples_with_dropped_alleles"),
-            })
+            # Median is the contract's primary metric. Mean is reported beside
+            # it because stage 2's ensembling figures are means over the allele
+            # panel: without both, a stage 6 delta and a stage 2 delta cannot be
+            # compared, and the mismatch reads as a contradiction.
+            for stat in ("median", "mean"):
+                r = paired_cluster_bootstrap(frame.cluster_id, frame["allele"],
+                                             y_true, base_pred, p, alleles,
+                                             n_boot=args.n_boot, statistic=stat)
+                lo, hi = r["ci95"]
+                ci_rows.append({
+                    "statistic": f"{stat}_per_allele_spearman",
+                    "baseline": base_name, "model": n,
+                    "delta": r["delta_median_spearman"],
+                    "ci_low": lo, "ci_high": hi,
+                    "verdict": (describe_delta(r) if stat == "median"
+                                else "(mean panel statistic; the predeclared "
+                                     "verdict rule applies to the median)"),
+                    "n_boot": r["n_boot"],
+                    "n_resamples_with_dropped_alleles":
+                        r.get("n_resamples_with_dropped_alleles"),
+                })
             # the same paired machinery on the stage 6 statistics
             lk_a = pd.Series(base_pred, index=frame["pair_id"].to_numpy())
             lk_b = pd.Series(p, index=frame["pair_id"].to_numpy())

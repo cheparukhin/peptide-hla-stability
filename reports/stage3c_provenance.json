@@ -329,7 +329,7 @@
   "atlas_sha256": "8547c64299905a15aa2f9b79cdd9c1c88e99bdecabe40580a4d0c59604efec87",
   "atlas_url": "http://mhcmotifatlas.org/data/classI/all_peptides.txt",
   "proteome_sha256": "dc8ef8cbf0fc1b857b3be9a559613533ec49824079fb057e31fdfcf578cb229a",
-  "build_seconds": 14.5,
+  "build_seconds": 111.6,
   "swapped_decoy_control": {
     "decoy_ratio": 10,
     "seed": 20261004,
@@ -697,17 +697,9 @@
       }
     ]
   },
-  "runtime_seconds": 48.1,
-  "verification": {
-    "seq_baseline": {
-      "checked": true,
-      "file": "seq_baseline.csv",
-      "max_abs_diff": 2.2387695342018787e-07,
-      "pearson": 0.9999999999999999,
-      "spearman_rank_identical": true
-    }
-  },
+  "runtime_seconds": 159.8,
+  "verification": {},
   "arms": [
-    "seq_baseline"
+    "random_control"
   ]
 }

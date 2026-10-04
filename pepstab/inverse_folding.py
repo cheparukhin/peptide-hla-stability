@@ -57,6 +57,9 @@ import numpy as np
 
 REPO = Path(__file__).resolve().parent.parent
 MPNN_DIR = Path(os.environ.get("PROTEINMPNN_DIR", REPO / "external" / "ProteinMPNN"))
+# On Modal this module is copied to /root as a flat module, so REPO-relative
+# paths do not resolve; both locations are overridable by environment.
+SCRIPTS_DIR = Path(os.environ.get("PEPSTAB_SCRIPTS_DIR", REPO / "scripts"))
 DEFAULT_CHECKPOINT = "v_48_020.pt"
 BACKBONE_ATOMS = ("N", "CA", "C", "O")
 ALPHABET = "ACDEFGHIKLMNPQRSTVWYX"
@@ -94,9 +97,9 @@ def proteinmpnn_provenance(checkpoint: str = DEFAULT_CHECKPOINT) -> dict:
 # --------------------------------------------------------------------------
 def _pose_check_helpers():
     """Reuse the existing mmCIF parsing rather than writing a second one."""
-    scripts = str(REPO / "scripts")
-    if scripts not in sys.path:
-        sys.path.insert(0, scripts)
+    for candidate in (str(SCRIPTS_DIR), str(Path(__file__).resolve().parent)):
+        if candidate not in sys.path:
+            sys.path.insert(0, candidate)
     from boltz_pose_check import ca_by_chain, find_subsequence, load_prediction  # noqa
 
     return load_prediction, ca_by_chain, find_subsequence
@@ -262,11 +265,15 @@ def score_complex(
     cx: Complex,
     sequences: dict[str, str] | None = None,
     n_orders: int = 32,
-    batch_size: int = 8,
+    batch_rows: int = 8,
     checkpoint: str = DEFAULT_CHECKPOINT,
     seed: int = 0,
 ) -> dict[str, dict]:
     """Conditional log-likelihood of each candidate peptide on this backbone.
+
+    ``batch_rows`` caps *total* rows per forward pass (orders x candidates),
+    not orders alone: a 383-residue arm-B complex at 40 rows per pass needs
+    well over a gigabyte, which on a shared machine means swap, not speed.
 
     ``sequences`` maps a label -> a 9-mer to place on the peptide chain; the
     native sequence is always included under ``"native"``. Returns label ->
@@ -314,8 +321,9 @@ def score_complex(
 
     with torch.no_grad():
         done = 0
+        per_pass = max(1, batch_rows // len(labels))
         while done < n_orders:
-            k = min(batch_size, n_orders - done)
+            k = min(per_pass, n_orders - done)
             B = k * len(labels)
             Xb = X.repeat(B, 1, 1, 1)
             maskb = mask.repeat(B, 1)
@@ -363,11 +371,13 @@ def score_folder(
     n_orders: int = 32,
     checkpoint: str = DEFAULT_CHECKPOINT,
     seed: int = 0,
+    batch_rows: int = 8,
 ) -> dict:
     """Score one prediction folder; returns one tidy row."""
     cx = load_complex(folder)
     scored = score_complex(
-        cx, sequences=decoys, n_orders=n_orders, checkpoint=checkpoint, seed=seed
+        cx, sequences=decoys, n_orders=n_orders, checkpoint=checkpoint,
+        seed=seed, batch_rows=batch_rows,
     )
     native = scored["native"]
     row = {
@@ -407,5 +417,22 @@ def score_folder(
 
 
 def find_predictions(root: Path) -> list[Path]:
-    """Every prediction folder under ``root`` (one ``metadata.json`` each)."""
-    return sorted(p.parent for p in Path(root).rglob("metadata.json"))
+    """Every cohort prediction folder under ``root`` (one ``metadata.json`` each).
+
+    Delegates to ``pepstab.structural_features.discover_folds``, which skips the
+    ``_smoke`` / ``_shards`` / ``_failed`` trees that production writes next to
+    the cohort output. Sharing that one implementation with the stage 4c.5
+    extractor is deliberate: ingesting a harness fold raises nothing and looks
+    like a normal row, so two independent exclusion rules are two chances to
+    get it silently wrong.
+    """
+    discover_folds = None
+    for mod in ("pepstab.structural_features", "structural_features"):
+        try:
+            discover_folds = __import__(mod, fromlist=["discover_folds"]).discover_folds
+            break
+        except ImportError:
+            continue
+    if discover_folds is None:  # pilot-only fallback; the pilot has no such trees
+        return sorted(p.parent for p in Path(root).rglob("metadata.json"))
+    return sorted(discover_folds(Path(root)))

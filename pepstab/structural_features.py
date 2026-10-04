@@ -339,7 +339,7 @@ def extract_features(fold: Fold) -> dict[str, Any]:
         "allele": inputs["allele"],
         "peptide": inputs["peptide"],
         "arm": inputs["arm"],
-        "seed": meta["seed"],
+        "seed": _seed(meta),
         "complex_id": inputs["complex_id"],
         "n_chains": len(fold.chains),
         "n_tokens": fold.n_tokens,
@@ -478,11 +478,104 @@ def extract_features(fold: Fold) -> dict[str, Any]:
 
     row.update(_pair_iptm(fold, chain_index, names))
 
+    row.update(_provenance(fold))
+
     row["status"] = "ok"
     bad = [k for k, v in row.items() if isinstance(v, float) and not math.isfinite(v)]
     if bad:
         raise MappingError(f"{fold.folder}: non-finite feature values {bad}")
     return row
+
+
+def _first(*values):
+    """The first value that is not ``None``."""
+    for value in values:
+        if value is not None:
+            return value
+    return None
+
+
+def _seed(metadata: dict[str, Any]) -> int:
+    """The fold's seed, from either metadata schema.
+
+    The pilot runner records ``seed`` at the top level; the production runner
+    records it under ``settings`` and puts ``shard`` at the top level instead.
+    The schemas are close enough to look identical and different enough to
+    throw ``KeyError`` -- so read both rather than guessing, and raise if
+    neither is present rather than defaulting to 0 and inventing provenance.
+    """
+    for candidate in (metadata.get("seed"), metadata.get("settings", {}).get("seed")):
+        if candidate is not None:
+            return int(candidate)
+    raise MappingError("metadata.json records no seed at the top level or under settings")
+
+
+def _provenance(fold: Fold) -> dict[str, Any]:
+    """Carry the fold's own provenance into the feature row.
+
+    ``metadata.json`` already records the MSA hashes the fold actually read,
+    the pinned package and weight revision, the output file hashes and the
+    measured cost. Propagating them means a feature row can be traced back to
+    the exact inputs that produced it without re-deriving anything.
+    """
+    meta = fold.metadata
+    inputs = meta.get("inputs", {})
+    settings = meta.get("settings", {})
+    chains = inputs.get("chains", [])
+    labels = ["hla_chain", "b2m", "peptide"] if len(chains) == 3 else ["hla_chain", "peptide"]
+
+    out: dict[str, Any] = {
+        "boltz_package": settings.get("package"),
+        "weight_revision": settings.get("weight_revision"),
+        "recycling_steps": settings.get("recycling_steps"),
+        "sampling_steps": settings.get("sampling_steps"),
+        "diffusion_samples": settings.get("diffusion_samples"),
+        "msa_cap": inputs.get("cap"),
+        # Recorded, not trusted as the join key: the authoritative pair_id is
+        # attached later by joining splits on (allele, peptide).
+        "metadata_pair_id": inputs.get("pair_id", meta.get("pair_id")),
+        "metadata_split": inputs.get("split", meta.get("split")),
+        "run_id": meta.get("run_id"),
+        # Pilot keeps shard under inputs; production at the top level.
+        "shard": _first(inputs.get("shard"), meta.get("shard"), settings.get("shard")),
+        "fold_s": meta.get("fold_s"),
+        "peak_gpu_gb": meta.get("peak_gpu_gb"),
+        # None in these containers, for this construct, as in the pilot.
+        # Carried so its absence is visible rather than inferred.
+        "cgroup_peak_gb": meta.get("cgroup_peak_gb"),
+        # Pilot: is_warmup. Production: is_shard_first. Same meaning -- this
+        # fold absorbed model load, so its fold_s is not a steady-state time.
+        "is_shard_first": _first(meta.get("is_shard_first"), meta.get("is_warmup")),
+        "seed_scope": settings.get("seed_scope"),
+    }
+    # Observed prediction order within the shard/batch. The pilot keys it
+    # "<complex_id>_arm_<arm>"; production, being arm B only, keys it by
+    # complex_id alone. Boltz's parallel parser can reorder records, so this
+    # is what makes the order reproducible in the record.
+    order = settings.get("actual_prediction_order") or settings.get("input_order") or []
+    cid = inputs.get("complex_id")
+    for case in (cid, f"{cid}_arm_{inputs.get('arm')}"):
+        if case in order:
+            out["prediction_order_index"] = order.index(case)
+            break
+    else:
+        out["prediction_order_index"] = None
+    out["prediction_order_size"] = len(order) or None
+    for label, chain in zip(labels, chains):
+        msa = chain.get("msa") or {}
+        out[f"msa_csv_sha256_{label}"] = msa.get("csv_sha256")
+        out[f"msa_depth_{label}"] = msa.get("depth")
+    hashes = meta.get("output_hashes") or {}
+    for name, digest in hashes.items():
+        if name.endswith(".cif"):
+            out["cif_sha256"] = digest
+        elif name.startswith("pae"):
+            out["pae_sha256"] = digest
+        elif name.startswith("plddt"):
+            out["plddt_sha256"] = digest
+        elif name.startswith("confidence"):
+            out["confidence_sha256"] = digest
+    return out
 
 
 def _pair_iptm(fold: Fold, chain_index: dict[str, int], names: dict[str, str]) -> dict[str, Any]:
@@ -561,6 +654,55 @@ def extract_path(folder: Path) -> dict[str, Any]:
         except Exception:  # noqa: BLE001
             pass
         return row
+
+
+# --- Construct provenance ---------------------------------------------------
+
+ECTODOMAIN_CSV = Path(__file__).resolve().parent.parent / "hla75_ectodomain_b2m.csv"
+
+
+def alpha3_provenance(path: Path | None = None):
+    """Per-allele alpha3 provenance for the folded 275-residue ectodomain.
+
+    Three alleles have no full-length IMGT record, so their alpha3 was taken
+    from a close relative. For those, part of the folded construct is a
+    different molecule, and every structural feature computed on them is
+    computed on a partly-synthetic construct. Stage 5 needs to see that in the
+    data, not only in prose.
+
+    ``a3_source`` cannot be compared to ``allele`` directly: it drops the
+    ``HLA-`` prefix for the exact-match rows and keeps it for the borrowed
+    ones, so a naive ``!=`` flags all 75. Both sides are normalised here, and
+    the engineered C67S alleles -- whose alpha3 comes from the wild type of
+    *the same* allele while alpha1/alpha2 stay as measured -- get their own
+    label rather than being lumped in with the borrowed three.
+
+    Returns a frame with ``allele``, ``alpha3_source_allele``,
+    ``alpha3_borrowed`` and ``alpha3_provenance`` in
+    ``{exact, borrowed_relative, wildtype_of_engineered}``.
+    """
+    import pandas as pd
+
+    frame = pd.read_csv(path or ECTODOMAIN_CSV)
+    source = frame["a3_source"].str.replace("HLA-", "", regex=False)
+    base = frame["allele"].str.replace("HLA-", "", regex=False).str.replace(
+        r"\(.*\)$", "", regex=True
+    )
+    engineered = frame["allele"].str.contains(r"\(", regex=True)
+    borrowed = source != base
+    provenance = np.where(
+        borrowed,
+        "borrowed_relative",
+        np.where(engineered, "wildtype_of_engineered", "exact"),
+    )
+    return pd.DataFrame(
+        {
+            "allele": frame["allele"],
+            "alpha3_source_allele": source,
+            "alpha3_borrowed": borrowed,
+            "alpha3_provenance": provenance,
+        }
+    )
 
 
 # --- Joining to the dataset -------------------------------------------------

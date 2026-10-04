@@ -47,6 +47,7 @@ Test is never loaded.
 from __future__ import annotations
 
 import argparse
+import gc
 import itertools
 import json
 import sys
@@ -56,7 +57,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import Ridge
+from scipy.linalg import cho_factor, cho_solve
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -69,7 +70,7 @@ from pepstab.evaluation import (  # noqa: E402
     paired_cluster_bootstrap,
     score,
 )
-from pepstab.features import build_features  # noqa: E402
+from pepstab.features import ENCODINGS, build_features  # noqa: E402
 from pepstab.mlp import MLPConfig, MLPRegressor  # noqa: E402
 from scripts.baseline_ensemble import N_FOLDS, cv_folds  # noqa: E402
 from scripts.baseline_sequence import (  # noqa: E402
@@ -91,9 +92,39 @@ RUNS_CSV = REPORT_DIR / "stage3_runs.csv"
 #: means rank <= 74, so this is lossless, not a compression choice.
 HLA_PCA = 74
 
+#: Peptide blocks are reduced to this many components by default. Unlike the
+#: HLA reduction this one **is** lossy -- 5,633 distinct peptides can support
+#: far more than 256 directions -- so it is a resource decision, taken because
+#: this machine has 16 GB shared across the whole team and the full
+#: per-position block is 4,320 columns (346 MB for the training split alone,
+#: before any float64 copy a solver makes).
+#:
+#: It is not taken on trust: ``--pep-pca 0`` disables it, and the selected
+#: representation is re-run uncompressed as a control so the report can state
+#: what, if anything, the reduction cost. Explained variance is recorded per
+#: run in ``reports/stage3_runs.csv``.
+PEP_PCA = 256
+
 #: The single config the representation sweep uses, so every combination gets
 #: the same budget. It is stage 2's selected architecture for both HLA arms.
-SWEEP_CONFIG = ((256, 64), 1e-5)
+SWEEP_CONFIG = ((256, 64), 1e-2)
+
+#: **Tuning parity is budget parity, not value parity.** Stage 2 gave each arm
+#: 5 ridge alphas and 4 MLP grid points at 3 seeds. The ESM arm gets the same
+#: counts -- but not the same *values*, because the feature scale is different
+#: by orders of magnitude. Stage 2's inputs are sparse one-hot columns over 860
+#: dimensions; the ESM inputs are dense standardised components, and the HLA
+#: side carries only 75 distinct values no matter how many columns it occupies.
+#: Dense features at that scale need far stronger shrinkage, so transplanting
+#: stage 2's ``(0.1 ... 1000)`` alphas and ``(1e-5, 1e-3)`` L2 onto them would
+#: be a handicap wearing the costume of fairness -- and would manufacture
+#: exactly the false negative this stage exists to avoid.
+#:
+#: Both ladders are checked for **boundary hits**: if the selected value is the
+#: largest or smallest tried, the grid was truncated and the run says so, so a
+#: reader can see the selection was interior.
+ESM_ALPHA_GRID = (10.0, 100.0, 1000.0, 10000.0, 100000.0)
+ESM_L2_GRID = (1e-3, 1e-1)
 
 #: Representation combinations compared on validation.
 #: ``(peptide rep, HLA rep)``; each is run at both layers.
@@ -105,6 +136,49 @@ REP_COMBOS = (
     ("pos", "none"),
 )
 LAYERS = ("mid", "final")
+
+
+def ridge_path(X_fit: np.ndarray, y_fit: np.ndarray, X_dev: np.ndarray,
+               y_dev: np.ndarray, X_eval: np.ndarray,
+               alphas=ESM_ALPHA_GRID) -> tuple[float, float, np.ndarray, float]:
+    """Ridge over ``alphas`` sharing one Gram matrix; alpha chosen on dev.
+
+    Mathematically identical to fitting ``sklearn.linear_model.Ridge`` once per
+    alpha (asserted in ``tests/test_esm.py``), but sklearn rebuilds
+    ``X.T @ X`` inside every call. On the widest ESM block -- 17,744 rows x
+    4,394 columns -- that one product is ~20 s, so a 5-point alpha sweep spent
+    two minutes recomputing the same matrix. Here it is formed once in float64
+    (chunked, to avoid a 600 MB float64 copy of the features) and each alpha is
+    a Cholesky solve on top. Same grid, same answers, ~6x less time.
+
+    Returns ``(best_alpha, dev_mse, eval_predictions, fit_seconds)``.
+    """
+    t0 = time.perf_counter()
+    d = X_fit.shape[1]
+    mu = X_fit.mean(axis=0, dtype=np.float64)
+    ym = float(np.mean(y_fit, dtype=np.float64))
+    yc = np.asarray(y_fit, dtype=np.float64) - ym
+
+    G = np.zeros((d, d))
+    b = np.zeros(d)
+    for s in range(0, len(X_fit), 2048):
+        B = X_fit[s:s + 2048].astype(np.float64)
+        B -= mu
+        G += B.T @ B
+        b += B.T @ yc[s:s + 2048]
+
+    Xd = np.asarray(X_dev, dtype=np.float64) - mu
+    best = (None, np.inf, None)
+    eye = np.eye(d)
+    for alpha in alphas:
+        w = cho_solve(cho_factor(G + alpha * eye, overwrite_a=False), b)
+        mse = float(np.mean((Xd @ w + ym - y_dev) ** 2))
+        if mse < best[1]:
+            best = (alpha, mse, w)
+    del Xd, G, eye
+    alpha, mse, w = best
+    pred = (np.asarray(X_eval, dtype=np.float64) - mu) @ w + ym
+    return float(alpha), mse, pred, time.perf_counter() - t0
 
 
 def rep_label(pep: str, hla: str, layer: str, raw: str | None = None) -> str:
@@ -173,8 +247,8 @@ def _fit_block(kind: str, rep: str, checkpoint: str, layer: str,
 
 
 def assemble(train: pd.DataFrame, evals: list[pd.DataFrame], checkpoint: str,
-             layer: str, pep_rep: str, hla_rep: str, raw: str | None = None
-             ) -> tuple[np.ndarray, list[np.ndarray], dict]:
+             layer: str, pep_rep: str, hla_rep: str, raw: str | None = None,
+             pep_pca: int = PEP_PCA) -> tuple[np.ndarray, list[np.ndarray], dict]:
     """Build matched feature matrices for ``train`` and each frame in ``evals``.
 
     Returns ``(X_train, [X_eval...], info)``. Every transform is fitted on
@@ -184,8 +258,9 @@ def assemble(train: pd.DataFrame, evals: list[pd.DataFrame], checkpoint: str,
     pieces_eval: list[list[np.ndarray]] = [[] for _ in evals]
     info: dict = {"blocks": []}
 
-    for kind, col, rep, n_pca in (("peptide", "peptide", pep_rep, 0),
-                                  ("hla", "hla_seq", hla_rep, HLA_PCA)):
+    for kind, col, rep, n_pca in (
+            ("peptide", "peptide", pep_rep, pep_pca if pep_rep == "pos" else 0),
+            ("hla", "hla_seq", hla_rep, HLA_PCA)):
         if rep == "none":
             continue
         M, lookup, explained = _fit_block(kind, rep, checkpoint, layer,
@@ -195,6 +270,9 @@ def assemble(train: pd.DataFrame, evals: list[pd.DataFrame], checkpoint: str,
             pieces_eval[i].append(M[[lookup[str(v)] for v in frame[col].to_numpy()]])
         info["blocks"].append({"kind": kind, "rep": rep, "n_columns": M.shape[1],
                                "pca_explained": round(explained, 6)})
+        info[f"{kind}_explained"] = round(explained, 6)
+        del M
+        gc.collect()
 
     if raw:
         pieces_train.append(build_features(train, "pep_pseudo", raw))
@@ -265,35 +343,29 @@ def mode_sweep(args) -> int:
 
         t0 = time.perf_counter()
         X_train, (X_val,), info = assemble(train, [val], args.checkpoint, layer,
-                                           pep, hla, raw)
+                                           pep, hla, raw, pep_pca=args.pep_pca)
         feat_s = time.perf_counter() - t0
         X_fit, X_dev = X_train[is_fit], X_train[~is_fit]
         y_fit, y_dev = y_train[is_fit], y_train[~is_fit]
         shared = {"stage": "sweep", "checkpoint": args.checkpoint, "rep": label,
                   "pep_rep": pep, "hla_rep": hla, "layer": layer,
                   "raw": raw or "", "n_features": info["n_features"],
-                  "feature_seconds": round(feat_s, 2),
+                  "feature_seconds": round(feat_s, 2), "pep_pca": args.pep_pca,
+                  "peptide_explained": info.get("peptide_explained", 1.0),
+                  "hla_explained": info.get("hla_explained", 1.0),
                   "n_fit_rows": int(is_fit.sum()), "protocol": "inner_folds"}
         print(f"{label:28s} {info['n_features']:>6,} features "
               f"({info['train_mb']:.0f} MB, {feat_s:.1f}s build)")
 
-        best_alpha, best_dev = None, np.inf
-        for alpha in ALPHA_GRID:
-            r = Ridge(alpha=alpha).fit(X_fit, y_fit)
-            mse = float(np.mean((r.predict(X_dev) - y_dev) ** 2))
-            if mse < best_dev:
-                best_alpha, best_dev = alpha, mse
-        t0 = time.perf_counter()
-        ridge = Ridge(alpha=best_alpha).fit(X_fit, y_fit)
-        ridge_s = time.perf_counter() - t0
-        t0 = time.perf_counter()
-        p = ridge.predict(X_val)
-        infer = 1000 * (time.perf_counter() - t0) / len(X_val)
+        best_alpha, best_dev, p, ridge_s = ridge_path(X_fit, y_fit, X_dev, y_dev,
+                                                      X_val)
+        at_edge = best_alpha in (min(ESM_ALPHA_GRID), max(ESM_ALPHA_GRID))
         records.append({**shared, "family": "ridge", "config": f"alpha={best_alpha:g}",
                         "seed": 0, "fit_seconds": round(ridge_s, 2),
-                        "infer_seconds_per_1k": round(infer, 4), "best_epoch": np.nan,
+                        "dev_mse": round(best_dev, 5), "best_epoch": np.nan,
+                        "alpha_at_grid_boundary": at_edge,
                         **metrics(f"ridge_{label}", val, p, alleles)})
-        print(f"  ridge  alpha={best_alpha:<7g} "
+        print(f"  ridge  alpha={best_alpha:<7g}{' [GRID BOUNDARY]' if at_edge else '':16s} "
               f"rho={records[-1]['median_per_allele_spearman']:+.4f} ({ridge_s:.1f}s)")
 
         rhos = []
@@ -314,6 +386,7 @@ def mode_sweep(args) -> int:
               f"[{min(rhos):+.4f}, {max(rhos):+.4f}] over {len(SEEDS)} seeds "
               f"({np.mean([r['fit_seconds'] for r in records[-3:]]):.0f}s/net)\n")
         del X_train, X_val, X_fit, X_dev
+        gc.collect()
 
     append_runs(records)
     print(f"wrote {RUNS_CSV.relative_to(REPO_ROOT)} (+{len(records)} rows)")
@@ -332,13 +405,37 @@ def mode_grid(args) -> int:
     records = []
     for layer in args.layers:
         X_train, (X_val,), info = assemble(train, [val], args.checkpoint, layer,
-                                           args.pep_rep, args.hla_rep, args.with_raw)
+                                           args.pep_rep, args.hla_rep, args.with_raw,
+                                           pep_pca=args.pep_pca)
         X_fit, X_dev = X_train[is_fit], X_train[~is_fit]
         y_fit, y_dev = y_train[is_fit], y_train[~is_fit]
         label = rep_label(args.pep_rep, args.hla_rep, layer, args.with_raw)
         print(f"\n{label}: {info['n_features']:,} features")
+
+        # Linear reference on the *extended* alpha ladder. The stage 2 ladder
+        # topped out at 1000 and the sweep selected 1000 on nearly every arm --
+        # a truncated grid, so the selection was never interior and the ridge
+        # numbers it produced understate what a linear head can do here.
+        alpha, dev_mse, p, ridge_s = ridge_path(X_fit, y_fit, X_dev, y_dev, X_val)
+        at_edge = alpha in (min(ESM_ALPHA_GRID), max(ESM_ALPHA_GRID))
+        records.append({"stage": "grid", "checkpoint": args.checkpoint,
+                        "rep": label, "pep_rep": args.pep_rep,
+                        "hla_rep": args.hla_rep, "layer": layer,
+                        "raw": args.with_raw or "", "pep_pca": args.pep_pca,
+                        "n_features": info["n_features"], "family": "ridge",
+                        "config": f"alpha={alpha:g}", "seed": 0,
+                        "protocol": "inner_folds", "dev_mse": round(dev_mse, 5),
+                        "alpha_at_grid_boundary": at_edge,
+                        "alpha_grid": "|".join(f"{v:g}" for v in ESM_ALPHA_GRID),
+                        "n_fit_rows": int(is_fit.sum()),
+                        "fit_seconds": round(ridge_s, 2),
+                        **metrics(f"ridge_{label}", val, p, alleles)})
+        print(f"  ridge alpha={alpha:<8g}{' [GRID BOUNDARY]' if at_edge else '':16s} "
+              f"rho={records[-1]['median_per_allele_spearman']:+.4f}")
+
+        l2_grid = tuple(args.l2_grid) if args.l2_grid else ESM_L2_GRID
         for (hidden, l2), seed in itertools.product(
-                [(h, l) for h in HIDDEN_GRID for l in L2_GRID], SEEDS):
+                [(h, l) for h in HIDDEN_GRID for l in l2_grid], SEEDS):
             cfg = MLPConfig(hidden=hidden, l2=l2, seed=seed,
                             max_epochs=MAX_EPOCHS, patience=PATIENCE)
             model = MLPRegressor(cfg).fit(X_fit, y_fit, X_dev, y_dev)
@@ -347,9 +444,11 @@ def mode_grid(args) -> int:
             records.append({"stage": "grid", "checkpoint": args.checkpoint,
                             "rep": label, "pep_rep": args.pep_rep,
                             "hla_rep": args.hla_rep, "layer": layer,
-                            "raw": args.with_raw or "",
+                            "raw": args.with_raw or "", "pep_pca": args.pep_pca,
+                            "peptide_explained": info.get("peptide_explained", 1.0),
                             "n_features": info["n_features"], "family": "mlp",
                             "config": cfg.label(), "seed": seed,
+                            "l2_grid": "|".join(f"{v:g}" for v in l2_grid),
                             "protocol": "inner_folds",
                             "n_fit_rows": int(is_fit.sum()),
                             "fit_seconds": round(model.fit_seconds_, 2),
@@ -358,13 +457,24 @@ def mode_grid(args) -> int:
                   f"{m['median_per_allele_spearman']:+.4f} "
                   f"({model.fit_seconds_:.0f}s)")
         del X_train, X_val, X_fit, X_dev
+        gc.collect()
 
     append_runs(records)
     frame = pd.DataFrame(records)
-    agg = frame.groupby(["rep", "config"]).median_per_allele_spearman.agg(
+    mlps = frame[frame.family == "mlp"]
+    agg = mlps.groupby(["rep", "config"]).median_per_allele_spearman.agg(
         ["mean", "min", "max"]).sort_values("mean", ascending=False)
     print("\nmean validation rho over seeds:")
     print(agg.to_string())
+    print("\nboundary check (a selected value at the edge means the ladder was "
+          "truncated and must be extended):")
+    for rep, grp in mlps.groupby("rep"):
+        best = grp.groupby("config").median_per_allele_spearman.mean().idxmax()
+        l2 = float(best.split("_l2")[1].split("_lr")[0])
+        ladder = tuple(args.l2_grid) if args.l2_grid else ESM_L2_GRID
+        edge = l2 in (min(ladder), max(ladder))
+        print(f"  {rep:32s} selected l2={l2:g} of {ladder} "
+              f"-> {'AT BOUNDARY, extend' if edge else 'interior'}")
     print(f"\nwrote {RUNS_CSV.relative_to(REPO_ROOT)} (+{len(records)} rows)")
     return 0
 
@@ -379,23 +489,53 @@ def mode_ensemble(args) -> int:
     y_val = val.y_log1p.to_numpy()
 
     selected = json.loads(Path(args.selected).read_text()) if args.selected else {}
-    per_layer = {L: tuple(selected.get(L, SWEEP_CONFIG)) for L in args.layers}
 
-    n_members = N_FOLDS * len(args.layers) * len(SEEDS)
+    # The two-way axis the 30 members are spread over. Stage 2 spreads its 30
+    # networks over {one-hot, BLOSUM62}; this arm has to spread its 30 over
+    # *something* comparable, and which something depends on the question.
+    #
+    #   --axis layer     the ESM-only arm. Members differ by which ESM-2 layer
+    #                    they read (middle / final). Answers "can frozen ESM-2
+    #                    features REPLACE sequence features?"
+    #
+    #   --axis encoding  the additive arm, and the decision-relevant one.
+    #                    Members differ by the raw encoding exactly as stage 2's
+    #                    do -- same folds, same encodings, same seeds -- with the
+    #                    ESM block appended to every one of them. The arm then
+    #                    differs from `scripts/baseline_ensemble.py` by exactly
+    #                    one thing: the ESM features. Answers "do frozen ESM-2
+    #                    features IMPROVE on sequence features?", which is the
+    #                    question the challenge actually poses. A representation
+    #                    can be worse standalone and still carry information the
+    #                    baseline lacks, so these two arms can disagree and the
+    #                    additive one is the one that decides.
+    if args.axis == "encoding":
+        groups = [(enc, args.layers[0], enc) for enc in ENCODINGS]
+        axis_desc = f"{len(ENCODINGS)} raw encodings (ESM layer fixed at {args.layers[0]})"
+    else:
+        groups = [(L, L, args.with_raw) for L in args.layers]
+        axis_desc = f"{len(args.layers)} ESM layers"
+
+    n_members = N_FOLDS * len(groups) * len(SEEDS)
     print(f"checkpoint {args.checkpoint}")
-    print(f"ensemble: {N_FOLDS} CV folds x {len(args.layers)} layers x "
+    print(f"ensemble: {N_FOLDS} CV folds x {axis_desc} x "
           f"{len(SEEDS)} seeds = {n_members} networks "
           f"(stage 2 baseline: {N_FOLDS} x 2 encodings x {len(SEEDS)} = 30)")
     print(f"fold sizes: {np.bincount(fold).tolist()}\n")
 
     members, records = [], []
+    infer_seconds = 0.0          # summed over all members, for cost per 1k rows
+    feature_seconds = 0.0
     started = time.perf_counter()
-    for layer in args.layers:
-        hidden, l2 = per_layer[layer]
+    for key, layer, raw in groups:
+        hidden, l2 = tuple(selected.get(key, SWEEP_CONFIG))
         hidden = tuple(hidden)
+        t_feat = time.perf_counter()
         X_train, (X_val,), info = assemble(train, [val], args.checkpoint, layer,
-                                           args.pep_rep, args.hla_rep, args.with_raw)
-        label = rep_label(args.pep_rep, args.hla_rep, layer, args.with_raw)
+                                           args.pep_rep, args.hla_rep, raw,
+                                           pep_pca=args.pep_pca)
+        feature_seconds += time.perf_counter() - t_feat
+        label = rep_label(args.pep_rep, args.hla_rep, layer, raw)
         print(f"{label}: {info['n_features']:,} features, config h{hidden} l2={l2:g}")
         for k in range(N_FOLDS):
             is_fit = fold != k
@@ -404,31 +544,33 @@ def mode_ensemble(args) -> int:
                                 max_epochs=MAX_EPOCHS, patience=PATIENCE)
                 model = MLPRegressor(cfg).fit(X_train[is_fit], y_train[is_fit],
                                               X_train[~is_fit], y_train[~is_fit])
+                t_inf = time.perf_counter()
                 p = model.predict(X_val)
+                infer_seconds += time.perf_counter() - t_inf
                 members.append(p)
                 m = metrics(f"member_{label}_f{k}_s{seed}", val, p, alleles)
                 records.append({"stage": "ensemble_member", "checkpoint": args.checkpoint,
                                 "rep": label, "pep_rep": args.pep_rep,
                                 "hla_rep": args.hla_rep, "layer": layer,
-                                "raw": args.with_raw or "", "family": "mlp",
+                                "raw": raw or "", "family": "mlp",
                                 "config": cfg.label(), "seed": seed, "fold": k,
                                 "protocol": "cv_folds",
                                 "n_features": info["n_features"],
                                 "n_fit_rows": int(is_fit.sum()),
                                 "fit_seconds": round(model.fit_seconds_, 2),
                                 "best_epoch": model.best_epoch_, **m})
-        done = [r for r in records if r["layer"] == layer]
+        done = [r for r in records if r["rep"] == label]
         print(f"  {len(done)} networks, member rho "
               f"{np.mean([r['median_per_allele_spearman'] for r in done]):.3f} "
               f"(min {min(r['median_per_allele_spearman'] for r in done):.3f}, "
               f"max {max(r['median_per_allele_spearman'] for r in done):.3f}), "
               f"{np.mean([r['fit_seconds'] for r in done]):.0f}s/net")
         del X_train, X_val
+        gc.collect()
     wall = time.perf_counter() - started
 
     ens = np.mean(members, axis=0)
-    name = args.name or f"esm_{args.checkpoint.split('_')[1]}_" \
-                        f"{args.pep_rep}_{args.hla_rep}" + ("_raw" if args.with_raw else "")
+    name = args.name or f"esm_{args.checkpoint.split('_')[1]}_{args.axis}"
     s = score(name, val.allele, y_val, ens, alleles)
     member_mean = float(np.mean([r["median_per_allele_spearman"] for r in records]))
     print(f"\naverage single member : median rho {member_mean:.4f}")
@@ -436,18 +578,32 @@ def mode_ensemble(args) -> int:
           f"(ensembling gain {s.median_spearman - member_mean:+.4f})")
     print(pd.DataFrame([s.as_row()]).to_string(index=False))
 
+    # Head-side inference cost, kept separate from embedding extraction (which
+    # reports/stage3_embedding_cost.csv already carries). This is what it costs
+    # to score 1,000 already-embedded pairs with the whole ensemble.
+    infer_per_1k = 1000 * infer_seconds / len(val)
+    feat_per_1k = 1000 * feature_seconds / (len(train) + len(val))
+    print(f"\nhead cost: {n_members} networks, "
+          f"{wall / 60:.1f} min total fit, "
+          f"{1000 * feature_seconds / (len(train) + len(val)):.4f}s feature assembly "
+          f"per 1,000 rows, {infer_per_1k:.4f}s ensemble inference per 1,000 rows")
+
     PRED_DIR.mkdir(exist_ok=True)
     dest = PRED_DIR / f"{name}.csv"
     pd.DataFrame({"pair_id": val.pair_id.to_numpy(), "y_pred": ens}).to_csv(dest, index=False)
 
     records.append({"stage": "ensemble", "checkpoint": args.checkpoint,
-                    "rep": f"{args.pep_rep}/{args.hla_rep}/{'+'.join(args.layers)}",
+                    "rep": f"{args.pep_rep}/{args.hla_rep}/axis={args.axis}",
                     "pep_rep": args.pep_rep, "hla_rep": args.hla_rep,
                     "layer": "+".join(args.layers), "raw": args.with_raw or "",
+                    "axis": args.axis,
                     "family": "mlp_ensemble", "config": f"{n_members} networks",
                     "seed": -1, "protocol": "cv_folds",
                     "n_features": info["n_features"],
+                    "n_members": n_members,
                     "fit_seconds": round(wall, 1),
+                    "infer_seconds_per_1k": round(infer_per_1k, 4),
+                    "feature_seconds_per_1k": round(feat_per_1k, 4),
                     **{k: v for k, v in score(name, val.allele, y_val, ens,
                                               alleles).as_row().items()
                        if k in ("median_per_allele_spearman", "iqr_low", "iqr_high",
@@ -494,6 +650,8 @@ def mode_ensemble(args) -> int:
             "baseline_mae": round(bs.mae_log1p, 4), "esm_mae": round(s.mae_log1p, 4),
             "baseline_p10": round(bs.median_precision_at_k, 4),
             "esm_p10": round(s.median_precision_at_k, 4),
+            "n_members_esm": n_members, "n_members_baseline": 30,
+            "esm_infer_seconds_per_1k": round(infer_per_1k, 4),
         })
 
     if comparisons:
@@ -521,18 +679,28 @@ def main() -> int:
                        choices=sorted(pesm.CHECKPOINTS))
         p.add_argument("--with-raw", default=None, choices=["onehot", "blosum"],
                        help="concatenate the stage 2 peptide+pseudosequence features")
+        p.add_argument("--pep-pca", type=int, default=PEP_PCA,
+                       help="PCA components for the peptide per-position block; "
+                            "0 keeps all 9*dim columns (the uncompressed control)")
 
     s = sub.add_parser("sweep"); common(s)
     g = sub.add_parser("grid"); common(g)
     g.add_argument("--pep-rep", default="pos", choices=pesm.PEPTIDE_REPS)
     g.add_argument("--hla-rep", default="contact", choices=pesm.HLA_REPS)
     g.add_argument("--layers", nargs="+", default=list(LAYERS))
+    g.add_argument("--l2-grid", nargs="+", type=float, default=None,
+                   help=f"MLP L2 ladder (default {ESM_L2_GRID}); same number of "
+                        "grid points as stage 2, ranges chosen for the feature scale")
     e = sub.add_parser("ensemble"); common(e)
     e.add_argument("--pep-rep", default="pos", choices=pesm.PEPTIDE_REPS)
     e.add_argument("--hla-rep", default="contact", choices=pesm.HLA_REPS)
     e.add_argument("--layers", nargs="+", default=list(LAYERS))
+    e.add_argument("--axis", default="layer", choices=["layer", "encoding"],
+                   help="what the 30 members are spread over: 'layer' for the "
+                        "ESM-only arm, 'encoding' for the additive "
+                        "baseline+ESM arm (see mode_ensemble)")
     e.add_argument("--selected", default=None,
-                   help="JSON mapping layer -> [hidden, l2] from the grid")
+                   help="JSON mapping axis key -> [hidden, l2] from the grid")
     e.add_argument("--name", default=None)
 
     args = ap.parse_args()

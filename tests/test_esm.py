@@ -258,3 +258,45 @@ def test_no_test_rows_are_ever_loaded():
     src = (Path(__file__).resolve().parent.parent / "scripts" / "esm_arm.py").read_text()
     assert 'split == "test"' not in src
     assert '"test"' not in src
+
+
+# --- 4. the ridge fast path must equal sklearn ------------------------------
+
+
+def test_ridge_path_matches_sklearn():
+    """The shared-Gram ridge is an optimisation, not a different estimator."""
+    from sklearn.linear_model import Ridge
+    from scripts.esm_arm import ridge_path
+
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(600, 120)).astype(np.float32)
+    w = rng.normal(size=120)
+    y = (X @ w + rng.normal(scale=0.5, size=600)).astype(np.float32)
+    X_dev = rng.normal(size=(150, 120)).astype(np.float32)
+    y_dev = (X_dev @ w).astype(np.float32)
+    X_eval = rng.normal(size=(90, 120)).astype(np.float32)
+
+    for alpha in (0.1, 1.0, 10.0, 100.0, 1000.0):
+        _, mse, pred, _ = ridge_path(X, y, X_dev, y_dev, X_eval, alphas=(alpha,))
+        sk = Ridge(alpha=alpha).fit(X, y)
+        np.testing.assert_allclose(pred, sk.predict(X_eval), rtol=1e-3, atol=1e-4)
+        assert abs(mse - float(np.mean((sk.predict(X_dev) - y_dev) ** 2))) < 1e-4
+
+
+def test_ridge_path_picks_the_argmin_alpha_on_dev():
+    """alpha is selected on dev, and the reported MSE is that grid minimum."""
+    from scripts.esm_arm import ridge_path
+
+    grid = (0.1, 1.0, 10.0, 100.0, 1000.0)
+    rng = np.random.default_rng(1)
+    X = rng.normal(size=(300, 40)).astype(np.float32)
+    w = rng.normal(size=40)
+    y = (X @ w + rng.normal(scale=2.0, size=300)).astype(np.float32)
+    X_dev = rng.normal(size=(200, 40)).astype(np.float32)
+    y_dev = (X_dev @ w).astype(np.float32)
+
+    alpha, mse, _, _ = ridge_path(X, y, X_dev, y_dev, X_dev, alphas=grid)
+    singles = {a: ridge_path(X, y, X_dev, y_dev, X_dev, alphas=(a,))[1]
+               for a in grid}
+    assert alpha == min(singles, key=singles.get)
+    assert mse == pytest.approx(min(singles.values()))

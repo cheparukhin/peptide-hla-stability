@@ -47,6 +47,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from pepstab.structural_features import (  # noqa: E402
+    alpha3_provenance,
     attach_pair_ids,
     discover_folds,
     extract_path,
@@ -56,8 +57,9 @@ PILOT_ROOT = ROOT / "structures/ectodomain_pilot/ectodomain-20261004"
 COHORT_CSV = ROOT / "data/structural_cohort.csv"
 PROFILES = ("a-cheparukhin", "colleague")
 
-# Six other agents share this 8-core / 16 GB machine.
-DEFAULT_WORKERS = 2
+# Seven workstreams share this 8-core / 16 GB machine and two long-lived fold
+# driver processes must survive the night, so the pool stays at 1 by default.
+DEFAULT_WORKERS = 1
 
 
 def _run(folders: list[Path], workers: int) -> pd.DataFrame:
@@ -80,6 +82,18 @@ def _splits() -> pd.DataFrame:
     return load_with_splits()
 
 
+def _annotate(frame: pd.DataFrame) -> pd.DataFrame:
+    """Attach split/pair_id and the alpha3 construct provenance.
+
+    Three alleles fold a partly-synthetic 275-residue construct (alpha3 taken
+    from a relative). The flag travels with the features so stage 5 can test
+    whether those rows behave differently instead of the caveat living only in
+    prose.
+    """
+    frame = attach_pair_ids(frame, _splits())
+    return frame.merge(alpha3_provenance(), on="allele", how="left")
+
+
 def _summarise(frame: pd.DataFrame) -> dict:
     ok = frame["status"] == "ok"
     out = {
@@ -98,7 +112,7 @@ def cmd_pilot(args: argparse.Namespace) -> int:
     folders = list(discover_folds(args.root))
     print(f"discovered {len(folders)} pilot folds under {args.root}")
     frame = _run(folders, args.workers)
-    frame = attach_pair_ids(frame, _splits())
+    frame = _annotate(frame)
     frame.insert(0, "run_id", args.root.name)
     frame["cohort_coverage"] = "pilot"
     frame = frame.sort_values(["model", "complex_id", "arm", "seed"]).reset_index(drop=True)
@@ -122,7 +136,7 @@ def cmd_extract(args: argparse.Namespace) -> int:
         print("nothing to extract", file=sys.stderr)
         return 1
     frame = _run(folders, args.workers)
-    frame = attach_pair_ids(frame, _splits())
+    frame = _annotate(frame)
     frame["profile"] = args.profile
     frame["cohort_coverage"] = "half" if args.profile else "unknown"
 

@@ -1,0 +1,95 @@
+{
+  "contract": "stage 7b leave-allele-out -- separate from EVALUATION.md",
+  "arm": "seq_pep_pseudo",
+  "representations": [
+    "onehot",
+    "blosum"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "ensemble_members_per_fold": 6,
+  "cohort_splits": [
+    "train",
+    "val"
+  ],
+  "test_split_read": false,
+  "n_cohort_rows": 22533,
+  "n_folds": 4,
+  "strata": [
+    {
+      "stratum": "near (d<=1)",
+      "n_alleles": 1,
+      "n_rows": 829,
+      "median_spearman": 0.695059736714708,
+      "ci95_low": 0.695059736714708,
+      "ci95_high": 0.695059736714708,
+      "iqr_low": 0.695059736714708,
+      "iqr_high": 0.695059736714708,
+      "min_spearman": 0.695059736714708,
+      "max_spearman": 0.695059736714708,
+      "median_mae_log1p": 0.6142439105253111,
+      "median_precision_at_10": 1.0
+    },
+    {
+      "stratum": "intermediate (d=2-3)",
+      "n_alleles": 2,
+      "n_rows": 595,
+      "median_spearman": 0.5725479262929278,
+      "ci95_low": 0.3771016356742778,
+      "ci95_high": 0.7679942169115779,
+      "iqr_low": 0.4748247809836028,
+      "iqr_high": 0.6702710716022529,
+      "min_spearman": 0.3771016356742778,
+      "max_spearman": 0.7679942169115779,
+      "median_mae_log1p": 0.837891870268153,
+      "median_precision_at_10": 0.8
+    },
+    {
+      "stratum": "distant (d>=4)",
+      "n_alleles": 1,
+      "n_rows": 177,
+      "median_spearman": 0.19493921981089687,
+      "ci95_low": 0.19493921981089687,
+      "ci95_high": 0.19493921981089687,
+      "iqr_low": 0.19493921981089687,
+      "iqr_high": 0.19493921981089687,
+      "min_spearman": 0.19493921981089687,
+      "max_spearman": 0.19493921981089687,
+      "median_mae_log1p": 1.389586364854183,
+      "median_precision_at_10": 0.3
+    },
+    {
+      "stratum": "near (d<=1), excl. shared-pseudoseq pair",
+      "n_alleles": 1,
+      "n_rows": 829,
+      "median_spearman": 0.695059736714708,
+      "ci95_low": 0.695059736714708,
+      "ci95_high": 0.695059736714708,
+      "iqr_low": 0.695059736714708,
+      "iqr_high": 0.695059736714708,
+      "min_spearman": 0.695059736714708,
+      "max_spearman": 0.695059736714708,
+      "median_mae_log1p": 0.6142439105253111,
+      "median_precision_at_10": 1.0
+    },
+    {
+      "stratum": "all strata pooled",
+      "n_alleles": 4,
+      "n_rows": 1601,
+      "median_spearman": 0.5360806861944929,
+      "ci95_low": 0.19493921981089687,
+      "ci95_high": 0.7679942169115779,
+      "iqr_low": 0.33156103170843254,
+      "iqr_high": 0.7132933567639255,
+      "min_spearman": 0.19493921981089687,
+      "max_spearman": 0.7679942169115779,
+      "median_mae_log1p": 0.837891870268153,
+      "median_precision_at_10": 0.8
+    }
+  ],
+  "median_peptide_seen_share": 1.0,
+  "wall_seconds": 225.2
+}

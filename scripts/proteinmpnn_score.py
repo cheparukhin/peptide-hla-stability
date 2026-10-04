@@ -40,7 +40,7 @@ def _init(threads: int) -> None:
 
 
 def _one(job: tuple) -> dict:
-    folder, decoys, n_orders, checkpoint, seed, threads = job
+    folder, decoys, n_orders, checkpoint, seed, threads, batch_rows = job
     _init(threads)
     from pepstab.inverse_folding import score_folder
 
@@ -52,6 +52,7 @@ def _one(job: tuple) -> dict:
             n_orders=n_orders,
             checkpoint=checkpoint,
             seed=seed,
+            batch_rows=batch_rows,
         )
     except Exception as exc:  # a failed structure must not kill the sweep
         row = {"folder": str(folder), "status": f"{type(exc).__name__}: {exc}"}
@@ -71,20 +72,31 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=0, help="RNG seed for decoding orders")
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--threads", type=int, default=2, help="torch threads per worker")
+    ap.add_argument("--batch-rows", type=int, default=8,
+                    help="max (orders x candidates) rows per forward pass; "
+                         "this is the memory knob on a shared machine")
     ap.add_argument("--cross-peptide", action="store_true",
                     help="also score every other peptide in the sweep on each "
                          "backbone (the circularity control); requires all "
                          "peptides to share one length")
     ap.add_argument("--limit", type=int, default=0, help="score only the first N (smoke)")
     ap.add_argument("--filter", default="",
-                    help="keep only folders whose path contains this substring")
+                    help="comma-separated substrings; keep folders whose path "
+                         "contains ALL of them (e.g. '/boltz2/,_arm_B')")
+    ap.add_argument("--exclude", default="",
+                    help="comma-separated substrings; drop folders whose path "
+                         "contains ANY of them (e.g. '_smoke,_shards,_failed')")
     args = ap.parse_args()
 
     from pepstab.inverse_folding import find_predictions, proteinmpnn_provenance
 
     folders = find_predictions(args.structures)
     if args.filter:
-        folders = [f for f in folders if args.filter in str(f)]
+        want = [t for t in args.filter.split(",") if t]
+        folders = [f for f in folders if all(t in str(f) for t in want)]
+    if args.exclude:
+        drop = [t for t in args.exclude.split(",") if t]
+        folders = [f for f in folders if not any(t in str(f) for t in drop)]
     if args.limit:
         folders = folders[: args.limit]
     if not folders:
@@ -110,8 +122,8 @@ def main() -> int:
           f"candidates={1 if not decoys else len(decoys)}, workers={args.workers}",
           flush=True)
 
-    jobs = [(str(f), decoys, args.n_orders, args.checkpoint, args.seed, args.threads)
-            for f in folders]
+    jobs = [(str(f), decoys, args.n_orders, args.checkpoint, args.seed,
+             args.threads, args.batch_rows) for f in folders]
     rows: list[dict] = []
     t0 = time.time()
     workers = max(1, min(args.workers, 2))

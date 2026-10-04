@@ -149,3 +149,35 @@ def test_find_predictions_discovers_folders_by_metadata(tmp_path):
     (tmp_path / "x" / "y").mkdir(parents=True)
     (tmp_path / "x" / "y" / "metadata.json").write_text("{}")
     assert mpnn.find_predictions(tmp_path) == [tmp_path / "x" / "y"]
+
+
+def test_find_predictions_skips_the_production_harness_trees(tmp_path):
+    """_smoke / _shards / _failed sit next to the cohort output on the Volume.
+
+    Ingesting one raises nothing and yields a row that looks entirely normal,
+    which is why this is a test and not a comment.
+    """
+    for sub in ("A_02_01/A0201_LLWNGPMAV", "_smoke/A_02_01/A0201_LLWNGPMAV",
+                "_shards/s0", "_failed/f0"):
+        (tmp_path / sub).mkdir(parents=True)
+        (tmp_path / sub / "metadata.json").write_text("{}")
+    found = mpnn.find_predictions(tmp_path)
+    assert [str(p.relative_to(tmp_path)) for p in found] == [
+        "A_02_01/A0201_LLWNGPMAV"
+    ]
+
+
+def test_forecast_is_linear_in_decoding_orders():
+    """The Modal forecast must scale with n_orders; it is the only cost knob."""
+    pytest.importorskip("modal")
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "pm_scoring", REPO / "modal_app" / "proteinmpnn_scoring.py"
+    )
+    pm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pm)
+    a = pm.forecast_usd(1000, 16)
+    b = pm.forecast_usd(1000, 8)
+    assert a["s_per_fold"] == pytest.approx(2 * b["s_per_fold"])
+    assert a["rates_verified"] is False  # list prices, not measured here
