@@ -676,6 +676,21 @@ Global three-chain ipTM must not be presented as peptide-interface confidence.
 - Report per-allele Spearman correlation (how well the model ranks peptides within each allele), with test-set sizes and a median/IQR summary across alleles. Use a common set of eligible alleles across models and report small or undefined cases explicitly.
 - Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** — of the top 10 predictions per allele, how many actually have a half-life above 2 hours? This directly measures whether the model identifies sufficiently stable peptides. Treat pooled metrics as secondary. Distinguish within-allele ranking from cross-allele effects.
 - **Stratify test metrics by nearest-neighbour distance to training.** For each test peptide, compute the Hamming distance to its closest training peptide and report metrics in **two strata: d=4 (57.8% of test rows) and d≥5 (42.2%)**. A separate d≥6 stratum is not viable — measured on the frozen split only 6 test peptides (12 rows) sit that far from training. Score both strata on the *same* allele set (the intersection of those eligible in each, 65 alleles at a 20-row bar), or the comparison measures allele panels rather than distance. If label similarity decays as expected, performance should visibly differ across strata. If it doesn't, that's a strong signal the model genuinely generalises rather than exploiting residual similarity at the split boundary.
+- **The arm-vs-arm distance *gap* cannot be resolved on validation.** Measured
+  4 October: the stratum gap is a difference of differences of medians — a
+  median over the shared allele panel within each stratum, differenced across
+  strata, then differenced across arms. Each validation stratum holds roughly
+  1,377 and 992 rows, so each median rests on about half the data the primary
+  metric uses and the four-way difference compounds all of it. The measured
+  half-width is near **0.09** on a quantity whose largest observed value is
+  **0.069**, so every arm-vs-arm gap interval crosses zero by construction.
+  This is a fact about the validation split's size, not about the arms. Test is
+  better powered — twice the rows, and the frozen 20-row bar gives a 65-allele
+  panel rather than 55 — and the stratification is already predeclared there.
+  **The hypothesis that a larger ESM-2 checkpoint has a flatter distance
+  profile was generated on validation**, so if it appears in the test results it
+  is a validation-generated hypothesis tested once, not a predeclared
+  prediction, and must be labelled as such however it comes out.
 - **The distance-stratum figures above are test-specific.** Verified 4 October
   against the frozen splits: test is d=4 3,256 rows (57.80%) / d>=5 2,377
   (42.20%), and d>=6 holds 12 rows across 6 peptides, confirming it is not
