@@ -158,6 +158,12 @@ class Complex:
     complex_id: str
     peptide_chain: str
     chains: dict = field(repr=False, default_factory=dict)  # id -> (seq, coords)
+    # Production metadata carries these; the pilot does not. Provenance only.
+    # `pair_id` is deliberately NOT carried: it is positional into the raw CSV
+    # and the project invariant forbids joining on it. Joins are on
+    # (allele, peptide).
+    split: str | None = None
+    shard: int | None = None
 
     @property
     def context_chains(self) -> list[str]:
@@ -218,16 +224,25 @@ def load_complex(folder: Path) -> Complex:
     if {k: v[0] for k, v in chains.items()} != declared:
         raise ValueError(f"chain sequences disagree with metadata in {folder}")
 
+    # The pilot writes `seed` at the top level; production writes it under
+    # `settings`. Both are real schemas this harness must read, so neither is
+    # hard-coded. Found by the ::smoke invariant, not by inspection.
+    seed = meta.get("seed", meta.get("settings", {}).get("seed"))
+    if seed is None:
+        raise ValueError(f"no seed in metadata.json for {folder}")
+
     return Complex(
-        name=f"{meta['model']}_{case['complex_id']}_arm_{case['arm']}_seed{meta['seed']}",
+        name=f"{meta['model']}_{case['complex_id']}_arm_{case['arm']}_seed{seed}",
         model=meta["model"],
-        seed=int(meta["seed"]),
+        seed=int(seed),
         arm=case["arm"],
         allele=case["allele"],
         peptide=case["peptide"],
         complex_id=case["complex_id"],
         peptide_chain=str(pep_chain),
         chains=chains,
+        split=case.get("split", meta.get("split")),
+        shard=meta.get("shard", meta.get("settings", {}).get("shard")),
     )
 
 
@@ -391,6 +406,8 @@ def score_folder(
         "context_chains": "+".join(cx.context_chains),
         "n_context_residues": sum(len(cx.chains[c][0]) for c in cx.context_chains),
         "checkpoint": checkpoint,
+        "split": cx.split,
+        "shard": cx.shard,
         "n_orders": native["n_orders"],
         "pep_ll_total": native["ll_total"],
         "pep_ll_mean": native["ll_mean"],

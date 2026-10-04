@@ -74,18 +74,35 @@ N_ORDERS = 16
 WORKER_CPU = 2.0
 WORKER_MEMORY = 4096  # MiB; peak RSS measured at ~1.2 GiB with batch_rows=5
 BATCH_ROWS = 5
-CHUNK = 200
-MAX_CONTAINERS = 20
-CONTAINER_STARTUP_S = 25.0
+# Container count buys WALL TIME ONLY. Core-hours are fixed by the job, so
+# cost is unchanged by these two numbers (up to per-container startup, which
+# the forecast below charges for explicitly). Raised from CHUNK=200 /
+# MAX_CONTAINERS=20 purely so the QC sample finishes in minutes rather than
+# ~50 min. The experiment is untouched: same folds, same seed, same orders.
+#
+# CHUNK is the binding constraint, not MAX_CONTAINERS. At CHUNK=200 a
+# 2,000-fold sample is only 10 chunks, so it could never use more than 10
+# containers however high the cap went.
+CHUNK = 25                 # 2,000 folds -> 80 chunks
+MAX_CONTAINERS = 100       # not independently verified against the workspace
+                           # CPU quota; Modal queues rather than failing if the
+                           # real cap is lower, and the run reports what it got.
+CONTAINER_STARTUP_S = 30.0  # measured: ~30 s to pull the image and import
 
 # Rates metered from this workspace, read from the repo rather than from a
 # pricing page: reports/ectodomain_rates.json, the same source the stage 4c
 # forecast used. The project has already been bitten by a published-rate
 # estimate that was off by 4.6x, so published numbers are not trusted here.
 # (For the record, on CPU and memory they agreed to within 0.3% this time.)
-_RATES = json.loads((REPO / "reports" / "ectodomain_rates.json").read_text())
-USD_PER_CORE_HOUR = float(_RATES["cpu_hour_cost"])      # measured: 0.04730
-USD_PER_GIB_HOUR = float(_RATES["mem_gib_hour_cost"])   # measured: 0.00800
+# Read LAZILY, never at module scope. Modal imports this module inside every
+# container, where the repo does not exist -- a module-scope read of a repo
+# file makes the container die on import before it executes a line of its own,
+# which looks like "0 tasks" and nothing else. This is the same defect stage 4c
+# hit with `download_weights`, and neither ::forecast nor --dry-run can catch
+# it, because both run locally where the file is present.
+def _rates() -> tuple[float, float]:
+    d = json.loads((REPO / "reports" / "ectodomain_rates.json").read_text())
+    return float(d["cpu_hour_cost"]), float(d["mem_gib_hour_cost"])
 
 # ---------------------------------------------------------------------------
 # PREDECLARED QC SAMPLE -- fixed before any production score was looked at.
@@ -195,9 +212,10 @@ def forecast_usd(n_folds: int, n_orders: int = N_ORDERS) -> dict:
     container_s = n_folds * per_fold
     n_chunks = max(1, -(-n_folds // CHUNK))
     container_s += n_chunks * CONTAINER_STARTUP_S
+    cpu_hour_usd, gib_hour_usd = _rates()
     core_hours = container_s * WORKER_CPU / 3600
     gib_hours = container_s * (WORKER_MEMORY / 1024) / 3600
-    usd = core_hours * USD_PER_CORE_HOUR + gib_hours * USD_PER_GIB_HOUR
+    usd = core_hours * cpu_hour_usd + gib_hours * gib_hour_usd
     wall_h = container_s / max(1, min(MAX_CONTAINERS, n_chunks)) / 3600
     return {
         "n_folds": n_folds,
@@ -303,8 +321,8 @@ def forecast(profile: str = PROFILES[0], n_orders: int = N_ORDERS):
                       "basis": f"pilot-measured {STEADY_S_PER_FOLD}s/fold at "
                                f"n_orders={N_ORDERS}, cpu={WORKER_CPU}",
                       "rates": {
-                          "cpu_usd_per_core_hour": USD_PER_CORE_HOUR,
-                          "mem_usd_per_gib_hour": USD_PER_GIB_HOUR,
+                          "cpu_usd_per_core_hour": _rates()[0],
+                          "mem_usd_per_gib_hour": _rates()[1],
                           "source": "reports/ectodomain_rates.json, metered "
                                     "from this workspace -- not a pricing page",
                       },
@@ -333,6 +351,52 @@ def smoke(profile: str = PROFILES[0], root: str = str(PRODUCTION_ROOT), n: int =
     print(f"wrote {out}; {len(bad)} failed")
     if bad:
         raise SystemExit(1)
+
+
+@app.local_entrypoint()
+def sample(
+    profile: str = PROFILES[0],
+    root: str = str(PRODUCTION_ROOT),
+    n: int = QC_SAMPLE_N,
+    seed: int = QC_SAMPLE_SEED,
+    n_orders: int = QC_SAMPLE_ORDERS,
+    allow_partial: bool = False,
+):
+    """The predeclared QC sample: a distribution and a triage list.
+
+    Refuses a partial half unless ``--allow-partial`` is passed, because
+    shards are written in allele order and a mid-run sample covers only the
+    alleles folded so far. This is NOT a failure-rate measurement: the
+    reference points describe one badly-folded complex in the pilot.
+    """
+    check_profile(profile)
+    folders = list_folds.remote(root)
+    if len(folders) != PAIRS_PER_PROFILE:
+        msg = (f"{len(folders)} folds for profile {profile!r}, expected "
+               f"{PAIRS_PER_PROFILE}: the half is not complete, and shards are "
+               f"written in allele order, so this sample would be allele-biased.")
+        if not allow_partial:
+            raise SystemExit(msg)
+        print(f"warning: {msg}")
+    sel = qc_sample(folders, n=n, seed=seed)
+    print(json.dumps({"profile": profile, "pool": len(folders), "sampled": len(sel),
+                      "seed": seed, "n_orders": n_orders,
+                      "forecast": forecast_usd(len(sel), n_orders)}, indent=2))
+    chunks = [sel[i:i + CHUNK] for i in range(0, len(sel), CHUNK)]
+    started = time.time()
+    rows: list[dict] = []
+    for got in score_chunk.starmap((c, n_orders) for c in chunks):
+        rows.extend(got)
+        print(f"# {len(rows)}/{len(sel)}  {time.time() - started:.0f}s", flush=True)
+    out = _write(rows, profile, "qcsample")
+    ok = sum(1 for r in rows if r.get("status") == "ok")
+    secs = sum(r.get("score_s", 0.0) for r in rows)
+    print(json.dumps({
+        "wrote": str(out), "rows": len(rows), "ok": ok, "failed": len(rows) - ok,
+        "wall_s": round(time.time() - started, 1),
+        "measured_s_per_fold": round(secs / max(1, len(rows)), 2),
+        "forecast_s_per_fold": STEADY_S_PER_FOLD * (n_orders / N_ORDERS),
+    }, indent=2))
 
 
 @app.local_entrypoint()

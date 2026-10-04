@@ -1,7 +1,13 @@
-arm,group,kind,selected,ladder,n_points,interior
-boltz_structural,geometry (mlp l2),l2,0.1,0.001|0.01|0.1|1,4,True
-boltz_structural,confidence (mlp l2),l2,0.1,0.001|0.01|0.1|1,4,True
-boltz_structural,geometry+confidence (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True
-boltz_structural,geometry (ridge alpha),alpha,1000.0,1|10|100|1000|10000,5,True
-boltz_structural,confidence (ridge alpha),alpha,1000.0,1|10|100|1000|10000,5,True
-boltz_structural,geometry+confidence (ridge alpha),alpha,100.0,1|10|100|1000|10000,5,True
+arm,group,kind,selected,ladder,n_points,interior,gated
+boltz_structural,geometry (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,confidence (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,geometry+confidence (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,seq+geometry (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,seq+confidence (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,seq+geometry+confidence (mlp l2),l2,0.01,0.001|0.01|0.1|1,4,True,True
+boltz_structural,geometry (ridge alpha),alpha,100.0,1|10|100|1000|10000,5,True,False
+boltz_structural,confidence (ridge alpha),alpha,1.0,1|10|100|1000|10000,5,False,False
+boltz_structural,geometry+confidence (ridge alpha),alpha,1.0,1|10|100|1000|10000,5,False,False
+boltz_structural,seq+geometry (ridge alpha),alpha,1.0,1|10|100|1000|10000,5,False,False
+boltz_structural,seq+confidence (ridge alpha),alpha,1.0,1|10|100|1000|10000,5,False,False
+boltz_structural,seq+geometry+confidence (ridge alpha),alpha,1.0,1|10|100|1000|10000,5,False,False

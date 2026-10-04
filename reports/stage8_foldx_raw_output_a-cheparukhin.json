@@ -1,0 +1,52 @@
+{
+  "complex_id": "A0101_AADSFATSY",
+  "groups": [
+    "C",
+    "A"
+  ],
+  "returncode": 0,
+  "output_files": [
+    "Indiv_energies_A0101_AADSFATSY_AC.fxout",
+    "Interaction_A0101_AADSFATSY_AC.fxout",
+    "Interface_Residues_A0101_AADSFATSY_AC.fxout",
+    "Summary_A0101_AADSFATSY_AC.fxout"
+  ],
+  "interaction_fxout": "FoldX 5.1 (2011)\nby the FoldX Consortium \nJesper Borg, Frederic Rousseau, Joost Schymkowitz,\nLuis Serrano and Francois Stricher\n------------------------------------------------------\n\nPDB file analysed: batch\nOutput type: AnalyseComplex\nPdb\tGroup1\tGroup2\tIntraclashesGroup1\tIntraclashesGroup2\tInteraction Energy\tBackbone Hbond\tSidechain Hbond\tVan der Waals\tElectrostatics\tSolvation Polar\tSolvation Hydrophobic\tVan der Waals clashes\tentropy sidechain\tentropy mainchain\tsloop_entropy\tmloop_entropy\tcis_bond\ttorsional clash\tbackbone clash\thelix dipole\twater bridge\tdisulfide\telectrostatic kon\tpartial covalent bonds\tenergy Ionisation\tEntropy Complex\tNumber of Residues\tInterface Residues\tInterface Residues Clashing\tInterface Residues VdW Clashing\tInterface Residues BB Clashing\n/tmp/foldx_raw_h75p87_9/in/A0101_AADSFATSY.pdb\tC\tA\t0.0385547\t21.7701\t-9.98929\t-7.43867\t-8.27642\t-16.6258\t-3.04911\t27.8435\t-19.0376\t5.65409\t6.59814\t4.88667\t0\t0\t0\t0.0711586\t0.900058\t0.00830471\t0\t0\t-0.706044\t0\t0.0825914\t2.384\t383\t47\t1\t1\t0\n",
+  "parsed": [
+    {
+      "pdb": "/tmp/foldx_raw_h75p87_9/in/A0101_AADSFATSY.pdb",
+      "group1": "C",
+      "group2": "A",
+      "intraclashesgroup1": 0.0385547,
+      "intraclashesgroup2": 21.7701,
+      "interaction_energy": -9.98929,
+      "backbone_hbond": -7.43867,
+      "sidechain_hbond": -8.27642,
+      "van_der_waals": -16.6258,
+      "electrostatics": -3.04911,
+      "solvation_polar": 27.8435,
+      "solvation_hydrophobic": -19.0376,
+      "van_der_waals_clashes": 5.65409,
+      "entropy_sidechain": 6.59814,
+      "entropy_mainchain": 4.88667,
+      "sloop_entropy": 0.0,
+      "mloop_entropy": 0.0,
+      "cis_bond": 0.0,
+      "torsional_clash": 0.0711586,
+      "backbone_clash": 0.900058,
+      "helix_dipole": 0.00830471,
+      "water_bridge": 0.0,
+      "disulfide": 0.0,
+      "electrostatic_kon": -0.706044,
+      "partial_covalent_bonds": 0.0,
+      "energy_ionisation": 0.0825914,
+      "entropy_complex": 2.384,
+      "number_of_residues": 383.0,
+      "interface_residues": 47.0,
+      "interface_residues_clashing": 1.0,
+      "interface_residues_vdw_clashing": 1.0,
+      "interface_residues_bb_clashing": 0.0
+    }
+  ],
+  "pdb_head": "ATOM      1  N   GLY A   1       8.958  17.467   7.157  1.00 92.81           N  \nATOM      2  CA  GLY A   1       9.225  16.206   7.841  1.00 92.81           C  \nATOM      3  C   GLY A   1      10.011  15.240   6.981  1.00 92.81           C  \nATOM      4  O   GLY A   1      10.511  15.607   5.913  1.00 92.81           O  \nATOM      5  N   SER A   2      10.110  14.004   7.453  1.00 96.97          "
+}

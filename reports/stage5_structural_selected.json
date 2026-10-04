@@ -1,17 +1,32 @@
 {
   "geometry": {
-    "l2": 0.1,
-    "alpha": 1000.0,
+    "l2": 0.01,
+    "alpha": 100.0,
     "n_features": 36
   },
   "confidence": {
-    "l2": 0.1,
-    "alpha": 1000.0,
+    "l2": 0.01,
+    "alpha": 1.0,
     "n_features": 73
   },
   "geometry+confidence": {
     "l2": 0.01,
-    "alpha": 100.0,
+    "alpha": 1.0,
     "n_features": 109
+  },
+  "seq+geometry": {
+    "l2": 0.01,
+    "alpha": 1.0,
+    "n_features": 896
+  },
+  "seq+confidence": {
+    "l2": 0.01,
+    "alpha": 1.0,
+    "n_features": 933
+  },
+  "seq+geometry+confidence": {
+    "l2": 0.01,
+    "alpha": 1.0,
+    "n_features": 969
   }
 }

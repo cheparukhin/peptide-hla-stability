@@ -505,8 +505,22 @@ metered rates. Nothing here is a list-price estimate.
 | Both profiles, `n_orders=8` | 28,166 | 117.0 | 1.5 h in parallel | $7.39 |
 
 Cost is linear in `n_orders`. The QC sample uses **16** rather than 8 so that
-its scores are directly comparable to the pilot thresholds, which were measured
-at 16; the extra $0.51 buys that comparability.
+its scores are directly comparable to the pilot reference points, which were
+measured at 16; the extra $0.51 buys that comparability.
+
+**Parallelism was raised for wall time only; core-hours and cost are
+unchanged.** `CHUNK` 200 → **25** and `MAX_CONTAINERS` 20 → **100**, taking the
+QC sample from 10 chunks to 80 and its wall time from ~50 min to ~4–7 min.
+Core-hours are fixed by the job, so the only cost change is the extra
+per-container startup the forecast charges explicitly: $1.04 → $1.12 on the
+conservative 14.70 s/fold basis, or **$0.61 at the 7.5 s/fold actually
+measured** in the smokes. **The experiment is untouched** — same 2,000 folds,
+same seed, same 16 orders, same draw. `CHUNK` was the binding constraint, not
+the container cap: at `CHUNK=200` a 2,000-fold sample is only 10 chunks and
+could never have used more than 10 containers however high the cap was set.
+`MAX_CONTAINERS=100` has **not** been verified against the workspace CPU quota;
+Modal queues rather than failing if the real cap is lower, and the run reports
+what it got.
 
 **Verified so far.** `modal 1.6.1` installed (torch 2.14.1 and biotite 1.7.1
 unaffected — the ESM-2 arm shares this `.venv`).
@@ -541,9 +555,40 @@ written in this report, and it is the second time that discipline has paid out
 here (the first being the rate check below). `--dry-run` is now purely local:
 it forecasts against the frozen cohort size and never lists the Volume.
 
-**Still outstanding before any batch job**, per the project invariant:
-`::smoke` on 5 real folds **in each workspace**. Deliberately not run yet — it
-touches a workspace and belongs adjacent to the real pass, not hours before it.
+### `::smoke` passed in both workspaces — and found two real defects first
+
+Both smokes: **5/5 ok, 0 failed**, 5 real production folds each.
+`reports/stage5_inverse_folding_smoke_{a-cheparukhin,colleague}.csv`. Each
+workspace lists **14,083 cohort folds and 5 skipped** in `_smoke`/`_shards`/
+`_failed` — the shared exclusion logic working on real production output, and
+the fold count matching the frozen half exactly.
+
+Measured **7.0–8.0 s per fold**, against the 14.70 s laptop-derived forecast: a
+Modal container at `cpu=2.0` is about **2x faster** than my contended laptop,
+so the forecast is conservative and the real cost is roughly half.
+
+The invariant earned its keep. `::forecast` and `--dry-run` both passed while
+the remote function was **unrunnable**, and only executing it exposed that:
+
+1. **The container died on import.** `_RATES = json.loads((REPO /
+   "reports" / ...).read_text())` ran at *module scope*, and Modal imports this
+   module inside every container, where the repo does not exist. The container
+   raised `FileNotFoundError: '/reports/ectodomain_rates.json'` before running a
+   line of its own. Externally this looks like **an app with 0 tasks and no
+   other symptom**. This is the same defect stage 4c hit with
+   `download_weights`, reproduced independently in a new file — and neither
+   local check can catch it, because both run where the file exists. Rates are
+   now read lazily. `tests/test_inverse_folding.py` has an AST regression test
+   that fails on any module-scope repo read in this file.
+2. **Production and pilot metadata have different schemas.** The pilot writes
+   `seed` at the top level; production writes it under `settings`. `load_complex`
+   raised `KeyError: 'seed'` on all five folds. It now reads both, and production's
+   `split` and `shard` are carried through as provenance. (`pair_id` is
+   deliberately **not** carried: it is positional into the raw CSV and the
+   project invariant forbids joining on it. Joins are on `(allele, peptide)`.)
+
+Neither would have been found by inspection, and both would have fired on the
+first chunk of the real run.
 
 `--profile` must match `MODAL_PROFILE`; the runner asserts it, because the two
 halves are disjoint. Each half is scored separately and concatenated locally

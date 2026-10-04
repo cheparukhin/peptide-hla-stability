@@ -60,7 +60,10 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
 from pepstab.data import load_with_splits  # noqa: E402
-from pepstab.evaluation import eligible_alleles, score  # noqa: E402
+from pepstab.evaluation import (  # noqa: E402
+    describe_delta, eligible_alleles, paired_cluster_bootstrap, score,
+)
+from pepstab.features import build_features  # noqa: E402
 from pepstab.mlp import MLPConfig, MLPRegressor  # noqa: E402
 from scripts.baseline_ensemble import cv_folds  # noqa: E402
 from scripts.baseline_sequence import MAX_EPOCHS, PATIENCE  # noqa: E402
@@ -169,6 +172,13 @@ def feature_columns(frame: pd.DataFrame) -> dict[str, list[str]]:
             "geometry+confidence": geometry + confidence}
 
 
+#: The sequence block the additive arms are built on: the comparator's own
+#: input set and encoding, so an additive arm differs from the sequence
+#: baseline by **exactly** the structural columns and nothing else.
+SEQ_INPUT_SET = "pep_pseudo"
+SEQ_ENCODING = "blosum"
+
+
 def check_interior(arm: str, configs: dict[str, tuple]) -> list[dict]:
     """Refuse an arm whose selection sits at the edge of its own ladder.
 
@@ -176,14 +186,22 @@ def check_interior(arm: str, configs: dict[str, tuple]) -> list[dict]:
     the best available one and the arm is handicapped. The ESM arm measured
     that handicap at 0.093-0.109 median rho tonight; a silent boundary hit
     inside a comparison whose whole point is parity would reproduce it exactly.
-    Same contract as ``scripts/stage3b_esm_multitask.check_interior``.
+    Same contract as ``scripts/stage3b_esm_multitask.check_interior`` -- and it
+    shares that version's limitation: it assumes the objective has an interior
+    optimum, so it reads "selection at an edge" as "ladder truncated". On a
+    *flat* objective those differ, and the ladder may cover the plateau
+    perfectly while the argmin lands on an edge by numerical noise. The correct
+    fix is to flag a boundary hit only when the improvement toward the edge
+    exceeds a declared tolerance; it is deliberately not implemented here, so
+    that the threshold is not chosen after seeing a result it would decide.
+    Applied only to the configuration that actually fits the arm.
     """
     rows = []
     for key, (value, ladder, kind) in configs.items():
         interior = min(ladder) < value < max(ladder)
         rows.append({"arm": arm, "group": key, "kind": kind, "selected": value,
                      "ladder": "|".join(f"{v:g}" for v in ladder),
-                     "n_points": len(ladder), "interior": interior})
+                     "n_points": len(ladder), "interior": interior, "gated": True})
         if not interior:
             raise SystemExit(
                 f"arm {arm!r} group {key!r}: selected {kind}={value:g} is at the "
@@ -209,7 +227,7 @@ def load_table(path: Path) -> pd.DataFrame:
     labels = load_with_splits()
     merged = frame.merge(
         labels[["allele", "peptide", "pair_id", "split", "cluster_id",
-                "y_log1p", "dist_to_train"]],
+                "y_log1p", "dist_to_train", "hla_seq", "hla_pseudoseq"]],
         on=["allele", "peptide"], how="left", validate="one_to_one",
     )
     if merged["pair_id"].isna().any():
@@ -239,6 +257,11 @@ def design(frame: pd.DataFrame, cols: list[str], mu=None, sd=None):
 # --------------------------------------------------------------------------
 # modes
 # --------------------------------------------------------------------------
+
+
+def sequence_block(frame: pd.DataFrame) -> np.ndarray:
+    """The comparator's own sequence encoding for these rows."""
+    return build_features(frame, SEQ_INPUT_SET, SEQ_ENCODING).astype(np.float64)
 
 
 def ridge_path(X_fit, y_fit, X_dev, y_dev, alphas):
@@ -271,10 +294,21 @@ def mode_grid(args) -> int:
     dev = fold == 0
 
     selected, records = {}, []
-    for name, cols in groups.items():
-        if not cols:
+    seq_train = sequence_block(train) if args.additive else None
+    # `seq_only` is the control that makes the additive arms interpretable: the
+    # same pipeline, ensemble size, ladder and seeds, with the structural
+    # columns removed. Without it, an additive arm differs from the committed
+    # sequence baseline in three ways at once -- encoding count, L2 selection
+    # and the structural block -- and a drop cannot be attributed to any of them.
+    todo = list(groups.items())
+    if args.additive:
+        todo += [("seq_only", [])] + [(f"seq+{k}", v) for k, v in groups.items()]
+    for name, cols in todo:
+        if not cols and name != "seq_only":
             continue
-        X, _, _ = design(train, cols)
+        X, _, _ = design(train, cols) if cols else (np.empty((len(train), 0)), None, None)
+        if name == "seq_only" or name.startswith("seq+"):
+            X = np.hstack([seq_train, X])
         y = train.y_log1p.to_numpy()
         alpha, mse, *_ = ridge_path(X[~dev], y[~dev], X[dev], y[dev], STRUCT_ALPHA_GRID)
         best = (None, np.inf)
@@ -285,24 +319,42 @@ def mode_grid(args) -> int:
             m = float(np.mean((model.predict(X[dev]) - y[dev]) ** 2))
             if m < best[1]:
                 best = (l2, m)
-        selected[name] = {"l2": best[0], "alpha": alpha, "n_features": len(cols)}
-        records.append({"group": name, "n_features": len(cols),
+        selected[name] = {"l2": best[0], "alpha": alpha, "n_features": int(X.shape[1])}
+        records.append({"group": name, "n_features": int(X.shape[1]),
                         "selected_l2": best[0], "mlp_dev_mse": best[1],
                         "selected_alpha": alpha, "ridge_dev_mse": mse})
-        print(f"  {name:22s} {len(cols):4d} features  l2={best[0]:g} "
+        print(f"  {name:24s} {X.shape[1]:5d} features  l2={best[0]:g} "
               f"(dev mse {best[1]:.4f})  alpha={alpha:g} (dev mse {mse:.4f})")
 
+    # The hard gate covers the MLP L2 only -- that is the configuration
+    # `mode_ensemble` actually fits, so it is the only one that can handicap
+    # the arm that writes predictions. Gating the ridge alpha was a category
+    # error: the ridge is a linear reference, it generates nothing, and on the
+    # full cohort its dev MSE moves by 2e-4 across five decades, so its argmin
+    # is numerical noise on a plateau rather than evidence of a truncated
+    # ladder. See reports/stage4c5_features.md for the measurement and for the
+    # tolerance-based fix that was identified but deliberately not implemented.
     interior = check_interior("boltz_structural", {
-        **{f"{k} (mlp l2)": (v["l2"], STRUCT_L2_GRID, "l2") for k, v in selected.items()},
-        **{f"{k} (ridge alpha)": (v["alpha"], STRUCT_ALPHA_GRID, "alpha")
-           for k, v in selected.items()},
+        f"{k} (mlp l2)": (v["l2"], STRUCT_L2_GRID, "l2") for k, v in selected.items()
     })
+    # Ridge boundary hits are reported, never fatal.
+    for key, value in selected.items():
+        at_edge = value["alpha"] in (min(STRUCT_ALPHA_GRID), max(STRUCT_ALPHA_GRID))
+        interior.append({"arm": "boltz_structural", "group": f"{key} (ridge alpha)",
+                         "kind": "alpha", "selected": value["alpha"],
+                         "ladder": "|".join(f"{v:g}" for v in STRUCT_ALPHA_GRID),
+                         "n_points": len(STRUCT_ALPHA_GRID), "interior": not at_edge,
+                         "gated": False})
+        if at_edge:
+            print(f"  note: {key} ridge alpha={value['alpha']:g} is at a ladder "
+                  "edge. Reported, not gated: the ridge is a reference and does "
+                  "not produce the arm's predictions.")
     out = REPORT_DIR / "stage5_structural_grid.csv"
     pd.DataFrame(records).to_csv(out, index=False)
     pd.DataFrame(interior).to_csv(REPORT_DIR / "stage5_structural_interior.csv", index=False)
     (REPORT_DIR / "stage5_structural_selected.json").write_text(
         json.dumps(selected, indent=2) + "\n")
-    print(f"\nall selections interior. wrote {out}")
+    print(f"\nall MLP selections interior. wrote {out}")
     return 0
 
 
@@ -363,16 +415,26 @@ def mode_ensemble(args) -> int:
     fold = cv_folds(train, N_FOLDS)
     y_train = train.y_log1p.to_numpy()
     alleles = eligible_alleles(val.allele, val.y_log1p.to_numpy(), split="val")
-    rows, rows_common = [], []
+    rows, rows_common, rows_boot, rows_borrowed = [], [], [], []
 
-    for name, cols in groups.items():
-        if not cols or name not in selected:
+    seq_train = sequence_block(train) if args.additive else None
+    todo = list(groups.items())
+    if args.additive:
+        todo += [("seq_only", [])] + [(f"seq+{k}", v) for k, v in groups.items()]
+    for name, cols in todo:
+        if name not in selected or (not cols and name != "seq_only"):
             continue
+        additive = name == "seq_only" or name.startswith("seq+")
         l2 = selected[name]["l2"]
-        X_train, mu, sd = design(train, cols)
+        X_train, mu, sd = (design(train, cols) if cols
+                           else (np.empty((len(train), 0)), None, None))
         # Rows with a structure get the model; the rest take the fallback.
         sub = have_val.reindex(val.pair_id[covered]).reset_index().copy()
-        X_val, _, _ = design(sub, cols, mu, sd)
+        X_val, _, _ = (design(sub, cols, mu, sd) if cols
+                       else (np.empty((len(sub), 0)), None, None))
+        if additive:
+            X_train = np.hstack([seq_train, X_train])
+            X_val = np.hstack([sequence_block(val[covered.to_numpy()]), X_val])
 
         preds, n_networks = np.zeros(len(sub)), 0
         started = time.perf_counter()
@@ -414,10 +476,51 @@ def mode_ensemble(args) -> int:
         # cannot distinguish the feature groups at all.
         diag = _common_rows_diagnostic(val, covered, y_pred, fallback, name)
         rows_common.append(diag)
+
+        # Paired peptide-cluster bootstrap against the sequence baseline, on
+        # identical rows. Clusters are resampled whole, so a peptide cluster
+        # spanning several alleles stays intact. A CI crossing zero is
+        # inconclusive, not negative (EVALUATION.md).
+        seq = np.array(val.pair_id.map(fallback), dtype=float)
+        boot = paired_cluster_bootstrap(
+            val.cluster_id, val.allele, val.y_log1p.to_numpy(), seq, y_pred,
+            alleles=alleles, split="val")
+        verdict = describe_delta(boot)
+        lo, hi = boot.get("ci95", (float("nan"), float("nan")))
+        point = boot.get("delta_median_spearman", float("nan"))
+        rows_boot.append({"group": name, "delta_median_scc": point,
+                          "ci95_low": lo, "ci95_high": hi, "verdict": verdict})
+        print(f"  {name:22s} vs sequence: delta {point:+.4f} "
+              f"[{lo:+.4f}, {hi:+.4f}]  {verdict}")
+
+        # Sensitivity check, never a headline: the three alleles whose folded
+        # alpha3 was borrowed from a relative, so part of the construct is a
+        # different molecule.
+        borrowed = val.pair_id.isin(
+            table.loc[table.alpha3_borrowed.fillna(False), "pair_id"]).to_numpy()
+        if borrowed.sum() >= 20:
+            b_al = eligible_alleles(val.allele[borrowed], val.y_log1p.to_numpy()[borrowed],
+                                    split="val")
+            entry = {"group": name, "n_rows": int(borrowed.sum()),
+                     "n_alleles_eligible": len(b_al)}
+            if b_al:
+                bs = score("borrowed", val.allele[borrowed],
+                           val.y_log1p.to_numpy()[borrowed], y_pred[borrowed],
+                           alleles=b_al, split="val")
+                bq = score("borrowed seq", val.allele[borrowed],
+                           val.y_log1p.to_numpy()[borrowed], seq[borrowed],
+                           alleles=b_al, split="val")
+                entry.update(structural_median_scc=bs.median_spearman,
+                             sequence_median_scc=bq.median_spearman,
+                             delta_median_scc=bs.median_spearman - bq.median_spearman)
+            else:
+                entry["note"] = ("no borrowed-alpha3 allele reaches the validation "
+                                 "row threshold -- not scoreable")
+            rows_borrowed.append(entry)
         # as_row() is the canonical metric set every other arm reports, so the
         # comparison tables line up column for column: median per-allele
         # Spearman primary, MAE and precision@10 secondary, per EVALUATION.md.
-        rows.append({"group": name, "n_features": len(cols), "l2": l2,
+        rows.append({"group": name, "n_features": int(X_train.shape[1]), "l2": l2,
                      "n_networks": n_networks,
                      "n_structural_rows": int(covered.sum()),
                      "n_fallback_rows": int((~covered).sum()),
@@ -436,6 +539,9 @@ def mode_ensemble(args) -> int:
     pd.DataFrame(rows).to_csv(out, index=False)
     common = REPORT_DIR / "stage5_structural_common_rows_diagnostic.csv"
     pd.DataFrame(rows_common).to_csv(common, index=False)
+    pd.DataFrame(rows_boot).to_csv(REPORT_DIR / "stage5_structural_bootstrap.csv", index=False)
+    pd.DataFrame(rows_borrowed).to_csv(
+        REPORT_DIR / "stage5_structural_alpha3_sensitivity.csv", index=False)
     print(f"\nwrote {out}")
     print(f"wrote {common}  (DIAGNOSTIC on covered rows only, not the headline)")
     for d in rows_common:
@@ -458,6 +564,10 @@ def main() -> int:
                     help="validation only; the test split is stage 6's, scored once")
     ap.add_argument("--select", default="geometry+confidence",
                     help="which group's predictions to freeze as the arm")
+    ap.add_argument("--additive", action="store_true",
+                    help="also run sequence+structural arms -- the decision-relevant "
+                         "comparison, differing from the baseline by exactly the "
+                         "structural columns")
     ap.add_argument("--write-preds", action="store_true",
                     help=f"write {PRED_PATH.name} for the selected group")
     args = ap.parse_args()

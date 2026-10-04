@@ -182,8 +182,34 @@ def test_forecast_is_linear_in_decoding_orders():
     assert a["s_per_fold"] == pytest.approx(2 * b["s_per_fold"])
     # Rates must come from the repo's metered figures, never a pricing page.
     assert "ectodomain_rates.json" in a["rates_source"]
-    assert pm.USD_PER_CORE_HOUR == pytest.approx(0.04730)
-    assert pm.USD_PER_GIB_HOUR == pytest.approx(0.00800)
+    assert pm._rates() == (pytest.approx(0.04730), pytest.approx(0.00800))
+
+
+def test_modal_module_imports_without_the_repo_present(tmp_path, monkeypatch):
+    """Modal imports this module inside every container, where the repo is absent.
+
+    A module-scope read of a repo file kills the container on import, before it
+    runs a line of its own -- it shows up as "0 tasks" and nothing else. This
+    happened once (the metered-rates read) and cost a smoke cycle to find.
+    """
+    pytest.importorskip("modal")
+    src = (REPO / "modal_app" / "proteinmpnn_scoring.py").read_text()
+    import ast
+
+    tree = ast.parse(src)
+    bad = []
+    for node in ast.walk(ast.Module(body=tree.body, type_ignores=[])):
+        # only module-level statements, not function bodies
+        pass
+    for stmt in tree.body:
+        if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        for node in ast.walk(stmt):
+            if isinstance(node, ast.Attribute) and node.attr in {
+                "read_text", "read_bytes"
+            }:
+                bad.append(ast.unparse(node))
+    assert not bad, f"module-scope repo reads will kill the container: {bad}"
 
 
 def test_qc_sample_is_predeclared_and_reproducible():

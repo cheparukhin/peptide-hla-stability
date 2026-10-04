@@ -1,4 +1,7 @@
 group,n_features,l2,n_networks,n_structural_rows,n_fallback_rows,model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,fit_s
-geometry,36,0.1,30,216,2601,boltz_structural[geometry],2802,68,68,0,0.6707,0.5203,0.7503,0.497,0.7,0.7874,0.7874,4.3
-confidence,73,0.1,30,216,2601,boltz_structural[confidence],2802,68,68,0,0.6707,0.5203,0.7503,0.4932,0.7,0.7903,0.7926,4.4
-geometry+confidence,109,0.01,30,216,2601,boltz_structural[geometry+confidence],2802,68,68,0,0.6707,0.5203,0.7503,0.4929,0.7,0.7897,0.7918,2.4
+geometry,36,0.01,30,2817,0,boltz_structural[geometry],2802,68,68,0,0.2677,0.0628,0.4036,0.7765,0.5,0.4787,0.5092,97.9
+confidence,73,0.01,30,2817,0,boltz_structural[confidence],2802,68,68,0,0.3926,0.275,0.4831,0.7246,0.6,0.5658,0.5553,113.0
+geometry+confidence,109,0.01,30,2817,0,boltz_structural[geometry+confidence],2802,68,68,0,0.4209,0.3228,0.4948,0.6764,0.6,0.6219,0.6235,97.5
+seq+geometry,896,0.01,30,2817,0,boltz_structural[seq+geometry],2802,68,68,0,0.6143,0.4819,0.7222,0.5137,0.7,0.7658,0.7768,169.1
+seq+confidence,933,0.01,30,2817,0,boltz_structural[seq+confidence],2802,68,68,0,0.5958,0.5569,0.7176,0.509,0.7,0.7743,0.7848,176.8
+seq+geometry+confidence,969,0.01,30,2817,0,boltz_structural[seq+geometry+confidence],2802,68,68,0,0.6216,0.5208,0.6896,0.5167,0.7,0.7656,0.7764,166.2
