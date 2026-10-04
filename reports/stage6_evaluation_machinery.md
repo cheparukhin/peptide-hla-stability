@@ -12,7 +12,7 @@ run on test.
 |---|---|
 | `pepstab/stage6.py` | the analysis library |
 | `scripts/stage6_report.py` | CLI: N prediction CSVs in, the whole table set out |
-| `tests/test_stage6.py` | 33 guards (contract parity, scoring properties, leakage) |
+| `tests/test_stage6.py` | 35 guards (contract parity, scoring properties, leakage) |
 | `reports/stage6_plan_verification.csv` | every plan claim, stated vs measured |
 | `reports/stage6_val_*.csv`, `reports/stage6_val_manifest.json` | the worked example |
 
@@ -44,6 +44,20 @@ Joins are on `pair_id` as written by `pepstab.data.load_with_splits()`, which
 reads `data/splits.csv`. Splits are never recomputed, and
 `data/c67s_cleanup/peptide_splits.csv` is never opened — a test greps both
 source files to keep it that way.
+
+## Headline, validation (the frozen contract, unchanged)
+
+| Arm | Rows | Alleles | Median per-allele rho | IQR | MAE log1p | Median P@10 | Pooled rho |
+|---|---:|---:|---:|---|---:|---:|---:|
+| `seq_baseline` (single net, pep+pseudoseq) | 2,802 | 68 | 0.6098 | 0.483–0.709 | 0.5325 | 0.700 | 0.7451 |
+| `seq_ensemble_pep_pseudo` (30-net ensemble) | 2,802 | 68 | **0.6931** | 0.574–0.753 | 0.4734 | 0.700 | 0.8015 |
+| `allele_mean` (control) | 2,802 | 68 | 0.0000 | — | 0.7342 | 0.359 | 0.5540 |
+| `global_mean` (control) | 2,802 | 68 | 0.0000 | — | 0.9278 | 0.359 | undefined |
+
+Both controls are constant within each allele, so all 68 alleles are `unranked`
+and score the predeclared 0. They are in every table below for the same reason:
+a metric whose controls do not land where theory says they should is not
+measuring what it claims.
 
 ## Verification of the plan's counts
 
@@ -234,14 +248,38 @@ wholly inside one cluster, and a differential pair shares one peptide and so one
 cluster, so no comparison is ever torn in half by a resample.
 
 **Why clusters, measured rather than asserted.** `resampling_unit_widths()`
-re-runs the identical paired comparison under three units:
+re-runs the identical comparison under three units, as the contract's
+justification rather than an assertion of it. Validation, `seq_ensemble_pep_pseudo` against `seq_baseline`, 1,000 resamples
+at each of three seeds (`reports/stage6_val_resampling_units.csv` carries all
+18 rows). Mean 95% CI width, with the min–max over seeds:
 
-<!--UNITS-->
+| Quantity | Unit | Units resampled | Mean CI width | Range over 3 seeds | vs cluster |
+|---|---|---:|---:|---|---:|
+| paired delta | cluster | 510 | 0.0931 | 0.0907–0.0957 | 1.00 |
+| paired delta | peptide | 567 | 0.0929 | 0.0899–0.0988 | 1.00 |
+| paired delta | row | 2,817 | **0.0836** | 0.0828–0.0846 | **0.90** |
+| single arm | cluster | 510 | 0.0877 | 0.0842–0.0897 | 1.00 |
+| single arm | peptide | 567 | 0.0852 | 0.0830–0.0896 | 0.97 |
+| single arm | row | 2,817 | **0.0731** | 0.0712–0.0758 | **0.83** |
 
-The row bootstrap's interval is materially narrower. That is not a better
-interval — it is one that counted rows sharing a peptide as independent
-evidence. Reporting the measured ratio is the evidence for the contract's
-choice.
+Two things fall out, and the second was not what we expected:
+
+1. **The row bootstrap is too narrow**, by 10% on the paired difference and 17%
+   on a single arm's interval. The effect is larger on a single arm because
+   pairing already removes the sampling noise the two arms share.
+2. **Peptide and cluster are almost the same thing on this split.** 567
+   peptides against 510 clusters: most clusters are singletons, so the
+   dependence that matters is *one peptide measured on many alleles*, not
+   near-duplicate peptides inside a cluster. Resampling clusters is still the
+   right and more conservative choice — it is strictly coarser, it is what the
+   contract predeclared, and on the test split the ratio may differ — but the
+   honest statement of why it matters is the peptide-across-alleles structure,
+   not the clustering.
+
+An earlier version of this measurement, run at 60–120 resamples, reported a
+row/cluster ratio of 0.73–0.79. That was bootstrap noise in the width estimate
+itself. The three-seed figures above supersede it; a width ratio needs enough
+resamples to be stable, which is why the seed range is printed next to it.
 
 **Worked example, validation, 2,000 resamples:**
 
@@ -265,7 +303,7 @@ the other three call. That is a property of the statistic, not of the models.
 ### Mean as well as median
 
 The contract's primary statistic is the **median** per-allele Spearman, and the
-six-verdict rule in `EVALUATION.md` applies to it. The CLI now reports the
+six-verdict rule in `EVALUATION.md` applies to it. The CLI always reports the
 **mean** over the same panel beside it, for one reason: `reports/stage2_baselines.md`
 quotes ensembling gains as *mean* SCC, and a stage 6 median delta cannot be
 checked against a stage 2 mean delta. Emitting both removes a comparison that
@@ -299,26 +337,21 @@ confounded median delta is +0.0432 with an interval that crosses zero, against
 +0.0833 excluding zero for the matched pair. Mixing the two changes understated
 the effect and turned a conclusive result into an inconclusive one.
 
-Two cautions this surfaced, both recorded for the orchestrator rather than
-edited into files this workstream does not own:
-
-1. **`preds/seq_baseline.csv` is the single network on the pseudosequence arm**
-   (byte-identical to `preds/mlp_onehot_pep_pseudo.csv`). Comparing it against
-   `preds/seq_ensemble_pep_domain.csv` changes the arm *and* the ensembling
-   together. The matched partner is `preds/seq_ensemble_pep_pseudo.csv`. The
-   `note` column of `reports/stage6_val_ensemble_parity.csv` marks which rows
-   are matched and which are confounded.
-2. **The "+0.090 mean SCC from ensembling" figure is against the mean of the
-   ensemble's own 30 members, not against the single-network baseline.** From
-   `reports/stage2_ensemble_pep_pseudo.csv`, the members average 0.5550 and the
-   ensemble reaches 0.6452: +0.0902. Against the deployed single network
-   (0.5712) the gain is **+0.0740**; on the domain arm the corresponding figures
-   are +0.0998 and +0.0643. Both quantities are real and the arithmetic is
-   right, but they answer different questions, and each ensemble member fits on
-   15,773 rows against the single network's 17,744 — so the
-   ensemble-minus-mean-member gap bundles a training-rows difference in with
-   averaging. The ensemble-minus-single-network gap does not. Either way the
-   gain clears the 0.05 bar and the ensemble-parity rule stands.
+**Which reference the "+0.090 mean SCC from ensembling" figure uses.** It is
+against the mean of the ensemble's own 30 members, not against the
+single-network baseline. From `reports/stage2_ensemble_pep_pseudo.csv` the
+members average 0.5550 and the ensemble reaches 0.6452: +0.0902. Against the
+deployed single network (0.5712) the gain is **+0.0740**; on the domain arm the
+corresponding figures are +0.0998 and +0.0643. Both quantities are real and the
+arithmetic is right, but they answer different questions, and each ensemble
+member fits on 15,773 rows against the single network's 17,744 — so the
+ensemble-minus-mean-member gap bundles a training-rows difference in with
+averaging, while the ensemble-minus-single-network gap does not. The latter is
+the figure the ensemble-parity rule needs. The rule stands on it: both point
+estimates sit above 0.05, which is the basis for applying ensembling to every
+arm, while neither interval establishes that the true gain exceeds 0.05.
+`reports/stage2_baselines.md` and `HACKATHON_PLAN.md` now state which reference
+each figure uses.
 
 ## 4. Precision@10 at the predeclared 2-hour threshold
 
@@ -429,7 +462,7 @@ So the nested evaluation can detect a jump from 0.50 to about 0.57 concordance,
 and nothing smaller. **Report it as a bounded negative, or as a comparison
 between arms, never as an absolute claim about mutant ranking.**
 
-**Worked example, validation run, ridge reference arm:**
+**Worked example (this analysis runs inside the *training* split, whatever `--split` is set to), ridge reference arm:**
 
 | Arm | Available | Scored | Decidable | Concordance | d=1 | d=2 | Concordance − 0.5 | 95% CI |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -470,8 +503,13 @@ rather than only by remembering.
 
 The numbers in this document are tied to the digests in
 `reports/stage6_val_manifest.json`. If `preds/seq_ensemble_pep_pseudo.csv`
-changes, the CLI re-runs in about twelve minutes and every table regenerates;
-nothing here is hand-maintained.
+changes, re-running the CLI regenerates every table; nothing here is
+hand-maintained. The worked example above took **1,471 s** (24.5 min) on one
+core for four arms at 2,000 resamples — the manifest records
+`elapsed_seconds`, so the cost of a re-run is known before committing to it.
+Most of that is the paired intervals: three non-baseline arms times two panel
+statistics times 2,000 resamples, plus the 18-bootstrap resampling-unit
+comparison. Two arms costs roughly a third of it.
 
 The CLI is already general over arms: the first positional argument is the
 baseline every paired interval is taken against, so the headline comparison for
@@ -530,3 +568,11 @@ they protect:
 - The paired bootstrap assumes peptide clusters are exchangeable. They are not
   identically distributed — cluster sizes vary by two orders of magnitude — so
   the interval is an approximation, as every cluster bootstrap is.
+- On validation the cluster unit buys little over the peptide unit (510 vs 567
+  units, CI widths within 3%), because most validation clusters are singletons.
+  The measured ratios above are properties of *this split*; the test split has
+  twice the rows and a different cluster-size distribution, so re-measure there
+  rather than carrying these numbers across.
+- Every delta is between two specific prediction files. If an arm is
+  regenerated, the digests in the manifest stop matching and the comparison
+  must be re-run; nothing in the pipeline detects a stale file automatically.

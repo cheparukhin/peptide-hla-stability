@@ -354,3 +354,89 @@ def test_cohort_is_loaded_not_recomputed():
     }
     # Disjoint halves: a pair belongs to exactly one profile.
     assert not cohort.duplicated(["allele", "peptide"]).any()
+
+
+# --- Stage 5 structural arm: parity and gating -----------------------------
+
+
+def _arm():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "stage5_structural_arm", ROOT / "scripts/stage5_structural_arm.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_ensemble_size_matches_the_sequence_comparator():
+    """5 folds x 2 encodings x 3 seeds = 30 networks for the comparator, so the
+    structural arm fits 30 too. Ensembling alone is worth ~0.090 median SCC
+    here, so a smaller ensemble would read as a feature verdict."""
+    arm = _arm()
+    assert arm.N_FOLDS * len(arm.SEEDS) == arm.PARITY_NETWORKS == 30
+    from scripts.baseline_sequence import HIDDEN_GRID, L2_GRID, SEEDS as SEQ_SEEDS
+    assert arm.N_FOLDS * len(HIDDEN_GRID) * len(SEQ_SEEDS) == arm.PARITY_NETWORKS
+
+
+def test_tuning_budget_matches_the_comparator():
+    """Equal budget, scale-appropriate values -- not transplanted values."""
+    arm = _arm()
+    from scripts.baseline_sequence import ALPHA_GRID, HIDDEN_GRID, L2_GRID
+
+    assert len(arm.STRUCT_ALPHA_GRID) == len(ALPHA_GRID)
+    assert len(arm.STRUCT_L2_GRID) == len(HIDDEN_GRID) * len(L2_GRID)
+    # Standardised dense features need far stronger shrinkage than stage 2's
+    # sparse one-hot columns; transplanting its values would handicap the arm.
+    # The ladder starts at the comparator's ceiling and extends three decades
+    # above it, so it covers strictly stronger shrinkage.
+    assert min(arm.STRUCT_L2_GRID) >= max(L2_GRID)
+    assert max(arm.STRUCT_L2_GRID) > max(L2_GRID) * 100
+    # An interior check is unsatisfiable on a two-point ladder.
+    assert len(arm.STRUCT_L2_GRID) >= 3
+
+
+def test_check_interior_refuses_an_edge_selection():
+    arm = _arm()
+    ladder = (1e-3, 1e-2, 1e-1, 1.0)
+    arm.check_interior("x", {"g": (1e-2, ladder, "l2")})  # interior: fine
+    for edge in (min(ladder), max(ladder)):
+        with pytest.raises(SystemExit, match="edge of ladder"):
+            arm.check_interior("x", {"g": (edge, ladder, "l2")})
+
+
+def test_unclassified_feature_is_an_error_not_a_silent_drop():
+    arm = _arm()
+    frame = pd.DataFrame({"groove_contacts_4p5A_total": [1.0],
+                          "pep_plddt_mean": [0.9],
+                          "some_new_feature": [2.0]})
+    with pytest.raises(SystemExit, match="unclassified numeric columns"):
+        arm.feature_columns(frame)
+
+
+def test_groups_are_disjoint_and_confidence_is_not_mixed_into_geometry():
+    arm = _arm()
+    frame = pd.read_csv(ROOT / "reports/stage4c5_pilot_features.csv")
+    groups = arm.feature_columns(frame)
+    assert set(groups["geometry"]).isdisjoint(groups["confidence"])
+    assert groups["geometry+confidence"] == groups["geometry"] + groups["confidence"]
+    for col in groups["geometry"]:
+        assert not any(t in col for t in ("plddt", "pae", "iptm", "ptm", "pde")), col
+    assert any("iptm" in c for c in groups["confidence"])
+
+
+def test_prediction_path_is_the_frozen_name():
+    """The submission figure auto-draws arms by this stem."""
+    arm = _arm()
+    assert arm.PRED_PATH == ROOT / "preds/boltz_structural.csv"
+
+
+def test_only_validation_can_be_written():
+    """The test split is scored once, at stage 6, by the orchestrator."""
+    import argparse
+
+    arm = _arm()
+    ns = argparse.Namespace(mode="ensemble", table=ROOT / "nope.csv",
+                            split="test", select="geometry", write_preds=False)
+    with pytest.raises(SystemExit, match="validation predictions only"):
+        arm.mode_ensemble(ns)

@@ -3,7 +3,7 @@
 :mod:`pepstab.evaluation` is the frozen contract -- the primary metric, the
 eligible-allele rule, precision@10, the distance strata and the paired cluster
 bootstrap were all predeclared at stage 1 and nothing here changes them. This
-module *reuses* those primitives and adds the four stage 6 analyses that the
+module *reuses* those primitives and adds the five stage 6 analyses that the
 contract names but does not implement:
 
 1. **Distance stratification** -- census of the ``dist_to_train`` strata and the
@@ -29,7 +29,7 @@ contract names but does not implement:
    :func:`mutant_pairs`, :func:`nested_folds`, :func:`score_mutant_ranking`).
    The frozen split clusters at Hamming <= 3, so every Hamming <= 2 group is
    contained in one split by construction -- verified, not assumed, by
-   :func:`near_neighbour_groups`.
+   :func:`verify_groups_within_split`.
 
 Everything is keyed on ``pair_id`` and takes predictions as a plain
 ``pair_id -> y_pred`` series, so an ESM-2 arm or a structural arm drops in with
@@ -501,19 +501,35 @@ def paired_cluster_delta(cluster_id, statistic, pred_a: np.ndarray,
     }
 
 
+#: Seeds the resampling-unit comparison averages over. A single bootstrap's CI
+#: *width* is itself noisy -- at 60-120 resamples the row/cluster ratio moved
+#: between 0.73 and 0.90 -- so the comparison is run at several seeds and the
+#: spread is reported next to the mean. One seed would invite quoting noise.
+UNIT_COMPARISON_SEEDS = (BOOTSTRAP_SEED, BOOTSTRAP_SEED + 1, BOOTSTRAP_SEED + 2)
+
+
 def resampling_unit_widths(frame: pd.DataFrame, pred_a: np.ndarray,
                            pred_b: np.ndarray, alleles: list[str],
-                           n_boot: int = 400, seed: int = BOOTSTRAP_SEED) -> pd.DataFrame:
-    """How wide the paired interval is under three resampling units.
+                           n_boot: int = 1000,
+                           seeds: tuple[int, ...] = UNIT_COMPARISON_SEEDS
+                           ) -> pd.DataFrame:
+    """How wide the interval is under three resampling units, over several seeds.
 
-    Evidence for the contract's choice rather than an assertion of it. The
-    statistic is the panel median Spearman delta in every case; only the unit
-    resampled changes: ``cluster`` (the contract), ``peptide``, and ``row``.
+    Evidence for the contract's choice rather than an assertion of it. Only the
+    unit resampled changes: ``cluster`` (the contract), ``peptide``, and ``row``.
     A narrower interval here is not a better one -- it is an interval that has
     counted correlated rows as independent evidence.
 
-    Deliberately runs fewer resamples than the reported CI: this is a ratio
-    between three widths, not a number that is quoted.
+    Two quantities, because they separate cleanly:
+
+    - ``paired delta`` -- the contract's comparison, ``b`` minus ``a``.
+    - ``single arm`` -- ``b``'s own panel median, obtained by pairing it against
+      a constant predictor (which scores 0 by the predeclared rule). Pairing
+      already removes the sampling noise two arms share, so the dependence
+      between rows shows more plainly here.
+
+    Returns one row per (seed, unit, quantity); aggregate with
+    ``groupby(["quantity", "unit"])["ci_width"]``.
     """
     y_true = frame[TARGET].to_numpy(dtype=float)
     allele = frame["allele"].to_numpy()
@@ -530,17 +546,24 @@ def resampling_unit_widths(frame: pd.DataFrame, pred_a: np.ndarray,
         rho = per_allele_spearman(allele[idx], y_true[idx], pred[idx], alleles)
         return float(panel_spearman(rho, rankable).median())
 
+    constant = np.zeros(len(frame))
+    quantities = {"paired delta": (pred_a, pred_b),
+                  "single arm": (constant, pred_b)}
+
     rows = []
-    for unit, ids in units.items():
-        r = paired_cluster_delta(ids, median_rho, pred_a, pred_b,
-                                 n_boot=n_boot, seed=seed, label=unit)
-        lo, hi = r["ci95"]
-        rows.append({"unit": unit, "n_units": r["n_clusters"],
-                     "delta": r["delta"], "ci_low": lo, "ci_high": hi,
-                     "ci_width": hi - lo})
+    for seed in seeds:
+        for unit, ids in units.items():
+            for quantity, (qa, qb) in quantities.items():
+                r = paired_cluster_delta(ids, median_rho, qa, qb,
+                                         n_boot=n_boot, seed=seed, label=unit)
+                lo, hi = r["ci95"]
+                rows.append({"seed": seed, "unit": unit, "quantity": quantity,
+                             "n_units": r["n_clusters"], "estimate": r["delta"],
+                             "ci_low": lo, "ci_high": hi, "ci_width": hi - lo})
     out = pd.DataFrame(rows)
-    ref = float(out.loc[out["unit"] == "cluster", "ci_width"].iloc[0])
-    out["width_vs_cluster"] = out["ci_width"] / ref
+    ref = (out[out["unit"] == "cluster"]
+           .groupby("quantity")["ci_width"].mean())
+    out["width_vs_cluster"] = out["ci_width"] / out["quantity"].map(ref)
     return out
 
 

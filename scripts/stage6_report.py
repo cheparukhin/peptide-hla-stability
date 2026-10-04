@@ -1,12 +1,22 @@
 """Stage 6: emit the full analysis table set for one or more prediction files.
 
-    # worked example on validation, two arms, paired CIs against the first
+    # worked example on validation, with the two controls that make the
+    # tables readable, and the nested near-neighbour evaluation
     .venv/bin/python scripts/stage6_report.py --split val \
-        preds/seq_baseline.csv preds/seq_ensemble_pep_domain.csv
+        seq_baseline=preds/seq_baseline.csv \
+        seq_ensemble_pep_pseudo=preds/seq_ensemble_pep_pseudo.csv \
+        allele_mean=preds/allele_mean.csv global_mean=preds/global_mean.csv \
+        --n-boot 2000 --stratum-min-rows 10 --nested
 
-    # label the arms explicitly, add the nested near-neighbour evaluation
+    # a later arm, paired against the sequence ensemble rather than a baseline
     .venv/bin/python scripts/stage6_report.py --split val \
-        baseline=preds/seq_baseline.csv esm2=preds/esm2.csv --nested
+        seq_ensemble_pep_pseudo=preds/seq_ensemble_pep_pseudo.csv \
+        esm_plus_seq=preds/esm_plus_seq_ensemble.csv
+
+Pair the arms yourself: the FIRST positional argument is the baseline every
+paired interval is taken against, so make it the arm the new one must beat, and
+keep the two sides matched -- comparing a single network on one input set
+against an ensemble on another measures both changes at once.
 
 Each positional argument is a prediction CSV in the frozen two-column format
 (``pair_id,y_pred``, ``y_pred`` on the log1p scale -- see EVALUATION.md),
@@ -327,11 +337,17 @@ def main() -> int:
         print(ci.to_string(index=False))
         _write(ci, out_dir, prefix, "paired_ci", written)
 
-        units = stage6.resampling_unit_widths(frame, arms[0][1], arms[1][1],
-                                              alleles,
-                                              n_boot=max(200, args.n_boot // 5))
-        print("\nresampling unit (why clusters, not rows):")
-        print(units.to_string(index=False))
+        units = stage6.resampling_unit_widths(
+            frame, arms[0][1], arms[1][1], alleles,
+            n_boot=max(500, args.n_boot // 2))
+        print(f"\nresampling unit (why clusters, not rows), mean CI width over "
+              f"{len(stage6.UNIT_COMPARISON_SEEDS)} seeds:")
+        print(units.groupby(["quantity", "unit"])
+              .agg(n_units=("n_units", "first"),
+                   mean_ci_width=("ci_width", "mean"),
+                   min_ci_width=("ci_width", "min"),
+                   max_ci_width=("ci_width", "max"),
+                   vs_cluster=("width_vs_cluster", "mean")).to_string())
         print("  a narrower interval is not a better one -- the row bootstrap "
               "counts rows sharing a peptide as independent evidence.")
         _write(units, out_dir, prefix, "resampling_units", written)

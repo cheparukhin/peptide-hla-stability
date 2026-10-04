@@ -1,0 +1,96 @@
+{
+  "stage": "3",
+  "split_scored": "val",
+  "test_touched": false,
+  "checkpoint_selected": "esm2_t12_35M_UR50D",
+  "representation_selected": {
+    "peptide": "per-position (9 x 480)",
+    "hla": "34 contact positions",
+    "layer": "middle (6 of 12)",
+    "peptide_pca_components": 256,
+    "peptide_variance_retained": 0.954729,
+    "hla_pca_components": 74,
+    "hla_variance_retained": 1.0
+  },
+  "head": {
+    "family": "MLP",
+    "hidden": [
+      256,
+      64
+    ],
+    "l2": 0.01,
+    "lr": 0.001,
+    "max_epochs": 300,
+    "patience": 15
+  },
+  "ensemble": {
+    "n_members": 30,
+    "folds": 5,
+    "axis": "ESM layer (mid, final)",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "fold_source": "scripts.baseline_ensemble.cv_folds"
+  },
+  "headline": {
+    "esm_only": {
+      "preds": "preds/esm_ensemble.csv",
+      "median_per_allele_spearman": 0.683,
+      "iqr": [
+        0.5585,
+        0.7678
+      ],
+      "delta_vs_seq_ensemble_pep_pseudo": -0.0101,
+      "ci95": [
+        -0.0382,
+        0.0352
+      ],
+      "verdict": "inconclusive at 0, and rules out a 0.05 gain"
+    },
+    "sequence_plus_esm": {
+      "preds": "preds/esm_plus_seq_ensemble.csv",
+      "median_per_allele_spearman": 0.6761,
+      "iqr": [
+        0.5597,
+        0.7697
+      ],
+      "delta_vs_seq_ensemble_pep_pseudo": -0.017,
+      "ci95": [
+        -0.0468,
+        0.032
+      ],
+      "verdict": "inconclusive at 0, and rules out a 0.05 gain"
+    },
+    "esm_only_vs_full_domain_baseline": {
+      "delta": 0.0301,
+      "ci95": [
+        -0.0084,
+        0.0757
+      ],
+      "verdict": "inconclusive (CI crosses 0)"
+    }
+  },
+  "baseline_reference": {
+    "preds": "preds/seq_ensemble_pep_pseudo.csv",
+    "median_per_allele_spearman": 0.6931,
+    "n_members": 30,
+    "harness_reproduction_delta": 0.0
+  },
+  "min_worthwhile_delta": 0.05,
+  "cost": {
+    "embedding_extraction_seconds": 7.5,
+    "embedding_peak_rss_mb": 859.0,
+    "cache_mb": 123.5,
+    "head_fit_minutes": 2.2,
+    "inference_seconds_per_1k_rows": 0.015,
+    "feature_assembly_seconds_per_1k_rows": 0.05,
+    "end_to_end_seconds_per_1k_new_predictions": 1.14,
+    "baseline_end_to_end_seconds_per_1k": 0.073,
+    "cloud_spend_usd": 0.0
+  },
+  "excluded": {
+    "esm2_t33_650M_UR50D": "cached but not used; 5.06 GB peak RSS did not fit alongside concurrent workstreams on a 16 GB machine"
+  }
+}
