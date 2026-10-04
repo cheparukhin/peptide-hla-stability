@@ -113,10 +113,16 @@ inherit are two-point:
 | Source | Ladder | Points | Can pass the gate? |
 |---|---|---:|---|
 | `scripts/baseline_sequence.L2_GRID` | 1e-05, 1e-03 | 2 | **no** |
-| `scripts/esm_arm.ESM_L2_GRID` | 1e-03, 1e-01 | 2 | **no** |
+| `scripts/esm_arm.ESM_L2_GRID` (as of 07:45) | 1e-03, 1e-01 | 2 | **no** |
 | this report's `additive` | 1e-03, 1e-02, 1e-01 | 3 | yes |
 | this report's `seq` | 1e-07 … 1e-01 | 5 | yes |
 | this report's `esm` | 1e-05 … 10 | 6 | yes |
+
+**Update.** `esm_arm.ESM_L2_GRID` was extended to `(1e-3, 1e-2, 1e-1)` in commit
+`b58c9d6`, so it is now a three-point ladder and no longer an example of the
+trap. `baseline_sequence.L2_GRID` is still two-point. The rule below is what
+made the extension happen, so the row is kept rather than deleted; the ladders
+this report actually uses were revised again in §3.2.
 
 Any arm that adopts "the same ladder as the comparator" therefore inherits an
 un-checkable one, and the parity claim quietly becomes unverifiable at exactly
@@ -134,6 +140,43 @@ The three stage 3b ladders above were sized accordingly, and
 `tests/test_stage3b.py::test_every_ladder_has_at_least_three_points` enforces
 it so a later arm cannot reintroduce a two-point ladder and still appear to
 pass the gate.
+
+### 3.2 Interiority is claimed over the **union** of ladders, which exposed two errors
+
+`check_interior()` is per-invocation: it proves the selection is interior to
+the tuple it is handed. `esm_arm`'s convention for
+`reports/stage3_tuning_sensitivity.csv` is stronger — interior to the **union**
+of every ladder the arm was run on — because `--l2-grid` lets a later
+invocation extend a ladder, so a truncation is only visible against the union.
+The two claims coincide only if the tuple *is* the union. Checking that, row by
+row against `reports/stage3_runs.csv`, found it was not:
+
+| Arm / group | Ladder as declared | L2 values stage 3 actually ran | Problem |
+|---|---|---|---|
+| `esm` mid, final | 1e-05, 1e-03 … 10 | 1e-03, 1e-02, 1e-01, 1, 10 | 1e-05 **borrowed** |
+| `additive` both | 1e-03, 1e-02, 1e-01 | 1e-03, 1e-02, 1e-01 | union correct, but 3 points with the middle selected |
+
+The borrowed point is the sharper of the two. Every `1e-05` run on
+`peppos_hlacontact_mid` in `reports/stage3_runs.csv` was at `--pep-pca 0` — the
+**uncompressed control**, a different feature matrix — so the ESM arms were
+claiming interiority partly against a point their own representation was never
+tuned on. That is parity theatre in the opposite direction from a truncated
+ladder, and it inflates the apparent budget without widening anything real.
+
+Both are now corrected, and the λ=3 probe (§3.3) supplied the missing points:
+
+| Arm / group | Ladder used here | Points | Selected | Interior |
+|---|---|---:|---|---|
+| `additive` onehot, blosum | 1e-04, 1e-03, 1e-02, 1e-01, 1 | 5 | 1e-02 | yes |
+| `esm` mid, final | 1e-04, 1e-03, 1e-02, 1e-01, 1, 10 | 6 | 1e-02 | yes |
+| `seq` onehot, blosum | 1e-07, 1e-06, 1e-05, 1e-02, 1e-01 | 5 | 1e-02 / 1e-05 | yes |
+
+`tests/test_stage3b.py::test_each_ladder_contains_every_l2_stage_3_ran_on_that_representation`
+re-derives the union from `reports/stage3_runs.csv` and fails if a ladder omits
+a point the arm was tuned on, and
+`::test_the_esm_ladders_do_not_borrow_the_uncompressed_control_point` fails if
+`1e-05` is reintroduced. Neither is vacuous: the first matches 9–15 stage 3 grid
+rows per group.
 
 Note the `seq` arm is **re-run**, not reused from stage 2c: stage 2c fitted it
 on stage 2's truncated ladder, where one-hot selected 1e-05. On the extended

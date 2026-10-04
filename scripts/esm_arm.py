@@ -90,6 +90,7 @@ from pepstab.evaluation import (  # noqa: E402
 )
 from pepstab.features import ENCODINGS, build_features  # noqa: E402
 from pepstab.mlp import MLPConfig, MLPRegressor  # noqa: E402
+from pepstab.stage6 import nested_folds  # noqa: E402
 from scripts.baseline_ensemble import N_FOLDS, cv_folds  # noqa: E402
 from scripts.baseline_sequence import (  # noqa: E402
     ALPHA_GRID,
@@ -698,6 +699,99 @@ def mode_ensemble(args) -> int:
     return 0
 
 
+
+# --- mode: oof --------------------------------------------------------------
+
+
+def mode_oof(args) -> int:
+    """Out-of-fold predictions over the **training** split, for stage 6's
+    nested near-neighbour (mutant-ranking) evaluation.
+
+    The grouped split deliberately keeps every peptide within 3 substitutions
+    of another in one split, so validation cannot answer "can the model rank
+    point mutants of a known binder?". Stage 6 recovers that question entirely
+    inside ``train``, which means it needs predictions on training rows that
+    were never fitted on -- hence out-of-fold rather than the validation files
+    this stage otherwise produces.
+
+    Outer folds come from ``pepstab.stage6.nested_folds`` (5 folds **by
+    peptide**, seed 20261004), imported rather than reimplemented. For each
+    outer fold the full 30-member ensemble is rebuilt on the other four folds
+    and predicts the held-out one, so 5 x 30 = 150 networks per arm.
+
+    **Every transform is refitted inside the outer fold.** ``assemble`` fits
+    standardisation and PCA on whichever frame it is handed as ``train``, and
+    it is handed only that fold's training rows -- so the PCA basis never sees
+    a row it will later predict. A PCA fitted once across all folds would leak
+    the held-out peptides into the basis.
+    """
+    df, train_all, _, _ = load_data()
+    train = train_all.sort_values("pair_id").reset_index(drop=True)
+    outer = nested_folds(train)
+    y_all = train.y_log1p.to_numpy()
+
+    if args.axis == "encoding":
+        groups = [(enc, args.layers[0], enc) for enc in ENCODINGS]
+    else:
+        groups = [(L, L, args.with_raw) for L in args.layers]
+    selected = json.loads(Path(args.selected).read_text()) if args.selected else {}
+    n_members = N_FOLDS * len(groups) * len(SEEDS)
+
+    print(f"checkpoint {args.checkpoint}  axis={args.axis}")
+    print(f"outer: {outer.nunique()} nested folds by peptide (seed 20261004), "
+          f"sizes {np.bincount(outer).tolist()}")
+    print(f"inner: {n_members}-member ensemble per outer fold "
+          f"= {outer.nunique() * n_members} networks total\n")
+
+    oof = np.full(len(train), np.nan)
+    started = time.perf_counter()
+    for f in sorted(outer.unique()):
+        held = (outer == f).to_numpy()
+        fit_rows = train[~held]
+        test_rows = train[held]
+        inner = cv_folds(fit_rows, N_FOLDS)
+        y_fit_all = fit_rows.y_log1p.to_numpy()
+        members = []
+        t0 = time.perf_counter()
+        for key, layer, raw in groups:
+            hidden, l2 = tuple(selected.get(key, SWEEP_CONFIG))
+            # transforms fitted on fit_rows only -- never on test_rows
+            X_fit_all, (X_test,), info = assemble(fit_rows, [test_rows],
+                                                  args.checkpoint, layer,
+                                                  args.pep_rep, args.hla_rep, raw,
+                                                  pep_pca=args.pep_pca)
+            for k in range(N_FOLDS):
+                is_fit = inner != k
+                for seed in SEEDS:
+                    cfg = MLPConfig(hidden=tuple(hidden), l2=l2, seed=seed,
+                                    max_epochs=MAX_EPOCHS, patience=PATIENCE)
+                    model = MLPRegressor(cfg).fit(
+                        X_fit_all[is_fit], y_fit_all[is_fit],
+                        X_fit_all[~is_fit], y_fit_all[~is_fit])
+                    members.append(model.predict(X_test))
+            del X_fit_all, X_test
+            gc.collect()
+        oof[held] = np.mean(members, axis=0)
+        print(f"  fold {f}: {held.sum():,} held-out rows, {len(members)} members, "
+              f"{info['n_features']:,} features, "
+              f"{time.perf_counter() - t0:.0f}s")
+    wall = time.perf_counter() - started
+
+    if not np.isfinite(oof).all():
+        raise ValueError("some training rows received no out-of-fold prediction")
+
+    PRED_DIR.mkdir(exist_ok=True)
+    dest = PRED_DIR / f"{args.name}.csv"
+    pd.DataFrame({"pair_id": train.pair_id.to_numpy(),
+                  "y_pred": oof}).to_csv(dest, index=False)
+    in_sample = np.corrcoef(oof, y_all)[0, 1]
+    print(f"\nwrote {dest.relative_to(REPO_ROOT)} "
+          f"({len(train):,} training rows, pooled Pearson vs label {in_sample:.4f})")
+    print(f"total wall {wall / 60:.1f} min "
+          f"({wall / (outer.nunique() * n_members):.1f}s per network)")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -738,8 +832,17 @@ def main() -> int:
                    help="prediction stems in preds/ to compare against with a "
                         "paired cluster bootstrap")
 
+    o = sub.add_parser("oof"); common(o)
+    o.add_argument("--pep-rep", default="pos", choices=pesm.PEPTIDE_REPS)
+    o.add_argument("--hla-rep", default="contact", choices=pesm.HLA_REPS)
+    o.add_argument("--layers", nargs="+", default=list(LAYERS))
+    o.add_argument("--axis", default="layer", choices=["layer", "encoding"])
+    o.add_argument("--selected", default=None)
+    o.add_argument("--name", required=True)
+
     args = ap.parse_args()
-    return {"sweep": mode_sweep, "grid": mode_grid, "ensemble": mode_ensemble}[args.mode](args)
+    return {"sweep": mode_sweep, "grid": mode_grid, "ensemble": mode_ensemble,
+            "oof": mode_oof}[args.mode](args)
 
 
 if __name__ == "__main__":

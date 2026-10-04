@@ -18,6 +18,7 @@ anything:
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -25,7 +26,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
 
 from pepstab.affinity import auxiliary_only, dual_labelled, held_out_peptides
 from pepstab.data import load_with_splits
@@ -397,3 +399,71 @@ def test_a_two_point_ladder_is_demonstrably_unsatisfiable():
     for selected in (1e-5, 1e-3):
         with pytest.raises(SystemExit, match="edge of"):
             s3b.check_interior("demo", {"g": ((64,), selected, (1e-5, 1e-3))})
+
+
+#: Which `reports/stage3_runs.csv` grid rows belong to each stage 3b group.
+#: ``(rep, raw, pep_pca)`` -- pep_pca matters because the 1e-5 runs on
+#: ``peppos_hlacontact_mid`` were the *uncompressed control* at ``--pep-pca 0``,
+#: a different feature matrix from the one these arms use.
+_STAGE3_GROUP_ROWS = {
+    ("seq", "onehot"): ("pepnone_hlanone_mid+raw", "onehot", 256.0),
+    ("seq", "blosum"): ("pepnone_hlanone_mid+raw", "blosum", 256.0),
+    ("additive", "onehot"): ("peppos_hlacontact_mid+raw", "onehot", 256.0),
+    ("additive", "blosum"): ("peppos_hlacontact_mid+raw", "blosum", 256.0),
+    ("esm", "mid"): ("peppos_hlacontact_mid", None, 256.0),
+    ("esm", "final"): ("peppos_hlacontact_final", None, 256.0),
+}
+
+
+def test_each_ladder_contains_every_l2_stage_3_ran_on_that_representation():
+    """The union-of-ladders convention, enforced rather than asserted in prose.
+
+    `check_interior` is per-invocation: it proves the selected value is interior
+    to *the tuple it is handed*. `esm-arm`'s convention for
+    `reports/stage3_tuning_sensitivity.csv` is stronger -- interior to the
+    **union** of every ladder the arm was run on -- because ``--l2-grid`` lets a
+    later invocation extend one, and a truncation is only visible against the
+    union. The two claims coincide only if the tuple *is* the union, which is
+    what this checks, row by row against the stage 3 run log.
+
+    It also pins the pep_pca split: an arm must not borrow a ladder point that
+    was only ever run on a different feature matrix.
+    """
+    runs = REPO_ROOT / "reports" / "stage3_runs.csv"
+    if not runs.exists():                                   # pragma: no cover
+        pytest.skip("reports/stage3_runs.csv not present")
+    frame = pd.read_csv(runs)
+    grid = frame[(frame.stage == "grid")
+                 & (frame.checkpoint == s3b.ESM_CHECKPOINT)
+                 & frame.config.astype(str).str.contains("_l2")].copy()
+    grid["l2"] = [float(re.search(r"_l2([0-9.e+-]+)_", c).group(1))
+                  for c in grid.config]
+    grid["hidden"] = [re.search(r"h([0-9x]+)_", c).group(1) for c in grid.config]
+    grid = grid[grid.hidden == "256x64"]
+
+    for (arm, key), (rep, raw, pca) in _STAGE3_GROUP_ROWS.items():
+        sel = grid[(grid.rep == rep) & (grid.pep_pca == pca)]
+        sel = sel[sel.raw.isna()] if raw is None else sel[sel.raw == raw]
+        if not len(sel):                                    # pragma: no cover
+            pytest.skip(f"no stage 3 grid rows for {arm}/{key}")
+        ran = set(sel.l2.round(12))
+        ladder = set(np.round(s3b.ARM_CONFIGS[arm][key][2], 12))
+        missing = sorted(ran - ladder)
+        assert not missing, (
+            f"{arm}/{key}: stage 3 ran l2={[f'{v:g}' for v in missing]} on this "
+            f"representation but the ladder is {s3b.ARM_CONFIGS[arm][key][2]}. "
+            "check_interior would then prove interiority against a narrower "
+            "ladder than the arm was actually tuned on.")
+
+
+def test_the_esm_ladders_do_not_borrow_the_uncompressed_control_point():
+    """1e-5 belongs to the `--pep-pca 0` control, not to these arms.
+
+    `reports/stage3_tuning_sensitivity.csv` lists 1e-5 in the middle- and
+    final-layer unions, but every 1e-5 run on that representation was at
+    ``--pep-pca 0``. Carrying it here would widen the ladder with a point this
+    feature matrix was never tuned on -- parity theatre in the other direction.
+    """
+    for key in ("mid", "final"):
+        assert 1e-5 not in s3b.ARM_CONFIGS["esm"][key][2], (
+            f"esm/{key} borrowed the uncompressed control's 1e-5 point")

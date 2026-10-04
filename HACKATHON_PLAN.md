@@ -676,6 +676,16 @@ Global three-chain ipTM must not be presented as peptide-interface confidence.
 - Report per-allele Spearman correlation (how well the model ranks peptides within each allele), with test-set sizes and a median/IQR summary across alleles. Use a common set of eligible alleles across models and report small or undefined cases explicitly.
 - Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** — of the top 10 predictions per allele, how many actually have a half-life above 2 hours? This directly measures whether the model identifies sufficiently stable peptides. Treat pooled metrics as secondary. Distinguish within-allele ranking from cross-allele effects.
 - **Stratify test metrics by nearest-neighbour distance to training.** For each test peptide, compute the Hamming distance to its closest training peptide and report metrics in **two strata: d=4 (57.8% of test rows) and d≥5 (42.2%)**. A separate d≥6 stratum is not viable — measured on the frozen split only 6 test peptides (12 rows) sit that far from training. Score both strata on the *same* allele set (the intersection of those eligible in each, 65 alleles at a 20-row bar), or the comparison measures allele panels rather than distance. If label similarity decays as expected, performance should visibly differ across strata. If it doesn't, that's a strong signal the model genuinely generalises rather than exploiting residual similarity at the split boundary.
+- **Precision@10 is quantised and cannot express a difference at this panel
+  size.** Measured 4 October on validation: all four arm comparisons returned a
+  delta of **exactly 0.0000 with a CI of [-0.100, +0.100]**. The statistic moves
+  in steps of 0.1 because it is ten slots, so a median over 68 alleles of a
+  0.1-quantised quantity lands on a lattice point and stays there under
+  resampling. This is not underpower, it is quantisation. It is a weakness in a
+  metric this project predeclared, and it is reported as such rather than
+  omitted. It stays in the contract -- `EVALUATION.md` is frozen and is not
+  reopened for an inconvenient result -- but **no claim rests on it**, and only
+  the lift and ceiling-share columns carry information.
 - **The arm-vs-arm distance *gap* cannot be resolved on validation.** Measured
   4 October: the stratum gap is a difference of differences of medians — a
   median over the shared allele panel within each stratum, differenced across

@@ -1,0 +1,17 @@
+statistic,baseline,model,delta,ci_low,ci_high,verdict,n_boot,n_resamples_with_dropped_alleles
+median_per_allele_spearman,seq_ensemble_pep_pseudo,esm_ensemble,-0.010081563847649688,-0.038195227174440474,0.035249519655716974,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result",2000,103.0
+mean_per_allele_spearman,seq_ensemble_pep_pseudo,esm_ensemble,-0.003570429465581504,-0.02476992263339361,0.01651104450618502,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_ensemble_pep_pseudo,esm_ensemble,0.0027575442247659288,-0.005169602529942216,0.010180803423323047,inconclusive (CI crosses 0),500,
+median_precision_at_10,seq_ensemble_pep_pseudo,esm_ensemble,0.0,-0.10000000000000009,0.10000000000000009,inconclusive (CI crosses 0),500,
+median_per_allele_spearman,seq_ensemble_pep_pseudo,esm_plus_seq_ensemble,-0.017048118880832797,-0.04680205783148058,0.03202864125504157,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result",2000,103.0
+mean_per_allele_spearman,seq_ensemble_pep_pseudo,esm_plus_seq_ensemble,-0.011202028129178698,-0.03321810897453392,0.011134950233655523,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_ensemble_pep_pseudo,esm_plus_seq_ensemble,-0.0013007284079084025,-0.009132415531133573,0.005796471175638209,inconclusive (CI crosses 0),500,
+median_precision_at_10,seq_ensemble_pep_pseudo,esm_plus_seq_ensemble,0.0,-0.10000000000000009,0.050000000000000044,inconclusive (CI crosses 0),500,
+median_per_allele_spearman,seq_ensemble_pep_pseudo,esm_ensemble_150m,-0.01940418114248077,-0.059933223899453276,0.019483102190734018,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result",2000,103.0
+mean_per_allele_spearman,seq_ensemble_pep_pseudo,esm_ensemble_150m,-0.019903547839097757,-0.03921312289399179,-0.0017325925469555785,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_ensemble_pep_pseudo,esm_ensemble_150m,-0.008792924037460903,-0.014859300645839481,-0.0024844411269582265,conclusive,500,
+median_precision_at_10,seq_ensemble_pep_pseudo,esm_ensemble_150m,0.0,-0.10000000000000009,0.09999999999999998,inconclusive (CI crosses 0),500,
+median_per_allele_spearman,seq_ensemble_pep_pseudo,seq_ensemble_pep_domain,-0.040169539932683795,-0.07268533042496314,0.000895458501105217,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result",2000,103.0
+mean_per_allele_spearman,seq_ensemble_pep_pseudo,seq_ensemble_pep_domain,-0.03478970522456615,-0.050189880026071804,-0.01969017017643804,(mean panel statistic; the predeclared verdict rule applies to the median),2000,103.0
+differential_concordance,seq_ensemble_pep_pseudo,seq_ensemble_pep_domain,-0.012434963579604497,-0.01860691118800903,-0.006090468718298348,conclusive,500,
+median_precision_at_10,seq_ensemble_pep_pseudo,seq_ensemble_pep_domain,0.0,-0.10000000000000009,0.09999999999999998,inconclusive (CI crosses 0),500,

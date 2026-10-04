@@ -124,17 +124,40 @@ LAMBDA_GRID = (0.0, 0.1, 0.3, 1.0, 3.0)
 #:
 #: Nothing in stage 3b re-tunes anything: the loss weight is the only thing
 #: swept, exactly as in stage 2c.
+#:
+#: **The ladder is the union of every ladder the arm was actually run on**, not
+#: the ladder of one invocation. `esm-arm` adopted that convention for
+#: `reports/stage3_tuning_sensitivity.csv` because ``--l2-grid`` lets a later
+#: invocation extend a ladder, and a per-invocation check would call a
+#: single-point extension run "AT BOUNDARY" while the arm as a whole was
+#: interior. :func:`check_interior` here is per-invocation on *this* tuple, so
+#: the tuple has to carry the union or the stronger claim is not the one being
+#: checked.
+#:
+#: Two corrections to the stage 3 table were made when the union was taken
+#: literally, both verified against `reports/stage3_runs.csv` row by row:
+#:
+#: * The ESM arms' published union lists ``1e-5``, but every 1e-5 run on
+#:   ``peppos_hlacontact_mid`` was at ``--pep-pca 0`` -- the *uncompressed
+#:   control*, a different feature matrix. On the pep_pca=256 representation
+#:   these arms actually use, stage 3 ran ``(1e-3, 1e-2, 1e-1, 1, 10)``. So
+#:   ``1e-5`` is dropped and ``1e-4``, run here at lambda=3, is added.
+#: * The additive arm's stage 3 ladder was a bare three points with the middle
+#:   one selected -- no headroom to absorb the shift a second head can cause.
+#:   The lambda=3 probe extended it to ``1e-4`` and ``1.0``; both are far worse
+#:   (0.43/0.49 and 0.36/0.38 against 0.59/0.60 at the selection), so the
+#:   optimum is now *bracketed* rather than merely not-at-an-edge.
 ARM_CONFIGS: dict[str, dict[str, tuple]] = {
     # Additive: ESM block + the stage 2 raw encoding. The decision-relevant arm
     # -- it differs from the sequence baseline by exactly the ESM features.
     "additive": {
-        "onehot": ((256, 64), 1e-2, (1e-3, 1e-2, 1e-1)),
-        "blosum": ((256, 64), 1e-2, (1e-3, 1e-2, 1e-1)),
+        "onehot": ((256, 64), 1e-2, (1e-4, 1e-3, 1e-2, 1e-1, 1.0)),
+        "blosum": ((256, 64), 1e-2, (1e-4, 1e-3, 1e-2, 1e-1, 1.0)),
     },
     # ESM features alone, spread over the two layers (stage 3's "esm-only" arm).
     "esm": {
-        "mid": ((256, 64), 1e-2, (1e-5, 1e-3, 1e-2, 1e-1, 1.0, 10.0)),
-        "final": ((256, 64), 1e-2, (1e-5, 1e-3, 1e-2, 1e-1, 1.0, 10.0)),
+        "mid": ((256, 64), 1e-2, (1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0)),
+        "final": ((256, 64), 1e-2, (1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0)),
     },
     # The sequence comparator, on its *extended* ladder. Stage 2c ran this on
     # stage 2's truncated ladder, so it is re-run here rather than reused.
