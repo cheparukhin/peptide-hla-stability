@@ -64,6 +64,48 @@ the statistic stage 2 quotes, and because two panel statistics disagreeing
 about conclusiveness is itself worth seeing: the median is the contract's
 metric and the predeclared verdict rule applies to it alone.
 
+### Against the full-domain ensemble
+
+The plan added the full-domain sequence arm at stage 1 so that "more input"
+could not be mistaken for a pretraining benefit: it feeds a one-hot/BLOSUM head
+the same 182 HLA residues ESM-2 sees. That makes it the controlled comparison
+for what pretraining extracts from a fixed input, and it is the one comparison
+in the headline that is not flat.
+
+| Model vs `seq_ensemble_pep_domain` | Median rho | 95% CI | Mean rho | 95% CI | Diff. concordance | 95% CI |
+|---|---:|---|---:|---|---:|---|
+| `esm_ensemble` | +0.0301 | [−0.0084, +0.0757] | **+0.0312** | **[+0.0082, +0.0540]** | **+0.0152** | **[+0.0046, +0.0241]** |
+| `esm_plus_seq_ensemble` | +0.0231 | [−0.0163, +0.0746] | +0.0236 | [−0.0013, +0.0507] | **+0.0111** | **[+0.0012, +0.0207]** |
+| `esm_ensemble_150m` | +0.0208 | [−0.0259, +0.0576] | +0.0149 | [−0.0037, +0.0349] | +0.0036 | [−0.0039, +0.0112] |
+| `seq_ensemble_pep_pseudo` | +0.0402 | [−0.0009, +0.0727] | **+0.0348** | **[+0.0197, +0.0502]** | **+0.0124** | **[+0.0061, +0.0186]** |
+
+The median row for `esm_ensemble` reproduces `reports/stage3_headline.json`
+exactly (+0.0301 [−0.0084, +0.0757]) from an independent code path.
+
+**ESM-2 conclusively beats the full-domain sequence ensemble** on two of the
+three statistics — the mean panel statistic and the differential concordance —
+while the contract's median calls it inconclusive. The bounded claim this
+supports: *given the same 182 HLA residues, ESM-2 extracts more usable signal
+from them than a one-hot/BLOSUM encoding does.*
+
+Three things keep that claim honest:
+
+- It is **not** a claim that ESM-2 beats the best sequence arm. The
+  pseudosequence ensemble beats the full-domain arm by a similar margin on the
+  same statistics (+0.0348 mean, +0.0124 concordance), and ESM-2 does not beat
+  *it*. What pretraining buys here is recovered by hand-picking the 34 contact
+  residues instead.
+- The **mean** interval runs to +0.0540, so it does not establish the 0.05 bar
+  either. "Conclusively better than the full-domain arm" and "worth 0.05" are
+  different statements and only the first is supported.
+- The median — the contract's primary metric, and the only one the predeclared
+  verdict rule applies to — remains inconclusive at [−0.0084, +0.0757]. The
+  conclusive verdicts come from secondary statistics, and that must travel with
+  the claim.
+
+The 150M checkpoint shows the same sign on all three and reaches conclusiveness
+on none.
+
 ## 1. The differential target
 
 394 validation peptides sit on two or more eligible alleles, giving **10,365**

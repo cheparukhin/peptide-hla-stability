@@ -1,0 +1,13 @@
+baseline,model,statistic,delta,ci_low,ci_high,verdict
+seq_ensemble_pep_domain,esm_ensemble,median_per_allele_spearman,0.0301,-0.0084,0.0757,inconclusive (CI crosses 0) -- not a negative result
+seq_ensemble_pep_domain,esm_ensemble,mean_per_allele_spearman,0.0312,0.0082,0.054,(mean panel statistic; the verdict rule applies to the median)
+seq_ensemble_pep_domain,esm_ensemble,differential_concordance,0.0152,0.0046,0.0241,conclusive
+seq_ensemble_pep_domain,esm_plus_seq_ensemble,median_per_allele_spearman,0.0231,-0.0163,0.0746,inconclusive (CI crosses 0) -- not a negative result
+seq_ensemble_pep_domain,esm_plus_seq_ensemble,mean_per_allele_spearman,0.0236,-0.0013,0.0507,(mean panel statistic; the verdict rule applies to the median)
+seq_ensemble_pep_domain,esm_plus_seq_ensemble,differential_concordance,0.0111,0.0012,0.0207,conclusive
+seq_ensemble_pep_domain,esm_ensemble_150m,median_per_allele_spearman,0.0208,-0.0259,0.0576,inconclusive (CI crosses 0) -- not a negative result
+seq_ensemble_pep_domain,esm_ensemble_150m,mean_per_allele_spearman,0.0149,-0.0037,0.0349,(mean panel statistic; the verdict rule applies to the median)
+seq_ensemble_pep_domain,esm_ensemble_150m,differential_concordance,0.0036,-0.0039,0.0112,inconclusive (CI crosses 0)
+seq_ensemble_pep_domain,seq_ensemble_pep_pseudo,median_per_allele_spearman,0.0402,-0.0009,0.0727,inconclusive (CI crosses 0) -- not a negative result
+seq_ensemble_pep_domain,seq_ensemble_pep_pseudo,mean_per_allele_spearman,0.0348,0.0197,0.0502,(mean panel statistic; the verdict rule applies to the median)
+seq_ensemble_pep_domain,seq_ensemble_pep_pseudo,differential_concordance,0.0124,0.0061,0.0186,conclusive

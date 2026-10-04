@@ -1,0 +1,119 @@
+{
+  "arms": {
+    "seq_ensemble_pep_pseudo": {
+      "bytes": 44829,
+      "mtime": "2026-10-03T18:26:55.399022+00:00",
+      "path": "preds/seq_ensemble_pep_pseudo.csv",
+      "sha256": "d2b0c1f75181e49654383bda5170026ccf2d23adf6faf9dd9780ed70d013ac94"
+    }
+  },
+  "bootstrap_seed": 20261003,
+  "differential": {
+    "min_peptides_per_allele_pair": 10,
+    "n_allele_pairs": 1372,
+    "n_pairs": 10365,
+    "n_peptides": 394,
+    "n_undecidable": 755
+  },
+  "distance_strata": {
+    "common_alleles": [
+      "HLA-A*02:01",
+      "HLA-A*03:01",
+      "HLA-A*11:01",
+      "HLA-A*24:02",
+      "HLA-B*15:01",
+      "HLA-B*39:01"
+    ],
+    "n_common_alleles": 6,
+    "n_eligible": {
+      "d=4": 45,
+      "d>=5": 11
+    },
+    "n_peptides_at_d6_plus": 3,
+    "n_rows": {
+      "d=4": 1730,
+      "d>=5": 1087
+    },
+    "n_rows_at_d6_plus": 15,
+    "row_coverage": {
+      "d=4": 0.15202312138728324,
+      "d>=5": 0.21711131554737811
+    }
+  },
+  "elapsed_seconds": 2.0,
+  "eligible_row_coverage": 0.9946751863684771,
+  "files": [
+    "reports/stage6_nested_shipped_summary.csv",
+    "reports/stage6_nested_shipped_per_allele.csv",
+    "reports/stage6_nested_shipped_distance_census.csv",
+    "reports/stage6_nested_shipped_distance_strata.csv",
+    "reports/stage6_nested_shipped_differential.csv",
+    "reports/stage6_nested_shipped_differential_allele_pairs.csv",
+    "reports/stage6_nested_shipped_precision_summary.csv",
+    "reports/stage6_nested_shipped_precision_per_allele.csv",
+    "reports/stage6_nested_shipped_nested_mutant_paired.csv",
+    "reports/stage6_nested_shipped_nested_mutant.csv"
+  ],
+  "min_rows_per_allele": 20,
+  "n_boot": 2000,
+  "n_clusters": 510,
+  "n_eligible_alleles": 68,
+  "n_peptides": 567,
+  "n_rows": 2817,
+  "nested": {
+    "arm_files": {
+      "esm_ensemble": {
+        "bytes": 485981,
+        "mtime": "2026-10-04T07:13:30.151150+00:00",
+        "path": "preds/esm_ensemble_oof.csv",
+        "sha256": "5346228f72584d6ce28e4bca9639a72f72f41fe2c5930a311c7d00fdc7ff3211"
+      },
+      "esm_plus_seq_ensemble": {
+        "bytes": 486257,
+        "mtime": "2026-10-04T07:29:04.800170+00:00",
+        "path": "preds/esm_plus_seq_ensemble_oof.csv",
+        "sha256": "aa470bc3ccd8402d7b137d7c9337b2b60e3e8e4f477196a6abffa1dd9aedd7ef"
+      },
+      "ridge_blosum_pep_pseudo[reference]": {
+        "bytes": 484004,
+        "mtime": "2026-10-04T06:49:46.941874+00:00",
+        "path": "/private/tmp/claude-501/-Users-cheparukhin-ai-science-hack/485bc0f0-f10f-43a7-9d85-75e2116c5eb9/scratchpad/oof_ridge_blosum_pep_pseudo.csv",
+        "sha256": "9d5f5fa610343752b37c2597e1c952b0b8e78ef0a43f413a8c2294a0ddbe21fc"
+      },
+      "ridge_esm650m_meanpool[ablation]": {
+        "bytes": 481769,
+        "mtime": "2026-10-04T06:49:46.975999+00:00",
+        "path": "/private/tmp/claude-501/-Users-cheparukhin-ai-science-hack/485bc0f0-f10f-43a7-9d85-75e2116c5eb9/scratchpad/oof_ridge_esm650m_pep_hla.csv",
+        "sha256": "3efcbb0e9674cd607ed8131306dcc7290c1674da918f30f6e7dcfb469f622fd1"
+      }
+    },
+    "arms": [
+      "esm_ensemble",
+      "esm_plus_seq_ensemble",
+      "ridge_blosum_pep_pseudo[reference]",
+      "ridge_esm650m_meanpool[ablation]"
+    ],
+    "groups_spanning_splits": 0,
+    "n_alleles": 68,
+    "n_clusters_all_pairs": 115,
+    "n_clusters_scored": 96,
+    "n_folds": 5,
+    "n_mutant_pairs": 608,
+    "n_pairs_cross_fold": 490,
+    "paired": {
+      "baseline": "esm_ensemble",
+      "ci_high": 0.04148201406265917,
+      "ci_low": -0.05084745762711862,
+      "delta": -0.004975124378109486,
+      "model": "esm_plus_seq_ensemble",
+      "n_boot": 2000,
+      "n_clusters": 96,
+      "statistic": "mutant_concordance",
+      "verdict": "inconclusive (CI crosses 0)"
+    },
+    "radius": 2,
+    "seed": 20261004
+  },
+  "split": "val",
+  "stratum_min_rows": 20
+}
