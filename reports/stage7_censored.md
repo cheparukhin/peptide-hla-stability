@@ -1,6 +1,8 @@
 # Stage 7a — censored (Tobit) likelihood for the assay floor
 
-Status: **protocol predeclared, results pending.** Sections 1–4 were written and
+Status: **complete — negative.** The protocol in sections 1–4 was predeclared and is preserved verbatim below; the results follow it. Headline: Δ median per-allele ρ = **−0.0414, 95% CI [−0.0780, −0.0062]**, entirely below zero.
+
+Original pre-registration header: Sections 1–4 were written and
 committed to disk before any censored model was fitted. Nothing in them is
 chosen from a result.
 

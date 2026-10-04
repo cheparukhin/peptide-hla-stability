@@ -1,6 +1,8 @@
 # Stage 7b — leave-allele-out evaluation, stratified by pseudosequence distance
 
-Status: **protocol predeclared, results pending.** Sections 1–5 were written to
+Status: **complete.** The protocol in sections 1–5 was predeclared and is preserved verbatim below; the results follow it. Headline: near (d≤1) **0.741**, intermediate **0.576**, distant (d≥4) **0.339**; near−distant +0.403 [+0.223, +0.478], but near−intermediate crosses zero.
+
+Original pre-registration header: Sections 1–5 were written to
 disk before the first fold was fitted.
 
 > ## This is not the project's headline evaluation
@@ -321,8 +323,11 @@ What is needed per arm is a feature matrix plus its `pair_id` index, aligned by
         --seeds 0 1 2 3 4 5 --workers 1
 
 The ensemble is fixed at **6 networks per fold** and `Arm.validate()` refuses
-anything else, so no arm can win on ensemble budget — stage 3 measured
-ensembling alone at +0.090 SCC, nearly twice the worthwhile-gain bar. For a
+anything else, so no arm can win on ensemble budget — stage 2 measured
+ensembling alone at +0.074 mean SCC against the deployed single network,
+about 1.5x the worthwhile-gain bar (the +0.090 sometimes quoted is against the
+mean of the ensemble's own 30 members — a different reference; see
+`reports/stage2_baselines.md`). For a
 single-representation arm that means 6 seeds; for the two-encoding sequence arm
 it is 2 x 3. Compare arms with `paired_allele_bootstrap`, optionally restricted
 to one stratum.

@@ -16,7 +16,7 @@ invents a feature definition the contract already fixed.
 | `pepstab/structural_features.py` | parsing, mapping verification, feature definitions |
 | `scripts/extract_structural_features.py` | `pilot` / `extract` / `concat` CLI |
 | `modal_app/feature_extraction.py` | phase 2, CPU-only; smoked and run on both halves |
-| `tests/test_structural_features.py` | 29 tests, all passing |
+| `tests/test_structural_features.py` | 36 tests, all passing |
 | `reports/stage4c5_pilot_features.csv` | 90 folds x 129 columns |
 | `reports/stage4c5_feature_variation.csv` | seed / arm / between-complex spread per feature |
 | `reports/stage4c5_features_production_<profile>.csv` | live partial extract, 1,000 rows per half |

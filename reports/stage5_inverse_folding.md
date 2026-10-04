@@ -639,7 +639,7 @@ and defaults to 1 worker and 1 thread.
 |---|---|
 | `pepstab/inverse_folding.py` | feature definition, mmCIF → ProteinMPNN, scoring |
 | `scripts/proteinmpnn_score.py` | CLI: a directory of structures → one tidy table |
-| `tests/test_inverse_folding.py` | 11 passing, 1 skipped (needs `modal`) |
+| `tests/test_inverse_folding.py` | 13 passing (the two `modal`-gated tests now run) |
 | `reports/stage5_inverse_folding_pilot.csv` | 90 rows, native scores |
 | `reports/stage5_inverse_folding_crosspeptide_armB.csv` | 15 rows, 5x5 matrix |
 | `reports/stage5_inverse_folding_crosspeptide_armA_B0702.csv` | 3 rows, wrong-backbone control |
