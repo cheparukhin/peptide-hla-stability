@@ -127,12 +127,16 @@
   h1 {
     font-family: var(--serif);
     font-weight: 600;
-    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
-    line-height: 1.08;
+    font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+    line-height: 1.12;
     letter-spacing: -0.016em;
-    text-wrap: balance;
     margin: 0;
-    max-width: 22ch;
+    max-width: 30ch;
+  }
+  /* The explicit break sets the two lines; let it wrap naturally below that. */
+  h1 br { display: none; }
+  @media (min-width: 620px) {
+    h1 br { display: inline; }
   }
 
   .standfirst {
@@ -568,7 +572,7 @@
 
   <header class="masthead">
     <p class="eyebrow">London AI × Science · logic binders team · 3–4 October 2026</p>
-    <h1>Antigen Presentation Stability: Sequence Is All You Need?</h1>
+    <h1>Antigen Presentation Stability:<br>Sequence Is All You Need?</h1>
     <p class="standfirst">
       <b>TL;DR:</b> We tested language-model embeddings, predicted structures, inverse folding
       and energies predictions against a supervised model trained on sequences. None of them won.
@@ -583,10 +587,11 @@
 
     <figure>
       <div class="video-frame">
-        <video controls preload="metadata" playsinline poster="poster.png">
-          <source src="intro.mp4" type="video/mp4">
-          Your browser cannot play this video. The source file is
-          <code>pMHC Intro v2.mp4</code> in the repository.
+        <video controls muted playsinline preload="auto" poster="poster.png"
+               width="1280" height="720">
+          <source src="intro.mp4" type="video/mp4; codecs=avc1.42E01E">
+          <source src="intro.webm" type="video/webm">
+          <a href="intro.mp4">Download the intro video (MP4, 2.9 MB)</a>
         </video>
       </div>
     </figure>
