@@ -491,13 +491,14 @@ profile, A10G at the pilot-measured $1.4812/h shape.
 |---|---:|---:|
 | Pairs | 14,083 | 28,166 |
 | Forecast | 67.8 GPU-h, $100.4 | 135.6 GPU-h, $200.8 |
-| With 25% margin | $125.5 | **$251** |
+| With 25% margin | $125.5 (ceiling $150) | **$251** |
 | Wall at 10 workers | 6.8 h | **~6.8 h in parallel** (8.5 h with margin) |
 | Output | ~11 GB | ~22 GB |
 
-Forecasts use the measured 16.76 s steady fold and 57 s shard startup. Each
-shard also writes compact per-pair confidence features, so stage 5 can start
-before the structures finish downloading. Reserve export, feature extraction,
+Forecasts use the pilot's measured 16.76 s steady fold and 57 s shard startup.
+**Production runs the pilot's exact `boltz predict` command**, and the 5-case
+smoke reproduces the pilot's fold time and GPU peak on it. Reserve export,
+feature extraction,
 and evaluation time before the deadline; for parallel runs use the later
 finish, for serial runs sum elapsed times.
 
@@ -626,9 +627,10 @@ balance.
 | Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. |
 | Modal: contingency | remainder of each balance | Reserve; not automatically available to the folding launcher. |
 
-The per-profile $150 ceiling is enforced in code by `--max-usd` on the
-production entrypoint, which refuses to spawn if the 25%-margin forecast for
-the remaining shards exceeds it. ESMFold2 production is **not** funded: it
+The per-profile $150 ceiling is checked by hand: the production entrypoint
+prints its forecast with margin (`--dry-run` prints it without spawning
+anything), and that figure is what to compare against the ceiling before
+launching. ESMFold2 production is **not** funded: it
 failed its gate (4c.4), and its $884 full-cohort forecast exceeded the
 combined balance regardless.
 
@@ -683,9 +685,15 @@ can continue while this preparation runs.
 - **Before final scoring:** finish features, freeze validation-selected model
   configurations, and reserve time for the single test evaluation, uncertainty,
   figures, and presentation.
-- Save code, data, MSAs, splits, features, checkpoints, structures, and results
-  locally before temporary Antigravity event resources are deleted after the
-  event on Sunday, October 4. Keep credentials out of exported artifacts.
+- Save code, data, MSAs, splits, features, checkpoints, and results locally
+  before temporary Antigravity event resources are deleted after the event on
+  Sunday, October 4. Keep credentials out of exported artifacts.
+- **Stage 4c structures are the exception: they stay on Modal.** 22 GB lives on
+  the `pepstab-structures` Volume in each of the two workspaces, which are
+  personal accounts and are not deleted with the event resources. Analysis runs
+  on Modal with the Volume mounted rather than against a local copy; share
+  access by inviting people to both workspaces. A Volume cannot span
+  workspaces, so there is no single shared Volume for the whole cohort.
 
 ## Stretch work and stopping rules
 

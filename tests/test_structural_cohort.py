@@ -84,14 +84,22 @@ def test_every_allele_has_a_prepared_production_msa():
     assert {r["allele"] for r in rows()} <= prepared
 
 
-def test_staged_production_manifest_matches_the_prepared_msas():
-    staged = ROOT / "structures/ectodomain_production_msas/production_manifest.json"
+def test_staged_slice_matches_the_prepared_msas_byte_for_byte():
+    import hashlib
+
+    staged = ROOT / "structures/ectodomain_production_msas"
     if not staged.exists():  # produced by scripts/stage_production_msas.py
         return
-    full = json.loads(
+    manifest = json.loads(
         (ROOT / "structures/ectodomain_msas/manifest.json").read_text()
     )
-    by_allele = {m["allele"]: m for m in full["msas"]}
-    for m in json.loads(staged.read_text())["msas"]:
+    seen = set()
+    for m in manifest["msas"]:
         for key in ("B", "beta2m"):
-            assert m[key]["csv_sha256"] == by_allele[m["allele"]][key]["csv_sha256"]
+            p = staged / m[key]["csv"]
+            assert p.exists(), f"staged slice is missing {p.name}"
+            got = hashlib.sha256(p.read_bytes()).hexdigest()
+            assert got == m[key]["csv_sha256"], p.name
+            seen.add(p.name)
+    # Nothing extra: the upload must be the arm-B slice and only that.
+    assert {p.name for p in staged.iterdir()} == seen

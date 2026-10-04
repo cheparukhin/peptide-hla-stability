@@ -305,7 +305,8 @@ recheck rates and balances in each workspace at launch.
 
 Hardware was chosen from measured full-construct throughput and memory: Boltz-2
 on **A10G / 4 CPU / 24 GiB** at $1.4812/h, which the pilot measured at 16.76 s
-per arm-B fold and a 6.11 GiB GPU peak. The 24 GiB host request is generous
+per arm-B fold and a 6.11 GiB GPU peak. The production smoke reproduces that
+peak at 6.08 GiB. The 24 GiB host request is generous
 against an observed ~10 GB child RSS, but these containers could not read a
 cgroup peak for the 383-residue construct, so it is deliberately not trimmed
 for the ~$8 it would save. ESMFold2's measured L40S shape (42.63 s, 27.46 GiB,
@@ -370,12 +371,13 @@ function timeout against a ~29-minute expected shard, `retries=0` so every
 failure is recorded rather than silently repaid.
 
 ```bash
-python scripts/freeze_structural_cohort.py   # committed; re-running is a no-op
-python scripts/stage_production_msas.py      # 29.6 MB arm-B CSV slice + manifest
-
-# per workspace: upload inputs, pull pinned weights, verify, smoke, run
-MODAL_PROFILE=<profile> modal volume put pepstab-hla-msa \
+# fresh workspace only -- a-cheparukhin already holds the MSAs from the pilot,
+# so ::setup just hash-checks them and nothing is uploaded there
+python scripts/stage_production_msas.py      # 29.6 MB arm-B CSV slice
+MODAL_PROFILE=colleague modal volume put pepstab-hla-msa \
     structures/ectodomain_production_msas /ectodomain_stage4c
+
+# both workspaces: verify weights + MSAs, smoke, run
 MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::setup      --profile <profile>
 MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::smoke      --profile <profile>
 MODAL_PROFILE=<profile> modal run --detach \
@@ -392,12 +394,12 @@ MODAL_PROFILE=<profile> modal run --detach \
 - `::production` is the resume path. Only shards without a committed success
   marker are folded, so re-running after an interruption or a partial failure
   continues where it stopped.
-- `--dry-run` prints the plan and forecast without spawning GPUs.
-  `--max-usd` (default $150) refuses to dispatch if the 25%-margin forecast for
-  the remaining shards exceeds the per-workspace ceiling.
-- Each shard writes `_features/shard_NNNN.jsonl` with peptide pLDDT and the
-  peptide/groove PAE block means, so section 7 can begin from a few MB while
-  the ~22 GB of structures download.
+- `--dry-run` prints the plan and forecast without spawning GPUs. Compare that
+  forecast against the $150 per-workspace ceiling before launching; it is not
+  enforced in code.
+- The `boltz predict` command is byte-for-byte the pilot's. Keep it that way:
+  the gate was measured on that command, and an option the pilot did not run
+  is an untested change to a gated configuration.
 
 The requirements below are the general contract this implementation satisfies;
 keep them if the runner is replaced.

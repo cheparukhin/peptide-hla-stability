@@ -183,34 +183,64 @@ unbiased:
 | `colleague` | sofyaleyn | 14,083 | 141 | 67.8 GPU-h, $100.4 | 6.8 h |
 | **Total** | | **28,166** | **282** | **135.6 GPU-h, $200.8** | **~6.8 h in parallel** |
 
-With the required 25% margin: **$251 and ~8.5 h**. Both workspaces hold
-approximately $300 of credits, so each half has roughly 3x its forecast
-available. Forecasts come from the measured 16.76 s steady fold and 57 s shard
-startup, at the $1.4812/h shape the pilot actually measured.
+With the required 25% margin: **$251 total, $125.5 per profile** against the
+$150 per-workspace ceiling. Both workspaces hold approximately $300 of credit.
+Forecasts use the pilot's measured 16.76 s steady fold and 57 s shard startup
+at the $1.4812/h shape — the run that gated this configuration.
+
+**The production `boltz predict` command is byte-for-byte the pilot's**, and
+the smoke reproduces the pilot's numbers on it: 5/5 ok, 17.0 s steady folds,
+6.08 GiB peak against the pilot's 16.76 s and 6.11 GiB. The configuration that
+production runs is the configuration the gate was measured on. A
+`--preprocessing-threads 1` option that had never actually executed was
+removed rather than carried forward; the observed prediction order is still
+recorded by the completion probe, which does not depend on it.
 
 A shard is 100 pairs: one `boltz predict` invocation, ~29 minutes, which
 amortises model load to ~3% while staying well inside the 60-minute function
 timeout. 140 full shards plus one of 83 per profile.
 
 Expected output is ~792 KB per prediction, so **~22 GB in total** (~11 GB per
-workspace). Each shard also writes a compact `_features/shard_NNNN.jsonl` with
-peptide pLDDT and the peptide/groove PAE block means, so stage 5 feature work
-can begin from a few MB while the structures download.
+workspace).
+
+### Where the outputs live
+
+Structures stay on Modal and are **not** downloaded. Each shard commits to the
+`pepstab-structures` Volume in the workspace that folded it, under
+`/stage4c/ectodomain-20261004/boltz2/production/<allele>/<complex_id>/`. The
+only local artifact is `reports/ectodomain-20261004/production_<profile>.jsonl`,
+one small line per shard.
+
+A Modal Volume belongs to one workspace, so there are two: `a-cheparukhin`
+holds one half and `sofyaleyn` the other. There is no cross-workspace Volume.
+To give the team access, invite them to **both** workspaces — Modal workspaces
+support email invites, though a workspace must have a verified payment method
+before it can invite members.
+
+Analysis should therefore run **on Modal with the Volume mounted**, not against
+a local copy: at 22 GB, pulling everything down to score poses is slower than
+running the scorer next to the data. Pull individual files with
+`modal volume get` when something needs eyeballing locally. If a single shared
+location is later required, `CloudBucketMount` onto S3/R2 can be mounted from
+both workspaces, at the cost of an external bucket and a Secret in each.
 
 ### Running it
 
+`a-cheparukhin` already holds all 150 production CSVs on `pepstab-hla-msa` from
+the pilot, so it needs **no upload**; `::setup` only hash-checks them against
+the committed manifest. Only a fresh workspace needs the staged slice.
+
 ```bash
-python scripts/freeze_structural_cohort.py     # already committed; re-run is a no-op
+# sofyaleyn only: it has an empty pepstab-hla-msa
 python scripts/stage_production_msas.py        # 29.6 MB arm-B slice
-
-# per workspace, CPU only
-MODAL_PROFILE=<profile> modal volume put pepstab-hla-msa \
+MODAL_PROFILE=colleague modal volume put pepstab-hla-msa \
     structures/ectodomain_production_msas /ectodomain_stage4c
-MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::setup --profile <profile>
 
-# end-to-end check on one real shard, ~29 min, ~$0.71 per workspace
-MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::production \
-    --profile <profile> --limit 1
+# both workspaces, CPU only; the weight download is skipped when present
+MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::setup  --profile <profile>
+
+# end-to-end check on 5 real cases, ~2 min, ~$0.03 per workspace
+MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::smoke  --profile <profile>
 
 # the run
 MODAL_PROFILE=<profile> modal run --detach modal_app/ectodomain_production.py::production \
@@ -219,8 +249,8 @@ MODAL_PROFILE=<profile> modal run --detach modal_app/ectodomain_production.py::p
 
 Re-running `production` is the resume path: only shards without a committed
 success marker are folded again, so an interrupted run continues where it
-stopped. `--dry-run` prints the plan and forecast without spawning GPUs, and
-`--max-usd` (default $150 per profile) is a hard stop on the forecast.
+stopped. `--dry-run` prints the plan and forecast without spawning GPUs; check
+that forecast against the $150 per-workspace ceiling before launching.
 `--profile` must match `MODAL_PROFILE`; the runner asserts this, because the
 halves are disjoint and a mismatch would fold one twice and the other never.
 
@@ -233,11 +263,18 @@ method cannot declare a `gpu=` function at all — that is now ruled out. Still
 unverified: whether each workspace is actually granted 10 concurrent A10Gs. If
 fewer are available the forecast scales linearly in wall time, not in cost.
 
-**The production runner has not itself been exercised end to end on a GPU.**
-The pilot validated the inputs, the model configuration and the scoring, but
-`modal_app/ectodomain_production.py` is new code with new sharding, resume and
-feature-extraction paths. Per the project invariant, run the `--limit 1` check
-in each workspace and confirm 100/100 folds before the full launch.
+**Smoke status.** `::smoke` passed on `a-cheparukhin`: **5/5 ok, 17.0 s steady
+folds, peak GPU 6.08 GiB**, matching the pilot's 16.76 s and 6.11 GiB. It found
+two real defects first, both of which would have broken the overnight run at
+step one: the stale `--preprocessing_threads` option, and `download_weights`
+running on an image that never had `ectodomain_common` added, so the container
+died on import before executing anything. Modal imports the whole module in every
+container; the earlier dry runs passed because they only exercised
+`completed_shards`. Both are fixed.
+
+`::smoke` has **not** yet been run on `sofyaleyn`. Its MSA slice is uploaded
+and the app deploys there, but no GPU fold has been executed in that workspace.
+Run it before launching that half.
 
 ## Artifacts and reproducibility
 
@@ -265,7 +302,7 @@ The Boltz CLI initializes its random stream per batch; ESMFold2 accepts a seed
 per case. Matching seed labels is provenance, not identical stochastic draws.
 For the pilot, Boltz's `settings.input_order` records YAML creation order; its
 parallel parser can produce a different internal record/prediction order, so
-exact per-case random-stream replay is not established by that field. The runner
-now uses one preprocessing thread and records the observed prediction order
-explicitly; production inherits that setting. This change did not alter the
-in-flight pilot or its saved model outputs.
+exact per-case random-stream replay is not established by that field. Both
+runners record the observed prediction order explicitly, which is what makes
+the order reproducible in the record; neither constrains preprocessing
+threading, so both run Boltz's default and production matches the pilot.

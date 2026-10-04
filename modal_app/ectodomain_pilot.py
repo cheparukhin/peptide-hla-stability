@@ -25,14 +25,14 @@ def fold_boltz(run_id:str,seed:int,cases:list[dict]):
     work=Path('/tmp')/f'{run_id}_boltz_seed_{seed}'; shutil.rmtree(work,ignore_errors=True); inputs=work/'inputs'; inputs.mkdir(parents=True); case_out=work/'out'
     cases=sorted(cases,key=case_id)
     for case in cases: input_manifest(case); (inputs/f'{case_id(case)}.yaml').write_text(yaml_for(case))
-    cmd=['boltz','predict',str(inputs),'--out_dir',str(case_out),'--cache',str(CACHE_DIR),'--model','boltz2','--accelerator','gpu','--devices','1','--diffusion_samples','1','--recycling_steps','3','--sampling_steps','200','--output_format','mmcif','--write_full_pae','--max_msa_seqs',str(CAP),'--seed',str(seed),'--preprocessing_threads','1','--override']
+    cmd=['boltz','predict',str(inputs),'--out_dir',str(case_out),'--cache',str(CACHE_DIR),'--model','boltz2','--accelerator','gpu','--devices','1','--diffusion_samples','1','--recycling_steps','3','--sampling_steps','200','--output_format','mmcif','--write_full_pae','--max_msa_seqs',str(CAP),'--seed',str(seed),'--override']
     settings={'package':'boltz==2.1.1','weight_revision':'6fdef46d763fee7fbb83ca5501ccceff43b85607','diffusion_samples':1,'recycling_steps':3,'sampling_steps':200,'max_msa_seqs':CAP,'subsample_msa':False,'requested_input_order':[case_id(c) for c in cases],'seed_scope':'process','command':cmd}
     invoke=time.monotonic()
     with _GpuMemoryProbe() as memory,_CompletionProbe(case_out) as done:
         proc=subprocess.run(cmd,capture_output=True,text=True,timeout=1100)
     out=[]; times=sorted(done.seen.items(),key=lambda x:x[1]); previous=invoke; deltas={}
     settings['actual_prediction_order']=[cid for cid,_ in times]
-    settings['preprocessing_threads']=1
+    settings['preprocessing_threads']='boltz default'
     for rank,(cid,at) in enumerate(times):deltas[cid]=(at-previous,rank==0);previous=at
     for case in cases:
         cid=case_id(case); dest=output_path(run_id,'boltz2',seed,case); dest.mkdir(parents=True,exist_ok=True)

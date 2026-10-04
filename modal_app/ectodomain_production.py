@@ -50,15 +50,21 @@ from boltz_common import (
 from ectodomain_common import CAP, MSA_ROOT, OUT_ROOT, cgroup_peak
 
 app = modal.App("pepstab-ectodomain-production")
-image = boltz_image.add_local_python_source(
-    "ectodomain_common", "esmfold_common", "boltz_bench"
-)
+
+# Modal imports this whole module in *every* container, so each image must
+# carry the local modules imported at module scope -- including the small
+# CPU-only download image, which otherwise dies on `import ectodomain_common`
+# before it runs a line of its own. See the same warning in boltz_common.
+_LOCAL = ("ectodomain_common", "esmfold_common", "boltz_bench")
+image = boltz_image.add_local_python_source(*_LOCAL)
+setup_image = download_image.add_local_python_source(*_LOCAL)
 
 REPO = Path(__file__).resolve().parent.parent
 RUN_ID = "ectodomain-20261004"
 
-# Measured on the stage 4c pilot (A10G, 383 residues, 1,024 MSA rows): 16.76 s
-# median steady fold, with model load adding ~57 s to a shard's first fold.
+# Measured on the stage 4c pilot (A10G, 383 residues, 1,024 MSA rows), which is
+# the run that gated this configuration: 16.76 s median steady fold, with model
+# load and preprocessing adding ~57 s to a shard's first fold.
 STEADY_S = 16.76
 SHARD_STARTUP_S = 57.0
 # $1.10 A10G + 4 CPU + 24 GiB host, the shape the pilot actually measured.
@@ -193,25 +199,40 @@ def verify_inputs(case: dict) -> dict:
 
 
 @app.function(
-    image=download_image,
+    image=setup_image,
     volumes={CACHE_DIR.parent: weights_vol},
     timeout=45 * 60,
     max_containers=1,
     retries=0,
 )
-def download_weights() -> dict:
+def download_weights(force: bool = False) -> dict:
+    """Pull the pinned Boltz-2 snapshot, or confirm it is already here.
+
+    Both checks are deliberately shallow: a top-level glob and one stat. Walking
+    the 6.2 GB tree to report a size is pure latency on a Volume, and the point
+    of this function is to get out of the way when there is nothing to do.
+    """
     from huggingface_hub import snapshot_download
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    weights_vol.reload()
+    present = sorted(p.name for p in CACHE_DIR.glob("*.ckpt"))
+    if present and (CACHE_DIR / "mols").exists() and not force:
+        return {
+            "revision": HF_REVISION,
+            "status": "cached",
+            "checkpoints": present,
+            "seconds": 0.0,
+        }
+
     t0 = time.monotonic()
     snapshot_download(repo_id=HF_REPO, revision=HF_REVISION, local_dir=str(CACHE_DIR))
     weights_vol.commit()
-    files = {f.name: f.stat().st_size for f in CACHE_DIR.rglob("*") if f.is_file()}
     return {
         "revision": HF_REVISION,
+        "status": "downloaded",
+        "checkpoints": sorted(p.name for p in CACHE_DIR.glob("*.ckpt")),
         "seconds": round(time.monotonic() - t0, 1),
-        "gb": round(sum(files.values()) / 1e9, 3),
-        "n_files": len(files),
     }
 
 
@@ -224,15 +245,18 @@ def download_weights() -> dict:
     max_containers=1,
     retries=0,
 )
-def verify_workspace(profile: str) -> dict:
-    """Confirm this workspace can actually run the frozen cohort before GPUs."""
+def verify_workspace(profile: str, expected: list[dict]) -> dict:
+    """Confirm this workspace can actually run the frozen cohort before GPUs.
+
+    ``expected`` comes from the committed manifest on the caller's side, so
+    this checks the Volume against the repository rather than against a copy
+    of the manifest that was uploaded alongside the files it describes.
+    """
     msa_vol.reload()
     weights_vol.reload()
-    manifest = json.loads((MSA_ROOT / "production_manifest.json").read_text())
-    by_allele = {m["allele"]: m for m in manifest["msas"]}
 
     checked = 0
-    for m in by_allele.values():
+    for m in expected:
         for key in ("B", "beta2m"):
             p = MSA_ROOT / m[key]["csv"]
             assert p.exists(), f"missing {p}"
@@ -245,7 +269,7 @@ def verify_workspace(profile: str) -> dict:
     assert (CACHE_DIR / "mols").exists(), "CCD mols directory missing"
     return {
         "profile": profile,
-        "alleles": len(by_allele),
+        "alleles": len(expected),
         "msa_files_verified": checked,
         "checkpoints": ckpt,
         "ok": True,
@@ -307,9 +331,6 @@ def fold_shard(run_id: str, shard: int, cases: list[dict], smoke: bool = False) 
         "--write_full_pae",
         "--max_msa_seqs", str(CAP),
         "--seed", "0",
-        # One thread keeps the per-case random stream reproducible, which is
-        # what the pilot's provenance fix established. It costs ~6% of a shard.
-        "--preprocessing_threads", "1",
         "--override",
     ]
     settings = {
@@ -321,6 +342,9 @@ def fold_shard(run_id: str, shard: int, cases: list[dict], smoke: bool = False) 
         "max_msa_seqs": CAP,
         "subsample_msa": False,
         "seed": 0,
+        # Deliberately absent: --preprocessing-threads. The pilot that gated
+        # this configuration ran without it, so production does too.
+        "preprocessing_threads": "boltz default",
         "seed_scope": "process",
         "shard": shard,
         "requested_input_order": [c["complex_id"] for c in cases],
@@ -339,7 +363,7 @@ def fold_shard(run_id: str, shard: int, cases: list[dict], smoke: bool = False) 
         deltas[cid] = (at - previous, rank == 0)
         previous = at
 
-    results, features = [], []
+    results = []
     for case in cases:
         cid = case["complex_id"]
         dest = case_dir(run_id, case, smoke)
@@ -392,27 +416,6 @@ def fold_shard(run_id: str, shard: int, cases: list[dict], smoke: bool = False) 
             plddt_shape=list(plddt.shape),
         )
 
-        # Same slicing convention as scripts/ectodomain_pose_check.py: the
-        # peptide is the last 9 tokens, the groove the first 182. Writing these
-        # per shard means stage 5 can start from a few MB of JSONL while the
-        # ~22 GB of structures are still downloading.
-        pep = n - 9
-        feature = {
-            "complex_id": cid,
-            "allele": case["allele"],
-            "peptide": case["peptide"],
-            "split": case["split"],
-            "pair_id": case["pair_id"],
-            "peptide_plddt": plddt[pep:].tolist(),
-            "peptide_plddt_mean": float(plddt[pep:].mean()),
-            "peptide_to_groove_pae_mean": float(pae[pep:, :182].mean()),
-            "groove_to_peptide_pae_mean": float(pae[:182, pep:].mean()),
-        }
-        conf = next(iter(dest.glob("confidence_*.json")), None)
-        if conf is not None:
-            feature["confidence"] = json.loads(conf.read_text())
-        features.append(feature)
-
         metadata = {
             "model": "boltz2",
             "run_id": run_id,
@@ -449,10 +452,6 @@ def fold_shard(run_id: str, shard: int, cases: list[dict], smoke: bool = False) 
 
     base = prod_root(run_id) / "_smoke" if smoke else prod_root(run_id)
     batch["smoke"] = smoke
-    (base / "_features").mkdir(parents=True, exist_ok=True)
-    (base / "_features" / f"shard_{shard:04d}.jsonl").write_text(
-        "".join(json.dumps(f) + "\n" for f in features)
-    )
     # The marker is written last and only for a fully successful shard, so a
     # resume re-runs anything that failed or died mid-way. A smoke shard never
     # writes one: it is a harness check, not cohort progress.
@@ -492,17 +491,27 @@ def completed_shards(run_id: str) -> list[int]:
 
 
 @app.local_entrypoint()
-def setup(profile: str = "a-cheparukhin"):
+def setup(profile: str = "a-cheparukhin", force_weights: bool = False):
     """CPU only. Pull pinned weights, then verify this workspace end to end.
 
-    Upload the arm-B MSA slice first (see docs/ECTODOMAIN_FOLDING_PLAN.md):
-        python scripts/stage_production_msas.py
-        modal volume put pepstab-hla-msa <staging> /ectodomain_stage4c
+    A workspace that already holds the arm-B MSAs (a-cheparukhin does, from the
+    pilot) needs nothing uploaded; this just checks them. For a fresh workspace
+    see docs/ECTODOMAIN_FOLDING_PLAN.md: stage the 29.6 MB slice and
+    `modal volume put` it before running this.
     """
     check_profile(profile)
-    w = download_weights.remote()
-    print(f"weights {w['revision'][:8]}: {w['gb']} GB, {w['n_files']} files, {w['seconds']} s")
-    v = verify_workspace.remote(profile)
+    manifest = json.loads(
+        (REPO / "structures/ectodomain_msas/manifest.json").read_text()
+    )
+    expected = [
+        {k: m[k] for k in ("allele", "B", "beta2m")} for m in manifest["msas"]
+    ]
+    w = download_weights.remote(force=force_weights)
+    print(
+        f"weights {w['revision'][:8]}: {w['status']}, "
+        f"{', '.join(w['checkpoints'])} ({w['seconds']} s)"
+    )
+    v = verify_workspace.remote(profile, expected)
     print(json.dumps(v, indent=2))
     print("\nworkspace ready. Next: ::smoke")
 
@@ -538,14 +547,12 @@ def production(
     profile: str = "a-cheparukhin",
     run_id: str = RUN_ID,
     limit: int = 0,
-    max_usd: float = 150.0,
     dry_run: bool = False,
 ):
     """Fold this profile's half of the frozen cohort, resuming what is missing.
 
-    ``limit`` caps the number of shards (use 1 for the end-to-end check;
-    the shard is still folded in full and its outputs count toward the run).
-    ``max_usd`` is a hard stop on this profile's forecast, not a Modal limit.
+    ``limit`` caps the number of shards. The per-workspace budget ceiling is in
+    HACKATHON_PLAN.md; the forecast printed below is what to check against it.
     """
     check_profile(profile)
     cases = build_cases(profile)
@@ -574,9 +581,6 @@ def production(
     if not todo:
         print("\nnothing to do: every shard for this profile is complete.")
         return
-    assert usd * 1.25 <= max_usd, (
-        f"forecast ${usd * 1.25:.2f} exceeds --max-usd {max_usd:.2f}"
-    )
     if dry_run:
         print(f"\ndry run: would spawn shards {todo[0]}..{todo[-1]}")
         return

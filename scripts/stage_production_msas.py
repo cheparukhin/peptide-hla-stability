@@ -1,13 +1,18 @@
-"""Stage the arm-B MSA slice a production workspace needs, and its manifest.
+"""Stage the arm-B MSA slice for a workspace that does not already hold it.
 
-Production folds arm B only, and Boltz reads the CSV form, so a workspace needs
-just ``*_B.csv`` + ``*_beta2m.csv`` (~29 MB) rather than the full 745 MB of
-prepared alignments. Writes a staging directory plus a trimmed
-``production_manifest.json`` that ``verify_workspace`` hash-checks on the
-Volume before any GPU is billed.
+Only needed for a *fresh* workspace. ``a-cheparukhin`` already has all 150
+production CSVs on ``pepstab-hla-msa`` from the pilot, so it needs no upload at
+all -- ``::setup`` just hash-checks them.
+
+``modal volume put`` takes one local path, and the prepared-MSA directory is
+745 MB across 608 files covering all three pilot arms. Production folds arm B
+only and Boltz reads the CSV form, so a fresh workspace needs just ``*_B.csv``
++ ``*_beta2m.csv``: 150 files, 29.6 MB. This script is the staging directory
+that difference requires, and it re-verifies every file against the committed
+manifest while copying.
 
     python scripts/stage_production_msas.py
-    MODAL_PROFILE=<profile> modal volume put pepstab-hla-msa \
+    MODAL_PROFILE=colleague modal volume put pepstab-hla-msa \
         structures/ectodomain_production_msas /ectodomain_stage4c
 """
 from __future__ import annotations
@@ -30,21 +35,19 @@ def main() -> None:
     manifest = json.loads((SRC / "manifest.json").read_text())
     DEST.mkdir(parents=True, exist_ok=True)
 
-    msas, total = [], 0
+    staged, total = 0, 0
     for m in manifest["msas"]:
-        entry = {"allele": m["allele"], "ecto": m["ecto"], "b2m": m["b2m"]}
         for key in ("B", "beta2m"):
             name = m[key]["csv"]
             src = SRC / name
             assert digest(src) == m[key]["csv_sha256"], f"{src} does not match manifest"
             shutil.copy2(src, DEST / name)
             total += src.stat().st_size
-            entry[key] = {"csv": name, "csv_sha256": m[key]["csv_sha256"], "depth": m[key]["depth"]}
-        msas.append(entry)
+            staged += 1
 
-    out = {"cap": manifest["cap"], "arm": "B", "alleles": len(msas), "msas": msas}
-    (DEST / "production_manifest.json").write_text(json.dumps(out, indent=2) + "\n")
-    print(f"staged {len(msas)} alleles, {2 * len(msas)} CSVs, {total / 1e6:.1f} MB")
+    # No manifest is written alongside: ``::setup`` hash-checks the Volume
+    # against the committed manifest, so a second copy here could only drift.
+    print(f"staged {staged} CSVs for {len(manifest['msas'])} alleles, {total / 1e6:.1f} MB")
     print(f"  -> {DEST.relative_to(ROOT)}")
 
 
