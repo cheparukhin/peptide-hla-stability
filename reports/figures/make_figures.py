@@ -101,9 +101,14 @@ def collect(split: str) -> tuple[pd.DataFrame, dict[str, pd.Series]]:
     panel = eligible_alleles(part.allele, part.y_log1p.values,
                              MIN_ROWS_BY_SPLIT[split])
 
+    # Validation predictions sit in preds/; the held-out ones were written to
+    # preds/test/ so that a test file could never be picked up by a script
+    # expecting validation. Mirror that layout rather than flattening it.
+    pred_dir = ROOT / "preds" / "test" if split == "test" else ROOT / "preds"
+
     rows, per_allele = [], {}
     for label, stem, cost, cost_status in ARMS:
-        path = ROOT / "preds" / f"{stem}.csv"
+        path = pred_dir / f"{stem}.csv"
         if not path.exists():
             print(f"  skip {label}: {path.relative_to(ROOT)} not written yet")
             continue

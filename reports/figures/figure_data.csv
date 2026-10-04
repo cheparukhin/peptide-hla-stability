@@ -1,11 +1,7 @@
 model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,file,usd_per_1k,cost_status
-training allele mean,2802,68,68,68,0.0,0.0,0.0,0.7342,0.3592,0.554,0.523,allele_mean,,not measured
-"MLP, peptide only",2802,68,68,0,0.2059,0.0047,0.4184,0.8151,0.4,0.3626,0.4356,mlp_onehot_pep,2.6e-09,derived
-"ridge, peptide+pseudoseq",2802,68,68,0,0.2784,0.0749,0.4157,0.6999,0.5,0.5942,0.5797,ridge_onehot_pep_pseudo,,not measured
-"MLP, peptide+domain (single)",2802,68,68,0,0.5937,0.4215,0.7004,0.5225,0.7,0.7432,0.761,mlp_onehot_pep_domain,2.6e-08,derived
-"MLP, peptide+pseudoseq (single)",2802,68,68,0,0.6098,0.4826,0.7091,0.5325,0.7,0.7451,0.7585,seq_baseline,6.6e-09,derived
-"sequence ensemble, full domain",2802,68,68,0,0.6529,0.5028,0.7497,0.4948,0.7,0.7856,0.7948,seq_ensemble_pep_domain,3.8e-06,derived
-ESM-2 150M (ESM only),2802,68,68,0,0.6737,0.5661,0.7496,0.5058,0.7,0.7856,0.7904,esm_ensemble_150m,0.0012,measured
-sequence + ESM-2 ensemble,2802,68,68,0,0.6761,0.5597,0.7697,0.4875,0.7,0.7934,0.7965,esm_plus_seq_ensemble,0.00047,measured
-ESM-2 ensemble (ESM only),2802,68,68,0,0.683,0.5585,0.7678,0.4793,0.7,0.8003,0.8064,esm_ensemble,0.00047,measured
-"sequence ensemble, 30 nets",2802,68,68,0,0.6931,0.5736,0.7526,0.4734,0.7,0.8015,0.8098,seq_ensemble_pep_pseudo,9.6e-07,measured
+Boltz-2 structural ensemble,5565,67,67,0,0.5947,0.4948,0.7009,0.5174,0.8,0.7562,0.7678,boltz_structural,6.9,measured
+"MLP, peptide+pseudoseq (single)",5565,67,67,0,0.6181,0.5183,0.6766,0.5322,0.9,0.7359,0.7517,seq_baseline,6.6e-09,derived
+sequence + ESM-2 ensemble,5565,67,67,0,0.6816,0.6241,0.7224,0.4828,0.9,0.7906,0.8007,esm_plus_seq_ensemble,0.00047,measured
+"sequence ensemble, full domain",5565,67,67,0,0.6904,0.5873,0.7396,0.4804,0.9,0.7921,0.8043,seq_ensemble_pep_domain,3.8e-06,derived
+ESM-2 ensemble (ESM only),5565,67,67,0,0.6979,0.6298,0.7425,0.4735,0.9,0.797,0.809,esm_ensemble,0.00047,measured
+"sequence ensemble, 30 nets",5565,67,67,0,0.7064,0.612,0.7478,0.4657,0.9,0.8009,0.8127,seq_ensemble_pep_pseudo,9.6e-07,measured

@@ -1247,7 +1247,7 @@ do not answer.
 | **sequence + ESM-2** (30-net) | both | **0.6761** | **−0.0170 [−0.0468, +0.0320]** | **inconclusive, rules out 0.05** | $4.7 × 10⁻⁴ |
 | **ESM-2 only vs the full-domain ensemble** | matching input — the one conclusive comparison | 0.6830 | median **+0.0301 [−0.0084, +0.0757]**; mean **+0.0312 [+0.0082, +0.0540]**; concordance **+0.0152 [+0.0046, +0.0241]** | **conclusive on both secondaries, inconclusive on the contract's primary** — and since the pseudosequence arm *also* conclusively beats full-domain (+0.0124 [+0.0061, +0.0186]), this is about **full-domain being weak**, not pretraining being strong (§4.1) | $4.7 × 10⁻⁴ |
 | ESM-2 150M only | larger checkpoint | 0.6737 | −0.0194 [−0.0599, +0.0195] | inconclusive, rules out 0.05 | 2.6× the 35M extraction |
-| **Boltz-2, structural features** | **predicted 3D complex + confidence** | **‹HOLE B2›** | **‹HOLE B2›** | **‹HOLE B2›** | **$6.90** |
+| **Boltz-2, structural features** (`seq+geometry+confidence`) | **predicted 3D complex + confidence** | **0.6216** | **−0.0715 [−0.1228, −0.0251]** | **worse, conclusively** | **$6.90** |
 
 **Notes on reading this table**, because two rows mix aggregations and saying so
 is cheaper than a reader discovering it:
@@ -1304,14 +1304,14 @@ dash-dot line is the entire result.
 |---|---|---|---|
 | **E1** | ESM-2 cost per 1,000 new predictions | `esm-arm` | Embedding extraction time and hardware, cache size per unique sequence, head inference seconds per 1,000 rows, ensemble member count |
 | ~~E2~~ | ~~ESM-2 validation accuracy and its paired CI~~ | — | **Filled**: §4.0 (vs the pseudosequence ensemble, −0.0101) and §4.1 (vs the full-domain ensemble, +0.0301), both as required |
-| **B2** | Boltz-2 structural accuracy and its paired CI | stage 4c production → stage 5 | Same, on identical train/val/test rows with matched head architecture, ensemble size and tuning budget. Plus coverage and the declared sequence fallback for structural failures |
-| **B3** | Realised production spend | Modal production session | **Status: in flight** — 265 of 282 shards committed (136 `a-cheparukhin` + 129 `colleague`), 26,500 pairs, **zero failures**. Still needed: metered before/after snapshots per workspace, realised GPU-hours and wall clock, final failure count, actual concurrency granted |
-| **A1** | Per-stratum leave-allele-out for the ESM-2 and structural arms (§6.6) | `esm-arm` / stage 5 | A **feature matrix plus its `pair_id` index**, refit across all 68 folds at the fixed 6 networks per fold — **not** a `preds/*.csv`, which the runner rejects. A stratum may come back inconclusive and must be reported as such |
-| **B4** | Structural coverage and failure rate (§6.5) | stage 5 | Pairs with a valid structure, pairs falling back to the sequence model, and the primary result reported on the **frozen cohort**, not on whatever folded |
+| ~~B2~~ | ~~Boltz-2 structural accuracy and its paired CI~~ | — | **Filled**: validation 0.6216, −0.0715 [−0.1228, −0.0251] (§4.0 table); test 0.5947, **−0.1117 [−0.1339, −0.0575], worse conclusively** (§6). Matched head, 30 members, same rows. Coverage in B4 |
+| ~~B3~~ | ~~Realised production spend~~ | — | **Filled**: **28,166 / 28,166 folded, zero failures**, 282 / 282 shards, **143.6 A10G-hours** (70.1 `a-cheparukhin` + 73.5 `colleague`) in **7 h 32 min** of wall clock, 04:00:22 → 11:32:24 BST on 4 October, for **$212.71** ($103.83 + $108.88, each under its $150 ceiling). Concurrency **confirmed at 10 `fold_shard` containers per workspace**, counted seven minutes into the run. Source: [`ectodomain-20261004/production_verification.json`](ectodomain-20261004/production_verification.json). **One residual**: the dollar figure is *derived* — realised container-hours × the measured $1.4812/h A10G shape rate — not reconciled against a provider bill, because no post-run metered snapshot was taken in either workspace: ‹HOLE B3a: post-run metered `before`/`after` billing snapshot per workspace› |
+| **A1** | Per-stratum leave-allele-out for the ESM-2 and structural arms (§6.6) | `esm-arm` / stage 5 | **Still open, and shipped open.** Needs a **feature matrix plus its `pair_id` index**, refit across all 68 folds at the fixed 6 networks per fold — **not** a `preds/*.csv`, which the runner rejects. That refit was never run, so no number exists for it; the sequence arm's leave-allele-out result in §6.6 stands alone and must not be read as covering the other two arms. A stratum may come back inconclusive and would have to be reported as such |
+| ~~B4~~ | ~~Structural coverage and failure rate (§6.5)~~ | — | **Filled**: 5,633 / 5,633 test rows in the frozen cohort (verified by `(allele, peptide)` join), 28,166 / 28,166 folded with zero failures, **0 rows on the sequence fallback**. §6.5 |
 | ~~E1b~~ | ~~ESM-2 head inference cost~~ | — | **Filled**: 0.0150 s / 1,000 rows for the 30-network ensemble; 1.14 s end to end including embedding. §4.0 |
 | ~~S3C~~ | ~~Elution external validation~~ | — | **Filled**: [`stage3c_elution_validation.md`](stage3c_elution_validation.md), §4.5 above. Still open as a *follow-on*: the same pass on the ESM-2 and structural arms |
 | ~~S7a~~ | ~~Censored (Tobit) likelihood result~~ | — | **Filled**: [`stage7_censored.md`](stage7_censored.md), §4.7 above. Negative on ranking, with the sensitivity sweep and the undertraining control |
-| **S6** | Stage 6 test results, distance strata, differential target, nested near-neighbour CV | `eval-harness` | §6 below |
+| ~~S6~~ | ~~Stage 6 test results, distance strata, differential target, nested near-neighbour CV~~ | — | **Filled**: the single pass, run once at commit `fb01b13` with provenance in [`test_scoring_provenance.json`](test_scoring_provenance.json). §6, §6.1 (strata), §6.2 (differential), §6.4 (failures), §6.5 (coverage). §6.3 has **no** test number by construction and says why. **Two arms are absent and reported on validation only**: `esm_ensemble_150m` failed its refit reproduction check ([stage3_esm.md](stage3_esm.md) §5), and the augmentation / affinity / Tobit arms were not frozen for the pass |
 
 ---
 
@@ -1326,6 +1326,56 @@ Two more have already been delivered: transfer to an entirely different assay
 (§4.5, with its three specificity controls) and the leave-allele-out evaluation
 (§6.6), which needed a second contract of its own.
 
+### 6.0 The single test pass — the headline
+
+**Every other number in this document is a validation number.** The test split
+was scored **once**, at commit `fb01b13`, after provenance was captured in
+[`test_scoring_provenance.json`](test_scoring_provenance.json) — arm SHA-256s,
+the splits and dataset SHA-256s, the commit, the timestamp. The verdict language
+below was pre-committed in
+[TEST_SCORING_RUNBOOK.md](TEST_SCORING_RUNBOOK.md) before any test number
+existed, and binds in both directions. The pass was not re-run.
+
+Median per-allele Spearman, **67 alleles, 5,565 scorable rows**, paired cluster
+bootstrap over whole peptide clusters, 2,000 resamples, against the declared
+baseline (the 30-network pep+pseudoseq ensemble):
+
+| arm | test ρ | IQR | Δ vs baseline | verdict |
+|---|---:|---|---:|---|
+| **sequence ensemble, pep+pseudoseq** | **0.7064** | 0.612–0.748 | — | **the deployed model** |
+| ESM-2 only (30-net) | 0.6979 | 0.630–0.743 | −0.0085 [−0.0291, +0.0233] | inconclusive at 0, rules out +0.05 |
+| sequence ensemble, full domain | 0.6904 | 0.587–0.740 | −0.0160 [−0.0388, +0.0043] | inconclusive at 0, rules out +0.05 |
+| sequence + ESM-2 (30-net) | 0.6816 | 0.624–0.722 | −0.0248 [−0.0460, +0.0073] | inconclusive at 0, rules out +0.05 |
+| single-network baseline | 0.6181 | 0.518–0.677 | **−0.0883 [−0.1201, −0.0555]** | **worse, conclusively** |
+| Boltz-2 structural | 0.5947 | 0.495–0.701 | **−0.1117 [−0.1339, −0.0575]** | **worse, conclusively** |
+
+**What held up.** The ordering, the verdicts and both load-bearing findings
+replicate from validation. Frozen ESM-2 features neither replace nor improve on
+a well-built sequence baseline, and the interval excludes the +0.05 that would
+have justified the machinery — the same conclusion reached on validation, now on
+data no selection ever touched. Test scores sit *above* validation scores across
+the board (0.7064 vs 0.693 for the baseline), which is a property of the panels,
+not an improvement: the test split is twice the size and its allele panel
+differs.
+
+**The two conclusive results are both negative, and both are informative.**
+Ensembling is load-bearing — the single network loses 0.088, conclusively, so a
+single-network "baseline" would have handed every later stage a gap it had not
+earned. And **predicted 3D structure makes ranking worse**, not merely no
+better: −0.1117, on complete coverage of a cohort frozen before anything folded
+(§6.5). That is the most expensive arm in the project returning the clearest
+negative, which is the result, not a failure to get one.
+
+**What this pass does not cover.** `esm_ensemble_150m` is absent: stage 3
+persisted no fitted networks, and its refit would not reproduce its frozen
+validation number (0.6676 and 0.6690 against 0.6737), so it was excluded under
+the runbook rather than scored unverified — see [stage3_esm.md](stage3_esm.md)
+§5. The augmentation, auxiliary-affinity and Tobit arms were not frozen for the
+pass and remain validation-only. **Caveat on reproducibility**: the working tree
+was dirty at provenance capture, because concurrent sessions were editing FoldX
+and compute-ledger files; the commit alone does not rebuild the tree, though the
+hashed prediction files, splits and dataset do pin exactly what was scored.
+
 ### 6.1 Distance stratification — is the model generalising or remembering?
 
 Every held-out peptide is 4 or 5 substitutions from its nearest training
@@ -1337,7 +1387,39 @@ than distance. A d≥6 stratum is not viable: 12 test rows reach it.
 
 **If the model is exploiting residual similarity at the split boundary, d=4 will
 score visibly higher than d≥5. If it does not, that is a strong positive signal
-that the model genuinely generalises.** Test result: **‹HOLE S6a›**.
+that the model genuinely generalises.**
+
+**Test result: d=4 scores higher than d≥5 in all six arms, so the
+pre-committed reading is the unfavourable one.** On the realised panel — 3,121
+rows at d=4 and 2,299 at d≥5, the same 65 alleles — the gaps are:
+
+| arm | d=4 | d≥5 | gap |
+|---|---:|---:|---:|
+| sequence ensemble, pep+pseudoseq | 0.7064 | 0.6869 | +0.0195 |
+| sequence ensemble, full domain | 0.6643 | 0.6603 | +0.0040 |
+| ESM-2 only | 0.7148 | 0.6796 | +0.0352 |
+| sequence + ESM-2 | 0.7000 | 0.6612 | +0.0388 |
+| single-network baseline | 0.6301 | 0.6141 | +0.0160 |
+| Boltz-2 structural | 0.6069 | 0.5904 | +0.0165 |
+
+The direction is the one residual-similarity exploitation predicts, and it is
+consistent across every arm rather than appearing in one. **But the size is
+not resolved**: no paired interval was computed on the stratum *gap*, so these
+are point estimates, and the smallest (+0.0040) is far inside the noise the
+arm-level intervals show at this panel size. The honest statement is that this
+check did **not** return the strong positive signal it was set up to look for,
+and cannot quantify how much of each arm's score rests on boundary similarity.
+
+Note also that the row counts differ from the 3,256 / 2,377 census above
+because the strata are scored on the 65-allele intersection, not on every test
+row; the census counts rows, the comparison counts scorable rows.
+
+What the table does *not* show is any advantage for pretraining at the
+boundary: the two ESM-2 arms have the **largest** gaps of the six (+0.0352 and
++0.0388), against +0.0195 for the plain sequence ensemble. On validation the
+150M arm's near-flat gap teased in the other direction; that arm is absent here
+(it failed its reproduction check, §4.2), so the tease is neither confirmed nor
+refuted.
 
 **On validation, the hypothesis that pretraining buys generalisation at the
 split boundary is dead.** Every arm loses something between the strata, and the
@@ -1421,7 +1503,34 @@ of concordance**, while the same measurement conclusively separates two other
 arms — so the equivalence is a measured null rather than a blind metric. This is
 the only metric in the project that returned a conclusive verdict where the
 primary metric could not, which is the clearest possible demonstration that it
-earned its place in the contract. Test result: **‹HOLE S6b›**.
+earned its place in the contract.
+
+**Test result: the validation finding replicates, in the same shape.** Paired
+cluster bootstrap against the pseudosequence ensemble, on 774 peptides and
+18,977 decidable allele pairs (1,824 undecidable, equal labels):
+
+| arm | Δ concordance vs pseudoseq ensemble | verdict |
+|---|---:|---|
+| ESM-2 only | **+0.0033 [−0.0015, +0.0076]** | **inconclusive — a measured null** |
+| sequence + ESM-2 | −0.0017 [−0.0073, +0.0032] | inconclusive |
+| sequence ensemble, full domain | **−0.0075 [−0.0116, −0.0035]** | **conclusive** |
+| single-network baseline | **−0.0187 [−0.0259, −0.0118]** | **conclusive** |
+| Boltz-2 structural | **−0.0358 [−0.0443, −0.0282]** | **conclusive** |
+
+So on held-out data, as on validation, **ESM-2 and the sequence baseline are
+equivalent to within a third of a point of concordance**, while the same
+measurement conclusively separates three other arms. The null is again a
+measured null, not a metric that cannot discriminate.
+
+**The framing that matters here, and is easy to flatten.** ESM-2 *does* beat
+the full-domain ensemble — but so does the plain pseudosequence ensemble, by
++0.0075. The separation is about **full-domain input being weak**, not about
+pretraining being strong. And note what this pass can and cannot support: every
+interval above is taken against the single declared baseline, so the
+ESM-2-vs-full-domain difference (+0.0033 − (−0.0075) = +0.0109) is **arithmetic
+between two deltas, not a measured interval**. The validation pass did compute
+that comparison directly (+0.0152 [+0.0046, +0.0241], §4.1); the test pass did
+not, and no interval for it is claimed.
 
 ### 6.3 Nested near-neighbour evaluation — the question the split cannot ask
 
@@ -1429,8 +1538,16 @@ Because no two peptides within 3 substitutions straddle a split, this benchmark
 **cannot assess mutant ranking** — scoring point mutants of a known binder, which
 is often the practically relevant design question. The partial recovery is a
 cross-validation on the d≤2 peptide clusters that live entirely inside the
-training split, touching neither the test set nor the frozen assignments. Test
-result: **‹HOLE S6c›**.
+training split, touching neither the test set nor the frozen assignments.
+
+**There is no test result for this benchmark, by construction, and that is not
+an omission.** The near-neighbour comparison lives entirely inside the training
+split precisely because the frozen splits separate every pair of peptides within
+3 substitutions — so a "test-set" version of it cannot be built without breaking
+the splits that make every other number here trustworthy. The single pass was
+therefore run without `--nested`, and the validation dead heat below stands as
+the whole of this result. Stating a test number for it would mean quietly
+rebuilding the split.
 
 **On validation it is an exact dead heat.** All three shipped arms on identical
 folds, head class, member count and seed; **490 comparisons on 96 independent
@@ -1478,7 +1595,44 @@ suggests these are hard alleles rather than an artifact of one input
 representation. **A model that is right on average and catastrophically wrong on
 a specific allele is not safe to deploy on a patient with that allele**, and
 reporting only a median would hide it. The per-allele table is published for
-every arm. Test-set failure set: **‹HOLE S6d›**.
+every arm.
+
+**Test-set failure set: materially better than validation, and the villain
+changed.** On the 67-allele test panel the deployed sequence ensemble ranks
+**no allele backwards** (minimum ρ = +0.019) and has **one** allele below 0.20.
+Across arms:
+
+| arm | alleles with ρ < 0 | alleles with ρ < 0.20 | worst allele |
+|---|---:|---:|---|
+| sequence ensemble, pep+pseudoseq | 0 | 1 | +0.0191 |
+| sequence ensemble, full domain | 0 | 1 | +0.0325 |
+| ESM-2 only | 1 | 1 | −0.0207 |
+| sequence + ESM-2 | 1 | 2 | −0.0337 |
+| single-network baseline | 1 | 1 | −0.0492 |
+| Boltz-2 structural | 0 | 1 | +0.0126 |
+
+**The same allele is worst in all six arms: `HLA-B*39:06(C67S)`** (74 rows),
+and the second worst for the deployed arm is also a C67S allotype,
+`HLA-B*14:01(C67S)` at ρ = 0.266. That the hard cases concentrate on the
+cysteine-67-to-serine variants — the substitution this dataset's provenance
+already singles out (see [docs/](../docs/README.md)) — is a sharper and more
+actionable failure story than validation gave, and it is consistent across
+input representations, so it is a property of those allotypes rather than an
+artifact of one encoding.
+
+**`HLA-A*24:19`, the validation failure, does not reproduce as one.** It ranked
+backwards on validation (−0.12 single network, −0.04 ensemble) and here it
+scores 0.395 with the deployed arm and 0.30–0.40 across all six. A single-allele
+failure on a 2,817-row validation panel was, in this case, not stable enough to
+predict held-out behaviour — which is an argument for reading the per-allele
+table as a distribution, not as a list of named culprits. The full table is
+published for every arm in
+[`stage6_test_per_allele.csv`](stage6_test_per_allele.csv).
+
+**This does not retire the deployment concern.** One allele in 67 is still
+effectively unranked (ρ = 0.019, indistinguishable from random ordering), and a
+model that is right on average and uninformative on a specific allotype remains
+unsafe for a patient carrying it.
 
 ### 6.5 Coverage and failure, for the structural arm specifically
 
@@ -1486,7 +1640,23 @@ Structure prediction can fail outright. Stage 5 reports the **frozen cohort with
 a declared sequence-model fallback** as the primary result, and common successful
 rows only as a diagnostic. **Scoring only the pairs that happened to fold would
 be a retrospectively chosen cohort**, which is exactly the kind of quiet
-selection a watertight evaluation has to rule out. Result: **‹HOLE B4›**.
+selection a watertight evaluation has to rule out.
+
+**Result: coverage is complete, so the fallback never fired and the question of
+a retrospective cohort does not arise.** All **5,633 / 5,633** test rows are
+present in the frozen cohort `data/structural_cohort.csv`, verified by an
+`(allele, peptide)` join rather than assumed from the fold log: 5,633 matched,
+0 unmatched. The production fold itself completed **28,166 / 28,166 structures
+with zero failures**, so **0 test rows took the declared sequence fallback** and
+the primary result is the frozen cohort — the two are the same set here.
+
+This is the cleanest possible version of this check, and it is worth being
+explicit about why that is *not* a point in the structural arm's favour: having
+complete coverage removes an excuse, it does not improve the result. The arm
+still comes in at 0.5947 against the 0.7064 baseline, −0.1117 [−0.1339,
+−0.0575], **worse conclusively**, on a cohort chosen before anything folded.
+There is no subset of "successful" rows to retreat to, because every row
+succeeded.
 
 ### 6.6 Leave-allele-out — a second contract, and the headroom it exposes
 
@@ -1711,28 +1881,46 @@ Full detail in [`compute_ledger.md`](compute_ledger.md).
 
 ### 7.1 What has been spent
 
-**$4.41 of metered GPU, total, for the whole project to date.** That covers a
+**$4.41 metered before the production launch, plus $212.71 for the production
+fold — the first is a provider bill, the second is arithmetic over measured
+container-hours, and the two labels are kept apart below.** The $4.41 covers a
 five-GPU hardware benchmark, two engine pilots and a 90-fold matched model
-comparison. Everything on the sequence side — stages 1, 2, 2b, 2c, 3c, and all
-MSA preparation for both constructs — ran on **one laptop core for $0**, about
-36 CPU-minutes of fitting and bootstrapping in total.
+comparison. Everything on the
+sequence side — stages 1, 2, 2b, 2c, 3c, and all MSA preparation for both
+constructs — ran on **one laptop core for $0**, about 36 CPU-minutes of fitting
+and bootstrapping in total.
 
-Production folding of all 28,166 pairs is forecast at **$200.8 (135.6 A10G
-hours), $251 with the required 25% margin**, split across two Modal workspaces
-in parallel at ~6.8 hours wall clock. **It is in flight** — **265 of 282 shards committed, 26,500 pairs folded, zero failures** (snapshot at the time of writing; the run is still going).
-The realised spend is not yet known and is held open as hole **B3**; every
-production figure in this document remains a forecast from the pilot's measured
-unit cost until it lands.
+Production folding of all 28,166 pairs is **complete**, and hole **B3** is
+filled from
+[`production_verification.json`](ectodomain-20261004/production_verification.json):
+**28,166 / 28,166 folded with zero failures**, 282 / 282 shards, **143.6 A10G
+hours** in **7 h 32 min** of wall clock across the two Modal workspaces in
+parallel (04:00:22 → 11:32:24 BST, 4 October), for **$212.71** — $103.83 on
+`a-cheparukhin` and $108.88 on `sofyaleyn`, each inside its $150 per-workspace
+ceiling. That is **5.9% over the $200.8 nominal forecast and well inside the
+$251 with-margin figure**, so the money forecast held; the *wall clock* did not,
+at 7 h 32 min against 6.8 h nominal, because dividing GPU-seconds by worker
+count prices a run without scheduling one — measured worker packing was 84% and
+88%, and 6.8 h / 0.86 ≈ 7.9 h recovers most of the gap.
 
-Two further spends are **approved and not yet made**, both forecast from
-measured unit costs:
+**One residual, and it is a provenance gap rather than a missing number.** The
+$212.71 is **derived** — realised container-hours × the measured $1.4812/h
+A10G-plus-4-CPU-plus-24-GiB shape rate — and is *not* reconciled against a
+provider bill, because no post-run metered snapshot was taken in either
+workspace: ‹HOLE B3a: post-run metered `before`/`after` billing snapshot per
+workspace›. The only metered reconciliation this project has is the pre-launch
+one, where a computed figure landed within ~10% of the bill
+([`compute_ledger.md`](compute_ledger.md) §1).
+
+Of the two spends that were approved but unmade at the previous writing, one
+has now been made and one has not:
 
 | Item | Cost | Basis |
 |---|---:|---|
-| Stage 4c.5 structural feature extraction, both halves | **~$0.78** | CPU-rate × measured container time. Extraction is **Volume-read-bound, not CPU-bound**: 1.57 s of wall per fold against 0.096 s of CPU, about 6% core utilisation — so the container was dropped from 2 cores to 1, since reserving the second was billing an idle one |
-| ProteinMPNN QC sample, 2,000 folds | **$1.04** | measured 14.70 s/fold at 16 decoding orders, at the repo's metered rates |
+| Stage 4c.5 structural feature extraction, both halves | **~$1.18 realised**, against a ~$0.78 forecast | 28,166 / 28,166 extracted, **zero failures**, 1,044.9 s + 1,206.1 s of 30-container wall. Extraction is **Volume-read-bound, not CPU-bound** (1.57 s of wall per fold against 0.096 s of CPU, ~6% core utilisation), so the container was dropped from 2 cores to 1. The 51% overrun is **chunk sizing, not the data**: 14,083 folds at `chunk=400` is 36 chunks against 30 containers, so a second wave ran 6 chunks wide and still cost a full wave of wall time ([`stage4c5_features.md`](stage4c5_features.md) §9.1) |
+| ProteinMPNN QC sample, 2,000 folds | **$1.04**, **still unspent** | measured 14.70 s/fold at 16 decoding orders, at the repo's metered rates. No `stage5_inverse_folding_qcsample_*.csv` exists, so its realised cost is still open — ‹HOLE R1: realised ProteinMPNN QC-sample spend› |
 
-**Both are rounding error against the $200.8 fold.** Worth one line on method:
+**Both are rounding error against the $212.71 fold.** Worth one line on method:
 for these two the *published list rates* agreed with the metered rates to
 **0.3%** (CPU 1.0030×, memory 1.0010×). Set against the 4.6× discrepancy this
 project hit earlier, the lesson is **"check it", not "never trust published
@@ -1752,8 +1940,11 @@ wrong price list.
 **The structural arm costs about 7 × 10⁶ times more per prediction than the
 sequence ensemble it has to beat; ESM-2 costs about 16×.** In wall clock rather
 than dollars: scoring the entire dataset takes the sequence ensemble **about two
-seconds of one CPU core**, ESM-2 about half a minute, and Boltz-2 **131
-GPU-hours**.
+seconds of one CPU core**, ESM-2 about half a minute, and Boltz-2 **143.6
+GPU-hours** — that last one now realised rather than forecast (the 131 GPU-h
+figure this line used to carry was fold time alone, priced from the pilot's
+16.76 s steady fold; the realised run also pays shard startup and container
+turnover).
 
 *A correction to an earlier figure in this document's history:* the sequence
 ensemble's inference cost was previously **derived** as 30 × stage 2's
@@ -1904,7 +2095,7 @@ then worry about which checkpoint.**
 
 Ordered by expected value per hour, not by appeal.
 
-1. **Finish the structural arm and score the test set once** (holes B2–B4,
+1. **Finish the structural arm and score the test set once** (holes B2, B4,
    S6a–d). Everything else is downstream of knowing whether the expensive arm
    clears 0.05.
 2. **Re-run the censored likelihood with the MSE stopping rule.** §4.7 settled

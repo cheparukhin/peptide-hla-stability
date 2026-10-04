@@ -305,6 +305,23 @@ comparison measures distance and not panel composition. If a model is exploiting
 residual similarity, d=4 will score visibly higher than d≥5. A d≥6 stratum is
 not viable: only 12 test rows reach it.
 
+**Reviewed after the test pass (4 October 2026): the mitigation returned the
+unfavourable answer, and this limitation is therefore stronger than when it was
+written, not weaker.** Every one of the six arms scored higher at d=4 than at
+d≥5 — gaps of +0.0040 to +0.0388, with the plain sequence ensemble at +0.0195
+and the two ESM-2 arms the *largest* of the set. The direction is consistent
+across arms rather than isolated, which is what exploitation of boundary
+similarity predicts.
+
+What stops this being a quantified finding is that **no paired interval was
+computed on the stratum gap itself** — the pass takes intervals on arm-vs-arm
+deltas, not on within-arm stratum differences. So the size is unresolved, and
+the smallest gaps are well inside the noise the arm-level intervals imply at
+this panel size. The honest position: residual similarity at the split boundary
+is **not excluded**, it contributes something in every arm, and we cannot say
+how much. Any number in this document should be read as including an unknown
+amount of boundary credit.
+
 ### 3.2 The split cannot answer the mutant-ranking question
 
 Because no two peptides within 3 substitutions straddle a split, **the benchmark
@@ -436,6 +453,29 @@ at an identical seed, differing only in thread count, are not identical in
 float32. We did not find this ourselves — it surfaced from an independent branch
 re-running our diagnostics — and it is the kind of defect that hides precisely
 because it is invisible to a seed check.
+
+**Reviewed after the test pass: one 30-network *ensemble* also failed to
+reproduce, which is worse than the single-network case above and was not
+anticipated here.** Stage 6 needed every arm refitted, because stage 3
+persisted no fitted networks. Two of three ESM-2 arms reproduced their frozen
+validation number to four decimals. `esm_ensemble_150m` did not: 0.6676 under
+one BLAS thread and 0.6690 under default threading, against a frozen 0.6737.
+Two refits differing by 0.0014 while both sitting ~0.005 below the target rules
+out reduction order as a sufficient explanation, and the per-group configs,
+feature width, fold assignment, seeds and embedding-cache content hash all
+match the frozen record. **The cause is not identified.**
+
+Two consequences, both uncomfortable and both load-bearing:
+
+- The arm was **excluded** from the test pass rather than scored unverified, so
+  its scaling claim stays validation-only (see `stage3_esm.md` §5). That is the
+  runbook working as intended — the check caught something.
+- More generally, **the frozen record is not sufficient to rebuild an arm
+  bit-for-bit.** `stage3_runs.csv` captures configs, folds, seeds, feature
+  widths and per-member epochs, and that was still not enough for one arm. So
+  "reproducible from the committed artifacts" holds for the arms we verified and
+  is **unproven** in general. Ensembling averages away single-network jitter
+  (§4.4 above) but evidently does not guarantee reproducibility of the ensemble.
 
 ### 4.5 Arms must be ensembled identically or the comparison is manufactured
 
@@ -724,21 +764,28 @@ from production is a **labelled revision** of the agreed plan, not a silent drop
 
 ## 6. The structural arm
 
-### 6.1 Measured, and currently unfinished
+### 6.1 Finished, and the one cost figure that is still arithmetic
 
-The production fold is **in flight, not finished**: at the time of writing 265
-of 282 shards have committed (136 `a-cheparukhin`, 129 `colleague`), 26,500
-pairs folded, **zero failures**. Every production cost, GPU-hour and wall-clock
-figure in `compute_ledger.md` is still a **forecast** from the pilot's measured
-16.76 s steady fold and 57 s shard startup, and is labelled as such — the
-realised spend is hole **B3** and needs post-run billing snapshots.
+The production fold is **complete**: 282 of 282 shards, **28,166 of 28,166 pairs
+folded, zero failures**, 143.6 A10G-hours in 7 h 32 min for **$212.71**. Hole
+**B3** is filled, and the failure rate of 0.000 is now a *final* rate measured
+after the run rather than a count taken at 94%, which is the distinction this
+section previously insisted on.
 
-Two consequences while it runs. **No downstream result may be computed from a
-partial cohort**: shards are ordered by allele, so a mid-run subset is
-allele-biased, and the stage 4c.5 and ProteinMPNN QC samples are both gated on a
-*complete* half for exactly that reason. And **a zero failure count at 94% is
-not a final failure rate** — the remaining shards are the ones most likely to
-contain a layout neither the pilot nor the first 26,500 folds exposed.
+**One limitation survives, and it is about provenance rather than about the
+number.** The $212.71 is `derived`, not `measured`: realised container-hours
+counted off all 28,166 fold records, multiplied by the measured $1.4812/h shape
+rate. **No post-run metered billing snapshot was taken in either workspace**, so
+it has never been reconciled against a provider bill — and `sofyaleyn` has no
+metered figure at any point in the project. The only metered check this project
+has is the pre-launch one, where a computed figure landed within ~10% of the
+bill. Taking a snapshot now would not fix it: it would sweep in every CPU job
+run since and could not be attributed to the fold. This is tracked as hole
+**B3a** in `compute_ledger.md` §5. A reader who wants to discount the cost
+story should discount it by that ~10%, not by nothing and not by the
+possibility that the folds did not happen — 282 shard markers on the Volumes
+and a whole-run scan of every fold record establish the quantity independently
+of any billing figure.
 
 ### 6.2 The central bulge is several Ångströms uncertain
 
