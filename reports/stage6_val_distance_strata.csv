@@ -1,0 +1,9 @@
+model,stratum,n_rows,n_alleles,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10
+seq_baseline,d=4,1377,55,0.6578,0.5266,0.7467,0.5507,0.6
+seq_baseline,d>=5,992,55,0.5749,0.3674,0.6985,0.5506,0.5
+seq_ensemble,d=4,1377,55,0.6963,0.5157,0.7774,0.5208,0.7
+seq_ensemble,d>=5,992,55,0.6233,0.4289,0.7459,0.5,0.5
+allele_mean,d=4,1377,55,0.0,0.0,0.0,0.7718,0.4118
+allele_mean,d>=5,992,55,0.0,0.0,0.0,0.7433,0.3846
+global_mean,d=4,1377,55,0.0,0.0,0.0,0.965,0.4118
+global_mean,d>=5,992,55,0.0,0.0,0.0,0.8858,0.3846

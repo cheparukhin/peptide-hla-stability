@@ -1,0 +1,713 @@
+{
+  "decoy_ratio": 10,
+  "seed": 20261004,
+  "min_ligands_per_allele": 100,
+  "max_ligands_per_allele": 2000,
+  "atlas_rows": 487343,
+  "stability_peptides_excluded_from_both_classes": 5633,
+  "atlas_9mers_parsed_allele": 264741,
+  "atlas_9mers_dropped_modified_residue": 2250,
+  "atlas_9mer_pairs_on_panel_alleles": 146161,
+  "ligands_dropped_measured_in_stability_csv": 284,
+  "alleles_before_min_ligands": 51,
+  "alleles_scored": 51,
+  "alleles_dropped_too_few_ligands": [],
+  "proteome_distinct_9mers": 10409122,
+  "atlas_distinct_9mers_any_allele": 182311,
+  "decoy_universe": 10241634,
+  "decoy_universe_removed": 167488,
+  "rows_scored": 897600,
+  "ligands_scored": 81600,
+  "per_allele": [
+    {
+      "allele": "HLA-A*01:01",
+      "n_ligands_available": 2507,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*02:01",
+      "n_ligands_available": 14329,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*02:03",
+      "n_ligands_available": 2004,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*02:05",
+      "n_ligands_available": 3234,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*02:11",
+      "n_ligands_available": 1394,
+      "n_ligands_scored": 1394,
+      "n_decoys": 13940
+    },
+    {
+      "allele": "HLA-A*03:01",
+      "n_ligands_available": 7488,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*11:01",
+      "n_ligands_available": 3397,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*23:01",
+      "n_ligands_available": 1818,
+      "n_ligands_scored": 1818,
+      "n_decoys": 18180
+    },
+    {
+      "allele": "HLA-A*24:02",
+      "n_ligands_available": 5439,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*24:07",
+      "n_ligands_available": 951,
+      "n_ligands_scored": 951,
+      "n_decoys": 9510
+    },
+    {
+      "allele": "HLA-A*25:01",
+      "n_ligands_available": 1433,
+      "n_ligands_scored": 1433,
+      "n_decoys": 14330
+    },
+    {
+      "allele": "HLA-A*26:01",
+      "n_ligands_available": 1644,
+      "n_ligands_scored": 1644,
+      "n_decoys": 16440
+    },
+    {
+      "allele": "HLA-A*29:02",
+      "n_ligands_available": 1210,
+      "n_ligands_scored": 1210,
+      "n_decoys": 12100
+    },
+    {
+      "allele": "HLA-A*30:01",
+      "n_ligands_available": 1771,
+      "n_ligands_scored": 1771,
+      "n_decoys": 17710
+    },
+    {
+      "allele": "HLA-A*30:02",
+      "n_ligands_available": 1133,
+      "n_ligands_scored": 1133,
+      "n_decoys": 11330
+    },
+    {
+      "allele": "HLA-A*31:01",
+      "n_ligands_available": 1611,
+      "n_ligands_scored": 1611,
+      "n_decoys": 16110
+    },
+    {
+      "allele": "HLA-A*32:01",
+      "n_ligands_available": 1495,
+      "n_ligands_scored": 1495,
+      "n_decoys": 14950
+    },
+    {
+      "allele": "HLA-A*33:03",
+      "n_ligands_available": 1554,
+      "n_ligands_scored": 1554,
+      "n_decoys": 15540
+    },
+    {
+      "allele": "HLA-A*66:01",
+      "n_ligands_available": 1221,
+      "n_ligands_scored": 1221,
+      "n_decoys": 12210
+    },
+    {
+      "allele": "HLA-A*68:01",
+      "n_ligands_available": 4769,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-A*68:02",
+      "n_ligands_available": 1381,
+      "n_ligands_scored": 1381,
+      "n_decoys": 13810
+    },
+    {
+      "allele": "HLA-A*69:01",
+      "n_ligands_available": 616,
+      "n_ligands_scored": 616,
+      "n_decoys": 6160
+    },
+    {
+      "allele": "HLA-A*74:01",
+      "n_ligands_available": 1210,
+      "n_ligands_scored": 1210,
+      "n_decoys": 12100
+    },
+    {
+      "allele": "HLA-B*07:02",
+      "n_ligands_available": 6725,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*08:01",
+      "n_ligands_available": 4875,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*13:02",
+      "n_ligands_available": 3606,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*15:01",
+      "n_ligands_available": 8586,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*15:02",
+      "n_ligands_available": 1629,
+      "n_ligands_scored": 1629,
+      "n_decoys": 16290
+    },
+    {
+      "allele": "HLA-B*15:10",
+      "n_ligands_available": 1174,
+      "n_ligands_scored": 1174,
+      "n_decoys": 11740
+    },
+    {
+      "allele": "HLA-B*15:17",
+      "n_ligands_available": 1327,
+      "n_ligands_scored": 1327,
+      "n_decoys": 13270
+    },
+    {
+      "allele": "HLA-B*18:01",
+      "n_ligands_available": 2267,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*27:05",
+      "n_ligands_available": 4931,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*35:01",
+      "n_ligands_available": 1349,
+      "n_ligands_scored": 1349,
+      "n_decoys": 13490
+    },
+    {
+      "allele": "HLA-B*35:03",
+      "n_ligands_available": 3822,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*35:08",
+      "n_ligands_available": 408,
+      "n_ligands_scored": 408,
+      "n_decoys": 4080
+    },
+    {
+      "allele": "HLA-B*39:01",
+      "n_ligands_available": 2024,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*40:01",
+      "n_ligands_available": 6524,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*40:02",
+      "n_ligands_available": 8474,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*41:01",
+      "n_ligands_available": 101,
+      "n_ligands_scored": 101,
+      "n_decoys": 1010
+    },
+    {
+      "allele": "HLA-B*42:01",
+      "n_ligands_available": 2016,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*44:05",
+      "n_ligands_available": 1841,
+      "n_ligands_scored": 1841,
+      "n_decoys": 18410
+    },
+    {
+      "allele": "HLA-B*45:01",
+      "n_ligands_available": 1916,
+      "n_ligands_scored": 1916,
+      "n_decoys": 19160
+    },
+    {
+      "allele": "HLA-B*46:01",
+      "n_ligands_available": 1751,
+      "n_ligands_scored": 1751,
+      "n_decoys": 17510
+    },
+    {
+      "allele": "HLA-B*51:01",
+      "n_ligands_available": 2487,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*54:01",
+      "n_ligands_available": 598,
+      "n_ligands_scored": 598,
+      "n_decoys": 5980
+    },
+    {
+      "allele": "HLA-B*55:01",
+      "n_ligands_available": 1140,
+      "n_ligands_scored": 1140,
+      "n_decoys": 11400
+    },
+    {
+      "allele": "HLA-B*56:01",
+      "n_ligands_available": 1100,
+      "n_ligands_scored": 1100,
+      "n_decoys": 11000
+    },
+    {
+      "allele": "HLA-B*57:01",
+      "n_ligands_available": 5751,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*57:03",
+      "n_ligands_available": 3022,
+      "n_ligands_scored": 2000,
+      "n_decoys": 20000
+    },
+    {
+      "allele": "HLA-B*58:01",
+      "n_ligands_available": 1862,
+      "n_ligands_scored": 1862,
+      "n_decoys": 18620
+    },
+    {
+      "allele": "HLA-B*81:01",
+      "n_ligands_available": 962,
+      "n_ligands_scored": 962,
+      "n_decoys": 9620
+    }
+  ],
+  "atlas_sha256": "8547c64299905a15aa2f9b79cdd9c1c88e99bdecabe40580a4d0c59604efec87",
+  "atlas_url": "http://mhcmotifatlas.org/data/classI/all_peptides.txt",
+  "proteome_sha256": "dc8ef8cbf0fc1b857b3be9a559613533ec49824079fb057e31fdfcf578cb229a",
+  "build_seconds": 14.5,
+  "swapped_decoy_control": {
+    "decoy_ratio": 10,
+    "seed": 20261004,
+    "alleles_scored": 51,
+    "decoy_pool_distinct_peptides": 111585,
+    "rows_scored": 897600,
+    "ligands_scored": 81600,
+    "per_allele": [
+      {
+        "allele": "HLA-A*01:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109078,
+        "median_donor_distance": 17.0
+      },
+      {
+        "allele": "HLA-A*02:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 97256,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-A*02:03",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109581,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*02:05",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 108351,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*02:11",
+        "n_ligands": 1394,
+        "n_decoys": 13940,
+        "n_candidate_decoys": 110191,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*03:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 104097,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*11:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 108188,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*23:01",
+        "n_ligands": 1818,
+        "n_decoys": 18180,
+        "n_candidate_decoys": 109767,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-A*24:02",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 106146,
+        "median_donor_distance": 16.0
+      },
+      {
+        "allele": "HLA-A*24:07",
+        "n_ligands": 951,
+        "n_decoys": 9510,
+        "n_candidate_decoys": 110634,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-A*25:01",
+        "n_ligands": 1433,
+        "n_decoys": 14330,
+        "n_candidate_decoys": 110152,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*26:01",
+        "n_ligands": 1644,
+        "n_decoys": 16440,
+        "n_candidate_decoys": 109941,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*29:02",
+        "n_ligands": 1210,
+        "n_decoys": 12100,
+        "n_candidate_decoys": 110375,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*30:01",
+        "n_ligands": 1771,
+        "n_decoys": 17710,
+        "n_candidate_decoys": 109814,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*30:02",
+        "n_ligands": 1133,
+        "n_decoys": 11330,
+        "n_candidate_decoys": 110452,
+        "median_donor_distance": 12.0
+      },
+      {
+        "allele": "HLA-A*31:01",
+        "n_ligands": 1611,
+        "n_decoys": 16110,
+        "n_candidate_decoys": 109974,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*32:01",
+        "n_ligands": 1495,
+        "n_decoys": 14950,
+        "n_candidate_decoys": 110090,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*33:03",
+        "n_ligands": 1554,
+        "n_decoys": 15540,
+        "n_candidate_decoys": 110031,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-A*66:01",
+        "n_ligands": 1221,
+        "n_decoys": 12210,
+        "n_candidate_decoys": 110364,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*68:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 106816,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-A*68:02",
+        "n_ligands": 1381,
+        "n_decoys": 13810,
+        "n_candidate_decoys": 110204,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*69:01",
+        "n_ligands": 616,
+        "n_decoys": 6160,
+        "n_candidate_decoys": 110969,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-A*74:01",
+        "n_ligands": 1210,
+        "n_decoys": 12100,
+        "n_candidate_decoys": 110375,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*07:02",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 104860,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*08:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 106710,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*13:02",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 107979,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*15:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 102999,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*15:02",
+        "n_ligands": 1629,
+        "n_decoys": 16290,
+        "n_candidate_decoys": 109956,
+        "median_donor_distance": 12.0
+      },
+      {
+        "allele": "HLA-B*15:10",
+        "n_ligands": 1174,
+        "n_decoys": 11740,
+        "n_candidate_decoys": 110411,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*15:17",
+        "n_ligands": 1327,
+        "n_decoys": 13270,
+        "n_candidate_decoys": 110258,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*18:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109318,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*27:05",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 106654,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*35:01",
+        "n_ligands": 1349,
+        "n_decoys": 13490,
+        "n_candidate_decoys": 110236,
+        "median_donor_distance": 12.0
+      },
+      {
+        "allele": "HLA-B*35:03",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 107763,
+        "median_donor_distance": 12.0
+      },
+      {
+        "allele": "HLA-B*35:08",
+        "n_ligands": 408,
+        "n_decoys": 4080,
+        "n_candidate_decoys": 111177,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*39:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109561,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*40:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 105061,
+        "median_donor_distance": 16.0
+      },
+      {
+        "allele": "HLA-B*40:02",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 103111,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*41:01",
+        "n_ligands": 101,
+        "n_decoys": 1010,
+        "n_candidate_decoys": 111484,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*42:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109569,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*44:05",
+        "n_ligands": 1841,
+        "n_decoys": 18410,
+        "n_candidate_decoys": 109744,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*45:01",
+        "n_ligands": 1916,
+        "n_decoys": 19160,
+        "n_candidate_decoys": 109669,
+        "median_donor_distance": 16.0
+      },
+      {
+        "allele": "HLA-B*46:01",
+        "n_ligands": 1751,
+        "n_decoys": 17510,
+        "n_candidate_decoys": 109834,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*51:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 109098,
+        "median_donor_distance": 15.0
+      },
+      {
+        "allele": "HLA-B*54:01",
+        "n_ligands": 598,
+        "n_decoys": 5980,
+        "n_candidate_decoys": 110987,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*55:01",
+        "n_ligands": 1140,
+        "n_decoys": 11400,
+        "n_candidate_decoys": 110445,
+        "median_donor_distance": 13.0
+      },
+      {
+        "allele": "HLA-B*56:01",
+        "n_ligands": 1100,
+        "n_decoys": 11000,
+        "n_candidate_decoys": 110485,
+        "median_donor_distance": 12.0
+      },
+      {
+        "allele": "HLA-B*57:01",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 105834,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*57:03",
+        "n_ligands": 2000,
+        "n_decoys": 20000,
+        "n_candidate_decoys": 108563,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*58:01",
+        "n_ligands": 1862,
+        "n_decoys": 18620,
+        "n_candidate_decoys": 109723,
+        "median_donor_distance": 14.0
+      },
+      {
+        "allele": "HLA-B*81:01",
+        "n_ligands": 962,
+        "n_decoys": 9620,
+        "n_candidate_decoys": 110623,
+        "median_donor_distance": 15.0
+      }
+    ]
+  },
+  "runtime_seconds": 48.1,
+  "verification": {
+    "seq_baseline": {
+      "checked": true,
+      "file": "seq_baseline.csv",
+      "max_abs_diff": 2.2387695342018787e-07,
+      "pearson": 0.9999999999999999,
+      "spearman_rank_identical": true
+    }
+  },
+  "arms": [
+    "seq_baseline"
+  ]
+}

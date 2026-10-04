@@ -1,0 +1,8 @@
+model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,file,usd_per_1k,cost_status
+training allele mean,2802,68,68,68,0.0,0.0,0.0,0.7342,0.3592,0.554,0.523,allele_mean,,not measured
+"MLP, peptide only",2802,68,68,0,0.2059,0.0047,0.4184,0.8151,0.4,0.3626,0.4356,mlp_onehot_pep,2.6e-09,derived
+"ridge, peptide+pseudoseq",2802,68,68,0,0.2784,0.0749,0.4157,0.6999,0.5,0.5942,0.5797,ridge_onehot_pep_pseudo,,not measured
+"MLP, peptide+domain (single)",2802,68,68,0,0.5937,0.4215,0.7004,0.5225,0.7,0.7432,0.761,mlp_onehot_pep_domain,2.6e-08,derived
+"MLP, peptide+pseudoseq (single)",2802,68,68,0,0.6098,0.4826,0.7091,0.5325,0.7,0.7451,0.7585,seq_baseline,6.6e-09,derived
+"sequence ensemble, full domain",2802,68,68,0,0.6529,0.5028,0.7497,0.4948,0.7,0.7856,0.7948,seq_ensemble_pep_domain,7.9e-07,derived
+"sequence ensemble, 30 nets",2802,68,68,0,0.6931,0.5736,0.7526,0.4734,0.7,0.8015,0.8098,seq_ensemble_pep_pseudo,2e-07,derived

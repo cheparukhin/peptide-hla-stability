@@ -1,0 +1,21 @@
+claim,source,stated,measured,agrees
+d=4 rows,HACKATHON_PLAN stage 6 / EVALUATION.md,3256,3256,True
+d>=5 rows,HACKATHON_PLAN stage 6 / EVALUATION.md,2377,2377,True
+d=4 share,HACKATHON_PLAN stage 6,57.8%,57.8%,True
+d>=5 share,HACKATHON_PLAN stage 6,42.2%,42.2%,True
+rows at d>=6,HACKATHON_PLAN stage 6 / EVALUATION.md,12,12,True
+peptides at d>=6,HACKATHON_PLAN stage 6,6,6,True
+"shared stratum panel, 20-row bar",HACKATHON_PLAN stage 6 / EVALUATION.md,65,65,True
+"d=4 eligible, 50-row bar",EVALUATION.md,17,17,True
+"d>=5 eligible, 50-row bar",EVALUATION.md,7,7,True
+"shared stratum panel, 50-row bar",EVALUATION.md (implied 'different ones'),<7,6,True
+val d=4 share,(not stated; plan's 57.8% is test-only),-,61.4%,False
+val d>=5 share,(not stated; plan's 42.2% is test-only),-,38.6%,False
+"val shared stratum panel, 20-row bar","(frozen constant, test-derived)",65 on test,6,False
+peptides on >=2 alleles,HACKATHON_PLAN stage 6,3941,3941,True
+rows they cover,HACKATHON_PLAN stage 6,26474,26474,True
+share of dataset,HACKATHON_PLAN stage 6,94%,94%,True
+max alleles per peptide,HACKATHON_PLAN stage 6,36,36,True
+Hamming<=2 groups straddling a split,implied by stage 1 (cluster radius 3),0,0,True
+same-allele mutant comparisons in train (d<=2),not stated in the plan,-,608,False
+independent peptide clusters behind them,not stated in the plan,-,115,False

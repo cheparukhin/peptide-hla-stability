@@ -1,0 +1,29 @@
+stage,item,hardware,cpu_minutes,gpu_type,gpu_hours,wall_clock,usd,status,source
+1,Data audit and frozen splits,laptop CPU,,,,,0,measured_zero_cost,reports/audit_summary.md
+2,"Sequence baseline grid (72 MLP + 36 ridge fits)",laptop CPU 1 core,7.5,,,10 min,0,measured,"reports/stage2_baselines.md, Cost"
+2,30-network sequence ensemble (the stage 3 comparator),laptop CPU,1.7,,,~1 min,0,measured,"reports/stage2c_affinity.md Result 2 (lambda=0 fit 102 s); README.md regenerating"
+2,NetMHCstabpan calibration (scripts/compare_to_paper.py),laptop CPU,,,,~3 min,0,measured,README.md regenerating
+2b,Augmentation manifests (predictor fit + 3.0M affinity predictions),laptop CPU,0.65,,,39 s,0,measured,"reports/stage2b_augmentation.md, Cost"
+2b,21 network fits (7 arms x 3 seeds),laptop CPU,1.3,,,1.3 min,0,measured,"reports/stage2b_augmentation.md, Cost"
+2b,8 paired cluster bootstraps (2000 resamples each),laptop CPU,11,,,~11 min,0,measured,"reports/stage2b_augmentation.md, Cost"
+2b,Negative-pool characterisation,laptop CPU,0.17,,,10 s,0,measured,"reports/stage2b_augmentation.md, Cost"
+2c,Auxiliary-affinity probe (30 networks),laptop CPU,1.5,,,~10 min,0,measured,"reports/stage2c_affinity.md (92 s fitting; ~10 min wall)"
+2c,Auxiliary-affinity ensemble sweep (150 networks),laptop CPU,12.1,,,~25 min,0,measured,"reports/stage2c_affinity.md (12.1 min fitting; ~25 min wall)"
+2c,Censoring-robustness variant (30 networks),laptop CPU,,,,,0,not_separately_recorded,reports/stage2c_affinity.md
+3c,Elution external-validation check,laptop CPU,,,,,0,not_separately_recorded,elution_stability_finding.md
+4b1,75 groove MSAs (182 aa) via public ColabFold,laptop CPU + public server,2.3,,,137 s,0,measured,reports/stage4b1_msa_cache.md
+4a/4b,"Two-chain GPU benchmark: 68 Boltz-2 folds, 5 GPU types, ESMFold2 sweep",A10/L4/L40S/A100-40GB/H100,,mixed,,,2.64,computed_from_published_rates,"reports/stage4_benchmark.md, Spend"
+4c,70 ectodomain MSAs (275 aa) via public ColabFold,laptop CPU + public server,2.1,,,126.7 s,0,measured,reports/ectodomain-20261004/input_provenance.json generation.seconds
+4c,CPU preflight and cross-model input checks,laptop CPU,,,,,0,not_separately_recorded,reports/stage4c_ectodomain_pilot.md
+4c,"Matched 90-fold pilot: 45 Boltz-2 (A10G) + 45 ESMFold2 (L40S)",A10G + L40S,,A10G / L40S,,8 min 12 s,1.49,metered,"reports/ectodomain_billing_{before,after}.json (4.41381329 - 2.92381329)"
+4c,"Production runner end-to-end check (::smoke, 5 folds, a-cheparukhin only)",A10G,,A10G,,~2 min,0.03,report_estimate_not_metered,reports/stage4c_ectodomain_pilot.md
+4c,Production fold of all 28166 pairs (two workspaces in parallel),A10G x 20 workers,,A10G,135.6,~6.8 h,200.8,FORECAST_not_yet_run,reports/stage4c_ectodomain_pilot.md
+4c,"Same, with the required 25% operational margin",A10G x 20 workers,,A10G,169.5,~8.5 h,251,FORECAST_not_yet_run,reports/stage4c_ectodomain_pilot.md
+4c,"ESMFold2 production (rejected at the gate, never funded)",L40S,,L40S,,,884,FORECAST_rejected,reports/stage4c_ectodomain_pilot.md
+4c,Structure storage on Modal Volumes (~22 GB across two workspaces),Modal Volume,,,,,1.98,derived_forecast_per_month,"22 GB x $0.09/GiB-month, reports/ectodomain_rates.json"
+3,"ESM-2 embedding extraction, 3 checkpoints, cached per unique sequence",laptop mps,,laptop mps,,7.5 s (35M) to 59.5 s (650M) embed time,0,measured,reports/stage3_embedding_cost.csv
+3,ESM-2 regression head fit and inference,TBD,,,,,,PLACEHOLDER_in_flight_E1b,owner: esm-arm
+3c,Elution external-validation pass (seq_baseline; 51 alleles; 81600 ligands vs 10x decoys),laptop CPU,1.05,,,62.6 s (14.5 build + 48.1 run),0,measured,reports/stage3c_provenance.json
+7a,Censored (Tobit) likelihood: 60 networks (2 arms x 30),laptop CPU,,,,,0,PLACEHOLDER_in_flight_S7a,reports/stage7_censored.md (protocol predeclared; results pending)
+5,Structural feature extraction and head training,Modal CPU with Volume mounted,,,,,,PLACEHOLDER_blocked_on_stage_4c,reports/stage4c_ectodomain_pilot.md feature contract
+6,Final test scoring and uncertainty,laptop CPU,,,,,0,PLACEHOLDER_in_flight,owner: eval-harness
