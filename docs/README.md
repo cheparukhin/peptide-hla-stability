@@ -38,10 +38,9 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [ECTODOMAIN_FOLDING_PLAN.md](ECTODOMAIN_FOLDING_PLAN.md) | current stage 4c execution checklist: complete MSAs, verified cropped-MSA control, matched 90-fold pilot for Boltz-2 and ESMFold2, shared quality gates and scope, resumable production, and frozen-split evaluation; scope and allocations are governed by the main plan |
-| [../reports/stage4c_ectodomain_pilot.md](../reports/stage4c_ectodomain_pilot.md) | **the completed matched pilot** — all 75 ectodomain MSAs, CPU control checks, both gate verdicts (Boltz-2 pass, ESMFold2 fail), per-seed pose and confidence results, measured resources and spend, and the frozen Boltz-2 two-workspace production scope |
+| [../reports/stage4c_ectodomain_pilot.md](../reports/stage4c_ectodomain_pilot.md) | **everything on stage 4c** — the completed matched pilot (75 ectodomain MSAs, CPU control checks, both gate verdicts, per-seed pose and confidence results, measured resources and spend), the frozen Boltz-2 two-workspace production scope and how to run it, and the stage 5 feature contract |
 | [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | historical two-chain protocol, MSA preparation, Modal cost traps, and the completed engine/hardware comparison |
-| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **measured two-chain results** — throughput and cost across 5 GPUs, harness corrections, between-container variation, historical engine-selection recommendation (superseded by the dual-model plan), pose validation, spend, and limitations; new full-construct resources remain unmeasured |
+| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **measured two-chain results** — throughput and cost across 5 GPUs, harness corrections, between-container variation, historical engine-selection recommendation (superseded: stage 4c's matched pilot settled the engine choice on measurement), pose validation, spend, and limitations |
 
 ## Regenerating
 

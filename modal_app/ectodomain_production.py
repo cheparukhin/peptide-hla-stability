@@ -496,7 +496,7 @@ def setup(profile: str = "a-cheparukhin", force_weights: bool = False):
 
     A workspace that already holds the arm-B MSAs (a-cheparukhin does, from the
     pilot) needs nothing uploaded; this just checks them. For a fresh workspace
-    see docs/ECTODOMAIN_FOLDING_PLAN.md: stage the 29.6 MB slice and
+    see reports/stage4c_ectodomain_pilot.md: stage the 29.6 MB slice and
     `modal volume put` it before running this.
     """
     check_profile(profile)

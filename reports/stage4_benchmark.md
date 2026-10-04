@@ -9,8 +9,8 @@ $8.00 (2% of the $330 ceiling) and finishes in 0.56 h at 10 workers.
 
 The new 383-residue ectodomain + beta2m + peptide workload follows
 [stage 4c](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
-and the [execution checklist](../docs/ECTODOMAIN_FOLDING_PLAN.md). Its pilot,
-memory requirements, throughput, and production costs are pending measurement.
+and the [stage 4c report](stage4c_ectodomain_pilot.md), which carries its
+measured pilot, memory, throughput, and production forecast.
 The values in this report remain the original two-chain results. The earlier
 recommendation to use Boltz-2 alone is superseded: stage 4c runs both models
 with the same constructs, prepared MSAs, pilot arms, and production cohort.

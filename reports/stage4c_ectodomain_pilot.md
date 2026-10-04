@@ -276,6 +276,50 @@ container; the earlier dry runs passed because they only exercised
 and the app deploys there, but no GPU fold has been executed in that workspace.
 Run it before launching that half.
 
+## Feature contract for stage 5
+
+Extraction runs on Modal with the Volume mounted, not against a local copy.
+
+Verify token-to-chain mapping against the CIF. For the A/B/C entity order the
+anticipated arm-B PAE shape is 383 x 383, with zero-based slices HLA 0:275,
+beta2m 275:374, peptide 374:383. Verify this rather than hard-coding it; the
+pose checker's convention is that the peptide is the last 9 tokens and the
+groove the first 182.
+
+Core features: peptide per-position pLDDT, the peptide/groove PAE blocks in
+both directions, and groove contacts/burial defined over HLA residues 1-182,
+using the same receptor atom selection throughout. Any full-HLA or
+beta2m-specific feature gets a separate name and definition. Save global ipTM
+as global ipTM — in a three-chain complex it covers interfaces other than
+peptide-HLA. Use a Boltz pair-specific score only if the pinned model actually
+emits it. Label extra confidence outputs separately.
+
+Confidence features are worth keeping but are not a per-prediction failure
+filter: across the pilot's 45 Boltz folds they rank error (Spearman +0.635 for
+PAE, -0.540 for pLDDT) yet do not isolate the one real failure.
+
+Produce finite feature rows, coverage and failure tables, and a sequence-model
+fallback for unresolved structural failures. Check extraction and joins on the
+pilot; run an evaluator smoke check on training examples only. Do not train or
+estimate generalization from five pilot examples.
+
+Keep the raw dataset and `data/splits.csv` unchanged. Select feature groups and
+heads on validation; the frozen test set is scored once at stage 6. Compare
+Boltz-2 structural features against the sequence and ESM-2 baselines on
+identical train/validation/test rows, matching regression architecture,
+ensemble size, and tuning budget across arms. There are no ESMFold2 production
+features — that comparison is the pilot's, and is reported above. Report
+primary results against the frozen cohort with the declared sequence fallback;
+show common successful rows as a diagnostic, not as a retrospectively chosen
+cohort. Reuse existing compatible baselines and embeddings; no ESM re-extraction
+is required by the construct change.
+
+Follow `EVALUATION.md`: median per-allele Spearman, secondary MAE and
+precision@10, paired peptide-cluster bootstrap, and the predeclared 0.05 gain.
+Treat the pilot as a pipeline/pose check with possible training-set recall, not
+a structural accuracy benchmark, and limit A/B/C comparisons to their 90 shared
+folds.
+
 ## Artifacts and reproducibility
 
 - `structures/ectodomain_msas/manifest.json`: canonical per-allele row IDs,
@@ -292,6 +336,12 @@ Run it before launching that half.
 - `data/structural_cohort.csv`: the frozen production cohort and shard schedule.
 - `reports/ectodomain-20261004/production_<profile>.jsonl`: per-shard production
   records, written as the run proceeds.
+- `reports/ectodomain-20261004/colleague_boltz2_arm_comparison.jpg`: the
+  independent Boltz-2 figure discussed above.
+
+This section records what exists. Production outputs and feature/coverage
+tables are listed because they are where those artifacts will land, not as
+evidence that they already exist — the run has not been launched.
 
 Generation used the existing local `boltz==2.2.1` CPU search environment;
 inference and its preprocessing are pinned to `boltz==2.1.1`, weight revision

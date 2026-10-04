@@ -5,8 +5,8 @@ engineering track, October 3–4, 2026).
 
 **Read [HACKATHON_PLAN.md](HACKATHON_PLAN.md) first.** It is the source of truth
 for scope, stage order, budget ceilings, and the stage 4c structural
-pilot/production decision. The detailed procedure is in
-[docs/ECTODOMAIN_FOLDING_PLAN.md](docs/ECTODOMAIN_FOLDING_PLAN.md).
+pilot/production decision. Stage 4c's results, procedure and feature contract
+are in [reports/stage4c_ectodomain_pilot.md](reports/stage4c_ectodomain_pilot.md).
 The matched pilot ran both Boltz-2 and ESMFold2 on the same constructs,
 prepared MSAs, arms and seeds; Boltz-2 passed its gate and ESMFold2 failed, so
 production is Boltz-2 only. Keep this file consistent with the main plan; add

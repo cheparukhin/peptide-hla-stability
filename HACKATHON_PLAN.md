@@ -360,9 +360,9 @@ ESMFold2 failed on both sentinel criteria. Production scope is frozen as
 Boltz-2 / arm B / all 28,166 pairs across two workspaces, and has not been
 launched.** Results and the full verdict are in
 [`reports/stage4c_ectodomain_pilot.md`](reports/stage4c_ectodomain_pilot.md).
-This section governs structural scope, pilot gates, and rollout;
-the [ectodomain execution checklist](docs/ECTODOMAIN_FOLDING_PLAN.md) contains
-the detailed preparation, mapping, scoring, and handoff procedure. **The pilot
+This section governs structural scope, pilot gates, and rollout; that report
+holds the executed procedure, the launch sequence, and the stage 5 feature
+contract. **The pilot
 ran both Boltz-2 and ESMFold2 with the same constructs, MSA content, unpaired
 policy, complexes, and seeds.** Model was a separate variable from pilot arm,
 and neither model was an optional fallback: ESMFold2 is dropped from production

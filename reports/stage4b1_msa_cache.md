@@ -2,8 +2,8 @@
 
 This completed cache contains **182-residue groove** alignments. It supplies
 arm A of the new [stage 4c pilot](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding);
-the [ectodomain checklist](../docs/ECTODOMAIN_FOLDING_PLAN.md) specifies the
-remaining 275-residue MSAs and cropped-MSA control. Counts and measurements
+the [stage 4c report](stage4c_ectodomain_pilot.md) covers the
+275-residue MSAs and the cropped-MSA control. Counts and measurements
 below describe the original groove cache.
 
 **Status: done.** 75 MSAs — one per unique HLA domain sequence, the whole

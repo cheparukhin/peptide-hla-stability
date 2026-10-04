@@ -9,10 +9,11 @@ ectodomain + 99-residue beta2m + 9-residue peptide. The matched 90-fold pilot
 (45 per model) is **complete**: Boltz-2 passed its gate, ESMFold2 failed on the
 sentinel complex, and production is frozen as **Boltz-2 over all 28,166 pairs,
 split across two Modal workspaces**. See
-[stage 4c of the main plan](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding),
-the [execution checklist](docs/ECTODOMAIN_FOLDING_PLAN.md), and the
-[pilot report](reports/stage4c_ectodomain_pilot.md). The production run has not
-been launched; earlier two-chain measurements remain historical evidence.
+[stage 4c of the main plan](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
+for scope and budget, and the
+[stage 4c report](reports/stage4c_ectodomain_pilot.md) for results, how to run
+production, and the stage 5 feature contract. The production run has not been
+launched; earlier two-chain measurements remain historical evidence.
 
 ## Setup
 

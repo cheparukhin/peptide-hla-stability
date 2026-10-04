@@ -6,7 +6,7 @@ peptide**, two-chain workload completed in stage 4b. The measured tables are in
 
 Current structural work follows
 [HACKATHON_PLAN.md, stage 4c](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
-and [ECTODOMAIN_FOLDING_PLAN.md](ECTODOMAIN_FOLDING_PLAN.md). The earlier input
+and [the stage 4c report](../reports/stage4c_ectodomain_pilot.md). The earlier input
 builders, mapping rules, commands, and resource measurements below describe
 the completed two-chain runs; the 383-residue construct needs its own pilot.
 The earlier single-engine recommendation below is superseded: stage 4c runs
