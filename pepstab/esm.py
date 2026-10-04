@@ -177,6 +177,11 @@ def extract(seqs: list[str], checkpoint: str = DEFAULT_CHECKPOINT,
         raise ValueError(f"expected one sequence length, got {sorted(lengths)}")
     length = lengths.pop()
 
+    # One thread: this machine runs six workstreams on 8 cores and torch
+    # otherwise claims one thread per core at import. See the pinning block in
+    # scripts/esm_features.py.
+    torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "1")))
+
     t0 = time.perf_counter()
     model, alphabet = fair_esm.pretrained.load_model_and_alphabet(checkpoint)
     model.eval()

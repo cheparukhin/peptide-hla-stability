@@ -1,0 +1,69 @@
+{
+  "split": "val",
+  "input_set": "pep_pseudo",
+  "floor_hours_declared": 0.1,
+  "threshold_log1p": 0.09531017980432487,
+  "censoring_rule": "thalf_hours < floor_hours",
+  "n_censored_train": 3978,
+  "n_val_rows": 2817,
+  "n_val_floor_rows": 553,
+  "n_eligible_alleles": 68,
+  "ensemble_members_per_arm": 30,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "min_worthwhile_delta_spearman": 0.05,
+  "mse": {
+    "model": "mse",
+    "n_rows": 2802,
+    "n_alleles": 68,
+    "n_scored": 68,
+    "n_unranked": 0,
+    "median_per_allele_spearman": 0.6931,
+    "iqr_low": 0.5736,
+    "iqr_high": 0.7526,
+    "mae_log1p": 0.4734,
+    "median_precision_at_10": 0.7,
+    "pooled_spearman": 0.8015,
+    "pooled_pearson_log1p": 0.8098
+  },
+  "censored": {
+    "model": "censored",
+    "n_rows": 2802,
+    "n_alleles": 68,
+    "n_scored": 68,
+    "n_unranked": 0,
+    "median_per_allele_spearman": 0.6518,
+    "iqr_low": 0.5158,
+    "iqr_high": 0.728,
+    "mae_log1p": 0.5763,
+    "median_precision_at_10": 0.7,
+    "pooled_spearman": 0.7763,
+    "pooled_pearson_log1p": 0.7448
+  },
+  "val_censored_nll": [
+    {
+      "arm": "mse (post-hoc sigma)",
+      "sigma": 0.7241,
+      "val_censored_nll": 1.0452
+    },
+    {
+      "arm": "censored",
+      "sigma": 0.7547,
+      "val_censored_nll": 1.0764
+    }
+  ],
+  "wall_seconds_fitting": 1776.8,
+  "paired_bootstrap": {
+    "delta_median_spearman": -0.04135788947009211,
+    "ci95": [
+      -0.07800926392654242,
+      -0.006185489423808196
+    ],
+    "n_boot": 2000,
+    "panel_size_full": 68,
+    "verdict": "worse: CI entirely below 0"
+  }
+}

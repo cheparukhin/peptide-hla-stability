@@ -1,0 +1,8 @@
+floor_hours,threshold_log1p,primary,arm,stop_on,n_censored_train,median_per_allele_spearman,mae_log1p,median_precision_at_10,mean_sigma,floor_auroc,share_pred_at_or_below_c
+,,False,mse (reference line),own,0,0.6975,0.4764,0.7,,0.8825,0.0721
+0.05,0.04879,False,censored,own,3977,0.6743,0.5893,0.7,0.7525,0.8865,0.17
+0.1,0.09531,True,censored,own,3978,0.6657,0.5799,0.7,0.7496,0.8848,0.159
+0.15,0.139762,False,censored,own,4271,0.67,0.5855,0.7,0.7456,0.8835,0.1832
+0.2,0.182322,False,censored,own,4276,0.6726,0.5851,0.7,0.7545,0.882,0.1732
+0.3,0.262364,False,censored,own,5196,0.6648,0.584,0.7,0.7656,0.8771,0.1917
+0.1,0.09531,False,censored,dev MSE,3978,0.691,0.5463,0.7,0.5791,0.8929,0.1409

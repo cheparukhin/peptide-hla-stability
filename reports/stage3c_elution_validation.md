@@ -148,12 +148,13 @@ file:
 | Arm | Compared against | max abs deviation | Pearson r | Ranking |
 |---|---|---|---|---|
 | `seq_baseline` | `preds/seq_baseline.csv` | **2.24 × 10⁻⁷** | 1.0000000 | identical |
-| `seq_ensemble` | `preds/seq_ensemble_pep_pseudo.csv` | **8.07 × 10⁻⁷** | 1.0000000 | — |
+| `seq_ensemble` | `preds/seq_ensemble_pep_pseudo.csv` | **8.07 × 10⁻⁷** | 1.0000000 | identical |
 
-Not bit-identical, because float32 BLAS accumulation order varies, but seven
-decimal places and an identical rank order on the single-network arm. These are
-the stage 2 models, not approximations of them. The check runs on every
-invocation and is recorded in `reports/stage3c_provenance.json`.
+Not bit-identical, because float32 BLAS accumulation order varies, but agreement
+to seven decimal places and a rank order identical on both arms — so every
+Spearman-based metric is unchanged. These are the stage 2 models, not
+approximations of them. The check runs on every invocation and is recorded in
+`reports/stage3c_provenance.json`.
 
 ## 4. Result: ligands versus proteome decoys
 
@@ -166,7 +167,7 @@ has ligands, so precision there cannot exceed 0.909).
 |---|---|---|---|---|---|---|---|
 | `seq_ensemble` | **0.9656** [0.9435, 0.9779] | 0.805 – 0.991 | **0.7804** [0.681, 0.858] | 0.939 | 10.33× | 0.701 | 7.71× |
 | `seq_baseline` | 0.9502 [0.9182, 0.9648] | 0.730 – 0.982 | 0.6676 [0.571, 0.813] | 0.877 | 9.65× | 0.630 | 6.93× |
-| *random scores (harness null)* | 0.4974 [0.4927, 0.5013] | — | 0.0911 | 0.091 | 1.00× | — | — |
+| *random scores (harness null)* | 0.4974 [0.4927, 0.5013] | 0.476 – 0.516 | 0.0911 | 0.089 | 0.98× | 0.090 | 0.99× |
 
 The null row is the same harness fed uniform random predictions through the
 `--scores` path; it returns chance on both metrics, which is what says the
@@ -335,18 +336,25 @@ transfers, allele-specifically, to a measurement nobody trained it on.
 
 CPU only, one laptop, no paid cloud compute, $0.
 
+Measured on the run that produced the tables above, with three other agents
+working on the same 8-core laptop, `OMP_NUM_THREADS=3`.
+
 | Stage | Time |
 |---|---|
 | Atlas download (8.0 MB) | ~3 s |
-| Build scoring set (parse atlas, tile 10.4M proteome 9-mers, draw decoys) | 21 s |
+| Build scoring set (parse atlas, tile 10.4M proteome 9-mers, draw 816,000 decoys) | 80 s |
 | Build allele-swapped control set | ~5 s |
-| Refit `seq_baseline` (1 network) | 15 s |
-| Refit `seq_ensemble` (30 networks) | 511 s |
-| Score `seq_ensemble` over 897,600 rows × 3 sets (primary, swapped, wrong-allele) | ~13 min |
-| **Total, all arms and controls** | **~23 min** |
+| Refit `seq_baseline` (1 network) | 30 s |
+| Refit `seq_ensemble` (30 networks) | 394 s |
+| Score `seq_ensemble` over 897,600 rows, once per set (primary, swapped, wrong-allele) | ~110 s each |
+| Score `random_control` through the `--scores` path, both sets | 11 s |
+| **Total, three arms and all controls** | **16.4 min** |
 
-Peak memory stays near 350 MB: the 897,600 × 860 feature matrix would be 3.1 GB
-in one block, so prediction runs in 100,000-row chunks.
+An uncontended earlier run of the two model arms finished the same work in
+20.1 min including a separate scoring-set build, so the figure is stable to
+within a few minutes either way. Peak memory stays near 350 MB: the
+897,600 × 860 feature matrix would be 3.1 GB in one block, so prediction runs
+in 100,000-row chunks.
 
 ## Running it against another arm
 

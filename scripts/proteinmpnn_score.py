@@ -31,8 +31,21 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
 
+# Every BLAS pool is sized at import time, so these must be set before numpy
+# or torch is first imported in this process. VECLIB_MAXIMUM_THREADS is the
+# one that matters on macOS, where numpy links against Accelerate: without it
+# a handful of workers each spawn a thread per core and the machine spends its
+# time context-switching. Set at module import, before the torch import below.
+_BLAS_VARS = (
+    "OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS",
+)
+for _v in _BLAS_VARS:
+    os.environ.setdefault(_v, "1")
+
+
 def _init(threads: int) -> None:
-    for var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+    for var in _BLAS_VARS:
         os.environ[var] = str(threads)
     import torch
 
@@ -70,11 +83,19 @@ def main() -> int:
                     help="autoregressive decoding orders averaged per sequence")
     ap.add_argument("--checkpoint", default="v_48_020.pt")
     ap.add_argument("--seed", type=int, default=0, help="RNG seed for decoding orders")
-    ap.add_argument("--workers", type=int, default=2)
-    ap.add_argument("--threads", type=int, default=2, help="torch threads per worker")
+    ap.add_argument("--workers", type=int, default=1,
+                    help="process pool size; capped at 2, default 1")
+    ap.add_argument("--threads", type=int, default=1,
+                    help="BLAS/torch threads per worker. Default 1: this "
+                         "machine is shared, and oversubscribed BLAS pools "
+                         "cost more in context switches than they buy")
     ap.add_argument("--batch-rows", type=int, default=8,
                     help="max (orders x candidates) rows per forward pass; "
                          "this is the memory knob on a shared machine")
+    ap.add_argument("--decoy-peptides", default="",
+                    help="comma-separated peptide sequences to score on every "
+                         "backbone, in addition to --cross-peptide's set; one "
+                         "matching the native sequence is dropped")
     ap.add_argument("--cross-peptide", action="store_true",
                     help="also score every other peptide in the sweep on each "
                          "backbone (the circularity control); requires all "
@@ -115,6 +136,11 @@ def main() -> int:
                   file=sys.stderr)
             return 1
         decoys = {p: p for p in peptides}  # score_folder drops the native match
+    if args.decoy_peptides:
+        decoys = dict(decoys or {})
+        for seq in args.decoy_peptides.split(","):
+            if seq:
+                decoys[seq] = seq
 
     prov = proteinmpnn_provenance(args.checkpoint)
     print(json.dumps(prov), flush=True)

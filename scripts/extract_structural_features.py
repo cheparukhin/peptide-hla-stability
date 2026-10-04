@@ -179,6 +179,14 @@ def cmd_concat(args: argparse.Namespace) -> int:
         print(f"ERROR: {dups} duplicate (model, allele, peptide, arm, seed) keys", file=sys.stderr)
         return 1
 
+    # The cloud extractor writes raw features; the splits join and the alpha3
+    # construct provenance are attached here, once, on the combined table.
+    frame = _annotate(frame.drop(columns=[c for c in ("pair_id", "split", "cluster_id") if c in frame]))
+    if "profile" not in frame or frame["profile"].isna().any():
+        frame = frame.drop(columns=[c for c in ("profile",) if c in frame]).merge(
+            cohort[["allele", "peptide", "profile"]], on=["allele", "peptide"], how="left"
+        )
+
     covered = set(zip(frame["allele"], frame["peptide"]))
     cohort_pairs = set(zip(cohort["allele"], cohort["peptide"]))
     missing = cohort_pairs - covered
@@ -196,6 +204,7 @@ def cmd_concat(args: argparse.Namespace) -> int:
             indent=2,
         )
     )
+    frame = frame.copy()
     frame["cohort_coverage"] = "full" if not missing else "partial"
     args.out.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(args.out, index=False)

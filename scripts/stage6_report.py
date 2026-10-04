@@ -24,14 +24,28 @@ command.
 
 from __future__ import annotations
 
-import argparse
-import json
-import sys
-import time
-from pathlib import Path
+import os
 
-import numpy as np
-import pandas as pd
+# Pin BLAS to one thread *before* numpy is imported -- the thread pool is sized
+# at import time, so setting these afterwards does nothing. Every analysis here
+# is a Python-level resample loop over small per-allele groups; the BLAS calls
+# underneath are tiny and gain nothing from threading. Left at the default, each
+# concurrent run of this script spawns one thread per core and several runs
+# oversubscribe the machine badly (measured: load 114 on 8 cores with six
+# processes). VECLIB_MAXIMUM_THREADS is the one that matters on macOS, where
+# numpy links against Accelerate; the others cover Linux/CI.
+for _var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+             "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
+import argparse  # noqa: E402
+import json  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 

@@ -15,6 +15,24 @@ re-running with the same sequence set is a no-op unless ``--force`` is given.
 
 from __future__ import annotations
 
+# --- BLAS thread pinning, before numpy/torch are imported --------------------
+# Six workstreams share 8 cores on this machine. Every one of them links numpy
+# against Accelerate, which sizes its thread pool *at import time* and defaults
+# to one thread per core -- so six processes ask for 48 threads on 8 cores and
+# the measured load average hit 114. Under that much oversubscription each
+# process runs slower than it would with a single thread, because the cores are
+# spent on context switching rather than on arithmetic.
+#
+# VECLIB_MAXIMUM_THREADS is the one that matters on macOS (numpy here links
+# against Accelerate, not OpenBLAS or MKL); the others are set so the same file
+# behaves on a Linux box. An operator who knows the machine is idle can
+# override any of them in the environment -- these are defaults, not overrides.
+import os as _os  # noqa: E402
+
+for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+           "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    _os.environ.setdefault(_v, "1")
+
 import argparse
 import json
 import sys

@@ -1,9 +1,11 @@
 # Stage 4c.5: structural feature extraction
 
-4 October 2026. **Status: phase 1 complete.** The extractor is implemented and
-validated against all 90 stage-4c pilot folds on local disk, free and local.
-Phase 2 (extraction on Modal against the production Volumes) has **not** been
-started and is waiting on a go-ahead.
+4 October 2026. **Status: phase 1 complete; phase 2 validated at real scale,
+final full pass pending the fold.** The extractor is validated against all 90
+stage-4c pilot folds locally, has passed a 5-prediction CPU-only smoke in
+**both** Modal workspaces, and has extracted **2,000 live production folds
+(1,000 per half) with zero failures**. The final full pass waits for the fold
+to finish (~10:55 BST).
 
 This implements the "Feature contract for stage 5" section of
 [`stage4c_ectodomain_pilot.md`](stage4c_ectodomain_pilot.md). Nothing here
@@ -13,10 +15,12 @@ invents a feature definition the contract already fixed.
 |---|---|
 | `pepstab/structural_features.py` | parsing, mapping verification, feature definitions |
 | `scripts/extract_structural_features.py` | `pilot` / `extract` / `concat` CLI |
-| `modal_app/feature_extraction.py` | phase 2, CPU-only, **not yet run** |
-| `tests/test_structural_features.py` | 26 tests, all passing |
+| `modal_app/feature_extraction.py` | phase 2, CPU-only; smoked and run on both halves |
+| `tests/test_structural_features.py` | 29 tests, all passing |
 | `reports/stage4c5_pilot_features.csv` | 90 folds x 129 columns |
 | `reports/stage4c5_feature_variation.csv` | seed / arm / between-complex spread per feature |
+| `reports/stage4c5_features_production_<profile>.csv` | live partial extract, 1,000 rows per half |
+| `reports/stage4c5_features_smoke_<profile>.csv` | the 5-prediction smoke in each workspace |
 
 ## 1. The verified mapping, and the evidence that verified it
 
@@ -344,56 +348,129 @@ sequence-model fallback for unresolved structural failures is stage 5's to
 apply; the feature table's job is to make the unresolved rows visible, which
 the `status` column does.
 
-## 7. Phase 2 plan (not started)
+## 7. Phase 2: extraction on Modal
 
-`modal_app/feature_extraction.py` is written but **has not been run**. The
-project invariant requires a passing 3–5 example end-to-end smoke before any
-batch pass, and `::smoke` exists for exactly that.
+`modal_app/feature_extraction.py`. CPU-only: no function in the app declares
+`gpu=`, so nothing here contends with the 10 concurrent A10Gs each workspace is
+using for the fold. The `pepstab-structures` Volume is mounted at
+`/structures`; only the small feature CSV comes back.
 
-- **CPU only.** No function in the app declares `gpu=`. The production fold is
-  using up to 10 concurrent A10Gs per workspace and a GPU container here would
-  contend for those slots.
-- **Volume mounted, output not downloaded.** `pepstab-structures` is mounted at
-  `/structures`; only the small feature CSV comes back.
-- **Discovery skips `_smoke`, `_shards` and `_failed`**, which production
-  writes next to the cohort output under
-  `/stage4c/ectodomain-20261004/boltz2/production/<allele_slug>/<complex_id>/`.
-  Ingesting them would neither error nor look wrong; it would add ~10
-  pre-launch harness folds to the cohort table. Tested against a synthetic
-  tree that contains all three traps.
-- **One profile at a time is a first-class mode, not a failure mode.** The
-  halves are interleaved pair-by-pair, so either alone is balanced across
-  alleles and splits: 14,083 pairs from one workspace is already an unbiased
-  diagnostic, and waiting for both is unnecessary. The output is labelled
-  `cohort_coverage = half`.
-- **`--profile` must match `MODAL_PROFILE`**, asserted, as the project
-  invariant requires. `extract` additionally cross-checks the extracted pairs
-  against `data/structural_cohort.csv` and fails if any belong to the other
-  half — that is what a wrong Volume mount would look like.
-- **Concatenation is a separate, local step** with an explicit row-count
-  assertion (`concat --require-full`): it reports rows, cohort pairs covered,
-  pairs missing and rows not in the cohort, and exits non-zero unless all
-  28,166 are present. Nothing in the output path makes a half-sized table
-  obvious.
+### 7.1 What has run
 
-### Forecast cost and time
+| Step | Workspace | Result |
+|---|---|---|
+| `::smoke`, 5 predictions | `a-cheparukhin` | **5/5 ok**, 148 columns |
+| `::smoke`, 5 predictions | `colleague` (sofyaleyn) | **5/5 ok**, 148 columns |
+| `::extract`, live partial | `a-cheparukhin` | **1,000/1,000 ok**, 0 failed, 326 s |
+| `::extract`, live partial | `colleague` | **1,000/1,000 ok**, 0 failed, 352 s |
+| `concat --require-full` on the two halves | local | correctly **refuses** (exit 1): 2,000 of 28,166 pairs |
 
-Measured locally: **0.096 CPU-seconds per arm-B fold** (15 arm-B pilot folds,
-warm, single process), peak RSS 641 MB. The full cohort is therefore
-**0.75 core-hours of actual compute**. Modal bills *reserved* cores and memory
-against wall time, so at `cpu=2.0`, `memory=4096`, 20 containers and the
-project's verified rates ($0.04730/core-hour, $0.00800/GiB-hour from
-`reports/ectodomain_rates.json`), a half that takes 10 minutes of wall time
-costs 20 × 2 × (1/6) h × $0.0473 + 20 × 4 × (1/6) h × $0.008 ≈ **$0.32 + $0.11
-= $0.42**, so **under $1 for both halves**. This is a *forecast*: wall time is
-Volume-read-bound, not CPU-bound, and only the smoke run converts it to a
-measured figure. That is the number to check before the full pass.
+The `--profile` / `MODAL_PROFILE` assertion was tested by deliberately
+mismatching them, and it refuses before any remote call.
 
-## 8. Limits of what phase 1 establishes
+### 7.2 The bug the 90 pilot folds did not expose
 
-- It validates **extraction and feature definitions**, on the five pilot
-  complexes. It says nothing about whether these features predict half-life;
-  no model was fitted and nothing was scored on validation or test.
+The first smoke failed **5 of 5** with `KeyError: 'seed'`. The production
+runner writes a different `metadata.json` schema from the pilot runner:
+
+| Field | Pilot | Production |
+|---|---|---|
+| seed | top level `seed` | `settings.seed` |
+| shard | absent | top level `shard` |
+| first fold of a batch | `is_warmup` | `is_shard_first` |
+| observed order keys | `<complex_id>_arm_<arm>` | `<complex_id>` |
+| run id | absent | top level `run_id` |
+
+The two schemas are close enough to look identical and different enough to
+raise. The extractor now reads both, **raises rather than defaulting the seed
+to 0** (defaulting would invent provenance), and two regression tests pin both
+shapes. This is the entire argument for the incremental pass: the same bug at
+28,166 folds would have cost a full pass instead of five.
+
+### 7.3 Validation of the 2,000 live rows
+
+| Check | Result |
+|---|---|
+| status | 2,000/2,000 `ok` |
+| non-finite values in any numeric column | 0 |
+| duplicate `(model, allele, peptide, arm, seed)` keys | 0 |
+| unmatched `pair_id` after the `(allele, peptide)` join | 0 |
+| `metadata_pair_id` vs the joined `pair_id` | **agree on all 2,000** |
+| `metadata_split` vs the joined `split` | agree on all 2,000 |
+| rows belonging to the *other* profile's half | **0** |
+| chain layout | `A:275, B:99, C:9`, 383 tokens, on every row |
+
+`metadata_pair_id` is carried but never used as a key; that it independently
+reproduces the `(allele, peptide)` join is a check on the join, not a
+shortcut around it.
+
+### 7.4 A correction: a mid-run partial is *not* balanced across alleles
+
+The two halves are interleaved pair-by-pair, so each **complete** half is
+balanced across alleles and splits. A **partial** extract taken mid-run is not,
+because shards are ordered by allele — 1 to 3 alleles per shard:
+
+| Shards complete | Alleles covered (of 75) |
+|---|---|
+| 10 | **5** |
+| 50 | 25 |
+| 100 | 52 |
+| 141 (a full half) | 75 |
+
+Split balance does hold on the partial (0.696 / 0.196 / 0.108 train/test/val
+against the cohort's 0.700 / 0.200 / 0.100), but `EVALUATION.md`'s primary
+metric is **median per-allele Spearman**, and five alleles cannot support it.
+So the 2,000 rows extracted so far are an **extractor-validation pass, not a
+diagnostic cohort**. A legitimate ~14,083-pair diagnostic needs one half
+*complete*, not one half *in progress*.
+
+### 7.5 Live-tree handling
+
+- `metadata.json` is the completion signal — the production runner writes it
+  last, after validating the confidence arrays — so discovery keys on it, and
+  a directory without one is mid-write rather than broken.
+- The walk tolerates directories appearing and disappearing underneath it;
+  shards commit in batches of 100.
+- Both the lister and each worker call `out_vol.reload()`, because a worker
+  can otherwise hold an older Volume snapshot than the lister did.
+- `_smoke` (5 harness folds on the `a-cheparukhin` Volume), `_shards` and
+  `_failed` are excluded, tested against a synthetic tree containing all three.
+- **Fold counts from the tree are never reported as coverage.** While the run
+  is live a missing pair means "not yet folded", not "failed"; the
+  authoritative records are `_shards/shard_NNNN.json` and the local
+  `production_<profile>.jsonl`.
+
+### 7.6 Measured cost, and the forecast for the final full pass
+
+The container shape was revised after the first 1,000 folds. **Extraction is
+Volume-read-bound, not CPU-bound**: 1.57 s of wall time per fold against
+0.096 s of CPU, so about 6% core utilisation. Reserving 2 cores was billing an
+idle one, so the final pass runs `cpu=1.0`, `memory=2048` (peak RSS measured
+641 MB), `max_containers=30`. Dropping to one core changed throughput by ~8%
+(326 s vs 352 s per 1,000 folds), confirming the diagnosis.
+
+Forecast for the final full pass, at the project's verified rates
+($0.04730/core-hour, $0.00800/GiB-hour, `reports/ectodomain_rates.json`):
+
+| Quantity | Per half (14,083 folds) | Both halves |
+|---|---:|---:|
+| Wall time at 30 containers | ~12.3 min | ~12.3 min (parallel) |
+| CPU: 30 × 1 core × 0.205 h | 6.15 core-h → **$0.29** | **$0.58** |
+| Memory: 30 × 2 GiB × 0.205 h | 12.3 GiB-h → **$0.10** | **$0.20** |
+| **Total** | **~$0.39** | **~$0.78** |
+
+Spend so far on this workstream is two smokes plus two 1,000-fold passes:
+roughly 1.5 container-hours of CPU and memory across both workspaces,
+**under $0.15**. Nothing here is a material draw on the credit reserved for
+the fold.
+
+## 8. Limits of what this establishes
+
+- It validates **extraction and feature definitions**. It says nothing about
+  whether these features predict half-life; no model was fitted and nothing
+  was scored on validation or test.
+- The 2,000 live rows are an extractor-validation pass covering 5 of 75
+  alleles (§7.4), not a diagnostic cohort.
 - The five pilot complexes are all in the training split and all have crystal
   structures, so they are a pipeline and pose check with possible training-set
   recall, not a structural accuracy benchmark.
@@ -401,6 +478,11 @@ measured figure. That is the number to check before the full pass.
   source plus near-perfect rank agreement on 45 folds. It is not an exact
   numerical reproduction of `pair_chains_iptm`, which would need the raw PAE
   logits rather than the expected-value array that is written out.
-- `modal_app/feature_extraction.py` has not executed. `modal` is not installed
-  in the local environment, so it has been syntax-checked only; the `::smoke`
-  run is its first real test.
+- The final full pass has **not** run. Both halves are validated at 1,000
+  folds each; nothing guarantees the remaining 26,166 contain no fold with a
+  layout neither the pilot nor these 2,000 exposed. Every such fold becomes a
+  recorded `status` row rather than a crash, so the full pass will surface
+  them rather than hide them.
+- Coverage of the final table is bounded by the fold, not by extraction: pairs
+  the fold does not produce cannot be extracted, and the sequence fallback for
+  those is stage 5's to apply.

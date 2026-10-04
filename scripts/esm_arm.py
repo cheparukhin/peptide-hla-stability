@@ -46,6 +46,24 @@ Test is never loaded.
 
 from __future__ import annotations
 
+# --- BLAS thread pinning, before numpy/torch are imported --------------------
+# Six workstreams share 8 cores on this machine. Every one of them links numpy
+# against Accelerate, which sizes its thread pool *at import time* and defaults
+# to one thread per core -- so six processes ask for 48 threads on 8 cores and
+# the measured load average hit 114. Under that much oversubscription each
+# process runs slower than it would with a single thread, because the cores are
+# spent on context switching rather than on arithmetic.
+#
+# VECLIB_MAXIMUM_THREADS is the one that matters on macOS (numpy here links
+# against Accelerate, not OpenBLAS or MKL); the others are set so the same file
+# behaves on a Linux box. An operator who knows the machine is idle can
+# override any of them in the environment -- these are defaults, not overrides.
+import os as _os  # noqa: E402
+
+for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+           "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    _os.environ.setdefault(_v, "1")
+
 import argparse
 import gc
 import itertools
@@ -434,8 +452,10 @@ def mode_grid(args) -> int:
               f"rho={records[-1]['median_per_allele_spearman']:+.4f}")
 
         l2_grid = tuple(args.l2_grid) if args.l2_grid else ESM_L2_GRID
+        hidden_grid = ([tuple(int(x) for x in h.split("x")) for h in args.hidden]
+                       if args.hidden else list(HIDDEN_GRID))
         for (hidden, l2), seed in itertools.product(
-                [(h, l) for h in HIDDEN_GRID for l in l2_grid], SEEDS):
+                [(h, l) for h in hidden_grid for l in l2_grid], SEEDS):
             cfg = MLPConfig(hidden=hidden, l2=l2, seed=seed,
                             max_epochs=MAX_EPOCHS, patience=PATIENCE)
             model = MLPRegressor(cfg).fit(X_fit, y_fit, X_dev, y_dev)
@@ -688,6 +708,8 @@ def main() -> int:
     g.add_argument("--pep-rep", default="pos", choices=pesm.PEPTIDE_REPS)
     g.add_argument("--hla-rep", default="contact", choices=pesm.HLA_REPS)
     g.add_argument("--layers", nargs="+", default=list(LAYERS))
+    g.add_argument("--hidden", nargs="+", default=None,
+                   help="hidden sizes as 'AxB' (default: stage 2's two points)")
     g.add_argument("--l2-grid", nargs="+", type=float, default=None,
                    help=f"MLP L2 ladder (default {ESM_L2_GRID}); same number of "
                         "grid points as stage 2, ranges chosen for the feature scale")

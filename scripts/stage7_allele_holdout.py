@@ -22,15 +22,27 @@ stage 3 measured ensembling alone at nearly twice the worthwhile-gain bar.
 
 from __future__ import annotations
 
-import argparse
-import json
-import multiprocessing as mp
-import sys
-import time
-from pathlib import Path
+import os
 
-import numpy as np
-import pandas as pd
+# Pin BLAS to one thread **before numpy is imported** -- the thread pool is
+# sized at import time, so setting these afterwards does nothing. numpy links
+# against Accelerate on this machine (``np.show_config`` reports
+# ``name: accelerate``), so ``VECLIB_MAXIMUM_THREADS`` is the one that actually
+# binds; the others are set for portability. This matters twice over here,
+# because the worker pool multiplies whatever each process grabs.
+for _var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+             "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
+import argparse  # noqa: E402
+import json  # noqa: E402
+import multiprocessing as mp  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 

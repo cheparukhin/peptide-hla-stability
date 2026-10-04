@@ -373,8 +373,25 @@ Two results worth retaining:
   better in these tested cases; this is not evidence to omit MSAs from the
   agreed full-construct comparison.
 - **`pair_chains_iptm` is the peptide-HLA interface ipTM** that stage 5 wants as
-  a confidence feature; Boltz-2 exposes only a global ipTM. If that feature
-  earns its place, ESMFold2 is the cheaper way to get it.
+  a confidence feature. ~~Boltz-2 exposes only a global ipTM. If that feature
+  earns its place, ESMFold2 is the cheaper way to get it.~~ **Corrected 4
+  October 2026: that is wrong.** Boltz 2.1.1 emits `pair_chains_iptm` on all 45
+  pilot folds alongside `global_iptm`, verified at stage 4c.5. The claim is
+  struck rather than deleted because it was used here as a reason to favour
+  ESMFold2, and the trail should show the argument was withdrawn rather than
+  quietly disappear. It does not reopen the production decision — ESMFold2 was
+  rejected on pose quality, not on confidence outputs.
+
+  **Its orientation is transposed relative to the naive reading.** From
+  `compute_ptms` in the pinned source, `pair_chains_iptm[a][b]` scores PAE
+  **rows in b, columns in a**, via a max over rows. Read in the source
+  orientation it correlates −0.98 to −1.00 with pose error across all 8 ordered
+  chain pairs; read naively, one pair reaches +0.02. A pooled test would have
+  selected the wrong permutation, so any column naming this score must name the
+  pair **and the direction**. Global ipTM is `global_iptm` and stays named as
+  such: in a three-chain complex it covers interfaces that are not
+  peptide-HLA. Withheld entirely for ESMFold2, whose output is list-shaped with
+  an unverified mapping.
 
 ## Open question before launch
 
