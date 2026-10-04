@@ -1,0 +1,61 @@
+{
+  "stage": "5 inverse folding - predeclared QC sample",
+  "commit": "fb01b13c60bbc2404d4e4fabe117046d1865d487",
+  "modal_app_id": "ap-VM37Rr8niYjHwSINtfVbbz",
+  "profile": "a-cheparukhin",
+  "pool": 14083,
+  "sampled": 2000,
+  "seed": 20261004,
+  "n_orders": 16,
+  "checkpoint": "v_48_020.pt",
+  "rows": 2000,
+  "ok": 2000,
+  "failed": 0,
+  "wall_s": 426.8,
+  "measured_s_per_fold": 9.83,
+  "cost_usd_measured": 0.69,
+  "prior_killed_run": {
+    "app_id": "ap-lXxn4RitwVg0YptcN3nxn8",
+    "chunks_completed": 46,
+    "of": 80,
+    "rows_recovered": 0,
+    "note": "client disconnected; score_chunk returns rows to the client and never writes the volume, so nothing was recoverable",
+    "sunk_usd_approx": 0.46
+  },
+  "allele_coverage": {
+    "alleles_in_sample": 74,
+    "alleles_in_half": 75
+  },
+  "pep_ll_mean": {
+    "p0": -3.877,
+    "p1": -3.584,
+    "p5": -3.319,
+    "p10": -3.168,
+    "p25": -2.911,
+    "p50": -2.651,
+    "p75": -2.388,
+    "p90": -2.137,
+    "p95": -1.97,
+    "p99": -1.673,
+    "p100": -1.316
+  },
+  "pep_ll_mean_mean": -2.646,
+  "pep_ll_mean_sd": 0.404,
+  "single_complex_reference_points": {
+    "note": "NOT thresholds; from one badly-folded complex (B*07:02/IPRRNVATL, arms A and C) in the 45-fold Boltz-2 pilot",
+    "known_bad_max_pep_ll_mean": -2.984,
+    "n_at_or_below": 403,
+    "gap_midpoint_pep_ll_mean": -2.749,
+    "n_at_or_below_midpoint": 787,
+    "pilot_good_range": [
+      -2.513,
+      -1.881
+    ],
+    "n_below_pilot_good_floor": 1288
+  },
+  "transfer_finding": "the pilot reference points do not transfer: the cohort median (-2.651) lies below the pilot good-range floor (-2.513)",
+  "variance_explained": {
+    "allele": 0.099,
+    "background_aa_composition": 0.091
+  }
+}

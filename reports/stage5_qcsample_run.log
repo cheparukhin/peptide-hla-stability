@@ -1,0 +1,360 @@
+✓ Initialized. View run at https://modal.com/apps/a-cheparukhin/main/ap-VM37Rr8niYjHwSINtfVbbz
+✓ Created objects.
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/modal_app/proteinmpnn_scoring.py
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/pepstab/inverse_folding.py
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/pepstab/structural_features.py
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/scripts/boltz_pose_check.py
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/external/ProteinMPNN/protein_mpnn_utils.py
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/external/ProteinMPNN/vanilla_model_weights/v_48_020.pt
+├── ✓ Created Function list_folds.
+└── ✓ Created Function score_chunk.
+14083 cohort folds; 5 skipped in ['_failed', '_shards', '_smoke']
+{
+  "profile": "a-cheparukhin",
+  "pool": 14083,
+  "sampled": 2000,
+  "seed": 20261004,
+  "n_orders": 16,
+  "forecast": {
+    "n_folds": 2000,
+    "n_orders": 16,
+    "s_per_fold": 14.7,
+    "chunks": 80,
+    "core_hours": 17.7,
+    "wall_hours_at_max_containers": 0.11,
+    "usd": 1.12,
+    "rates_source": "reports/ectodomain_rates.json (metered)",
+    "s_per_fold_source": "stage 4c pilot, measured"
+  }
+}
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/biotite/structure/io/pdbx/convert.py:510: UserWarning: Attribute 'auth_atom_id' not found within 'atom_site' category. The fallback attribute 'label_atom_id' will be used instead
+  warnings.warn(
+25 folds, 25 ok, 0 failed, 195.6s
+25 folds, 25 ok, 0 failed, 204.4s
+25 folds, 25 ok, 0 failed, 196.8s
+25 folds, 25 ok, 0 failed, 205.1s
+25 folds, 25 ok, 0 failed, 205.6s
+25 folds, 25 ok, 0 failed, 201.2s
+25 folds, 25 ok, 0 failed, 212.6s
+25 folds, 25 ok, 0 failed, 211.8s
+25 folds, 25 ok, 0 failed, 220.2s
+25 folds, 25 ok, 0 failed, 222.9s
+25 folds, 25 ok, 0 failed, 226.4s
+25 folds, 25 ok, 0 failed, 217.8s
+25 folds, 25 ok, 0 failed, 214.2s
+25 folds, 25 ok, 0 failed, 229.0s
+25 folds, 25 ok, 0 failed, 217.9s
+25 folds, 25 ok, 0 failed, 229.3s
+25 folds, 25 ok, 0 failed, 224.5s
+25 folds, 25 ok, 0 failed, 224.8s
+25 folds, 25 ok, 0 failed, 232.6s
+25 folds, 25 ok, 0 failed, 231.3s
+25 folds, 25 ok, 0 failed, 237.3s
+25 folds, 25 ok, 0 failed, 237.8s
+25 folds, 25 ok, 0 failed, 236.7s
+25 folds, 25 ok, 0 failed, 226.0s
+25 folds, 25 ok, 0 failed, 231.7s
+25 folds, 25 ok, 0 failed, 238.6s
+25 folds, 25 ok, 0 failed, 234.5s
+25 folds, 25 ok, 0 failed, 236.2s
+25 folds, 25 ok, 0 failed, 231.3s
+25 folds, 25 ok, 0 failed, 237.4s
+25 folds, 25 ok, 0 failed, 237.6s
+25 folds, 25 ok, 0 failed, 235.3s
+25 folds, 25 ok, 0 failed, 232.5s
+25 folds, 25 ok, 0 failed, 228.4s
+25 folds, 25 ok, 0 failed, 238.4s
+25 folds, 25 ok, 0 failed, 233.6s
+25 folds, 25 ok, 0 failed, 234.8s
+25 folds, 25 ok, 0 failed, 238.1s
+25 folds, 25 ok, 0 failed, 240.2s
+25 folds, 25 ok, 0 failed, 234.9s
+25 folds, 25 ok, 0 failed, 234.6s
+25 folds, 25 ok, 0 failed, 233.4s
+25 folds, 25 ok, 0 failed, 242.9s
+25 folds, 25 ok, 0 failed, 245.7s
+25 folds, 25 ok, 0 failed, 247.3s
+25 folds, 25 ok, 0 failed, 234.3s
+25 folds, 25 ok, 0 failed, 237.7s
+25 folds, 25 ok, 0 failed, 242.4s
+25 folds, 25 ok, 0 failed, 248.4s
+25 folds, 25 ok, 0 failed, 246.6s
+25 folds, 25 ok, 0 failed, 248.8s
+25 folds, 25 ok, 0 failed, 246.8s
+25 folds, 25 ok, 0 failed, 250.5s
+25 folds, 25 ok, 0 failed, 256.7s
+25 folds, 25 ok, 0 failed, 254.8s
+25 folds, 25 ok, 0 failed, 253.1s
+25 folds, 25 ok, 0 failed, 257.7s
+25 folds, 25 ok, 0 failed, 248.6s
+25 folds, 25 ok, 0 failed, 248.1s
+# 25/2000  269s
+# 50/2000  269s
+# 75/2000  269s
+# 100/2000  269s
+25 folds, 25 ok, 0 failed, 262.0s
+25 folds, 25 ok, 0 failed, 248.3s
+25 folds, 25 ok, 0 failed, 258.3s
+# 125/2000  272s
+# 150/2000  272s
+# 175/2000  272s
+# 200/2000  272s
+# 225/2000  272s
+# 250/2000  272s
+# 275/2000  272s
+# 300/2000  272s
+# 325/2000  272s
+# 350/2000  272s
+# 375/2000  272s
+# 400/2000  272s
+25 folds, 25 ok, 0 failed, 264.8s
+25 folds, 25 ok, 0 failed, 253.2s
+25 folds, 25 ok, 0 failed, 255.7s
+25 folds, 25 ok, 0 failed, 269.4s
+25 folds, 25 ok, 0 failed, 260.2s
+25 folds, 25 ok, 0 failed, 261.8s
+25 folds, 25 ok, 0 failed, 258.4s
+25 folds, 25 ok, 0 failed, 263.8s
+25 folds, 25 ok, 0 failed, 273.7s
+25 folds, 25 ok, 0 failed, 283.5s
+# 425/2000  293s
+# 450/2000  293s
+25 folds, 25 ok, 0 failed, 285.1s
+25 folds, 25 ok, 0 failed, 283.4s
+# 475/2000  307s
+25 folds, 25 ok, 0 failed, 297.2s
+25 folds, 25 ok, 0 failed, 292.4s
+25 folds, 25 ok, 0 failed, 306.0s
+25 folds, 25 ok, 0 failed, 319.0s
+25 folds, 25 ok, 0 failed, 341.4s
+# 500/2000  427s
+# 525/2000  427s
+# 550/2000  427s
+# 575/2000  427s
+# 600/2000  427s
+# 625/2000  427s
+# 650/2000  427s
+# 675/2000  427s
+# 700/2000  427s
+# 725/2000  427s
+# 750/2000  427s
+# 775/2000  427s
+# 800/2000  427s
+# 825/2000  427s
+# 850/2000  427s
+# 875/2000  427s
+# 900/2000  427s
+# 925/2000  427s
+# 950/2000  427s
+# 975/2000  427s
+# 1000/2000  427s
+# 1025/2000  427s
+# 1050/2000  427s
+# 1075/2000  427s
+# 1100/2000  427s
+# 1125/2000  427s
+# 1150/2000  427s
+# 1175/2000  427s
+# 1200/2000  427s
+# 1225/2000  427s
+# 1250/2000  427s
+# 1275/2000  427s
+# 1300/2000  427s
+# 1325/2000  427s
+# 1350/2000  427s
+# 1375/2000  427s
+# 1400/2000  427s
+# 1425/2000  427s
+# 1450/2000  427s
+# 1475/2000  427s
+# 1500/2000  427s
+# 1525/2000  427s
+# 1550/2000  427s
+# 1575/2000  427s
+# 1600/2000  427s
+# 1625/2000  427s
+# 1650/2000  427s
+# 1675/2000  427s
+# 1700/2000  427s
+# 1725/2000  427s
+# 1750/2000  427s
+# 1775/2000  427s
+# 1800/2000  427s
+# 1825/2000  427s
+# 1850/2000  427s
+# 1875/2000  427s
+# 1900/2000  427s
+# 1925/2000  427s
+# 1950/2000  427s
+# 1975/2000  427s
+# 2000/2000  427s
+25 folds, 25 ok, 0 failed, 417.0s
+{
+  "wrote": "/Users/cheparukhin/ai_science_hack/reports/stage5_inverse_folding_qcsample_a-cheparukhin.csv",
+  "rows": 2000,
+  "ok": 2000,
+  "failed": 0,
+  "wall_s": 426.8,
+  "measured_s_per_fold": 9.83,
+  "forecast_s_per_fold": 14.7
+}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at https://modal.com/apps/a-cheparukhin/main/ap-VM37Rr8niYjHwSINtfVbbz

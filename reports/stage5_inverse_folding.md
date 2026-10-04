@@ -5,8 +5,13 @@ control passes for Boltz-2 and fails for ESMFold2. The circularity control came
 back with a result I did not expect, and it changes what this feature is for:
 the ProteinMPNN peptide log-likelihood behaves as a crystal-free triage signal
 for Boltz-2 pose failure, and there is no evidence from this pilot that it
-predicts half-life. A ~$1 QC sample is approved; full production scoring as a
-regression feature is not, and nothing has been launched.**
+predicts half-life. The ~$1 QC sample has now run ($1.15, 2,000 folds, 0
+failed) and returned a negative transfer result: the cohort median sits below
+the pilot's good-range floor, so the pilot's absolute reference points do not
+carry over, and the cohort-wide pose-failure estimate the sample was bought to
+provide cannot be produced from it. What it yields instead is a distribution
+and a ranked triage list. Full production scoring as a regression feature
+remains unapproved and `::score` has never been launched.**
 
 **The single most important limit, stated before anything else:** the pilot
 contains exactly **one** complex that folded badly (B*07:02/IPRRNVATL, in arms
@@ -658,9 +663,112 @@ Realised allele coverage will be reported as a diagnostic.
 must not filter the production cohort, and nothing downstream may condition on
 them.
 
+### QC sample result: the distribution, and why the reference points did not transfer
+
+Run on the predeclared protocol exactly as written above — no parameter was
+touched after the scores were seen. 2,000 folds, **2,000 `ok`, 0 failed**, 426.8 s
+wall, 9.83 s/fold measured, **$0.69**. Modal app `ap-VM37Rr8niYjHwSINtfVbbz`,
+profile `a-cheparukhin`. `list_folds` returned **14,083**, so the completeness
+check passed and the draw is over a complete half rather than an allele-biased
+prefix. Pool 14,083 → sampled 2,000, seed `20261004`, 16 orders, checkpoint
+`v_48_020.pt`. Every sampled pair is a distinct `(allele, peptide)`, all arm B,
+seed 0, and all 9-mers.
+
+**Allele coverage (the predeclared diagnostic): 74 of the 75 alleles in this
+half.** Per-allele n ranges 1 / 26 / 80 (min / median / max).
+
+**The distribution of `pep_ll_mean` over the 2,000 sampled folds:**
+
+| p0 | p1 | p5 | p10 | p25 | p50 | p75 | p90 | p95 | p99 | p100 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| -3.877 | -3.584 | -3.319 | -3.168 | -2.911 | **-2.651** | -2.388 | -2.137 | -1.970 | -1.673 | -1.316 |
+
+Mean -2.646, sd 0.404.
+
+**The headline is a negative transfer result, not a count.** The cohort median
+(-2.651) sits **below the pilot's good-range floor** (-2.513). The pilot's
+absolute reference points therefore do not carry over to the cohort, and the
+counts below are reported only to make that failure of transfer legible:
+
+- 403 of 2,000 sampled folds score in the range where the one known-bad complex
+  sat, from a single-complex reference.
+- 787 of 2,000 fall at or below the gap midpoint, from that same single-complex
+  reference.
+- 1,288 of 2,000 — a clear majority — fall below the floor of the range the 39
+  good pilot folds occupied.
+
+**None of these is a count of bad poses, and none may be converted into one.**
+A majority of the cohort cannot be sitting outside the pilot's "good" range in
+the sense the pilot meant, because the production fold itself completed
+28,166/28,166 with zero failures and poses reproducing the pilot within 0.04 Å
+(`reports/stage4c_ectodomain_pilot.md`). The parsimonious reading is the one
+that was flagged as the risk from the start: **five complexes are not a
+calibration set.** The pilot's range describes five well-studied training
+complexes, four of which folded well; it does not describe 14,083 folds across
+74 alleles.
+
+Two confounds were tested directly, because either would have explained the
+shift cheaply, and neither does:
+
+| Candidate explanation | Test | Variance explained |
+|---|---|---:|
+| Peptide length | all 2,000 sampled folds are 9-mers, as all 45 pilot folds were | n/a — excluded by design |
+| Allele identity | Kruskal across alleles with n≥10, p = 1.4e-11 | **0.099** |
+| Background residue composition | Spearman(`pep_ll_mean`, mean log background AA frequency) = +0.297, p = 6e-42 | **0.091** |
+
+Restricting the sample to the five pilot alleles does not close the gap either
+(n = 279, median -2.662, against the pilot arm-B median of -2.395). Allele and
+composition are each real and each small; together they leave most of the shift
+unexplained. The honest statement is that **absolute `pep_ll_mean` is not
+calibrated across the cohort**, and the pilot gave no way to calibrate it.
+
+**The triage list.** Because the absolute reference points do not transfer, the
+inspection queue is defined by **rank within the cohort**, not by the pilot's
+cut. The 20 lowest-scoring folds of the 2,000 are the queue. Composition matters
+enough in the tail to be worth adjusting for — the raw bottom 20 average 2.35
+aromatic residues against 1.58 for the rest, and 40% contain a W or C against
+28% — so both orderings are given, and they agree on 14 of 20.
+
+Lowest 10 by composition-adjusted residual (the recommended queue):
+
+| allele | peptide | `pep_ll_mean` | residual | `order_sd` |
+|---|---|---:|---:|---:|
+| HLA-B*07:02 | VPKEDYYFI | -3.874 | -1.182 | 0.390 |
+| HLA-A*24:02 | SYGFRLGFL | -3.668 | -1.111 | 0.498 |
+| HLA-A*11:01 | KLGDQFGRK | -3.644 | -1.087 | 0.437 |
+| HLA-B*39:01 | FHEFLSSKL | -3.660 | -1.078 | 0.400 |
+| HLA-A*11:01 | RQIQVEGLK | -3.591 | -1.052 | 0.667 |
+| HLA-A*30:01 | FIRLRFAFK | -3.591 | -0.999 | 0.494 |
+| HLA-B*15:10 | LMMNGTSAM | -3.701 | -0.996 | 0.472 |
+| HLA-B*07:02 | LPSWLLAPV | -3.537 | -0.989 | 0.325 |
+| HLA-A*02:05 | VLAGWLFHV | -3.614 | -0.970 | 0.340 |
+| HLA-A*30:01 | KGFFRVFKK | -3.598 | -0.970 | 0.422 |
+
+These are **folds worth looking at**, and that is the entire claim. Nothing in
+this pilot can tell a bad pose from an unusual-but-correct one at the level of
+an individual production fold, and the one complex the detector was validated
+on cannot establish that any of these twenty is wrong. `order_sd` in the bottom
+1% (median 0.480) is only mildly above the cohort median (0.416), which is a
+further reason not to read the tail as a failure signal.
+
+**No row was dropped, and nothing downstream conditions on this score**, as
+predeclared. The sample remains descriptive.
+
+**What this costs the stage-5 conclusion: nothing changes.** The decision not to
+score the cohort as a regression feature stands on the circularity control, not
+on this. What the QC sample adds is a bound on the triage claim itself: the
+feature's usefulness as a crystal-free pose-failure flag was never demonstrated
+beyond one complex, and now there is positive evidence that its scale does not
+transfer from that complex to the cohort. The cohort-wide pose-failure estimate
+that this sample was bought to provide **cannot be produced from it**, and that
+is the result rather than a shortfall in the run.
+
 ## Runtime and cost
 
-Everything in this report ran on laptop CPU. **Total cloud spend: $0.**
+Every pilot and control in this report ran on laptop CPU. The only cloud spend
+is the QC sample: **$1.15 total**, against the $1.12 forecast — $0.69 for the
+sample that produced the table, plus **$0.46 sunk** in a first attempt that was
+killed.
 
 | Run | Folds | Settings | Workers | Wall |
 |---|---:|---|---:|---:|
@@ -668,6 +776,23 @@ Everything in this report ran on laptop CPU. **Total cloud spend: $0.**
 | Cross-peptide, Boltz-2 arm B | 15 | 16 orders, 5 candidates | 1 | 1,107 s |
 | Wrong-backbone control, B*07:02 arm A | 3 | 16 orders, 5 candidates | 1 | 107 s |
 | Aborted cross-peptide sweep (all Boltz-2 arms) | 7 of 45 | 16 orders, 5 candidates | 2 | ~780 s, discarded |
+| QC sample, killed first attempt (`ap-lXxn4RitwVg0YptcN3nxn8`) | 1,150 of 2,000 | 16 orders | Modal, 2 CPU | ~600 s, **discarded** |
+| **QC sample (`ap-VM37Rr8niYjHwSINtfVbbz`)** | **2,000** | **16 orders** | **Modal, 2 CPU** | **426.8 s** |
+
+The killed attempt is recorded rather than quietly dropped, and it is a design
+finding worth keeping. It scored 46 of 80 chunks — 1,150 folds, every chunk `25
+ok, 0 failed` — and then its local client was killed, at which point **every one
+of those rows was lost**. `score_chunk` returns rows to the caller and the CSV
+is assembled by `_write` in the local entrypoint; the function mounts the output
+Volume but never writes to it. Modal's own advice on disconnect (`use modal run
+--detach`) would not have helped: detaching keeps the containers alive but the
+local entrypoint still dies, so still no file. **For this app the client is the
+only writer, and a run is only as durable as the shell holding it.** Persisting
+each chunk to the Volume would fix it properly; that is not worth doing for a
+one-off 7-minute sample, but it would be mandatory before any 14,083-fold pass.
+
+The sample also ran faster than forecast — 9.83 s/fold against the conservative
+14.70 s/fold basis — which is why it came in under the $1.12 estimate.
 
 The aborted sweep is recorded rather than quietly dropped: it was killed under
 machine-wide memory pressure and its partial output was not used. The memory
@@ -689,7 +814,11 @@ and defaults to 1 worker and 1 thread.
 | `reports/stage5_inverse_folding_crosspeptide_armB.csv` | 15 rows, 5x5 matrix |
 | `reports/stage5_inverse_folding_crosspeptide_armA_B0702.csv` | 3 rows, wrong-backbone control |
 | `reports/stage5_inverse_folding_*.provenance.json` | commit, checkpoint sha256, settings, wall |
-| `modal_app/proteinmpnn_scoring.py` | production entrypoint — **not launched** |
+| `reports/stage5_inverse_folding_qcsample_a-cheparukhin.csv` | **2,000 rows, the QC sample** |
+| `reports/stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json` | app id, draw, distribution, both confound tests |
+| `reports/stage5_inverse_folding_smoke_{a-cheparukhin,colleague}.csv` | 5 rows each, the pre-run smokes |
+| `reports/stage5_qcsample_run.log` | full client log of the QC sample run |
+| `modal_app/proteinmpnn_scoring.py` | `::sample` run once for the QC sample; `::score` (full cohort) **not launched** |
 | `external/ProteinMPNN/` | clone at `8907e667` (gitignored) |
 
 Every output table is keyed by `(model, allele, peptide, arm, seed)` and the CLI

@@ -58,6 +58,7 @@ def forecast(
     procs: int,
     startup_s: float = 90.0,
     margin: float = 1.25,
+    chunk: int = 0,
 ) -> dict:
     """Core-hours and dollars.
 
@@ -67,10 +68,22 @@ def forecast(
     expense rather than something the arithmetic hides. ``startup_s`` covers
     image pull and Volume mount; the stage 4c fold measured 67-79 s of
     per-shard startup on a far heavier image, so 90 s is deliberately generous.
+
+    ``chunk`` is not cosmetic, and leaving it out was a real defect in this
+    function. ``score_chunk`` runs ``Pool(procs)`` over **one chunk**, so a
+    chunk smaller than the pool leaves ``procs - chunk`` reserved cores idle
+    while work remains — and reserved cores are billed. This function used to
+    assume perfect packing, which priced the repaired arm at
+    ``--chunk 32 --procs 64`` at $205 when it actually costs $386: an 88%
+    overspend, straight through the stage's $250 stop threshold, reported as
+    comfortably inside it. Pass ``chunk`` and the fill factor is applied; the
+    default of 0 means "assume the chunk fills the pool" and is only right when
+    it does.
     """
     rates = load_rates()
+    fill = min(chunk, procs) / procs if chunk else 1.0
     per_container = n / containers
-    busy_s = per_container / procs * seconds_per_structure
+    busy_s = per_container / procs * seconds_per_structure / fill
     wall_s = busy_s + startup_s
     container_hours = containers * wall_s / 3600
     core_hours = container_hours * cpu
@@ -83,6 +96,8 @@ def forecast(
         "memory_gib": memory_gib,
         "containers": containers,
         "procs": procs,
+        "chunk": chunk,
+        "pool_fill": fill,
         "parallel_processes": containers * procs,
         "wall_h": wall_s / 3600,
         "container_hours": container_hours,
@@ -106,6 +121,11 @@ def main() -> int:
     ap.add_argument("--memory-gib", type=float, default=16.0)
     ap.add_argument("--containers", type=int, default=10)
     ap.add_argument("--procs", type=int, default=0, help="FoldX processes per container")
+    ap.add_argument("--chunk", type=int, default=0,
+                    help="structures per chunk. A chunk below --procs leaves "
+                         "reserved cores idle and billed; pass the value you will "
+                         "actually launch with, or the forecast assumes perfect "
+                         "packing and under-reports.")
     ap.add_argument("--n", type=int, default=0, help="structures; default the full cohort")
     ap.add_argument("--repair-multiple", type=float, default=0.0,
                     help="measured RepairPDB runtime multiple, to price that variant")
@@ -150,17 +170,31 @@ def main() -> int:
     if args.sweep:
         shapes = [(c, k, int(c)) for c in (8.0, 16.0, 32.0, 64.0) for k in (5, 10, 20)]
 
-    header = (f"{'variant':<34}{'shape':>22}{'wall h':>9}{'core-h':>9}"
+    header = (f"{'variant':<34}{'shape':>22}{'fill':>6}{'wall h':>9}{'core-h':>9}"
               f"{'$':>9}{'$+25%':>9}")
     print(header)
     print("-" * len(header))
+    underfilled = False
     for label, factor in variants:
         for cpu, containers, p in shapes:
-            f = forecast(n, seconds * factor, cpu, args.memory_gib, containers, p)
+            f = forecast(n, seconds * factor, cpu, args.memory_gib, containers, p,
+                         chunk=args.chunk)
             shape = f"{containers}x{cpu:g}c/{p}p"
-            print(f"{label:<34}{shape:>22}{f['wall_h']:>9.2f}{f['core_hours']:>9.1f}"
+            print(f"{label:<34}{shape:>22}{f['pool_fill']:>6.0%}"
+                  f"{f['wall_h']:>9.2f}{f['core_hours']:>9.1f}"
                   f"{f['usd']:>9.2f}{f['usd_with_margin']:>9.2f}")
+            underfilled |= f["pool_fill"] < 1.0
     print()
+    if not args.chunk:
+        print("No --chunk given, so the pool is assumed to fill perfectly. It only "
+              "does when chunk >= procs; pass --chunk to price what you will "
+              "actually launch.")
+    elif underfilled:
+        print(f"WARNING: --chunk {args.chunk} fills only "
+              f"{min(args.chunk, procs) / procs:.0%} of a {procs}-process pool. "
+              f"score_chunk runs Pool(procs) over one chunk, so the idle cores are "
+              f"reserved and billed. Raise --chunk to {procs} or a multiple of it; "
+              "modal_app/foldx_scoring.py::score now refuses the under-filled shape.")
     print("Per workspace, each scoring its own half: divide the cost by two and "
           "keep the wall time (the halves run in parallel).")
     print("Modal bills reserved cores for the container's whole life, so a wider "

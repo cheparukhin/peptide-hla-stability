@@ -865,6 +865,7 @@ def score(
     limit: int = 0,
     seconds_per_structure: float = 0.0,
     dry_run: bool = False,
+    resume: bool = False,
 ):
     """Score this profile's half of the cohort.
 
@@ -872,12 +873,31 @@ def score(
     committed ``data/structural_cohort.csv``, prints the forecast, and returns.
     It cannot start a container, and ``tests/test_foldx.py`` asserts that by
     checking the code path.
+
+    Every completed chunk is journalled to ``<output>.partial.jsonl`` before
+    the run continues, because rows accumulate on the client and the repaired
+    arm runs for roughly an hour: without the journal, a dropped connection
+    discards work that has already been billed. ``--resume`` restarts from the
+    journal and rescores only what is missing.
     """
     check_profile(profile)
     procs = procs or int(cpu)
     assert procs <= cpu * 2, (
         f"{procs} FoldX processes on {cpu:g} reserved cores would thrash; FoldX "
         "is single-threaded, so procs should be <= cpu."
+    )
+    # A chunk smaller than the pool leaves reserved cores idle *while work
+    # remains*, and Modal bills a reserved core whether or not it is busy. At
+    # chunk=32 on procs=64 the repaired arm costs $386 rather than $205 -- an
+    # 88% overspend that sails past the stage's $250 stop threshold, and one
+    # that scripts/foldx_forecast.py could not see until it was taught to
+    # model fill, because its model assumed perfect packing.
+    assert chunk >= procs, (
+        f"--chunk {chunk} with --procs {procs} fills only {chunk / procs:.0%} of "
+        f"each container's pool: score_chunk runs Pool({procs}) over {chunk} "
+        f"structures, so {procs - chunk} reserved cores idle while billed, and "
+        f"the arm costs about {procs / chunk:.1f}x its forecast. Use "
+        f"--chunk {procs} or a multiple of it."
     )
 
     rows = cohort_half(profile)
@@ -906,6 +926,39 @@ def score(
         print(f"warning: {len(folders)} folds on the Volume against {len(rows)} "
               f"cohort rows for {profile!r}")
 
+    # The repair setting is in the *filename*, not just a column: this stage
+    # runs both arms, and a single name for both would mean the cheap
+    # unrepaired run silently overwrites the expensive repaired one. The name
+    # has to match scripts/foldx_concat.py::half_path.
+    stem = "stage8_foldx_scores_repair" if repair else "stage8_foldx_scores"
+    local = REPO / "reports" / f"{stem}_{profile}.csv"
+    # Rows are accumulated on the *client*, so without this journal a dropped
+    # laptop lid at minute 40 of the repaired run loses the whole half -- about
+    # $92 of work that has already been paid for -- and `--detach` does not
+    # help, because detaching keeps the containers alive but nothing is
+    # collecting their results. Each completed chunk is appended to a JSONL
+    # journal before anything else happens, so a death costs only the chunks
+    # still in flight, and `--resume` picks the run up from there.
+    partial = local.with_suffix(".partial.jsonl")
+
+    done: dict[str, dict] = {}
+    if resume and partial.exists():
+        for line in partial.read_text().splitlines():
+            if line.strip():
+                row = json.loads(line)
+                done[row.get("fold_dir", "")] = row
+        folders = [f for f in folders if f not in done]
+        print(f"resuming: {len(done):,} structures already in "
+              f"{partial.relative_to(REPO)}, {len(folders):,} left to score")
+    elif partial.exists():
+        raise SystemExit(
+            f"{partial.relative_to(REPO)} already exists, holding "
+            f"{sum(1 for line in partial.read_text().splitlines() if line.strip()):,} "
+            "scored structures from an interrupted run. Pass --resume to continue "
+            "it, or delete the file to rescore from scratch -- at this arm's cost, "
+            "silently rescoring would be an expensive default."
+        )
+
     chunks = [folders[i : i + chunk] for i in range(0, len(folders), chunk)]
     fn = score_chunk.with_options(
         cpu=cpu, memory=int(memory_gib * 1024), max_containers=containers
@@ -914,28 +967,32 @@ def score(
           f"{containers} containers x {cpu:g} cores x {procs} processes, CPU only")
 
     started = time.time()
-    out_rows: list[dict] = []
-    for part in fn.starmap([(c, repair, procs) for c in chunks]):
-        out_rows.extend(part)
-        print(f"  {len(out_rows):,}/{len(folders):,} "
-              f"[{(time.time() - started) / 3600:.2f} h]", flush=True)
+    out_rows: list[dict] = list(done.values())
+    if chunks:
+        partial.parent.mkdir(parents=True, exist_ok=True)
+        with partial.open("a") as journal:
+            for part in fn.starmap([(c, repair, procs) for c in chunks]):
+                for row in part:
+                    journal.write(json.dumps(row, default=str) + "\n")
+                journal.flush()
+                os.fsync(journal.fileno())
+                out_rows.extend(part)
+                print(f"  {len(out_rows):,}/{len(folders) + len(done):,} "
+                      f"[{(time.time() - started) / 3600:.2f} h]", flush=True)
 
     ok = sum(1 for r in out_rows if r.get("status") == "ok")
     for r in out_rows:
         r["profile"] = profile
         r["cohort_coverage"] = "half"
-    # The repair setting is in the *filename*, not just a column: this stage
-    # runs both arms, and a single name for both would mean the cheap
-    # unrepaired run silently overwrites the expensive repaired one. The name
-    # has to match scripts/foldx_concat.py::half_path.
-    stem = "stage8_foldx_scores_repair" if repair else "stage8_foldx_scores"
-    local = REPO / "reports" / f"{stem}_{profile}.csv"
     _write_csv(out_rows, local)
     print(json.dumps({"profile": profile, "rows": len(out_rows), "ok": ok,
                       "failed": len(out_rows) - ok,
                       "wall_h": round((time.time() - started) / 3600, 2)}, indent=2))
     print(f"wrote {local.relative_to(REPO)} -- ONE HALF of the cohort. Concatenate "
           f"both halves with scripts/foldx_concat.py, which asserts {COHORT_TOTAL:,}.")
+    print(f"  journal {partial.relative_to(REPO)} kept. Delete it once the CSV is "
+          "safe; leaving it there makes a later run refuse to start rather than "
+          "silently rescore.")
 
 
 def _write_csv(rows: list[dict], path: Path) -> None:

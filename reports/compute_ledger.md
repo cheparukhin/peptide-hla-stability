@@ -26,17 +26,30 @@ did not record its own timing, the cell says so rather than carrying a guess.
 
 | Provider / workspace | Allocation ceiling | Spent | Evidence |
 |---|---:|---:|---|
-| Modal `a-cheparukhin` | $15 pilots + $150 production | **$4.41 metered** pre-launch; production **in flight — 136 shards, 13,600 pairs, 0 failures** | `reports/ectodomain_billing_after.json` (`metered_cost`), snapshot 02:39 BST 4 Oct; `production_a-cheparukhin.jsonl` |
-| Modal `sofyaleyn` (`colleague`) | $150 production | **in flight — 129 shards committed, 12,900 pairs, 0 failures** | `production_colleague.jsonl`; metered spend pending (hole **B3**) |
+| Modal `a-cheparukhin` | $15 pilots + $150 production | **$4.41 metered** pre-launch; production **$103.83 derived** — 141/141 shards, 14,083 folds, **0 failures**, 70.1 A10G-h | `reports/ectodomain_billing_after.json` (`metered_cost`), snapshot 02:39 BST 4 Oct; `ectodomain-20261004/production_verification.json` |
+| Modal `sofyaleyn` (`colleague`) | $150 production | production **$108.88 derived** — 141/141 shards, 14,083 folds, **0 failures**, 73.5 A10G-h. No metered figure exists for this workspace at any point | same `production_verification.json`; `production_colleague.jsonl` |
 | Hugging Face | $60 | **pending stage 3** | HACKATHON_PLAN.md, "Budget and GPU decision rule" |
 | Laptop CPU | — | **$0** | stages 1, 2, 2b, 2c, 3c, 4b.1 and all MSA preparation |
 
 **$4.41 was the whole GPU bill for this project up to the production launch**,
 covering a five-GPU hardware benchmark, two engine pilots and a 90-fold matched
-model comparison. Production folding — the only large spend — is **now in
-flight**: **265 of 282 shards committed, 26,500 pairs folded, zero failures** (snapshot at the time of writing; the run is still going). Its realised cost is hole **B3** and is not yet
-known; every production figure below remains a forecast from the pilot's
-measured unit cost.
+model comparison. Production folding — the only large spend — is **complete**:
+**28,166 of 28,166 pairs folded, zero failures**, 282 of 282 shards, **143.6
+A10G-hours** in **7 h 32 min** of wall clock (04:00:22 → 11:32:24 BST, 4
+October), for **$212.71**. Hole **B3** is filled from
+`reports/ectodomain-20261004/production_verification.json`, which also confirms
+the forecast's one stated risk: **10 `fold_shard` containers were in fact
+granted in each workspace**, counted seven minutes into the run.
+
+**The label on $212.71 is `derived`, not `measured`, and the distinction is the
+residual of B3.** It is realised container-hours — counted from the 28,166 fold
+records, not projected from a prefix — multiplied by the measured $1.4812/h
+shape rate (A10G + 4 CPU + 24 GiB, which reproduces exactly from
+`ectodomain_rates.json`: 1.10 + 4 × 0.04730 + 24 × 0.00800). What it is **not**
+is a provider bill: **no post-run metered snapshot was taken in either
+workspace**, so there is no `before`/`after` pair bracketing the production
+window the way the pilot has one. That is tracked as hole **B3a** below, and it
+is why the `measured` label is withheld.
 
 Two reconciliations a reader should be able to perform:
 
@@ -50,6 +63,14 @@ Two reconciliations a reader should be able to perform:
 - The 02:39 snapshot predates the production runner's `::smoke`. The stage 4c
   report estimates that at ~$0.03 per workspace; it is not in the $4.41 and is
   not metered anywhere we captured.
+
+That ~10% agreement is the **only** metered check in this file, and it sits on
+the pilot rather than on production. So the honest reading of the headline is:
+$4.41 is a bill, $212.71 is arithmetic over measured container-hours at a rate
+that has been checked to ~10% once. The one thing that *is* independently
+verified for production is the quantity being billed — 282 shard markers on the
+Volumes and a whole-run scan of all 28,166 fold records, neither of which
+relies on the progress counters (`stage4c_ectodomain_pilot.md` §Verification).
 
 ---
 
@@ -94,9 +115,10 @@ measuring how confident we are, not fitting.
 | 4c | 70 ectodomain MSAs (275 aa) | laptop CPU + public ColabFold | — | 126.7 s | 0 | measured | `ectodomain-20261004/input_provenance.json` (`generation.seconds`) |
 | 4c | CPU preflight and cross-model input checks | laptop CPU | — | — | 0 | not separately recorded | `stage4c_ectodomain_pilot.md` |
 | 4c | **Matched 90-fold pilot** — 45 Boltz-2 (A10G) + 45 ESMFold2 (L40S) | A10G + L40S | — | 8 min 12 s | **1.49** | **metered** | billing snapshots 02:22 / 02:39 |
-| 4c | Production runner `::smoke`, 5 folds, `a-cheparukhin` only | A10G | — | ~2 min | ~0.03 | report estimate | `stage4c_ectodomain_pilot.md` |
-| 4c | **Production fold, all 28,166 pairs** | A10G × 20 workers | **135.6** | ~6.8 h | **200.8** | **forecast** | `stage4c_ectodomain_pilot.md` |
-| 4c | …with the required 25% operational margin | A10G × 20 workers | 169.5 | ~8.5 h | **251** | forecast | same |
+| 4c | Production runner `::smoke`, 5 folds, each workspace | A10G | — | ~2 min | ~0.03 each | report estimate | `stage4c_ectodomain_pilot.md` |
+| 4c | **Production fold, all 28,166 pairs — realised** | A10G × 20 workers (10 per workspace, **confirmed**) | **143.6** | **7 h 32 min** | **212.71** | **derived** (realised container-hours × measured $1.4812/h) | `ectodomain-20261004/production_verification.json` |
+| 4c | …as forecast beforehand, for comparison | A10G × 20 workers | 135.6 | ~6.8 h | 200.8 | forecast — the realised run cost **5.9% more** and took **11% longer** | `stage4c_ectodomain_pilot.md` |
+| 4c | …with the required 25% operational margin | A10G × 20 workers | 169.5 | ~8.5 h | 251 | forecast — not needed; the realised run came in under it | same |
 | 4c | ESMFold2 production — **rejected at the gate, never funded** | L40S | — | — | 884 | forecast, rejected | same |
 | 4c | Structure storage, ~22 GB on two Modal Volumes | Modal Volume | — | — | ~1.98 / month | derived | 22 GB × $0.09/GiB-month, `ectodomain_rates.json` |
 
@@ -106,6 +128,20 @@ and the one with the largest downstream consequence: it ruled out an $884
 production run — on a pre-registered quality gate first, with cost as the third
 of three supporting reasons. **The pilot cost 0.17% of the run it averted**, and
 it was spent before any production compute was booked.
+
+**Where the production forecast was wrong, now that it can be checked.** Cost
+came in at +5.9% ($212.71 against $200.8) and wall clock at +11% (7 h 32 min
+against 6.8 h). The cost error is small and the wall-clock error is structural,
+which is the more useful finding: the forecast divided total GPU-seconds by 10
+workers, and that silently assumes 100% packing. Measured worker utilisation
+was **84% on `a-cheparukhin` and 88% on `colleague`**, and 6.8 h / 0.86 ≈ 7.9 h
+recovers most of the gap; the rest is model load at a measured 67–79 s per
+shard (p50 74 s) against an assumed 57 s. **Dividing GPU-seconds by worker
+count is a cost estimate, not a wall-clock estimate, and the error is
+approximately the packing loss.** One asymmetry worth carrying into future
+shape choices: `sofyaleyn` ran 11% slower per fold (18.75 s vs 16.90 s)
+consistently across all 14,083 of its folds on the same requested shape, image
+and inputs, which is the whole of its $5 higher spend.
 
 MSA preparation — the step most likely to be assumed expensive — cost **$0 and
 under four minutes in total** across both constructs, because it runs on CPU
@@ -199,21 +235,32 @@ declined on evidence, not on price** — the n=5 label correlation is −0.100 a
 p=0.87, so $14.68 would buy a feature with no demonstrated relationship to the
 target.
 
-### Stage 4c.5 structural feature extraction — forecast, approved, not spent
+### Stage 4c.5 structural feature extraction — realised, CPU, ≈$1.18
 
-`stage4c5_features.md` §7.6. **Extraction is Volume-read-bound, not CPU-bound**:
-1.57 s of wall per fold against 0.096 s of CPU, about 6% core utilisation. The
-container was therefore dropped from `cpu=2.0` to `cpu=1.0` — reserving the
-second core was billing an idle one — and throughput moved by only ~8% (326 s vs
-352 s per 1,000 folds), confirming the diagnosis.
+`stage4c5_features.md` §7.6 (design and forecast) and §9.1 (realised).
+**Extraction is Volume-read-bound, not CPU-bound**: 1.57 s of wall per fold
+against 0.096 s of CPU, about 6% core utilisation. The container was therefore
+dropped from `cpu=2.0` to `cpu=1.0` — reserving the second core was billing an
+idle one — and throughput moved by only ~8% (326 s vs 352 s per 1,000 folds),
+confirming the diagnosis.
 
-| Quantity | Per half (14,083 folds) | Both halves |
-|---|---:|---:|
-| Wall at 30 containers | ~12.3 min | ~12.3 min (parallel) |
-| CPU + memory | $0.39 | **$0.78** |
+| Profile | Extracted | Failed | Wall | Realised | Forecast |
+|---|---:|---:|---:|---:|---:|
+| `a-cheparukhin` | 14,083 / 14,083 | **0** | 1,044.9 s | ~$0.55 | $0.39 |
+| `colleague` | 14,083 / 14,083 | **0** | 1,206.1 s | ~$0.63 | $0.39 |
+| **Total** | **28,166** | **0** | — | **≈$1.18** | **$0.78** |
 
-Spend so far on this workstream — two smokes and two 1,000-fold passes — is
-**under $0.15**.
+Realised figures are `derived`: measured container-hours at the metered CPU and
+memory rates. **The 51% overrun is chunk sizing, not the data** — 14,083 folds
+at `chunk=400` is 36 chunks against 30 containers, so a second wave ran only 6
+chunks wide and still cost a full wave of wall time. `chunk = ceil(n /
+containers)` would have been one wave at roughly $0.70. The failure rate of
+0.000 is **measured after the run, not projected from a prefix**: a fold with an
+unexpected layout becomes a recorded `status` row rather than a crash, so a
+late-shard surprise would have been counted.
+
+Earlier spend on this workstream — two smokes and two 1,000-fold passes — was
+**under $0.15**, and is not inside the $1.18.
 
 ### Stage 3b, the ESM auxiliary-affinity arms — measured, CPU, $0
 
@@ -276,7 +323,7 @@ Both ran to completion on the laptop while the GPU budget sat untouched.
 | 7b | Leave-allele-out: 68 folds × 6 networks, a second evaluation contract end to end | **408** | 36.2 min on 2 workers | 0 |
 
 **538 networks and two complete experiments for about an hour of laptop CPU**,
-against $200.8 forecast for one structural fold. That ratio is the submission's
+against $212.71 realised for one structural fold. That ratio is the submission's
 argument in miniature: the cheap arms are not cheap *because they are small* —
 they are cheap because inference on a one-hot MLP is a matrix multiply, and
 nothing about running 538 of them changes the order of magnitude.
@@ -304,7 +351,7 @@ what the harness actually did is what fixed it.
 | Stage | Item | Owner | What will fill it |
 |---|---|---|---|
 | 3 | ESM-2 **regression head** fit and inference | `esm-arm` | Head fit seconds, ensemble member count, inference seconds per 1,000 rows (hole **E1b**) |
-| 5 | Structural feature **heads** (the extraction forecast is above) | blocked on 4c production | Head fit time, extraction failures, realised extraction spend |
+| 5 | Structural feature **heads** | laptop CPU, stage 5 | Head fit time and bootstrap time for the six structural arms. Extraction spend and failures are no longer open — ≈$1.18 realised, 0 failures, above |
 | 6 | Final **test** scoring and paired bootstraps | `eval-harness` | CPU-minutes for the single test pass. **Budget from the measured validation run: ~75 minutes on one core per arm set.** |
 | 7a | *(filled — see below)* | — | — |
 
@@ -362,9 +409,11 @@ the measured A10G worker rate:
 | A10G + 4 CPU + 24 GiB | $1.4812 / h | measured, stage 4c |
 | **Per fold** | **$0.0069** | 16.76 × 1.4812 / 3600 |
 | **Per 1,000 predictions, fold only** | **$6.90** | measured unit × 1,000 |
-| Per 1,000, including shard startup | $7.13 | $200.8 forecast / 28,166 |
+| **Per 1,000, as realised over the whole cohort** | **$7.55** | **$212.71 realised / 28,166** — includes shard startup and container turnover |
+| Per 1,000, as forecast including shard startup | $7.13 | $200.8 forecast / 28,166 |
 | Per 1,000, at the 25% operational margin | $8.91 | $251 / 28,166 |
-| GPU-hours per 1,000 predictions | 4.66 | 16,760 s / 3,600 |
+| GPU-hours per 1,000 predictions, fold only | 4.66 | 16,760 s / 3,600 |
+| **GPU-hours per 1,000, as realised** | **5.10** | **143.6 realised A10G-h / 28,166** |
 
 ESMFold2, for comparison only — it failed its gate and was never run in
 production:
@@ -385,7 +434,7 @@ production:
 | **Sequence ensemble, 30 networks** | **$9.6 × 10⁻⁷** end to end | 0 | **measured** (stage 3 harness) | **0.693** |
 | Sequence ensemble, full domain | $7.9 × 10⁻⁷ | 0 | derived | 0.653 |
 | **ESM-2 (frozen representations)** | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** end to end | 0 (laptop `mps`) | **measured** | **0.683** (−0.0101 vs baseline; rules out 0.05) |
-| **Boltz-2 structural (arm B)** | **$6.90** measured / $8.91 with margin | 4.66 | measured unit cost | **‹HOLE B2›** |
+| **Boltz-2 structural (arm B)** | **$6.90** fold only / **$7.55 as realised** over the cohort | 4.66 fold only / 5.10 realised | **measured unit cost; cohort figure realised** | **‹HOLE B2›** |
 | ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.6 of SUBMISSION) |
 | *ESMFold2 structural (rejected)* | *$31.40* | *11.8* | *forecast only* | *not run* |
 
@@ -454,12 +503,13 @@ number — is why every figure above carries its source.
 | ~~E1a~~ | ~~ESM-2 embedding extraction cost~~ | — | **Filled**: `reports/stage3_embedding_cost.csv`, three checkpoints, measured |
 | **E1b** | ESM-2 **head** inference cost per 1,000 new pairs | `esm-arm` | Head inference seconds per 1,000 rows, ensemble member count, and which checkpoint/layer/representation was selected (per-position vs pooled changes the head width) |
 | **E2** | ESM-2 validation accuracy | `esm-arm` | Median per-allele ρ on validation under `cv_folds()` with matched ensemble size, and the paired CI against `preds/seq_ensemble_pep_pseudo.csv` |
-| **B1** | Stage 5 feature-extraction cost | blocked on 4c production | Modal CPU-hours with the Volume mounted, per-pair extraction time, coverage and failure counts |
+| ~~B1~~ | ~~Stage 5 feature-extraction cost~~ | — | **Filled**: ≈$1.18 derived over 28,166 / 28,166 extractions, **0 failures**, 1,044.9 s + 1,206.1 s of 30-container wall, 1.57 s of wall per fold against 0.096 s of CPU. `stage4c5_features.md` §9.1 and §Stage 4c.5 above |
 | **B2** | Boltz-2 structural validation accuracy | blocked on 4c production + stage 5 | Median per-allele ρ on validation, and the paired CI against the sequence ensemble |
-| **B3** | Actual production spend | the Modal production session | **In flight**: 265 of 282 shards committed, 26,500 pairs, 0 failures. Still needed — metered `before`/`after` billing snapshots per workspace, realised GPU-hours, realised wall clock, final failure count, and whether each workspace was actually granted 10 concurrent A10Gs |
+| ~~B3~~ | ~~Actual production spend~~ | — | **Filled**: 282/282 shards, **28,166 / 28,166 folded, 0 failures**, **143.6 A10G-h**, **7 h 32 min** wall (04:00:22 → 11:32:24 BST), **$212.71** ($103.83 + $108.88), and **10 concurrent `fold_shard` containers confirmed granted in each workspace**. `ectodomain-20261004/production_verification.json` |
+| **B3a** | The **metered** reconciliation of that $212.71 | nobody — the window has closed | A post-run `before`/`after` metered billing snapshot per workspace, bracketing 04:00–11:32 BST. **Neither was taken**, so $212.71 is labelled `derived` (realised container-hours × the measured $1.4812/h shape rate) and not `measured`. The only metered snapshots in the repo are the pilot's, at 02:22 and 02:39, and there is no metered figure for `sofyaleyn` at any point. A snapshot taken now would include every subsequent CPU job and could not be attributed to the fold |
 | **S6** | Stage 6 scoring cost | `eval-harness` | CPU-minutes for the single test pass plus the paired cluster bootstraps |
 | **S7a** | Censored (Tobit) likelihood cost | stage 7a | CPU-minutes for 60 networks (2 arms × 30) plus the paired bootstrap; protocol is predeclared in `stage7_censored.md`, §6 is still "pending" |
-| **R1** | **Realised** spend for the two approved-but-unspent items | stage 4c.5 / stage 5 | Actual cost of the ProteinMPNN QC sample (forecast $1.04) and the 4c.5 full extraction pass (forecast $0.78), against those forecasts. Both are gated on the fold completing, and the QC sample additionally on `::smoke` in each workspace |
+| **R1** | **Realised** spend for the two approved-but-unspent items — **half filled** | stage 5 | The 4c.5 full extraction pass is **done**: ≈$1.18 against a $0.78 forecast (see **B1**). The **ProteinMPNN QC sample has not run** — no `reports/stage5_inverse_folding_qcsample_*.csv` exists — so its realised cost against the $1.04 forecast is still open. Its blocker on the fold completing is now cleared; relaunch command is in `stage5_inverse_folding.md`. **Check for the output file before relaunching**: a run was dispatched and the local client was killed at handoff, so a blind relaunch pays twice |
 
 **No workspace-access blocker remains.** `::forecast --profile colleague`
 created both functions in `sofyaleyn` (`ap-GUceVVHdiPHrNHQlCz3fFY`). That check
@@ -468,15 +518,17 @@ workspace without a verified payment method cannot declare one at all. Stage 4c
 had ruled that out for the GPU fold app but never for this one, and it would
 otherwise have surfaced at fold completion with everyone waiting.
 
-`reports/ectodomain-20261004/production_<profile>.jsonl` are where B3 will land.
-They are **no longer empty**: 136 and 129 shard records respectively, 26,500
-pairs folded, **zero failures** across both halves at the time of writing. The
-missing piece is the metered cost, which needs post-run billing snapshots.
+`reports/ectodomain-20261004/production_<profile>.jsonl` are where B3 landed:
+141 shard records each, 14,083 folds each, **zero failures** across both halves.
+`production_verification.json` is the whole-run scan over all 28,166 records and
+is the source for every realised production figure in this file.
 
-Until **B3** lands, every production figure in this file is a forecast from the
-pilot's measured unit cost and is labelled as such. The forecast's own stated
-risk is concurrency, not price: if a workspace is granted fewer than 10 A10Gs
-the wall clock scales linearly, while the total cost does not move.
+**Production figures in this file are now realised, not forecast** — with the
+labels kept apart. The forecast's own stated risk was concurrency rather than
+price, and that risk did not materialise: 10 A10Gs were granted in each
+workspace. The error that *did* show up was the one the forecast did not flag —
+wall clock, by 11%, from packing loss rather than from price. Price was right to
+5.9%. See §2, "Where the production forecast was wrong".
 
 ---
 
@@ -486,11 +538,14 @@ the wall clock scales linearly, while the total cost does not move.
 # figures and the accuracy column
 .venv/bin/python reports/figures/make_figures.py
 
-# the unit costs the structural forecast is built from
-cat reports/ectodomain_rates.json            # Modal published per-hour rates
-cat reports/ectodomain_billing_before.json   # metered workspace total, 02:22 BST
-cat reports/ectodomain_billing_after.json    # metered workspace total, 02:39 BST
+# the unit costs every structural figure is built from
+cat reports/ectodomain_rates.json            # Modal per-hour rates
+cat reports/ectodomain_billing_before.json   # metered a-cheparukhin total, 02:22 BST (pilot window only)
+cat reports/ectodomain_billing_after.json    # metered a-cheparukhin total, 02:39 BST (pilot window only)
 python scripts/gpu_decision.py --panel 2000 --workers 10 --gib 16   # two-chain table
+
+# the realised production run: folds, failures, GPU-hours, wall clock, spend
+cat reports/ectodomain-20261004/production_verification.json
 
 # the production forecast, without spawning any GPU
 MODAL_PROFILE=<profile> modal run modal_app/ectodomain_production.py::production \

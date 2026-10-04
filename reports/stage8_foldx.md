@@ -584,3 +584,255 @@ figure. But these are two independent failures to extract an increment from
 these structures, and the cost of a third attempt rose rather than fell once
 contention was measured. R2 is a real and reportable result about empirical
 energy functions on predicted models, and it is already in hand.
+
+### R9. The evaluation step exists; a 1.88x cost defect in the launch shape
+
+**Nothing was spent in this session.** Modal was unreachable from it
+(`api.modal.com:443` refused by the session's network policy), so neither the
+contention pilot nor the production pass ran. Stage total remains the ~$0.33 of
+R5. The arm is **still not scored** — R4's forecast is still derived, not
+measured, and the repair arm's own contention factor is still the open
+measurement R8 names.
+
+What this session did produce is the evaluation step, and a cost result that
+changes the launch command.
+
+#### The defect: a chunk smaller than the pool bills idle cores
+
+`score_chunk` runs `Pool(procs)` over **one chunk**. So a chunk smaller than
+the pool leaves `procs - chunk` reserved cores idle *while work remains*, and
+Modal bills a reserved core whether or not it is busy. The command this stage's
+own handoff recommended — `--procs 64 --chunk 32` — therefore fills **half** of
+every container:
+
+| Shape | Pool fill | Wall, per half | Cost, both halves |
+|---|---:|---:|---:|
+| 150x64c/64p, `--chunk 32` | **50%** | 0.41 h | **$386.24** |
+| 150x64c/64p, `--chunk 64` | 100% | 0.22 h | **$204.96** |
+| 40x64c/64p, `--chunk 64` | 100% | 0.74 h | $187.60 |
+
+**$386 is past this stage's own $250 stop threshold**, and it would not have
+been noticed: `scripts/foldx_forecast.py` modelled perfect packing, so it
+priced that exact command at $205. The forecast and the shape disagreed by
+**1.88x** and the forecast was the optimistic one.
+
+This is the same class of error as the 4.6x rate assumption this project
+already caught, in the tool built to prevent it. Two things were wrong at once
+— the launch shape, and the instrument that would have caught the launch shape.
+
+**R4's figures stand, but only under a condition R4 did not state:** they are
+correct for `chunk >= procs`. They were computed with no chunk parameter at
+all, which silently assumed the pool fills.
+
+Both holes are now closed, in code rather than in prose:
+
+- `score` **refuses** `chunk < procs`, naming the fill fraction and the cost
+  multiple in the assertion message.
+- `forecast()` takes `chunk`, reports a `pool_fill` column, and warns when the
+  pool is under-filled. Omitting `chunk` still assumes perfect packing, which
+  is only right when it holds, so the CLI says so explicitly.
+- Four tests pin the arithmetic and both guards.
+
+#### A client death was losing the whole half
+
+`score` accumulated every row in **client** memory and wrote the CSV once, at
+the end. A dropped connection at minute 40 of the repaired arm therefore
+discarded about **$92** of scoring that had already been billed, and `--detach`
+does not help: detaching keeps the containers alive, but nothing is collecting
+their results. Each completed chunk is now appended and `fsync`ed to
+`<output>.partial.jsonl` before the run continues; `--resume` restarts from the
+journal; and a journal left behind makes the next run **refuse to start**
+rather than silently rescore at this arm's price.
+
+#### `scripts/foldx_arm.py`, the step section 5 specifies
+
+Written and verified end to end, mirroring `scripts/stage5_structural_arm.py`
+and importing `cv_folds`, `eligible_alleles`, `paired_cluster_bootstrap`,
+`describe_delta` and `score` rather than reimplementing any of them. It
+implements section 5 as predeclared: arm A (`foldx`), arm B (`seq+foldx`, the
+headline), the `seq_only` control that makes a loss attributable to features
+rather than tuning, 30 networks as 5 folds x 6 seeds asserted at run time, the
+section 5.3 ladders, the paired cluster bootstrap at 2,000 resamples under seed
+`20261003`, the declared sequence fallback for non-`ok` rows, and the section
+5.5.1 affinity diagnostic. A `diagnose` mode drops the test split before
+correlating anything.
+
+Verified on a synthetic feature table carrying the real 29-column FoldX header:
+30 networks per arm, the fallback split accounted (117 scored, 2,700 fallback),
+all four output tables written, `describe_delta` returning the predeclared
+verdict strings. **Those synthetic outputs were then deleted**, so no file in
+`reports/` carries a number that did not come from FoldX.
+
+One defect found in it and fixed before it could matter: the interior gate
+raised **before** the ladder CSV was written, destroying exactly the dev-MSE
+evidence needed to tell a truncated ladder from a flat objective — the
+distinction section 5.3 requires be measured rather than assumed. Measurements
+are now written first; `stage8_foldx_selected.json` is still withheld on a
+boundary hit, so `ensemble` cannot fit a handicapped arm.
+
+#### The predeclared L2 ladder selects interior on real data
+
+Section 5.3's ladder is one decade below stage 5's, which raises a fair
+question for the two sequence-containing arms, whose design matrix is
+dominated by 860 sparse sequence columns rather than the ~28 dense FoldX ones.
+Measured on the full 19,716 training rows, `pep_pseudo`/`blosum`, fold 0 as
+dev — no FoldX data needed, so this was free:
+
+| MLP L2 | Dev MSE |
+|---|---:|
+| 1e-6 | 0.54807 |
+| 1e-5 | 0.55128 |
+| 1e-4 | 0.56376 |
+| **1e-3** | **0.52095** |
+| 1e-2 | 0.52125 |
+| 1e-1 | 0.81417 |
+
+The declared ladder `1e-4 … 1e-1` selects **1e-3**, which is **interior**, and
+the objective degrades at both ends. The gate should not block the
+sequence-containing arms. Worth recording alongside it: 1e-3 and 1e-2 differ by
+**0.0003**, so the objective is nearly flat across that pair — the exact
+condition under which `check_interior` cannot distinguish a plateau from a
+truncation, and the reason the per-rung MSEs are now written to
+`reports/stage8_foldx_ladder.csv` before the gate fires.
+
+Arm A's ladder cannot be checked this way: it needs FoldX columns that do not
+exist yet.
+
+#### State
+
+Tests **44 to 64 passing** (`.venv/bin/python -m pytest tests/test_foldx.py -q`).
+`data/rasmussen_et_al_dataset.csv` checksum intact. What remains is unchanged
+from R8 — the contention pilot, the production pass, then `foldx_concat.py` and
+`foldx_arm.py` — with one correction to the command R8 implies: **`--chunk`
+must be at least `--procs`**, and the pilot should be run at the production
+shape (`--cpu 64 --procs 64`), because a 32-process pilot cannot see
+64-process contention any more than a 5-process smoke could see 32.
+
+### R10. The L2 selection is noise-driven on the sequence block, and the interior gate will fire on it
+
+Found while verifying the `foldx_concat.py` → `foldx_arm.py` seam at full scale.
+It concerns the **`seq_only` control**, which uses **no FoldX column at all**,
+so it is a result about real sequence data and is not an artefact of the
+synthetic table the seam was tested with. It applies to arm B by extension,
+because arm B's design matrix is the same 860 sequence columns plus 29 FoldX
+ones.
+
+Two runs of the same ladder, on the same 19,716 training rows, the same fold 0
+dev set of 3,944 rows and the same features, disagreed about the selection: one
+chose `1e-3` (interior, gate passes), the other `1e-4` (edge, gate fires). The
+only difference was **row order** — `load_with_splits()` order versus the
+feature table's cohort order, which is what `foldx_arm` actually sees, and
+which reaches the minibatch order of the MLP.
+
+Measured, three seeds per rung, dev MSE:
+
+| MLP L2 | Labels order (seeds 0,1,2) | mean ± sd | Feature-table order | mean ± sd |
+|---|---|---:|---|---:|
+| 1e-4 | 0.5638, 0.5461, 0.5296 | 0.5465 ± 0.0139 | 0.5337, 0.5358, 0.5376 | 0.5357 ± 0.0016 |
+| 1e-3 | 0.5210, 0.5257, 0.5286 | **0.5251** ± 0.0031 | 0.5364, 0.5270, 0.5289 | 0.5308 ± 0.0041 |
+| 1e-2 | 0.5212, 0.5277, 0.5434 | 0.5308 ± 0.0093 | 0.5458, 0.5394, 0.5283 | 0.5379 ± 0.0073 |
+
+**The between-rung differences are the same size as the within-rung seed
+noise.** Spread of the means across the ladder is 0.0214 in labels order and
+0.0071 in feature-table order, against a seed-to-seed sd that reaches 0.0139 at
+a single rung. The seed-0 column — the one `grid` actually selects on, following
+stage 5 — picks `1e-3` in labels order (0.5210 against 0.5638 and 0.5212) and
+`1e-4` in feature-table order (0.5337 against 0.5364 and 0.5458), reproducing
+the disagreement exactly.
+
+So the objective is **flat relative to its own noise**, and the single-seed
+argmin lands wherever that noise puts it, including on a boundary. This is the
+precise failure mode section 5.3 names in advance: `check_interior` reads
+"selection at an edge" as "ladder truncated", and here it would be reading
+sampling noise. **Extending the ladder would be the wrong response** — a flat
+objective has no interior optimum to find, so widening chases boundaries
+indefinitely.
+
+This supersedes the optimistic reading in R9, which measured one seed in one
+row order and concluded the gate "should not block the sequence-containing
+arms". With three seeds and both orders measured, the correct statement is that
+the gate's outcome on those arms is not determined by the data.
+
+**Not resolved here, deliberately.** The repair is a change to how the
+selection objective is computed, it moves the headline, and the obvious
+candidates each cost something real:
+
+- **Select on the mean dev MSE over the ensemble's own six seeds.** Stable, and
+  arguably what the protocol intends, since the arm *is* a 30-network ensemble
+  and tuning on one network is the anomaly. But stage 5 selects on seed 0, so
+  this breaks procedural parity with the comparator — and parity has been this
+  stage's most expensive invariant to violate.
+- **A 1-SE / parsimony rule**, taking the most-regularised rung within one
+  standard error of the best. Standard, and the right shape for a flat
+  objective. But it is a new rule, and choosing it now, with these numbers
+  visible, is choosing a threshold after seeing the result it decides — exactly
+  what section 5.3 refuses to do for the tolerance-based fix it declined to
+  implement.
+
+Recording the measurement is unambiguous; picking between those is a protocol
+decision, and `reports/stage8_foldx_ladder.csv` now carries the per-rung
+numbers so it can be made from data rather than from reflex. **Nothing above
+the Results line has been changed to accommodate this.**
+
+No cost: all of it is local CPU on data already in the repository.
+
+### R11. Decision on R10: select on the mean over the ensemble's own seeds
+
+R10 left the repair open because it moves the headline. Decided here, with the
+reasoning recorded so it can be overruled on its merits.
+
+**The L2 grid is now estimated as the mean dev MSE over the six seeds the
+ensemble already uses (`SEEDS = 0..5`), rather than on seed 0 alone.** Applied
+identically to arm A, arm B and the `seq_only` control.
+
+**Why this and not the alternatives.** The three rejected options each fail on
+a rule this project already wrote down:
+
+- **A 1-SE or tolerance rule** biases toward more regularisation. It is a
+  *directional* choice, and choosing it now — with R10's table visible — would
+  be choosing a threshold after seeing the result it decides. Section 5.3
+  declined its own tolerance-based fix for precisely that reason, and that
+  refusal does not stop applying because the numbers are now inconvenient.
+- **Leaving it** produces a gate verdict that R10 shows is sampling noise, and
+  the protocol's prescribed response to a boundary hit — extend the ladder — is
+  known to be wrong for a flat objective. That is not pre-registration, it is
+  pre-registration applied past the point where its premise holds.
+- **Fixing only the row order** is refuted by the measurement it would rely on:
+  seed-to-seed sd reaches 0.0139 at a single rung, against between-rung gaps of
+  0.0071–0.0214. Stabilising the order leaves the selection noise-dominated.
+
+**Why averaging is not a protocol change.** It is a lower-variance estimator of
+**the same objective at the same four predeclared points**. The tuning budget
+is untouched: still 4 MLP points and 5 ridge alphas, still the §5.3 ladders,
+still one decade below stage 5. It is **direction-neutral** — averaging cannot
+favour stronger or weaker shrinkage — so it is not capable of being tuned
+toward an outcome, which is the specific hazard §5.3 guards against. And it is
+the identical estimator for every arm, which is the parity invariant that has
+actually cost this project something when broken (0.109 SCC on the ESM arm).
+
+It is also arguably what the protocol intended. The arm **is** a 30-network
+ensemble; tuning it on a single network was the anomaly, not the fix.
+
+**The deviation from stage 5, stated plainly.** Stage 5 selects on seed 0, so
+this is a procedural difference from that script. It is not a difference in
+budget, range, ensemble size, folds, bootstrap or metric, and the headline
+comparison is against the frozen `preds/seq_ensemble_pep_pseudo.csv`, not
+against stage 5. Anyone reading the two side by side should know stage 8's
+selection is the less noisy of the two, not the more permissive.
+
+**What is now reported alongside every selection**, so flatness is auditable
+rather than argued:
+
+- `reports/stage8_foldx_ladder.csv` carries one row per (arm, rung, **seed**)
+  plus a `mean` row with its sd and seed count.
+- `reports/stage8_foldx_grid.csv` carries the ladder spread and the worst
+  within-rung seed sd.
+- `grid` prints both and marks a ladder `FLAT vs noise` when the sd is the
+  larger.
+- A boundary hit now says **whether widening would help**: a gradient large
+  next to the noise means the ladder looks genuinely truncated; noise larger
+  than the gradient means it does not, and the message says so instead of
+  recommending a wider ladder.
+
+Cost: `grid` runs 6x more fits, all local CPU, no cloud spend. Tests **64 to
+67**. Nothing above the Results line has changed.

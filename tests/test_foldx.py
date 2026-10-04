@@ -612,3 +612,344 @@ def test_repair_command_rejects_an_unknown_interface_scope():
     with pytest.raises(ValueError, match="repair_interface"):
         foldx.repair_command("/opt/foldx/fx", "x.pdb", "/in", "/out",
                              repair_interface="INTERFACE")
+
+
+# ---------------------------------------------------------------------------
+# scripts/foldx_arm.py -- the evaluation step
+#
+# Every assert below guards something that would still produce a well-formed
+# CSV full of plausible numbers if it broke. A scoring bug does not crash; it
+# publishes. The three that matter most are the split join (joining on
+# `pair_id` leaks training rows into validation and inflates the arm), the
+# ensemble count (ensembling alone is worth ~0.090 median SCC here, so an
+# under-ensembled arm loses on size and reads as a verdict on FoldX), and the
+# feature/provenance boundary (a binary SHA or a timing column in the design
+# matrix is not an energy term).
+# ---------------------------------------------------------------------------
+
+_ARM = REPO / "scripts" / "foldx_arm.py"
+
+
+@pytest.fixture(scope="module")
+def arm():
+    spec = importlib.util.spec_from_file_location("foldx_arm", _ARM)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_arm_never_loads_the_test_split(arm):
+    """Validation only. The test split is scored once, at stage 6."""
+    source = _ARM.read_text()
+    assert 'choices=["val"]' in source, (
+        "--split must not accept anything but val"
+    )
+    # No literal comparison against the test split anywhere in the module.
+    tree = ast.parse(source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and node.value == "test":
+            raise AssertionError(
+                "a bare 'test' literal appears in foldx_arm.py -- this "
+                "workstream must never select the test split"
+            )
+
+
+def test_arm_joins_on_allele_peptide_not_pair_id(arm):
+    """`pair_id` is positional into the raw CSV; joining on it leaks."""
+    source = ast.parse(_ARM.read_text())
+    merges = []
+    for node in ast.walk(source):
+        if isinstance(node, ast.Call) and getattr(node.func, "attr", "") == "merge":
+            for kw in node.keywords:
+                if kw.arg == "on":
+                    merges.append(ast.literal_eval(kw.value))
+    assert merges, "no merge found in foldx_arm.py"
+    for on in merges:
+        assert "pair_id" not in on, (
+            f"merge on {on} -- joining the feature table on pair_id joins "
+            "positionally into the raw CSV and leaks training rows into "
+            "validation. Join on (allele, peptide)."
+        )
+        assert set(on) >= {"allele", "peptide"}
+
+
+def test_arm_asserts_ensemble_parity(arm):
+    """30 networks, from 5 folds x 6 seeds, checked at run time."""
+    assert arm.PARITY_NETWORKS == 30
+    assert arm.N_FOLDS == 5
+    assert arm.SEEDS == (0, 1, 2, 3, 4, 5)
+    assert arm.N_FOLDS * len(arm.SEEDS) == arm.PARITY_NETWORKS
+    assert "PARITY_NETWORKS" in _ARM.read_text().split("def mode_ensemble")[1], (
+        "mode_ensemble must assert the network count, not merely document it"
+    )
+
+
+def test_arm_ladders_are_one_decade_below_stage5_at_equal_budget():
+    """Protocol 5.3: equal *budget*, scale-appropriate *values*.
+
+    A transplanted ladder cost the ESM arm 0.109 median SCC and nearly faked a
+    negative result, so this is checked rather than trusted. Stage 5 is the
+    comparator for the budget; the values sit one decade lower because the
+    FoldX block is ~28 standardised dense columns against stage 5's 109.
+    """
+    spec = importlib.util.spec_from_file_location(
+        "stage5_structural_arm", REPO / "scripts" / "stage5_structural_arm.py")
+    stage5 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(stage5)
+    spec8 = importlib.util.spec_from_file_location("foldx_arm", _ARM)
+    arm = importlib.util.module_from_spec(spec8)
+    spec8.loader.exec_module(arm)
+
+    assert len(arm.FOLDX_L2_GRID) == len(stage5.STRUCT_L2_GRID)
+    assert len(arm.FOLDX_ALPHA_GRID) == len(stage5.STRUCT_ALPHA_GRID)
+    for mine, theirs in zip(arm.FOLDX_L2_GRID, stage5.STRUCT_L2_GRID):
+        assert mine == pytest.approx(theirs / 10)
+    for mine, theirs in zip(arm.FOLDX_ALPHA_GRID, stage5.STRUCT_ALPHA_GRID):
+        assert mine == pytest.approx(theirs / 10)
+
+
+def test_arm_ladders_can_pass_an_interior_check(arm):
+    """A 2-point ladder can never satisfy min < selected < max."""
+    for ladder in (arm.FOLDX_L2_GRID, arm.FOLDX_ALPHA_GRID):
+        assert len(ladder) >= 3, (
+            "a ladder shortened to two points can never pass check_interior, "
+            "so it would gate the arm unconditionally"
+        )
+
+
+def test_arm_bootstrap_matches_the_predeclared_protocol(arm):
+    """2,000 resamples, seed 20261003 (protocol 5.4)."""
+    assert arm.N_BOOT == 2000
+    assert arm.BOOT_SEED == 20261003
+
+
+def test_interior_check_records_before_it_refuses(arm):
+    """The gate must not destroy the evidence needed to overrule it.
+
+    `check_interior` cannot distinguish a truncated ladder from a flat
+    objective, so the protocol requires measuring the objective before
+    concluding the ladder is too narrow. If the exception fired before the
+    ladder CSV was written, that measurement would be gone exactly when it was
+    needed -- which is how this script behaved when first written.
+    """
+    rows = arm.check_interior("foldx", {"g (mlp l2)": (1e-4, arm.FOLDX_L2_GRID, "l2")})
+    assert rows[0]["interior"] is False, "an edge selection must be recorded"
+    # Recording does not raise...
+    assert rows[0]["gated"] is True
+    # ...and enforcing does, carrying the measured spread into the message.
+    with pytest.raises(SystemExit, match="flat"):
+        arm.enforce_interior(rows, {"g (mlp l2)": {"spread": 0.0001}})
+    # In mode_grid, the write happens before the gate.
+    body = _ARM.read_text().split("def mode_grid")[1].split("def ")[0]
+    assert body.index("stage8_foldx_ladder.csv") < body.index("enforce_interior("), (
+        "the ladder measurements must be written before the interior gate "
+        "fires, or a boundary hit destroys its own evidence"
+    )
+
+
+def test_selections_file_is_not_written_for_a_handicapped_arm(arm):
+    """`ensemble` fits from selected.json, so it must not exist for an edge hit."""
+    body = _ARM.read_text().split("def mode_grid")[1].split("def ")[0]
+    assert body.index("enforce_interior(") < body.index("stage8_foldx_selected.json")
+
+
+def test_provenance_columns_are_not_features(arm):
+    """A binary SHA is not an energy term, and a timing column is not biology."""
+    import pandas as pd
+
+    frame = pd.DataFrame({
+        "allele": ["HLA-A*01:01"], "peptide": ["AMVLDKKLY"],
+        "foldx_interaction_energy": [-18.0],
+        "foldx_van_der_waals": [-15.9],
+        "foldx_repair": [True],
+        "foldx_binary_sha256": ["a" * 64],
+        "total_s": [246.0], "analyse_s": [3.6], "n_atoms": [5000],
+        "status": ["ok"],
+    })
+    cols = arm.feature_columns(frame)
+    assert cols == ["foldx_interaction_energy", "foldx_van_der_waals"]
+    for banned in ("total_s", "analyse_s", "n_atoms", "foldx_repair",
+                   "foldx_binary_sha256"):
+        assert banned not in cols
+
+
+def test_an_unclassified_numeric_column_is_an_error(arm):
+    """A column added upstream must force a decision, not vanish silently."""
+    import pandas as pd
+
+    frame = pd.DataFrame({
+        "allele": ["HLA-A*01:01"], "peptide": ["AMVLDKKLY"],
+        "foldx_interaction_energy": [-18.0],
+        "some_new_number": [1.0],
+        "status": ["ok"],
+    })
+    with pytest.raises(SystemExit, match="unclassified"):
+        arm.feature_columns(frame)
+
+
+def test_arm_b_differs_from_the_control_by_exactly_the_foldx_block(arm):
+    """Arm B is the headline; `seq_only` is what makes a loss attributable."""
+    names = {name: (cols, use_seq) for name, cols, use_seq in arm.arms(["foldx_x"])}
+    assert names["foldx"] == ([], False) or names["foldx"][1] is False
+    assert names["seq_only"] == ([], True)
+    assert names["seq+foldx"] == (["foldx_x"], True)
+    # The control and arm B must share the sequence block, so the only
+    # difference between them is the FoldX columns.
+    assert names["seq_only"][1] is names["seq+foldx"][1] is True
+
+
+def test_awkward_alleles_are_matched_with_the_c67s_suffix(arm):
+    """`HLA-B*14:01` matches nothing; the cohort spells it `HLA-B*14:01(C67S)`.
+
+    This check failed silently once already (R7) and reported the engineered
+    constructs as absent. With the suffix the counts reproduce protocol 6.
+    """
+    import pandas as pd
+
+    cohort = pd.read_csv(REPO / "data" / "structural_cohort.csv")
+    masks = arm._awkward_cases(cohort)
+    assert int(masks["c67s"].sum()) == 1135, (
+        "C67S row count must reproduce protocol section 6; a bare-name isin "
+        "silently matches nothing"
+    )
+    assert int(masks["borrowed_alpha3"].sum()) == 1103
+
+
+def test_failed_rows_take_the_fallback_rather_than_being_dropped(arm):
+    """Protocol 3.4: a FoldX failure is data, not a reason to shrink the cohort."""
+    assert arm.FALLBACK_PRED.name == "seq_ensemble_pep_pseudo.csv"
+    body = _ARM.read_text()
+    assert "FALLBACK_PRED" in body.split("def mode_ensemble")[1]
+
+
+def test_arm_never_imports_modal(arm):
+    """Scoring is local CPU. Nothing here should be able to spend money."""
+    source = _ARM.read_text()
+    assert "import modal" not in source
+    assert "modal" not in {
+        node.names[0].name.split(".")[0]
+        for node in ast.walk(ast.parse(source))
+        if isinstance(node, ast.Import)
+    }
+
+
+def test_score_journals_each_chunk_before_continuing():
+    """A client death must not discard work that has already been billed.
+
+    `score` accumulates rows on the client, and the repaired arm runs for about
+    an hour per half. Without a journal written as chunks land, a dropped
+    connection loses roughly $92 of completed scoring, and `--detach` does not
+    help: it keeps the containers alive, but nothing is collecting results.
+    """
+    body = APP.read_text().split("def score(")[1].split("\ndef ")[0]
+    assert "partial.jsonl" in body, "no journal path in score()"
+    # The journal write must precede the in-memory accumulation, so a crash
+    # between the two cannot lose a chunk that was reported as done.
+    assert body.index("journal.write(") < body.index("out_rows.extend(part)")
+    assert "fsync" in body, (
+        "a buffered journal that is never fsynced can lose its tail in exactly "
+        "the crash it exists to survive"
+    )
+    assert "resume" in body
+
+
+def test_score_refuses_to_silently_rescore_over_a_journal():
+    """At this arm's cost, rescoring must be asked for, never defaulted to."""
+    body = APP.read_text().split("def score(")[1].split("\ndef ")[0]
+    assert "--resume to continue" in body
+    guard = body.split("elif partial.exists():")[1].split("\n\n")[0]
+    assert "SystemExit" in guard or "raise" in guard
+
+
+def test_score_refuses_a_chunk_that_cannot_fill_the_pool():
+    """The 88% overspend: chunk 32 on procs 64 bills half the cores for idling.
+
+    `score_chunk` runs `Pool(procs)` over **one chunk**, so a chunk smaller
+    than the pool leaves `procs - chunk` reserved cores idle while work
+    remains, and Modal bills a reserved core whether or not it is busy. The
+    handoff's own suggested command had this shape: it prices at $205 and costs
+    $386, straight through this stage's $250 stop threshold.
+    """
+    body = APP.read_text().split("def score(")[1].split("\ndef ")[0]
+    assert "chunk >= procs" in body, (
+        "score() must refuse an under-filled pool, not merely document it"
+    )
+
+
+def test_score_chunk_pools_over_exactly_one_chunk():
+    """The premise of the guard above, asserted rather than remembered."""
+    body = APP.read_text().split("def score_chunk(")[1].split("\ndef ")[0]
+    assert "Pool(procs)" in body
+    # The pool's work is the chunk it was handed, so len(folders) < procs idles.
+    assert "for f in folders" in body
+
+
+def test_forecast_models_pool_fill_not_perfect_packing():
+    """A forecaster that assumes perfect packing under-reports by procs/chunk.
+
+    This project has already been bitten by an unmeasured cost assumption once
+    (a 4.6x error). This is the same class of defect in the tool built to
+    prevent it, so the arithmetic is pinned here.
+    """
+    spec = importlib.util.spec_from_file_location(
+        "foldx_forecast", REPO / "scripts" / "foldx_forecast.py")
+    fc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fc)
+
+    full = fc.forecast(14083, 470.0, 64, 16.0, 150, 64, chunk=64)
+    half = fc.forecast(14083, 470.0, 64, 16.0, 150, 64, chunk=32)
+    assert full["pool_fill"] == 1.0
+    assert half["pool_fill"] == 0.5
+    # Halving the fill must roughly double the *work* term. Startup is a fixed
+    # addend, so the ratio lands a little under 2x rather than exactly on it.
+    assert 1.6 < half["core_hours"] / full["core_hours"] < 2.0
+    assert half["usd"] > full["usd"] * 1.6
+    # Omitting chunk must not silently claim a fill it has not been told about.
+    assert fc.forecast(14083, 470.0, 64, 16.0, 150, 64)["pool_fill"] == 1.0
+
+
+def test_forecast_warns_when_the_pool_is_underfilled():
+    source = (REPO / "scripts" / "foldx_forecast.py").read_text()
+    assert "WARNING" in source and "fills only" in source
+
+
+def test_l2_is_selected_on_the_mean_over_every_ensemble_seed(arm):
+    """R10: a single-seed argmin on this objective is noise, not a selection.
+
+    Between-rung differences on the sequence block (0.007-0.021) are the same
+    size as the within-rung seed noise (sd up to 0.0139), so two runs differing
+    only in row order selected different rungs -- one interior, one on a
+    boundary -- which made the interior gate's verdict a coin flip. Selection
+    therefore averages over the same seeds the ensemble uses.
+
+    This is a lower-variance estimator of the predeclared objective, not a new
+    rule: the budget stays at 4 points and the estimator is direction-neutral,
+    so it cannot favour more or less regularisation.
+    """
+    body = _ARM.read_text().split("def mode_grid")[1].split("\ndef ")[0]
+    assert "for seed in SEEDS" in body, (
+        "the L2 grid must be estimated over every ensemble seed, not seed 0"
+    )
+    assert "seed=0" not in body, "a hardcoded selection seed is the R10 defect"
+    assert "np.mean(per_seed)" in body
+    # The argmin must be taken on the mean, not on any individual seed.
+    assert "if mean_mse < best[1]" in body
+
+
+def test_grid_reports_ladder_spread_against_seed_noise(arm):
+    """The two numbers that tell a truncated ladder from a flat one."""
+    body = _ARM.read_text().split("def mode_grid")[1].split("\ndef ")[0]
+    assert "worst_sd" in body and "spread" in body
+    # Per-seed rows are kept, so flatness is auditable rather than asserted.
+    assert '"seed": seed' in body
+
+
+def test_interior_failure_says_when_widening_will_not_help(arm):
+    """A flat objective must not be reported as a truncated ladder."""
+    rows = arm.check_interior("foldx", {"g (mlp l2)": (1e-4, arm.FOLDX_L2_GRID, "l2")})
+    # Noise larger than the gradient: widening is the wrong response.
+    with pytest.raises(SystemExit, match="FLAT relative to its own noise"):
+        arm.enforce_interior(rows, {"g (mlp l2)": {"spread": 0.007, "worst_sd": 0.014}})
+    # A real gradient toward the edge: the ladder genuinely looks truncated.
+    with pytest.raises(SystemExit, match="truncated"):
+        arm.enforce_interior(rows, {"g (mlp l2)": {"spread": 0.20, "worst_sd": 0.002}})
