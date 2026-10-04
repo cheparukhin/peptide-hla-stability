@@ -235,55 +235,56 @@ it is the predeclared secondary metric; no claim rests on it.
 
 ## 4. Nested near-neighbour evaluation (mutant ranking inside training)
 
-**What this is and is not.** The shipped prediction files cover validation rows
-only, and this analysis lives inside the training split, so it cannot use the
-30-member ensembles directly. The arms below are **ridge heads on the same
-cached features**, fit out-of-fold on
-`pepstab.stage6.nested_folds` (5 folds by peptide, seed 20261004), with PCA
-refit inside each fold on that fold's training rows only. It measures the
-**representation under a matched linear head**, not the shipped arm.
+This analysis lives inside the **training** split, whatever `--split` is set
+to, so it needs out-of-fold training predictions rather than the validation
+prediction files. All three shipped arms supplied them.
 
 Out-of-fold concordance on the 490 scoreable same-allele mutant comparisons
 (Hamming 1-2) that sit on **96 independent peptide clusters**.
 
-The two ESM arms are the **shipped ensembles**, scored out-of-fold on
-`pepstab.stage6.nested_folds` (imported, not reimplemented; 5 folds by peptide,
-seed 20261004). For each outer fold the full 30-member ensemble was rebuilt on
-the other four and predicted the held-out one — 150 networks per arm — at the
+All three shipped arms were scored out-of-fold on the **same** folds
+(`pepstab.stage6.nested_folds`, imported not reimplemented; 5 folds by peptide,
+seed 20261004), each rebuilding its full 30-member ensemble on the other four
+folds and predicting the held-out one — 150 networks per arm — at its own
 selected configuration, with PCA refit inside each fold on that fold's training
-rows only. The arm that produced the predictions did not score them.
+rows only. **Identical folds, head class, member count and seed protocol: the
+only thing differing between the three is the features.** That is what makes
+this a comparison rather than three measurements. The arm that produced the
+predictions did not score them.
 
 | Arm | Concordance | d=1 | d=2 | Minus chance | 95% CI |
 |---|---:|---:|---:|---:|---|
-| `esm_ensemble` (shipped, 150 nets) | 0.4851 | 0.4854 | 0.4847 | −0.0149 | [−0.0896, +0.0622] |
-| `esm_plus_seq_ensemble` (shipped, 150 nets) | 0.4801 | 0.4644 | 0.5031 | −0.0199 | [−0.1000, +0.0616] |
-| `ridge_blosum_pep_pseudo` (reference, ridge head) | 0.5224 | 0.5188 | 0.5276 | +0.0224 | [−0.0448, +0.0939] |
-| `ridge_esm650m_meanpool` (**ablation**, see below) | 0.3905 | 0.3933 | 0.3865 | −0.1095 | [−0.1712, −0.0384] |
+| `seq_ensemble_pep_pseudo` (150 nets) | 0.4851 | 0.4728 | 0.5031 | −0.0149 | [−0.0968, +0.0745] |
+| `esm_ensemble` (150 nets) | 0.4851 | 0.4854 | 0.4847 | −0.0149 | [−0.0896, +0.0622] |
+| `esm_plus_seq_ensemble` (150 nets) | 0.4801 | 0.4644 | 0.5031 | −0.0199 | [−0.1000, +0.0616] |
+| `ridge_esm650m_meanpool` (**ablation**) | **0.3905** | 0.3933 | 0.3865 | **−0.1095** | **[−0.1712, −0.0384]** |
 | constant (control) | **0.5000** | 0.5000 | 0.5000 | — | — |
 
-**Paired, `esm_plus_seq_ensemble` vs `esm_ensemble`: −0.0050,
-95% CI [−0.0508, +0.0415] — inconclusive, half-width 0.046.**
+Paired intervals, 2,000 cluster resamples:
 
-Neither shipped arm is distinguishable from chance, both sit slightly below 0.5
-in point estimate, and the two are indistinguishable from each other. Adding
-the raw sequence encoding to ESM-2 does not measurably change mutant ranking.
+| Comparison | Delta | 95% CI | Half-width | Verdict |
+|---|---:|---|---:|---|
+| `esm_ensemble` vs `seq_ensemble_pep_pseudo` | **+0.0000** | [−0.0433, +0.0445] | 0.0439 | inconclusive |
+| `esm_plus_seq_ensemble` vs `seq_ensemble_pep_pseudo` | −0.0050 | [−0.0585, +0.0482] | 0.0534 | inconclusive |
+| `esm_plus_seq_ensemble` vs `esm_ensemble` | −0.0050 | [−0.0508, +0.0415] | 0.0462 | inconclusive |
 
-The 0.046 half-width is **tighter than the 0.092 recorded in the machinery
-report**, because that figure was measured on an ESM-versus-BLOSUM ridge pair
-that disagree substantially, whereas these two shipped arms both contain ESM-2
-and are highly correlated — pairing cancels their shared noise. On this
-particular comparison the harness would have resolved a difference of about
-0.05 concordance, and there is none. The half-width is a property of the arm
-pair, not of the harness, and must be quoted per comparison.
+**The headline comparison is a dead heat.** ESM-2 and the sequence baseline
+score the same concordance to six decimal places: 195.0 credits out of 402
+decidable pairs each. That is not an artefact of identical predictions — the
+two arms correlate at r = 0.961 and **disagree on 60 of the 402 pairs, split
+exactly 30 the sequence arm gets right and 30 the ESM arm gets right.** The
+zero is a net of offsetting disagreements, verified pair by pair, not a
+degenerate equality.
 
-**What is still missing.** The headline nested question is ESM-2 against the
-*sequence* baseline, and it cannot be asked properly yet: the only sequence arm
-available out-of-fold is the ridge reference, which uses a different head from
-the shipped ESM ensembles. Comparing 0.5224 against 0.4851 across that pair
-would confound representation with head and ensemble size, so it is not
-reported as that comparison. It needs
-`preds/seq_ensemble_pep_pseudo_oof.csv` on the same folds at the selected
-configuration; scoring it afterwards takes under two minutes.
+The half-widths (0.044, 0.053, 0.046) are far closer to the 0.046 of the most
+correlated pair than to the 0.092 measured on the ridge ESM-versus-BLOSUM pair,
+as the OOF correlations predict (0.961, 0.954, 0.985): pairing cancels shared
+noise, and these arms share most of theirs. **The half-width is a property of
+the arm pair, not of the harness**, and must be quoted per comparison.
+
+So: no arm ranks point mutants measurably better than chance, no arm ranks them
+measurably better than any other, and the comparison would have resolved a
+difference of about 0.05 concordance had one existed.
 
 ### The mean-pooled ablation, and why it is in the table
 
@@ -294,6 +295,21 @@ question this analysis asks: mean-pooling over nine residues dilutes a single
 substitution to a ninth of the signal, and the HLA block is identical for both
 members of a same-allele mutant pair, so almost nothing distinguishing the two
 peptides survives into the features.
+
+**The ablation sits directly above the inconclusive rows on purpose, because
+it is what licenses reading them as genuinely unresolved rather than as a
+metric too blunt to detect anything.** A representation blind to point
+mutations by construction scores conclusively *below* chance, while every
+representation that can see the substitution lands in an unresolvable band
+around 0.5. The harness has therefore demonstrated it can detect the thing it
+is looking for, which is exactly what an inconclusive result needs behind it in
+order to mean anything.
+
+That is the same logic as the differential target's two conclusive separations
+licensing its tight equivalence, and the parallel is the general principle
+worth taking from this stage: **a null is only informative next to a positive
+control on the same measurement.** Both analyses here carry one; the distance
+strata and precision@10 do not, which is why their nulls are weaker claims.
 
 It is kept because it is the harness's own control, and the completed table
 makes the point sharply: **it is the only row with an interval excluding
@@ -415,7 +431,7 @@ nested paired row.
 | Differential concordance | 8 | **5** |
 | Distance strata (gap + within-stratum) | 12 | **0** |
 | Precision@10 median | 4 | 0 |
-| Nested mutant ranking | 1 paired | 0 |
+| Nested mutant ranking | 3 paired | **0** |
 
 What the machinery establishes that the headline does not:
 
@@ -429,8 +445,14 @@ What the machinery establishes that the headline does not:
    hand-picking the 34 contact residues recovers the same ground.
 3. **The distance-robustness hypothesis is dead**, across twelve intervals and
    three different ways of asking.
-4. **Mutant ranking is unresolved for every arm**, and the dataset, not the
-   method, is why.
+4. **Mutant ranking is a dead heat.** With folds, head, member count and seed
+   held identical across all three shipped arms, ESM-2 and the sequence
+   baseline score the same concordance to six decimals (195.0/402 each,
+   disagreeing on 60 pairs split exactly 30/30), and all three pairwise
+   intervals are inconclusive at half-widths of 0.044 to 0.053. The dataset,
+   not the method, is the limit — and the mean-pooled ablation's conclusive
+   sub-chance score is what makes those nulls readable as genuinely unresolved
+   rather than as an insensitive metric.
 5. **Precision@10 is quantised past usefulness here** — all four deltas are
    exactly 0.0000 with intervals of [−0.100, +0.100], because a median over 68
    alleles of a ten-slot statistic sits on a lattice point and stays there
@@ -453,7 +475,8 @@ What the machinery establishes that the headline does not:
 | `stage6_val_esm_paired_ci.csv` | 16 paired intervals vs the baseline |
 | `stage6_val_esm_vs_domain_ci.csv` | 12 paired intervals vs the full-domain arm |
 | `stage6_val_esm_resampling_units.csv` | cluster/peptide/row widths, 3 seeds |
-| `stage6_nested_shipped_nested_mutant.csv`, `..._paired.csv` | nested, shipped arms |
+| `stage6_nested_shipped_nested_mutant.csv` | nested concordance, 3 shipped arms + ablation + control |
+| `stage6_nested_shipped_nested_mutant_paired.csv` | the 3 paired intervals with half-widths |
 | `stage6_val_esm_manifest.json`, `stage6_nested_shipped_manifest.json` | SHA-256 of every prediction file read |
 
 Runtime, one core, BLAS pinned to one thread:
@@ -462,8 +485,8 @@ Runtime, one core, BLAS pinned to one thread:
 |---|---:|
 | Main five-arm run (2,000 resamples) | 1,969 s (32.8 min) |
 | Stratum and vs-domain intervals | 2,443 s (40.7 min) |
-| Nested on the shipped arms | 103 s |
-| **Total** | **~75 min** |
+| Nested on the shipped arms (3 arms + ablation) | 158 s |
+| **Total** | **~76 min** |
 
 The resampling-unit comparison reproduced the machinery report's ratios on a
 different arm pair: row/cluster 0.888 on the paired delta and 0.841 on a single
@@ -473,12 +496,22 @@ arm, against 0.898 and 0.832 previously.
 
 - Validation only; nothing here was tuned on test and nothing was measured on
   test.
-- The nested arms are ridge heads on the selected features, not the shipped
-  30-member MLP ensembles. Treat them as a representation comparison.
+- The nested comparison covers the three shipped 30-member ensembles on
+  identical folds; only `ridge_esm650m_meanpool` is a ridge head, and it is
+  present solely as the negative control.
+- The nested analysis scores 490 comparisons on 96 independent peptide
+  clusters. Its nulls bound differences above roughly 0.05 concordance and say
+  nothing about smaller ones.
+- `esm_ensemble_150m` was not scored out-of-fold, so the nested table covers
+  four arms rather than five.
 - `esm_ensemble_150m` is the weakest arm on the primary metric. Any claim that
   it degrades less with distance has to clear the obvious alternative
   explanation — a model that was never exploiting near-neighbours has less to
   lose — which is why the discriminating test below is its *absolute* score in
   the far stratum, not the size of its gap.
 - Every delta is against specific prediction files; the digests are in
-  `reports/stage6_val_esm_manifest.json`.
+  `reports/stage6_val_esm_manifest.json` and
+  `reports/stage6_nested_shipped_manifest.json`.
+- Conclusive verdicts in this run come from the mean panel statistic and the
+  differential concordance. The contract's primary median resolves nothing
+  here, and the predeclared six-verdict rule applies to it alone.

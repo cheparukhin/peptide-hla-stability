@@ -1,2 +1,4 @@
-baseline,model,statistic,delta,ci_low,ci_high,n_clusters,n_boot,verdict
-esm_ensemble,esm_plus_seq_ensemble,mutant_concordance,-0.004975124378109486,-0.05084745762711862,0.04148201406265917,96,2000,inconclusive (CI crosses 0)
+baseline,model,delta,ci_low,ci_high,half_width,n_clusters,n_boot,verdict
+seq_ensemble_pep_pseudo,esm_ensemble,0.0,-0.0433,0.0445,0.0439,96,2000,inconclusive (CI crosses 0)
+seq_ensemble_pep_pseudo,esm_plus_seq_ensemble,-0.005,-0.0585,0.0482,0.0534,96,2000,inconclusive (CI crosses 0)
+esm_ensemble,esm_plus_seq_ensemble,-0.005,-0.0508,0.0415,0.0462,96,2000,inconclusive (CI crosses 0)
