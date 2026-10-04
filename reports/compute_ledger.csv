@@ -34,5 +34,6 @@ stage,item,hardware,cpu_minutes,gpu_type,gpu_hours,wall_clock,usd,status,source
 4c5,"Structural feature extraction, both halves (approved, not spent); Volume-read-bound 1.57 s wall vs 0.096 s CPU per fold",Modal CPU,738,,,~12.3 min parallel,0.78,FORECAST_approved_not_spent,reports/stage4c5_features.md section 7.6
 4c5,Structural feature extraction spend to date (two smokes + two 1000-fold passes),Modal CPU,,,,~1.5 container-hours,0.15,measured_upper_bound,reports/stage4c5_features.md section 7.6
 5,Structural feature extraction and head training,Modal CPU with Volume mounted,,,,,,PLACEHOLDER_blocked_on_stage_4c,reports/stage4c_ectodomain_pilot.md feature contract
+3b,"ESM auxiliary-affinity arms: 300 networks, DiD across 4 lambda, measured DiD power floor with injected-effect check",laptop CPU,47.8,,,68 min wall on 1 core,0,measured,reports/stage3_esm.md
 6,"Stage 6 evaluation machinery, full ESM validation run (8 paired comparisons, 12 stratum intervals, differential over 10365 allele pairs, precision@10, nested mutant)",laptop CPU,75,,,~75 min on 1 core,0,measured,reports/stage6_val_esm_run.md
 6,Final test scoring and uncertainty,laptop CPU,,,,,0,PLACEHOLDER_in_flight,owner: eval-harness

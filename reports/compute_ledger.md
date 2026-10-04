@@ -213,6 +213,17 @@ second core was billing an idle one — and throughput moved by only ~8% (326 s 
 Spend so far on this workstream — two smokes and two 1,000-fold passes — is
 **under $0.15**.
 
+### Stage 3b, the ESM auxiliary-affinity arms — measured, CPU, $0
+
+**300 networks, 47.8 min of fitting, 68 min wall on one core, $0.** The gap
+between fitting time and wall time is the paired bootstraps, which is the same
+pattern stages 2b and 2c showed: on the sequence side of this project, measuring
+the uncertainty reliably costs more than fitting the models.
+
+That is doubly true here, because the run's most important output is **not** a
+delta but a **power floor** — the measured DiD minimum detectable effect, and
+the injected-effect check that established it. Neither is a model fit.
+
 ### Stage 6 evaluation machinery — measured, CPU, $0
 
 The full ESM stage 6 validation run — 8 paired comparisons, 12 stratum

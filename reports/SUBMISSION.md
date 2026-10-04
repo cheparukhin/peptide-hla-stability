@@ -689,6 +689,58 @@ bound below 0.05. The measured minimum detectable effect is bracketed in
 **(0.018, 0.037]**, so this design *can* resolve the 0.05 bar: the verdicts are
 earned, not a formality of an underpowered test.
 
+#### The ESM-2 half: an unresolved measurement, not a null
+
+The interesting version of this hypothesis was always the ESM one — affinity is
+redundant with what a *sequence* model extracts, which says nothing about
+whether it is redundant with pretrained features. That has now been run, and
+**the honest verdict is that the design could not resolve it.**
+
+The quantity is a **difference in differences**: does the auxiliary head help
+the ESM arm *more than* it helps the sequence arm? Against the additive arm, at
+λ = 0.1 / 0.3 / 1 / 3, the DiD is **+0.0120, +0.0122, +0.0143, +0.0281** — every
+interval crossing zero. The ESM-only arm's DiD is smaller at every λ, and the
+movement is almost entirely **the sequence arm degrading rather than ESM
+improving**: the ESM-only arm's own Δ never leaves ±0.0041.
+
+**The power floor was measured on the DiD statistic itself**, not borrowed from
+the single-delta floor, because a difference of two deltas is noisier — confirmed
+empirically at a ratio of **1.42 ≈ √2**. Single-delta MDE ≈ 0.037; **DiD MDE
+≈ 0.071, bracketed (0.032, 0.071]**. And the decisive fact needs no
+extrapolation: **an injected DiD of −0.0319 was not detected**, and all four
+observed DiDs (0.0120–0.0281) are *smaller in magnitude* than that
+demonstrably-undetected effect. The observed values sit inside a region this
+design is shown by construction to be blind to.
+
+> **The caveat that must travel with this verdict.** Every DiD upper bound
+> (+0.0285 … +0.0422) is below 0.05, so by the frozen rule in `EVALUATION.md`
+> these read *"rules out a worthwhile gain"*. That reading is valid — it is a
+> property of the intervals actually obtained. **But the measured DiD floor
+> straddles 0.05** (0.032 < 0.05 < 0.071), so **this design's power at 0.05 is
+> unestablished.** The exclusion rests on the widths we happened to get, not on
+> demonstrated sensitivity.
+>
+> **So stage 3b must not be cited as having been *able* to find a worthwhile
+> differential.** This is §6.8's positive-control principle biting on one of our
+> own verdicts, and it is the first place in this project where a "rules out
+> 0.05" verdict is **not** backed by demonstrated sensitivity at 0.05.
+
+Two results close off the obvious objections:
+
+- **The auxiliary task was genuinely learned on ESM features** — head ρ ≈
+  0.57–0.58 at λ ≥ 0.1, as good as on the sequence trunk. "The head never
+  trained" is excluded. The precise mechanism at λ = 0 is recorded rather than
+  rounded: **20 of 30 ESM-only members decay to a literal constant.**
+- **The union-of-ladders audit found a real error.** The ESM ladders had been
+  borrowing a 1e-5 point that only ever ran at `--pep-pca 0` — *a different
+  feature matrix*. Ladders were corrected to the true union, all arms are
+  interior at 1e-2, and two new tests enforce it. §4.0's warning about
+  regularisation ranges is not hypothetical; it caught a second instance here.
+
+**Verified at three levels:** λ = 0 reproduces stage 3's declared headlines to
+four decimals at network, grid-point *and* ensemble level (additive 0.6761,
+ESM-only 0.6830). The comparator is the shipped model, not a near-replica.
+
 ### 4.4 The engine comparison was settled by a $1.49 experiment
 
 The structural arm folds a **three-chain, 383-residue construct**: a 275-residue
@@ -1514,12 +1566,25 @@ honestly **splits our four inconclusive analyses into two unequal pairs**:
 | **differential concordance** | **yes** — two conclusive separations on the same comparisons under the same bootstrap (§4.0) | as above; this is what licenses the tight equivalence |
 | distance strata | **no** | we measured and found nothing, and have **not** shown the instrument could have found something |
 | precision@10 | **no** | as above — and worse, its lattice structure suggests it *could not* have |
+| **stage 3b, the ESM auxiliary-affinity DiD** | **partial, and it fails** — an injected DiD of −0.0319 went undetected, and every observed DiD is smaller than that | its intervals *do* read "rules out 0.05" under the frozen rule, but the measured DiD floor **straddles 0.05** (0.032 < 0.05 < 0.071), so **sensitivity at the bar is unestablished** |
 
-**So two of our nulls are much stronger claims than the other two**, and saying
-so is more honest than presenting four inconclusive results as a uniform block.
-The distance strata and precision@10 nulls are the weakest things in this run.
-A reader should discount them accordingly — and the reason we can tell them
-apart at all is that the controls were run, not assumed.
+**So our nulls are not a uniform block, and the third category is the one worth
+naming.** Two are strong: the instrument demonstrably works and there is nothing
+there. Two are weak: we found nothing and have not shown we could have.
+
+And one — **stage 3b's ESM arm (§4.3)** — is a case where the predeclared rule
+returns *"rules out a worthwhile gain"* while the power analysis says we have
+**not** demonstrated sensitivity at 0.05. Both statements are true. The verdict
+is a valid property of the intervals obtained; it is **not** evidence that a
+worthwhile differential would have been found had one existed.
+
+**This is the positive-control principle biting on one of our own verdicts**,
+and it is the only place in this project where a "rules out 0.05" reading is not
+backed by demonstrated sensitivity at 0.05. Leaving it unqualified beside
+verdicts that *are* backed would quietly borrow their credibility. A reader
+should discount the distance strata, precision@10 and stage-3b nulls
+accordingly — and the reason we can tell any of them apart is that the power
+analyses were run rather than assumed.
 
 ---
 

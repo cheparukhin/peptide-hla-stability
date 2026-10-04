@@ -416,9 +416,35 @@ The ceiling is computed on 33 training alleles with ≥ 30 dual-labelled pairs, 
 narrower panel than the 68-allele validation panel. Only 58 of 75 alleles carry
 any affinity data.
 
-**Still open:** the ESM-2 arm. Affinity is redundant *with what a sequence model
-already extracts from stability labels*, which does not establish redundancy
-with ESM-2 features. This is the hypothesis's strongest remaining form.
+**The ESM-2 arm has now been run, and it is an unresolved measurement rather
+than a null.** The difference-in-differences — does the auxiliary head help the
+ESM arm *more than* the sequence arm — comes out at +0.0120 / +0.0122 / +0.0143
+/ +0.0281 across λ, every interval crossing zero, with the movement almost
+entirely the *sequence* arm degrading rather than ESM improving (the ESM-only
+arm's own Δ never leaves ±0.0041).
+
+**The power floor was measured on the DiD statistic itself**, because a
+difference of two deltas is noisier — empirically 1.42 ≈ √2 times the
+single-delta floor. Single-delta MDE ≈ 0.037; **DiD MDE ≈ 0.071, bracketed
+(0.032, 0.071]**. An **injected DiD of −0.0319 was not detected**, and all four
+observed DiDs are smaller in magnitude than that demonstrably-undetected effect.
+
+> **The caveat, which travels with the verdict.** Every DiD upper bound
+> (+0.0285 … +0.0422) sits below 0.05, so the frozen rule reads *"rules out a
+> worthwhile gain"* — valid, as a property of the intervals obtained. **But the
+> measured DiD floor straddles 0.05** (0.032 < 0.05 < 0.071), so **power at 0.05
+> is unestablished**. Stage 3b must **not** be cited as having been *able* to
+> find a worthwhile differential. It is the only place in this project where a
+> "rules out 0.05" verdict is not backed by demonstrated sensitivity at 0.05
+> (SUBMISSION §6.8).
+
+Two objections are closed off: the auxiliary task **was** genuinely learned on
+ESM features (head ρ ≈ 0.57–0.58 at λ ≥ 0.1, as good as on the sequence trunk),
+and at λ = 0 the mechanism is recorded exactly rather than rounded — **20 of 30
+ESM-only members decay to a literal constant**. A ladder audit also caught a
+real error: the ESM ladders had borrowed a 1e-5 point that only ever ran at a
+*different feature matrix* (`--pep-pca 0`). Corrected, all arms interior at
+1e-2, two new tests enforce it.
 
 ### 5.3 ESM-2 reaches parity and adds nothing — and what that does not mean
 
