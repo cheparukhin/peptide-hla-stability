@@ -244,28 +244,46 @@ refit inside each fold on that fold's training rows only. It measures the
 **representation under a matched linear head**, not the shipped arm.
 
 Out-of-fold concordance on the 490 scoreable same-allele mutant comparisons
-(Hamming 1-2) that sit on 96 independent peptide clusters:
+(Hamming 1-2) that sit on **96 independent peptide clusters**.
 
-| Arm (ridge head, out-of-fold) | Concordance | d=1 | d=2 | Minus chance | 95% CI |
+The two ESM arms are the **shipped ensembles**, scored out-of-fold on
+`pepstab.stage6.nested_folds` (imported, not reimplemented; 5 folds by peptide,
+seed 20261004). For each outer fold the full 30-member ensemble was rebuilt on
+the other four and predicted the held-out one — 150 networks per arm — at the
+selected configuration, with PCA refit inside each fold on that fold's training
+rows only. The arm that produced the predictions did not score them.
+
+| Arm | Concordance | d=1 | d=2 | Minus chance | 95% CI |
 |---|---:|---:|---:|---:|---|
-| BLOSUM62, peptide+pseudosequence | 0.5224 | 0.5188 | 0.5276 | +0.0224 | [−0.0448, +0.0939] |
-| ESM-2 35M, **selected representation** | 0.4652 | 0.4770 | 0.4479 | −0.0348 | [−0.1096, +0.0459] |
-| ESM-2 650M, mean-pooled (**ablation, see below**) | 0.3905 | 0.3933 | 0.3865 | −0.1095 | [−0.1712, −0.0384] |
+| `esm_ensemble` (shipped, 150 nets) | 0.4851 | 0.4854 | 0.4847 | −0.0149 | [−0.0896, +0.0622] |
+| `esm_plus_seq_ensemble` (shipped, 150 nets) | 0.4801 | 0.4644 | 0.5031 | −0.0199 | [−0.1000, +0.0616] |
+| `ridge_blosum_pep_pseudo` (reference, ridge head) | 0.5224 | 0.5188 | 0.5276 | +0.0224 | [−0.0448, +0.0939] |
+| `ridge_esm650m_meanpool` (**ablation**, see below) | 0.3905 | 0.3933 | 0.3865 | −0.1095 | [−0.1712, −0.0384] |
 | constant (control) | **0.5000** | 0.5000 | 0.5000 | — | — |
 
-**Paired, ESM-2 35M selected representation vs BLOSUM62: −0.0572,
-95% CI [−0.1456, +0.0378] — inconclusive.** The half-width is 0.092, wider
-than the 0.055 recorded in the machinery report, because that figure was
-measured on a more correlated pair of arms; two arms that disagree more give a
-wider paired interval. Neither arm's own interval against the 0.5 chance floor
-excludes it either. **No claim about ESM-2 and mutant ranking is supported by
-this analysis** — in either direction.
+**Paired, `esm_plus_seq_ensemble` vs `esm_ensemble`: −0.0050,
+95% CI [−0.0508, +0.0415] — inconclusive, half-width 0.046.**
 
-The selected representation uses the 35M checkpoint, middle layer, per-position
-peptide embeddings and the 34 HLA contact positions, reduced by PCA to 256 and
-74 components, matching `reports/stage3_headline.json`. PCA is refit inside
-each fold on that fold's training rows only, so a held-out peptide never
-contributes to the basis.
+Neither shipped arm is distinguishable from chance, both sit slightly below 0.5
+in point estimate, and the two are indistinguishable from each other. Adding
+the raw sequence encoding to ESM-2 does not measurably change mutant ranking.
+
+The 0.046 half-width is **tighter than the 0.092 recorded in the machinery
+report**, because that figure was measured on an ESM-versus-BLOSUM ridge pair
+that disagree substantially, whereas these two shipped arms both contain ESM-2
+and are highly correlated — pairing cancels their shared noise. On this
+particular comparison the harness would have resolved a difference of about
+0.05 concordance, and there is none. The half-width is a property of the arm
+pair, not of the harness, and must be quoted per comparison.
+
+**What is still missing.** The headline nested question is ESM-2 against the
+*sequence* baseline, and it cannot be asked properly yet: the only sequence arm
+available out-of-fold is the ridge reference, which uses a different head from
+the shipped ESM ensembles. Comparing 0.5224 against 0.4851 across that pair
+would confound representation with head and ensemble size, so it is not
+reported as that comparison. It needs
+`preds/seq_ensemble_pep_pseudo_oof.csv` on the same folds at the selected
+configuration; scoring it afterwards takes under two minutes.
 
 ### The mean-pooled ablation, and why it is in the table
 
@@ -277,12 +295,33 @@ substitution to a ninth of the signal, and the HLA block is identical for both
 members of a same-allele mutant pair, so almost nothing distinguishing the two
 peptides survives into the features.
 
-It is kept because it is the harness's own control: a representation that
-cannot see point mutations should score badly on a point-mutation metric, and
-it does, conclusively. That is evidence the nested evaluation measures what it
-claims. It is **not** evidence about ESM-2, and the first version of this
-analysis used it by mistake before the selected representation was checked
-against `reports/stage3_headline.json`.
+It is kept because it is the harness's own control, and the completed table
+makes the point sharply: **it is the only row with an interval excluding
+chance.** Every representation that can see a single substitution lands in a
+band around 0.5 that this dataset cannot resolve; the one representation that
+cannot see it scores conclusively below chance. That is the nested evaluation
+demonstrating it measures what it claims. It is **not** evidence about ESM-2,
+and the first version of this analysis used it by mistake before the selected
+representation was checked against `reports/stage3_headline.json`.
+
+### Two near-misses worth recording together
+
+Both would have produced a plausible number with nothing visibly wrong:
+
+1. **The mean-pooled representation.** A single substitution is one ninth of a
+   mean-pooled 9-mer, and the HLA block is identical within a same-allele
+   mutant pair, so the features are nearly blind to the comparison being
+   scored. It yields a dramatic, conclusive, worse-than-chance result that
+   reads as a finding about ESM-2.
+2. **PCA fitted across folds.** Fitting the basis on all training rows rather
+   than per fold leaves the *labels* untouched, so nothing about the setup
+   looks dishonest from the outside — but the basis has then seen rows it will
+   later predict. Both the shipped arms and the ridge reference refit PCA
+   inside each fold.
+
+Neither is caught by a leakage check that only watches labels. They are caught
+by asking what the representation can physically express about the question
+being asked.
 
 ## Provenance of the distance-profile hypothesis
 
@@ -359,7 +398,76 @@ them needs either a better-powered split or an arm that is distance-flat
 
 ## What the machinery adds over the headline
 
-<!--SUMMARY-->
+Of every comparison in this run, **the differential target is the only
+analysis that returns a conclusive verdict on anything.** The primary metric,
+the distance strata, precision@10 and the nested mutant evaluation are
+inconclusive on every arm.
+
+Counted over the 8 paired comparisons in
+`stage6_val_esm_paired_ci.csv` and `stage6_val_esm_vs_domain_ci.csv` combined
+(4 arms against each of two baselines), the 12 stratum intervals, and the
+nested paired row.
+
+| Analysis | Comparisons | Conclusive |
+|---|---:|---:|
+| Median per-allele rho (contract primary) | 8 | **0** |
+| Mean per-allele rho | 8 | 4 |
+| Differential concordance | 8 | **5** |
+| Distance strata (gap + within-stratum) | 12 | **0** |
+| Precision@10 median | 4 | 0 |
+| Nested mutant ranking | 1 paired | 0 |
+
+What the machinery establishes that the headline does not:
+
+1. **A measured equivalence rather than a shrug.** ESM-2 and the sequence
+   baseline are equal to within one point of concordance on cross-allele
+   ranking (+0.003 [−0.005, +0.010]), and the same measurement conclusively
+   separates two other arms, so the equivalence is a null with power behind it.
+2. **ESM-2 conclusively beats the full-domain sequence ensemble** on the mean
+   panel statistic and on the differential, which the median cannot resolve.
+   Given the same 182 HLA residues, pretraining extracts more from them — but
+   hand-picking the 34 contact residues recovers the same ground.
+3. **The distance-robustness hypothesis is dead**, across twelve intervals and
+   three different ways of asking.
+4. **Mutant ranking is unresolved for every arm**, and the dataset, not the
+   method, is why.
+5. **Precision@10 is quantised past usefulness here** — all four deltas are
+   exactly 0.0000 with intervals of [−0.100, +0.100], because a median over 68
+   alleles of a ten-slot statistic sits on a lattice point and stays there
+   under resampling. It is reported as the predeclared secondary metric; no
+   claim rests on it, and only its lift and ceiling-share columns carry
+   information.
+
+## Artefacts and cost
+
+| File | Contents |
+|---|---|
+| `stage6_val_esm_summary.csv` | headline, 5 arms |
+| `stage6_val_esm_per_allele.csv` | per-allele Spearman and precision, 340 rows |
+| `stage6_val_esm_distance_census.csv` | rows/peptides per distance |
+| `stage6_val_esm_distance_strata.csv` | stratum scores, shared panel |
+| `stage6_val_esm_stratum_ci.csv` | 12 stratum intervals (gap + within) |
+| `stage6_val_esm_differential.csv` | differential, 5 arms |
+| `stage6_val_esm_differential_allele_pairs.csv` | per-allele-pair detail |
+| `stage6_val_esm_precision_summary.csv`, `..._per_allele.csv` | precision@10 |
+| `stage6_val_esm_paired_ci.csv` | 16 paired intervals vs the baseline |
+| `stage6_val_esm_vs_domain_ci.csv` | 12 paired intervals vs the full-domain arm |
+| `stage6_val_esm_resampling_units.csv` | cluster/peptide/row widths, 3 seeds |
+| `stage6_nested_shipped_nested_mutant.csv`, `..._paired.csv` | nested, shipped arms |
+| `stage6_val_esm_manifest.json`, `stage6_nested_shipped_manifest.json` | SHA-256 of every prediction file read |
+
+Runtime, one core, BLAS pinned to one thread:
+
+| Run | Wall time |
+|---|---:|
+| Main five-arm run (2,000 resamples) | 1,969 s (32.8 min) |
+| Stratum and vs-domain intervals | 2,443 s (40.7 min) |
+| Nested on the shipped arms | 103 s |
+| **Total** | **~75 min** |
+
+The resampling-unit comparison reproduced the machinery report's ratios on a
+different arm pair: row/cluster 0.888 on the paired delta and 0.841 on a single
+arm, against 0.898 and 0.832 previously.
 
 ## Limitations
 
