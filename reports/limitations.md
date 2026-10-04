@@ -546,13 +546,18 @@ Three constraints, none of which may be dropped:
 validation. It does **not** establish:
 
 - that **fine-tuned** ESM-2 would not help — nothing here was fine-tuned;
-- that a model shown the **complex** would not help. Peptide and HLA are
-  embedded independently, so the head must learn the peptide–HLA interaction
-  itself from 19,716 rows. The plan predicted this would be the binding
-  constraint, and ESM-only reaching parity while adding nothing on top is
-  consistent with it. The chimeric peptide-linker-groove input remains the
-  sharpest untested version, and is out of scope **specifically so this null is
-  reported as bounded**;
+- that a model shown the **complex** would not help — **though the head-side
+  version of this objection is now closed.** Peptide and HLA are embedded
+  independently, so the head must learn the peptide–HLA interaction itself from
+  19,716 rows. A cross-attention arm letting the 34 groove residues condition
+  the 9 peptide positions, against a mean-pooling ablation at **identical
+  parameter count (94,913, asserted at runtime)**, gives **+0.0164 [−0.0178,
+  +0.0437]** — inconclusive, ruling out 0.05 — and *both* coupled arms land
+  0.11–0.14 **below** the concatenation arm. So "concatenation cannot use what
+  ESM-2 carries" is ruled out as the explanation. What remains open is the
+  **model-side** version: a chimeric peptide-linker-groove input where ESM-2
+  itself, not the head, sees the interaction. That stays out of scope
+  **specifically so this null is reported as bounded**;
 - that **likelihood or perplexity** features would not help — embeddings are one
   of the three uses the brief names, and the other two were not tested;
 - that a **larger checkpoint** would not help. 150M lands at 0.6737, marginally
@@ -602,7 +607,46 @@ read from, not whether the right residue is read, so the effect should be
 small — but if the contact-position ESM-2 representation is the arm that is
 reported, this belongs beside it.
 
-### 5.4 ESMFold2's rejection is operational, not scientific
+### 5.4 The additive null's mechanism remains unsettled — and one attempt to
+settle it was retracted
+
+We know the additive arm does not help (§5.3). **We do not know why**, and one
+proposed explanation was withdrawn after its own control refuted it.
+
+**What is established.** Permuting the ESM embeddings — destroying only the
+sequence-to-embedding correspondence, at identical width, scale, marginals,
+covariance and rank — takes the arm from **0.5679 to 0.0453**. That is a **sign
+test**: the network demonstrably uses the correspondence, so **the ESM block is
+not inert padding**. It is *not* an effect size, because the permuted arm
+**collapses rather than degrades**.
+
+**What that collapse actually measures.** Not information content — **pipeline
+fragility**. A width-matched uninformative block in this pipeline is **not a
+capacity control; it is a memorisation channel that breaks dev-based early
+stopping.** Uninformative columns that uniquely key the peptide or the row let
+the network drive training loss down without generalising, so dev loss bottoms
+at **epoch 1–5 instead of 27**. And truncation alone does not explain it: the
+baseline truncated to epoch 5 still reaches **0.5210**, while the shuffled arm
+at epoch 5 reaches **0.0453**.
+
+**The retraction.** An earlier claim held that ~300 dense columns cost ≈ −0.083
+regardless of content, and that ESM-2 recovers most of that — which would have
+made the additive null a story about width rather than about ESM-2. The proper
+controls refute it: shuffled and random blocks cost **0.45–0.54**, not 0.083,
+taking the arm to near zero. **Nowhere near the displacement regime.** The claim
+never reached this document.
+
+It is worth recording *how* it was caught: **the reviewer ran a control capable
+of falsifying their own claim, and it did.** That is the same discipline that
+caught the 4.6× harness error and the `--dry-run` assumption — and it is the
+reason the surviving claims here are worth more than the retracted one would
+have been.
+
+**What survives, in its narrow form only:** *ESM-2's 330 columns are more useful
+on this baseline than 306 columns of BLOSUM positional cross-encoding.* Nothing
+about what pure width costs.
+
+### 5.5 ESMFold2's rejection is operational, not scientific
 
 ESMFold2 failed its pre-registered gate on both sentinel criteria: median arm-B
 heavy-atom RMSD 2.564 Å on `HLA-B*07:02`/IPRRNVATL against a 1.0 Å bar, and a
@@ -675,7 +719,7 @@ labelled and reported as global ipTM.** A pair-specific score may be used only
 if the pinned model actually emits one with a verified chain mapping. (ESMFold2
 exposes `pair_chains_iptm`, the peptide–HLA interface ipTM; Boltz-2 does not.
 If that feature proves important, this is a reason to revisit ESMFold2 despite
-§5.4.)
+§5.5.)
 
 ### 6.5 B versus C does not isolate a mechanism
 
@@ -730,11 +774,11 @@ Recorded so that absence is not mistaken for a result. Full rationale in
 |---|---|---|
 | ~~Allele-held-out evaluation~~ | Different question from the headline; confounded by **panel composition**, not panel hold-out (§2.1) | **Run for the sequence arm**: near 0.741 vs distant 0.339, +0.403 [+0.223, +0.478]. Extreme contrast solid, monotone trend not. ESM-2 and structural arms still to run, and **must be refit, not scored from a `preds/*.csv`** |
 | ~~ProteinMPNN inverse-folding scores~~ | Was blocked on needing structures; the stage 4c pilot's 90 folds unblocked it | **Run** — pilot complete, §7.2. Kept as a ~$1 QC triage sample; **declined as a regression feature** on a measured n=5 label correlation of −0.100 |
-| Chimeric peptide-linker-groove ESM-2 input | Far outside ESM-2's distribution | **Listed specifically so a stage 3 null is reported as bounded** (§5.3) |
+| Chimeric peptide-linker-groove ESM-2 input | Far outside ESM-2's distribution | Still out of scope, and still **listed specifically so the stage 3 null is reported as bounded** (§5.3). Note this is the **model-side** coupling question only — the **head-side** version was run and is closed |
 | ~~Tobit / censored likelihood~~ | Was the 16-hour substitute's known gap | **Run, and negative**: −0.0414 [−0.0780, −0.0062] on ranking, gains calibration only (§1.1) |
 | FoldX / Rosetta / empirical ΔG | Equilibrium ΔG vs a kinetic label (§1.3), **and both are licence-gated behind registration** | Declined for two independent reasons — §7.0 |
 | Elution data as training augmentation | 5.4× scale mismatch, unknowable threshold τ, confounded with abundance/cleavage/TAP/ionisation, and it changes the question | Rejected **as training data**; used as external validation instead, which has now run — §7.1 |
-| ESMFold2 production folds | Failed its gate; $884 forecast | §5.4 |
+| ESMFold2 production folds | Failed its gate; $884 forecast | §5.5 |
 | Chai-1, Protenix, SaProt | Integration cost beyond the agreed comparison | Not evaluated |
 | **ESM-IF** (the brief's second inverse-folding model) | Machine contention — the ESM-2 arm held priority on the shared environment | Not attempted. **ProteinMPNN alone covers the inverse-folding class**, so the class is tested; this specific model is not |
 | Separate α3 / β2m ablations | Deferred until the full pipeline's predictive value is established | §6.5 |

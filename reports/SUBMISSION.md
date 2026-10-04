@@ -508,6 +508,56 @@ just needed a bigger model".** ESM-2 150M lands at **0.6737** — marginally
 checkpoint to close. That weakens the scaling argument without closing it; see
 §8 for what it does not establish.
 
+#### Two objections to this null, closed by direct test
+
+A frozen-embedding null invites two specific objections, and both have been
+tested rather than argued about. Both diagnostics import this project's own
+`cv_folds`, fit block, MLP class, seeds and member counts, so they are
+comparable to the arms above.
+
+**Objection A: "concatenation cannot use what ESM-2 carries."** Peptide and HLA
+are embedded separately and the head sees them glued together, so perhaps the
+head simply has no way to express the peptide–groove interaction. A
+**cross-attention** arm tests this directly: the 34 groove contact residues
+condition the 9 peptide positions. The control is a mean-pooling ablation at
+**identical parameter count — 94,913 in both arms, asserted at runtime** — so
+the comparison isolates *coupling* from *capacity*. Both arms share one L2,
+correctly: they are the same module with one switch and identical geometry, so
+separate ladders would introduce a second difference.
+
+| Arm | Median per-allele ρ |
+|---|---:|
+| cross-attention | 0.5735 |
+| mean-pooling ablation (same parameter count) | 0.5571 |
+| **xattn − meanpool** | **+0.0164 [−0.0178, +0.0437]** — inconclusive, rules out 0.05 |
+
+**Letting the groove condition the peptide, with capacity held exactly constant,
+does not rescue frozen ESM-2.** And both coupled arms land **0.11–0.14 below**
+the concatenation arm — so the attention architecture is **worse here, not
+better**. That is worth stating plainly, because a reader will otherwise assume
+the fancier architecture went untried because it was too expensive.
+
+This closes the head-side version of the objection. The **model-side** version —
+giving ESM-2 itself a chimeric peptide-linker-groove sequence, so the language
+model rather than the head sees the interaction — remains open and is §10's
+third item.
+
+**Objection B: "the ESM block is inert padding."** If the additive arm simply
+ignores the ESM columns, its null says nothing about ESM-2. Permuting the
+embeddings — destroying *only* which embedding belongs to which sequence, while
+holding width, scale, marginals, covariance and rank identical — takes the arm
+from **0.5679 to 0.0453**.
+
+> **Read this as a sign test, not an effect size.** The permuted arm
+> **collapses rather than degrades**, so the magnitude measures *pipeline
+> fragility*, not information content (see
+> [`limitations.md`](limitations.md) §5.4 for why). What it establishes is only
+> the sign: the network is demonstrably using the ESM block's
+> sequence-to-embedding correspondence, so the block is **not** inert padding.
+
+**Neither diagnostic rescues the arm, and that is the point.** They close the
+two readings under which the stage 3 null would have been uninformative.
+
 #### This is not the whole story — see §4.1
 
 The verdict above is the *negative*: against the baseline's best configuration,
@@ -1839,37 +1889,50 @@ Ordered by expected value per hour, not by appeal.
    obvious next experiment — and it must be predeclared, because selecting it
    now on the strength of the control would be the post-hoc selection the stage
    avoided. A heteroscedastic scale and a per-allele floor are also untested.
-3. **Test the chimeric ESM-2 input.** The separate-embedding arm *is* flat
-   (§4.0), so the obvious objection now lands: we never let the language model
-   see the interaction. A peptide-linker-groove construct is the sharpest
-   version of the question and the biggest risk to this negative result — which
-   is precisely why it is worth running rather than avoiding. Two cheaper
-   follow-ups sit alongside it: **likelihood and perplexity features**, which are
-   one of the three uses the brief names and which we did not test at all, and a
-   **second pLM family**, since one family is a thin basis for a class-level
-   claim.
-4. **Re-run the auxiliary-affinity ESM comparison with enough power to settle
+3. **Test the chimeric ESM-2 input — the model-side coupling question.** §4.0
+   closed the *head-side* version: a cross-attention arm at identical parameter
+   count does not rescue the null, and is in fact worse than concatenation. What
+   that does **not** test is giving ESM-2 itself a peptide-linker-groove
+   sequence, so the language model rather than the head sees the interaction.
+   That is the sharpest remaining version of the question and the biggest risk
+   to this negative result — which is precisely why it is worth running rather
+   than avoiding. Two cheaper follow-ups sit alongside it: **likelihood and
+   perplexity features**, one of the three uses the brief names and which we did
+   not test at all, and a **second pLM family**, since one family is a thin
+   basis for a class-level claim.
+4. **Rescale the ESM block per component, then re-run the additive arm.** The
+   ESM block's mean per-column standard deviation is **4.788 (max 54.5)**
+   against the baseline's **0.084** — a **~57× disparity**, and an expected
+   consequence of PCA rather than a bug. Whether per-component rescaling would
+   change the additive result is **untested**, and this pipeline has
+   demonstrated fragility to high-variance columns
+   ([`limitations.md`](limitations.md) §5.4), so it is a real open question
+   rather than a nicety. **We did not re-run the shipped arm to find out**: the
+   additive arm's configuration was selected before this was measured, and
+   re-tuning it now against a known result would be exactly the post-hoc
+   selection this contract exists to prevent. It belongs here, not in §4.
+5. **Re-run the auxiliary-affinity ESM comparison with enough power to settle
    it.** §4.3 ran it and could not resolve it: the difference-in-differences
    floor is ≈0.071 and **straddles the 0.05 bar**, so the question is open
    rather than answered. The fix is not a better model but a better-powered
    design — more alleles, or a statistic that does not compound two deltas.
    "Cheap labels substitute for expensive pretraining" would still be a useful
    finding, and we have not yet earned the right to say it is false.
-5. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
+6. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
    §6.6 has already run it for the sequence arm and found a **0.403 deficit** on
    distant allotypes — the stratum where pretraining has the strongest prior of
    winning. A gain confined there would be real and reportable even if the
    pooled comparison came out flat. **Each arm must supply features and be refit
    across all 68 folds**; handing over a `preds/*.csv` would score a model on
    alleles it trained on and report the leak as generalisation.
-6. **Check the ProteinMPNN pose-triage signal on more than one failing
+7. **Check the ProteinMPNN pose-triage signal on more than one failing
    complex.** §4.6 is a promising observation resting on n=1, and it will stay
    that way until production structures exist and the QC sample runs. Until then
    it must not be called a failure detector and must not filter anything.
    **ESM-IF**, the brief's second inverse-folding model, was not attempted —
    machine contention, with the ESM-2 arm holding priority on the shared
    environment — and ProteinMPNN alone covers the class.
-7. **Pin down the noise ceiling, then ask how much headroom is left.** A
+8. **Pin down the noise ceiling, then ask how much headroom is left.** A
    post-hoc estimate from an independent branch puts the assay's reproducibility
    floor at **≥ ~0.90**, from allele pairs one contact residue apart — though it
    is the best four of twelve such pairs, the other eight running 0.657–0.838
@@ -1881,7 +1944,7 @@ Ordered by expected value per hour, not by appeal.
    we tested is a candidate. Doing it properly needs replicate measurements the
    dataset does not contain, which makes it an assay request rather than a
    modelling one.
-8. **Find post-2016 stability measurements.** The only honest route to a
+9. **Find post-2016 stability measurements.** The only honest route to a
    comparison against NetMHCstabpan is data it could not have trained on. Until
    then, no method-parity claim is available from this dataset at any stage.
 

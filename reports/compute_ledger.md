@@ -241,6 +241,20 @@ counterweight to the headline cost story: the arms that look free on the
 accuracy-versus-dollars figure are free *to fit*. Knowing whether their
 differences are real is what actually costs.
 
+### Stage 3 coupling and permutation diagnostics — CPU, $0
+
+Two diagnostics from an independent branch, importing this project's own
+`cv_folds`, fit block, MLP class, seeds and member counts (SUBMISSION §4.0):
+a **cross-attention** arm against a mean-pooling ablation at identical parameter
+count (94,913 both), and a **permuted-embedding** sign test. 30 members per arm,
+CPU, **$0**.
+
+Worth noting what they bought: neither rescues the arm, and that is the point —
+they close the two readings under which the stage 3 null would have been
+uninformative. **A control that cannot change the verdict is still worth its
+compute if it removes an alternative explanation**, and at $0 these were the
+cheapest defensive spend in the project.
+
 ### Stage 6 evaluation machinery — measured, CPU, $0
 
 The full ESM stage 6 validation run — 8 paired comparisons, 12 stratum
