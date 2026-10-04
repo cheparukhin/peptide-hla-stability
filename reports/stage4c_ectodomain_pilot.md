@@ -221,6 +221,17 @@ Re-running `production` is the resume path: only shards without a committed
 success marker are folded again, so an interrupted run continues where it
 stopped. `--dry-run` prints the plan and forecast without spawning GPUs, and
 `--max-usd` (default $150 per profile) is a hard stop on the forecast.
+`--profile` must match `MODAL_PROFILE`; the runner asserts this, because the
+halves are disjoint and a mismatch would fold one twice and the other never.
+
+**Verified by dry run in both workspaces** (`ap-zrWEjFduVhc55Ivp7ltGb7` on
+a-cheparukhin, `ap-DKtON3889mN3pbGNYmKcyn` on sofyaleyn): the app deploys, all
+four functions are created, and each profile resolves its own 141 shards /
+14,083 folds. This matters for `sofyaleyn` in particular, because Modal
+validates every function at creation time and a workspace without a payment
+method cannot declare a `gpu=` function at all — that is now ruled out. Still
+unverified: whether each workspace is actually granted 10 concurrent A10Gs. If
+fewer are available the forecast scales linearly in wall time, not in cost.
 
 **The production runner has not itself been exercised end to end on a GPU.**
 The pilot validated the inputs, the model configuration and the scoring, but
