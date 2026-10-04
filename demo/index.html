@@ -1,597 +1,1102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Groove — pMHC Stability Explorer</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
-<script src="payload.js"></script>
+<title>Groove</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
 :root {
-  --bg: #08090c;
-  --surface: #0f1117;
-  --surface-2: #161820;
-  --surface-3: #1c1f2a;
-  --border: rgba(255,255,255,0.06);
-  --border-2: rgba(255,255,255,0.10);
-  --text: #e4e6ed;
-  --text-2: rgba(228,230,237,0.65);
-  --text-3: rgba(228,230,237,0.40);
-  --accent: #3b82f6;
-  --accent-glow: rgba(59,130,246,0.15);
-  --green: #10b981;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --cyan: #06b6d4;
-  --orange: #f97316;
-  --purple: #a78bfa;
-  --h0: #1a1c24;
-  --h1: #1b3a4a;
-  --h2: #1e6b88;
-  --h3: #2d9ab8;
-  --h4: #5cc8e0;
-  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
+  color-scheme: light;
+
+  --paper:    #FAFAFA;
+  --panel:    #FFFFFF;
+  --sunk:     rgba(18, 18, 18, 0.04);
+  --ink:      #121212;
+  --ink-2:    rgba(18, 18, 18, 0.76);
+  --ink-3:    rgba(18, 18, 18, 0.65);
+  --rule:     rgba(18, 18, 18, 0.25);
+  --rule-2:   rgba(18, 18, 18, 0.40);
+
+  /* selection / interaction accent */
+  --pick:     #121212;
+  --pick-soft: rgba(18, 18, 18, 0.08);
+  --pick-sunk: rgba(18, 18, 18, 0.06);
+  --pick-ink: #FFFFFF;
+
+  /* status dot */
+  --dot:      #54BB6D;
+
+  /* half-life ramp: pale = unstable, deep = holds */
+  --h0: #E8F0F2;
+  --h1: #A0C8D4;
+  --h2: #5A9EB2;
+  --h3: #2A78A0;
+  --h4: #134B66;
+
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ui:   var(--mono);
+  --seq:  var(--mono);
+
   --ease: cubic-bezier(.23, 1, .32, 1);
-  --radius: 8px;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper:  #0A0A0A;
+    --panel:  #141414;
+    --sunk:   rgba(255, 255, 255, 0.05);
+    --ink:    #E8E8E8;
+    --ink-2:  rgba(255, 255, 255, 0.72);
+    --ink-3:  rgba(255, 255, 255, 0.50);
+    --rule:   rgba(255, 255, 255, 0.18);
+    --rule-2: rgba(255, 255, 255, 0.30);
+    --pick:     #E8E8E8;
+    --pick-soft: rgba(255, 255, 255, 0.08);
+    --pick-sunk: rgba(255, 255, 255, 0.06);
+    --pick-ink: #0A0A0A;
+    --dot:      #54BB6D;
+    --h0: #15252C;
+    --h1: #1C4E62;
+    --h2: #358CA8;
+    --h3: #62BDD6;
+    --h4: #A6DCEC;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper:  #0A0A0A;
+  --panel:  #141414;
+  --sunk:   rgba(255, 255, 255, 0.05);
+  --ink:    #E8E8E8;
+  --ink-2:  rgba(255, 255, 255, 0.72);
+  --ink-3:  rgba(255, 255, 255, 0.50);
+  --rule:   rgba(255, 255, 255, 0.18);
+  --rule-2: rgba(255, 255, 255, 0.30);
+  --pick:     #E8E8E8;
+  --pick-soft: rgba(255, 255, 255, 0.08);
+  --pick-sunk: rgba(255, 255, 255, 0.06);
+  --pick-ink: #0A0A0A;
+  --dot:      #54BB6D;
+  --h0: #15252C;
+  --h1: #1C4E62;
+  --h2: #358CA8;
+  --h3: #62BDD6;
+  --h4: #A6DCEC;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
-html, body {
-  margin: 0; height: 100%;
-  background: var(--bg); color: var(--text);
-  font-family: var(--sans); font-size: 13px; line-height: 1.5;
-  -webkit-font-smoothing: antialiased; overflow: hidden;
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
-.app { display: flex; flex-direction: column; height: 100vh; }
-
-/* Top bar */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 24px; border-bottom: 1px solid var(--border);
-  background: var(--surface); flex: 0 0 auto; gap: 16px;
+.shell {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-block: 0 36px;
 }
-.topbar-left { display: flex; align-items: center; gap: 14px; }
-.logo { display: flex; align-items: center; gap: 8px; }
-.logo-icon {
-  width: 28px; height: 28px; border-radius: 6px;
-  background: linear-gradient(135deg, var(--accent), var(--cyan));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; color: white;
-}
-.logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-.logo-sub { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-left: 4px; }
-.topbar-stats { display: flex; gap: 20px; align-items: center; }
-.stat { display: flex; align-items: baseline; gap: 5px; font-family: var(--mono); font-size: 11px; color: var(--text-3); }
-.stat b { color: var(--text); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-/* Three-tier grid */
+/* ---------------- masthead ---------------- */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-block: 28px 20px;
+}
+.masthead h1 {
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: .01em;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0;
+  max-width: 40ch;
+}
+.standfirst {
+  margin: 6px 0 0;
+  color: var(--ink-3);
+  max-width: 64ch;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.masthead-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ghost {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 7px 16px;
+  min-height: 32px;
+  cursor: pointer;
+  transition: border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
+}
+.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); }
+.ghost:active { transform: scale(.97); }
+
+/* ---------------- the three tiers ---------------- */
+
 .tiers {
-  flex: 1; display: grid;
-  grid-template-columns: 280px minmax(260px,1fr) minmax(340px,1.6fr);
-  min-height: 0; overflow: hidden;
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr) minmax(0, 1.4fr);
+  grid-template-rows: minmax(580px, calc(100vh - 180px));
+  gap: 0;
+  margin-top: 20px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
 }
 .tier {
-  display: flex; flex-direction: column; min-height: 0;
-  border-right: 1px solid var(--border); background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--rule);
 }
 .tier:last-child { border-right: 0; }
 
-.tier-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 11px 16px; border-bottom: 1px solid var(--border);
-  background: var(--surface-2); flex: 0 0 auto;
+.tier-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--sunk);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
-.tier-head h2 {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-  text-transform: uppercase; margin: 0; color: var(--text-2);
-  display: flex; align-items: center; gap: 7px;
+.tier-top h2 {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
-.tier-head h2::before {
-  content: ""; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--green); box-shadow: 0 0 6px var(--green);
+.tier-top h2::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+  flex: 0 0 auto;
 }
-.tier-count { font-family: var(--mono); font-size: 10px; color: var(--text-3); font-variant-numeric: tabular-nums; }
-
-.search {
-  margin: 8px 12px 4px; width: calc(100% - 24px);
-  font-family: var(--mono); font-size: 12px; color: var(--text);
-  background: var(--surface-3); border: 1px solid var(--border-2);
-  border-radius: 6px; padding: 8px 10px; transition: border-color .2s;
-}
-.search::placeholder { color: var(--text-3); }
-.search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
-
-.list {
-  flex: 1; overflow-y: auto; padding: 6px; min-height: 0; scroll-behavior: smooth;
-}
-.list::-webkit-scrollbar { width: 4px; }
-.list::-webkit-scrollbar-track { background: transparent; }
-.list::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
-
-/* Allele items */
-.allele-item {
-  display: block; width: 100%; text-align: left; background: none;
-  border: 0; border-left: 2px solid transparent; border-radius: var(--radius);
-  padding: 10px 12px; margin-bottom: 2px; cursor: pointer;
-  font-family: inherit; color: var(--text); transition: background .2s, border-color .2s;
-}
-.allele-item:hover { background: var(--surface-3); }
-.allele-item[aria-pressed="true"] { background: var(--accent-glow); border-left-color: var(--accent); }
-.allele-name { font-family: var(--mono); font-size: 12.5px; font-weight: 500; display: block; }
-.allele-meta { font-size: 10.5px; color: var(--text-3); display: flex; gap: 8px; margin-top: 3px; }
-.allele-meta span { white-space: nowrap; }
-.distrib { display: flex; gap: 1px; margin-top: 5px; height: 3px; border-radius: 1.5px; overflow: hidden; }
-.distrib i { flex: 1; display: block; min-width: 0; }
-
-/* Peptide items */
-.pep-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: var(--radius);
-  cursor: pointer; transition: background .15s;
-  border: 1px solid transparent; margin-bottom: 2px;
-}
-.pep-item:hover { background: var(--surface-3); }
-.pep-item[aria-pressed="true"] { background: var(--accent-glow); border-color: rgba(59,130,246,0.2); }
-.pep-seq { font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.04em; flex: 1; min-width: 0; }
-.pep-thalf { font-family: var(--mono); font-size: 11px; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pep-solved {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--cyan); box-shadow: 0 0 6px var(--cyan); flex: 0 0 auto;
+.tally {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-/* Structure panel */
-.struct-panel { display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
-.struct-head { padding: 11px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); flex: 0 0 auto; }
-.struct-title { font-family: var(--mono); font-size: 13px; font-weight: 500; }
-.struct-subtitle { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-
-.viewer-wrap { flex: 1; position: relative; min-height: 0; background: #080a10; }
-#mol-viewer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-
-.viewer-legend {
-  position: absolute; top: 12px; left: 14px;
-  background: rgba(8,9,12,0.88); color: var(--text);
-  padding: 10px 14px; border-radius: 8px; font-size: 11px; line-height: 1.55;
-  backdrop-filter: blur(8px); border: 1px solid var(--border-2);
-  z-index: 10; pointer-events: none; max-width: 260px;
+.sieve {
+  margin: 10px 16px 4px;
+  width: calc(100% - 32px);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-height: 34px;
+  transition: border-color .25s var(--ease), background .25s var(--ease);
 }
-.viewer-legend b { font-weight: 600; }
-.leg-row { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; }
-.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
-
-.viewer-controls {
-  position: absolute; bottom: 12px; right: 14px;
-  display: flex; gap: 6px; z-index: 10;
-}
-.viewer-btn {
-  font-family: var(--mono); font-size: 10px; font-weight: 500;
-  color: var(--text-2); background: rgba(8,9,12,0.85);
-  border: 1px solid var(--border-2); border-radius: 6px;
-  padding: 5px 10px; cursor: pointer; backdrop-filter: blur(8px);
-  transition: border-color .15s, color .15s;
-}
-.viewer-btn:hover { border-color: var(--accent); color: var(--text); }
-.viewer-btn.active { border-color: var(--accent); color: var(--accent); }
-
-.viewer-hint {
-  position: absolute; bottom: 12px; left: 14px;
-  font-size: 10px; color: var(--text-3); z-index: 10;
-  pointer-events: none; font-family: var(--mono);
+.sieve::placeholder { color: var(--ink-3); opacity: .7; }
+.sieve:focus {
+  border-color: var(--pick);
+  background: var(--panel);
+  outline: none;
 }
 
-.loading-spinner {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  z-index: 20; display: flex; flex-direction: column; align-items: center;
-  gap: 12px; color: var(--text-3); font-family: var(--mono); font-size: 12px;
+.scroller {
+  flex: 1;
+  overflow-y: auto;
+  padding: 7px;
+  min-height: 0;
+  scroll-behavior: smooth;
 }
-.spinner {
-  width: 32px; height: 32px;
-  border: 2px solid var(--border-2); border-top-color: var(--accent);
-  border-radius: 50%; animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg) } }
+.scroller::-webkit-scrollbar { width: 4px; }
+.scroller::-webkit-scrollbar-track { background: transparent; }
+.scroller::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 2px; }
 
-.empty-state {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; height: 100%; color: var(--text-3);
-  gap: 8px; padding: 40px; text-align: center;
-}
-.empty-state .icon { font-size: 32px; opacity: 0.4; margin-bottom: 4px; }
-.empty-state p { margin: 0; font-size: 12px; max-width: 28ch; line-height: 1.6; }
+/* ---------------- tier 1: alleles ---------------- */
 
-.pep-detail {
-  padding: 10px 16px; border-bottom: 1px solid var(--border);
-  background: var(--surface-2); flex: 0 0 auto;
+.allele {
+  width: 100%;
+  display: block;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  padding: 10px 10px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  font-family: var(--mono);
+  color: var(--ink);
+  position: relative;
+  transition: background .22s var(--ease), transform .18s var(--ease);
 }
-.pep-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px,1fr)); gap: 8px 16px; }
-.detail-cell { display: flex; flex-direction: column; }
-.detail-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); font-weight: 500; }
-.detail-value { font-family: var(--mono); font-size: 13px; font-weight: 500; margin-top: 1px; }
+.allele:hover { background: var(--sunk); }
+.allele:active { transform: scale(.985); }
+.allele[aria-pressed="true"] {
+  background: var(--pick-sunk);
+  border-left-color: var(--pick);
+  animation: fadeSelect .32s var(--ease);
+}
+.allele-name {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  display: block;
+}
+.allele-sub {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  display: block;
+  margin-top: 2px;
+}
 
-@media (max-width: 900px) {
-  .tiers { grid-template-columns: 1fr; grid-template-rows: 200px 200px 1fr; }
-  .tier { border-right: 0; border-bottom: 1px solid var(--border); }
-  .topbar-stats { display: none; }
+/* distribution strip */
+.strip {
+  display: flex;
+  gap: 1px;
+  margin-top: 6px;
+  height: 3px;
+  border-radius: 1.5px;
+  overflow: hidden;
+}
+.strip i {
+  flex: 1;
+  display: block;
+  transition: opacity .3s var(--ease);
+}
+
+/* ---------------- tier 2: ranked peptides ---------------- */
+
+.rank {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  font-family: var(--mono);
+  color: var(--ink);
+  transition: background .22s var(--ease), transform .18s var(--ease);
+}
+.rank:hover { background: var(--sunk); }
+.rank:active { transform: scale(.992); }
+.rank[aria-pressed="true"] {
+  background: var(--pick-sunk);
+  border-left-color: var(--pick);
+  animation: fadeSelect .32s var(--ease);
+}
+.rank-ord {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.rank-body { min-width: 0; }
+.rank-seq {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  display: block;
+}
+.bar {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 5px;
+  background: var(--h2);
+  min-width: 2px;
+  transition: width .4s var(--ease), background .3s var(--ease);
+}
+.rank-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.solved {
+  display: inline-block;
+  vertical-align: 1px;
+  margin-left: 6px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
+/* ---------------- tier 3: structure ---------------- */
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  background: var(--sunk);
+  touch-action: none;
+  cursor: grab;
+  transition: background .3s var(--ease);
+}
+.stage:active { cursor: grabbing; }
+.stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: canvasFade .8s var(--ease) .15s forwards;
+}
+
+.stage-caption {
+  position: absolute;
+  left: 16px; bottom: 14px; right: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  pointer-events: none;
+}
+.stage-caption b {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  color: var(--ink);
+}
+.stage-caption span { font-size: 10.5px; color: var(--ink-3); letter-spacing: .01em; }
+
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  border-top: 1px solid var(--rule);
+  background: var(--sunk);
+}
+.readouts > div {
+  padding: 10px 14px;
+  border-right: 1px solid var(--rule);
+  min-width: 0;
+}
+.readouts > div:last-child { border-right: 0; }
+.readouts dt {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+}
+.readouts dd {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin: 3px 0 0;
+}
+
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+
+/* ---------------- footnote ---------------- */
+
+.footnote {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  align-items: baseline;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.footnote p { margin: 0; max-width: 72ch; }
+.footnote a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color .2s var(--ease);
+}
+.footnote a:hover { text-decoration: underline; }
+.footnote code {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--ink-2);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.ramp {
+  display: flex;
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ramp i { flex: 1; }
+
+/* ---------------- animations ---------------- */
+
+@keyframes fadeSelect {
+  0%   { opacity: .55; transform: scale(.995); }
+  100% { opacity: 1;   transform: scale(1); }
+}
+@keyframes slideIn {
+  0%   { transform: scaleY(0); opacity: 0; }
+  60%  { transform: scaleY(1.05); opacity: .9; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+@keyframes canvasFade {
+  0%   { opacity: 0; transform: scale(.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ---------------- responsive ---------------- */
+
+@media (max-width: 1080px) {
+  .tiers { grid-template-columns: 260px minmax(0, 1fr); }
+  .tier-structure {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--rule);
+    border-right: 0;
+  }
+  .shell { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 680px) {
+  .tiers {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .tier { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .tier:last-child { border-bottom: 0; }
+  .tier-alleles .scroller { max-height: 232px; }
+  .tier-peptides .scroller { max-height: 300px; }
+  .stage { min-height: 320px; }
+  .masthead { padding-block: 20px 14px; }
+  .shell { padding-left: 16px; padding-right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+  .stage canvas { opacity: 1; animation: none; }
 }
 </style>
-</head>
-<body>
-<div class="app">
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="logo">
-        <div class="logo-icon">G</div>
-        <span class="logo-text">Groove</span>
-        <span class="logo-sub">pMHC Stability Explorer</span>
-      </div>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div>
+      <h1>pMHC-I Stability Explorer</h1>
+      <p class="standfirst">
+        Every measured peptide for 75 HLA-I alleles, ranked by dissociation half-life, with the groove that holds it.
+      </p>
     </div>
-    <div class="topbar-stats" id="topbar-stats"></div>
-  </div>
+    <div class="masthead-side">
+      <button class="ghost" id="theme" type="button" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
   <div class="tiers">
-    <div class="tier">
-      <div class="tier-head"><h2>HLA Alleles</h2><span class="tier-count" id="allele-count"></span></div>
-      <input class="search" type="text" placeholder="Filter alleles…" id="allele-search" autocomplete="off">
-      <div class="list" id="allele-list"></div>
-    </div>
-    <div class="tier">
-      <div class="tier-head"><h2>Ranked Peptides</h2><span class="tier-count" id="pep-count"></span></div>
-      <div class="list" id="pep-list">
-        <div class="empty-state"><div class="icon">←</div><p>Select an allele to see its ranked peptides</p></div>
+
+    <section class="tier tier-alleles" aria-label="Alleles">
+      <div class="tier-top">
+        <h2>Alleles</h2>
+        <span class="tally" id="tally-allele"></span>
       </div>
-    </div>
-    <div class="tier struct-panel">
-      <div class="struct-head" id="struct-head">
-        <div class="struct-title" id="struct-title">3D Structure Viewer</div>
-        <div class="struct-subtitle" id="struct-subtitle">Select a peptide with a cyan dot to view its crystal structure</div>
+      <input class="sieve" id="sieve-allele" type="search" placeholder="Find an allele" aria-label="Find an allele">
+      <div class="scroller" id="list-allele"></div>
+    </section>
+
+    <section class="tier tier-peptides" aria-label="Peptides">
+      <div class="tier-top">
+        <h2 id="pep-heading">Peptides</h2>
+        <span class="tally" id="tally-pep"></span>
       </div>
-      <div id="struct-detail" class="pep-detail" hidden>
-        <div class="pep-detail-grid" id="struct-detail-grid"></div>
+      <input class="sieve" id="sieve-pep" type="search" placeholder="Find a peptide" aria-label="Find a peptide">
+      <div class="scroller" id="list-pep"></div>
+    </section>
+
+    <section class="tier tier-structure" aria-label="Structure">
+      <div class="tier-top">
+        <h2>Structure</h2>
+        <span class="tally" id="tally-struct"></span>
       </div>
-      <div class="viewer-wrap" id="viewer-wrap">
-        <div id="mol-viewer"></div>
-        <div class="viewer-legend" id="viewer-legend" hidden>
-          <div style="font-weight:600;margin-bottom:6px" id="legend-title"></div>
-          <div class="leg-row"><span class="leg-dot" style="background:#94a3b8"></span> HLA heavy chain</div>
-          <div class="leg-row"><span class="leg-dot" style="background:#10b981"></span> Peptide (sticks)</div>
-          <div class="leg-row"><span class="leg-dot" style="background:#3b82f6"></span> P2 anchor</div>
-          <div class="leg-row"><span class="leg-dot" style="background:#f97316"></span> PΩ anchor</div>
-        </div>
-        <div class="viewer-controls" id="viewer-controls" hidden>
-          <button class="viewer-btn" id="btn-spin">Spin</button>
-          <button class="viewer-btn" id="btn-surface">Surface</button>
-          <button class="viewer-btn" id="btn-reset">Reset</button>
-        </div>
-        <div class="viewer-hint" id="viewer-hint">Drag to rotate · Scroll to zoom · Right-drag to pan</div>
-        <div class="empty-state" id="struct-empty">
-          <div class="icon">🧬</div>
-          <p>Select a peptide with a <span style="color:var(--cyan)">cyan dot</span> to load its crystal structure from RCSB PDB</p>
+      <div class="stage" id="stage">
+        <canvas id="canvas"></canvas>
+        <div class="stage-caption">
+          <b id="cap-seq"></b>
+          <span id="cap-note">Drag to rotate</span>
         </div>
       </div>
-    </div>
+      <dl class="readouts" id="readouts"></dl>
+    </section>
+
   </div>
+
+  <div class="footnote">
+    <div class="legend">
+      <span>Half-life</span>
+      <span class="ramp" aria-hidden="true"><i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i></span>
+      <span>short to long</span>
+    </div>
+    <p id="provenance"></p>
+  </div>
+
 </div>
 
+<script src="payload.js"></script>
 <script>
-(function() {
-  "use strict";
-  const D = window.__DATA__;
-  if (!D) { document.body.innerHTML = '<p style="padding:40px;color:#f44">payload.js not found</p>'; return; }
-  const T = D.totals;
+/* =========================================================================
+   Groove - three-tier dashboard
+   Tier 1 allele  ->  Tier 2 peptides ranked by half-life  ->  Tier 3 structure
 
-  document.getElementById("topbar-stats").innerHTML = [
-    st(T.pairs.toLocaleString(), "pairs"), st(T.alleles, "alleles"),
-    st(T.templates, "templates"), st(T.structure_pairs, "solved"),
-  ].join("");
-  function st(v, l) { return '<div class="stat"><b>' + v + '</b>' + l + '</div>'; }
+   The structure tier is a self-contained canvas renderer with no external
+   dependency. It draws a schematic MHC class I groove: two flanking helices,
+   a beta-sheet floor, and the selected peptide between them.
 
-  const alleles = D.alleles;
-  const overlap = D.overlap;
-  const solvedMap = {};
-  overlap.forEach(function(o) { solvedMap[o.allele + "|" + o.peptide] = o; });
+   SWAPPING IN REAL COORDINATES
+   ----------------------------
+   Structure3D.load(atoms) takes an array of:
+       { x, y, z, chain, resi, el }
+   chain 'P' is drawn as the peptide and coloured by half-life; everything
+   else is drawn as scaffold. Parse a CIF/PDB into that shape and call load().
+   Structure3D.schematic(peptideSeq) regenerates the placeholder geometry.
+   ========================================================================= */
+(function () {
+  'use strict';
 
-  var selectedAllele = null, selectedPeptide = null;
-  var viewer = null, spinning = false, surfaceOn = false, surfaceHandle = null;
+  var D = window.__DATA__;
+  if (!D) return;
 
-  function hRamp(t, max) {
-    if (!max || max <= 0) return "var(--h0)";
-    var r = (t || 0) / max;
-    if (r < 0.05) return "var(--h0)";
-    if (r < 0.2) return "var(--h1)";
-    if (r < 0.45) return "var(--h2)";
-    if (r < 0.7) return "var(--h3)";
-    return "var(--h4)";
-  }
-
-  var alleleList = document.getElementById("allele-list");
-  var alleleSearch = document.getElementById("allele-search");
-  var alleleCount = document.getElementById("allele-count");
-
-  function renderAlleles(filter) {
-    var q = (filter || "").toLowerCase();
-    var filtered = alleles.filter(function(a) { return !q || a.allele.toLowerCase().indexOf(q) >= 0; });
-    alleleCount.textContent = filtered.length + " / " + alleles.length;
-    alleleList.innerHTML = filtered.map(function(a) {
-      var rho = a.val ? a.val.rho.toFixed(2) : "—";
-      var tier = a.tpl ? a.tpl.tier : "?";
-      var hasSolved = a.peptides.some(function(p) { return p.s; });
-      var max = a.thalf_max || 1;
-      var bars = a.peptides.slice(0, 12).map(function(p) {
-        return '<i style="background:' + hRamp(p.t, max) + '"></i>';
-      }).join("");
-      return '<button class="allele-item" data-allele="' + a.allele + '" aria-pressed="false">' +
-        '<span class="allele-name">' + a.allele + (hasSolved ? ' <span style="color:var(--cyan);font-size:9px">●</span>' : '') + '</span>' +
-        '<span class="allele-meta"><span>' + a.n_pairs + ' pep</span><span>ρ ' + rho + '</span><span>T' + tier + '</span></span>' +
-        '<div class="distrib">' + bars + '</div></button>';
-    }).join("");
-    alleleList.querySelectorAll(".allele-item").forEach(function(btn) {
-      btn.addEventListener("click", function() { selectAllele(btn.dataset.allele); });
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  renderAlleles();
-  alleleSearch.addEventListener("input", function() { renderAlleles(alleleSearch.value); });
-
-  function selectAllele(name) {
-    selectedAllele = alleles.find(function(a) { return a.allele === name; });
-    selectedPeptide = null;
-    if (!selectedAllele) return;
-    alleleList.querySelectorAll(".allele-item").forEach(function(b) {
-      b.setAttribute("aria-pressed", b.dataset.allele === name ? "true" : "false");
-    });
-    renderPeptides();
-    clearViewer();
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-  var pepList = document.getElementById("pep-list");
-  var pepCount = document.getElementById("pep-count");
+  /* ---- half-life scale -------------------------------------------------
+     Half-lives span minutes to days, so rank on log1p and bucket into the
+     five ramp stops. Scale is per allele: the question is which peptides
+     THIS allele holds longest. */
+  var RAMP = ['--h0', '--h1', '--h2', '--h3', '--h4'];
+  function norm(t, max) {
+    if (t == null || max == null || max <= 0) return 0;
+    return Math.min(1, Math.log1p(Math.max(t, 0)) / Math.log1p(max));
+  }
+  function rampVar(f) {
+    return RAMP[Math.min(RAMP.length - 1, Math.max(0, Math.round(f * (RAMP.length - 1))))];
+  }
+  function hours(t) {
+    if (t == null) return 'n/a';
+    if (t === 0) return '0 h';
+    if (t < 1) return (t * 60).toFixed(0) + ' min';
+    return (t >= 10 ? t.toFixed(0) : t.toFixed(1)) + ' h';
+  }
 
-  function renderPeptides() {
-    if (!selectedAllele) {
-      pepList.innerHTML = '<div class="empty-state"><div class="icon">←</div><p>Select an allele</p></div>';
-      pepCount.textContent = "";
-      return;
+  /* =======================================================================
+     Structure3D - dependency-free canvas renderer
+     ===================================================================== */
+  var Structure3D = (function () {
+    var cv, ctx, stage;
+    var atoms = [], bonds = [];
+    var yaw = -0.5, pitch = -0.22, spin = 0, spinning = true;
+    var targetSpin = 0;       // for momentum deceleration
+    var spinVel = 0.003;      // radians per frame - smooth idle rate
+    var W = 0, H = 0, dpr = 1;
+    var reduce = window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function helix(axis, radius, phase, turns, n, lift) {
+      var pts = [];
+      for (var i = 0; i < n; i++) {
+        var f = i / (n - 1);
+        var a = phase + f * turns * Math.PI * 2;
+        pts.push({
+          x: -19 + f * 38,
+          y: lift + Math.sin(a) * radius,
+          z: axis + Math.cos(a) * radius
+        });
+      }
+      return pts;
     }
-    var peps = selectedAllele.peptides;
-    var max = selectedAllele.thalf_max || 1;
-    pepCount.textContent = peps.length + " shown / " + selectedAllele.n_pairs;
-    pepList.innerHTML = peps.map(function(p) {
-      var t = p.t != null ? p.t.toFixed(1) + "h" : "—";
-      return '<div class="pep-item" data-pep="' + p.p + '" aria-pressed="false">' +
-        '<span class="pep-seq">' + colorSeq(p.p) + '</span>' +
-        '<span class="pep-thalf" style="color:' + hRamp(p.t, max) + '">' + t + '</span>' +
-        (p.s ? '<span class="pep-solved" title="Crystal structure available"></span>' : '') +
-        '</div>';
-    }).join("");
-    pepList.querySelectorAll(".pep-item").forEach(function(el) {
-      el.addEventListener("click", function() { selectPeptide(el.dataset.pep); });
-    });
-  }
 
-  function colorSeq(seq) {
-    var colors = {
-      A:"#718096",V:"#718096",I:"#718096",L:"#718096",M:"#718096",
-      F:"#c4b5fd",W:"#c4b5fd",P:"#718096",G:"#718096",
-      K:"#60a5fa",R:"#60a5fa",H:"#93c5fd",
-      D:"#f87171",E:"#f87171",
-      S:"#34d399",T:"#34d399",C:"#fbbf24",N:"#34d399",Q:"#34d399",Y:"#c4b5fd"
+    /* Placeholder geometry. Shape only - not predicted coordinates. */
+    function schematic(seq) {
+      var A = [], B = [];
+      function chainOf(pts, chain, el) {
+        var base = A.length;
+        pts.forEach(function (p, i) {
+          A.push({ x: p.x, y: p.y, z: p.z, chain: chain, resi: i + 1, el: el });
+          if (i) B.push([base + i - 1, base + i]);
+        });
+      }
+
+      chainOf(helix(8.4, 2.2, 0, 5.2, 46, 3.4), 'A', 'C');     // alpha1
+      chainOf(helix(-8.4, 2.2, 1.6, 5.2, 46, 3.4), 'B', 'C');  // alpha2
+
+      for (var s = 0; s < 8; s++) {                            // beta floor
+        var z = -7.4 + s * 2.1;
+        var strand = [];
+        for (var k = 0; k < 13; k++) {
+          strand.push({
+            x: -18 + k * 3,
+            y: -4.1 + Math.sin(k * 0.9 + s) * 0.5,
+            z: z
+          });
+        }
+        chainOf(strand, 'S', 'C');
+      }
+
+      var n = (seq || 'XXXXXXXXX').length;                     // peptide
+      var pep = [];
+      for (var i = 0; i < n; i++) {
+        var f = n > 1 ? i / (n - 1) : 0.5;
+        pep.push({
+          x: -13 + f * 26,
+          y: 0.5 + Math.sin(f * Math.PI) * 2.3,
+          z: Math.sin(f * Math.PI * 2) * 0.7
+        });
+      }
+      chainOf(pep, 'P', 'P');
+      load(A, B);
+    }
+
+    function load(nextAtoms, nextBonds) {
+      atoms = nextAtoms || [];
+      if (nextBonds) { bonds = nextBonds; return; }
+      bonds = [];
+      for (var i = 1; i < atoms.length; i++) {
+        var a = atoms[i - 1], b = atoms[i];
+        if (a.chain !== b.chain) continue;
+        var d = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+        if (d < 5) bonds.push([i - 1, i]);
+      }
+    }
+
+    function resize() {
+      if (!stage) return;
+      var r = stage.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.max(1, Math.round(r.width));
+      H = Math.max(1, Math.round(r.height));
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function project(p) {
+      var cy = Math.cos(yaw + spin), sy = Math.sin(yaw + spin);
+      var x1 = p.x * cy - p.z * sy;
+      var z1 = p.x * sy + p.z * cy;
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      var y1 = p.y * cp - z1 * sp;
+      var z2 = p.y * sp + z1 * cp;
+      var scale = Math.min(W, H * 1.55) / 46;
+      var persp = 190 / (190 + z2 * 2.4);
+      return {
+        sx: W / 2 + x1 * scale * persp,
+        sy: H / 2 - y1 * scale * persp,
+        depth: z2,
+        k: persp
+      };
+    }
+
+    var colours = {};
+    function refreshColours() {
+      colours = {
+        scaffold: css('--rule-2') || '#666666',
+        floor:    css('--rule') || '#999999',
+        pep:      css('--h3') || '#2A78A0',
+        anchor:   css('--pick') || '#121212',
+        label:    css('--ink-3') || '#999999',
+        bg:       css('--paper') || '#FAFAFA'
+      };
+    }
+
+    var pepColour = null;
+    function setPeptideColour(v) { pepColour = v; }
+
+    function draw() {
+      if (!ctx || !W) return;
+      ctx.clearRect(0, 0, W, H);
+      if (!atoms.length) return;
+
+      var pr = atoms.map(project);
+
+      // depth-sort bonds
+      var order = bonds.map(function (b, i) {
+        return { i: i, d: (pr[b[0]].depth + pr[b[1]].depth) / 2 };
+      }).sort(function (a, b) { return a.d - b.d; });
+
+      order.forEach(function (o) {
+        var b = bonds[o.i];
+        var a0 = atoms[b[0]], p0 = pr[b[0]], p1 = pr[b[1]];
+        var isPep = a0.chain === 'P';
+        // smoother depth fog with wider range
+        var fog = Math.max(0.12, Math.min(1, (o.d + 18) / 34));
+
+        ctx.globalAlpha = isPep ? 1 : 0.15 + fog * 0.55;
+        ctx.strokeStyle = isPep ? (pepColour || colours.pep)
+                        : (a0.chain === 'S' ? colours.floor : colours.scaffold);
+        ctx.lineWidth = (isPep ? 5.5 : (a0.chain === 'S' ? 1.8 : 2.6)) * p0.k;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(p0.sx, p0.sy);
+        ctx.lineTo(p1.sx, p1.sy);
+        ctx.stroke();
+      });
+
+      // peptide residues on top, anchors larger
+      var pepIdx = [];
+      atoms.forEach(function (a, i) { if (a.chain === 'P') pepIdx.push(i); });
+      var n = pepIdx.length;
+
+      pepIdx.forEach(function (i, k) {
+        var p = pr[i];
+        var anchor = (k === 1 || k === n - 1);
+        var r = (anchor ? 7.8 : 5) * p.k;
+        ctx.globalAlpha = 1;
+
+        // subtle glow behind peptide nodes
+        if (anchor) {
+          ctx.beginPath();
+          ctx.arc(p.sx, p.sy, r + 4, 0, Math.PI * 2);
+          ctx.fillStyle = (pepColour || colours.pep);
+          ctx.globalAlpha = 0.12;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2);
+        ctx.fillStyle = anchor ? colours.anchor : (pepColour || colours.pep);
+        ctx.fill();
+        if (anchor) {
+          ctx.lineWidth = 2.2 * p.k;
+          ctx.strokeStyle = colours.bg;
+          ctx.stroke();
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    var raf = null;
+    var dragVelX = 0, dragVelY = 0;
+    function tick() {
+      if (spinning && !reduce) {
+        // gentle sinusoidal breathing on the spin speed
+        spin += spinVel * (0.85 + 0.15 * Math.sin(spin * 0.7));
+      } else if (!spinning) {
+        // momentum decay after drag release
+        if (Math.abs(dragVelX) > 0.0001 || Math.abs(dragVelY) > 0.0001) {
+          yaw += dragVelX;
+          pitch += dragVelY;
+          pitch = Math.max(-1.2, Math.min(1.2, pitch));
+          dragVelX *= 0.94;
+          dragVelY *= 0.94;
+        }
+      }
+      draw();
+      raf = requestAnimationFrame(tick);
+    }
+
+    function attach(stageEl, canvasEl) {
+      stage = stageEl; cv = canvasEl; ctx = cv.getContext('2d');
+      refreshColours();
+      resize();
+      if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+      else window.addEventListener('resize', resize);
+
+      var dragging = false, lastX = 0, lastY = 0, lastT = 0;
+      stage.addEventListener('pointerdown', function (e) {
+        dragging = true; spinning = false;
+        dragVelX = 0; dragVelY = 0;
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = performance.now();
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = (e.clientX - lastX) * 0.0092;
+        var dy = (e.clientY - lastY) * 0.0068;
+        yaw += dx;
+        pitch += dy;
+        pitch = Math.max(-1.2, Math.min(1.2, pitch));
+        // track velocity for momentum
+        var now = performance.now();
+        var dt = Math.max(1, now - lastT);
+        dragVelX = dx * (16 / dt);   // normalise to ~60fps
+        dragVelY = dy * (16 / dt);
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = now;
+      });
+      function end(e) {
+        dragging = false;
+        if (e && e.pointerId != null && stage.hasPointerCapture &&
+            stage.hasPointerCapture(e.pointerId)) {
+          stage.releasePointerCapture(e.pointerId);
+        }
+      }
+      stage.addEventListener('pointerup', end);
+      stage.addEventListener('pointercancel', end);
+
+      if (raf == null) tick();
+    }
+
+    return {
+      attach: attach,
+      load: load,
+      schematic: schematic,
+      setPeptideColour: setPeptideColour,
+      refreshColours: refreshColours,
+      resetSpin: function () { spinning = true; dragVelX = 0; dragVelY = 0; }
     };
-    return seq.split("").map(function(c) {
-      return '<span style="color:' + (colors[c] || "var(--text)") + '">' + c + '</span>';
-    }).join("");
+  })();
+
+  /* =======================================================================
+     State and rendering
+     ===================================================================== */
+  var byAllele = {};
+  D.alleles.forEach(function (a) { byAllele[a.allele] = a; });
+  var solvedFor = {};
+  (D.overlap || []).forEach(function (o) {
+    solvedFor[o.allele + '|' + o.peptide] = o;
+  });
+
+  var state = { allele: null, peptide: null };
+
+  /* ---- tier 1 ---- */
+  function paintAlleles() {
+    var q = $('sieve-allele').value.trim().toUpperCase();
+    var items = D.alleles.filter(function (a) {
+      return !q || a.allele.toUpperCase().indexOf(q) >= 0;
+    });
+    $('tally-allele').textContent = items.length + '/' + D.alleles.length;
+
+    var box = $('list-allele');
+    box.innerHTML = '';
+    items.forEach(function (a) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'allele';
+      b.setAttribute('aria-pressed', String(a.allele === state.allele));
+
+      var strip = a.peptides.slice(0, 10).map(function (p) {
+        return '<i style="background:var(' + rampVar(norm(p.t, a.thalf_max)) + ')"></i>';
+      }).join('');
+
+      b.innerHTML =
+        '<span class="allele-name">' + esc(a.allele) + '</span>' +
+        '<span class="allele-sub">' + a.n_pairs.toLocaleString() + ' peptides, longest ' +
+          hours(a.thalf_max) + '</span>' +
+        '<span class="strip">' + strip + '</span>';
+      b.addEventListener('click', function () { pickAllele(a.allele); });
+      box.appendChild(b);
+    });
   }
 
-  function selectPeptide(seq) {
-    if (!selectedAllele) return;
-    var pep = selectedAllele.peptides.find(function(p) { return p.p === seq; });
-    if (!pep) return;
-    selectedPeptide = pep;
-    pepList.querySelectorAll(".pep-item").forEach(function(el) {
-      el.setAttribute("aria-pressed", el.dataset.pep === seq ? "true" : "false");
+  /* ---- tier 2 ---- */
+  function paintPeptides() {
+    var a = byAllele[state.allele];
+    var box = $('list-pep');
+    if (!a) { box.innerHTML = ''; return; }
+
+    var q = $('sieve-pep').value.trim().toUpperCase();
+    var items = a.peptides.filter(function (p) {
+      return !q || p.p.toUpperCase().indexOf(q) >= 0;
     });
-    var key = selectedAllele.allele + "|" + seq;
-    var sol = solvedMap[key];
-    if (sol) { loadStructure(sol, seq); }
-    else { showPeptideInfo(seq, pep); }
+
+    $('pep-heading').textContent = 'Peptides in ' + a.allele;
+    $('tally-pep').textContent = items.length + ' of ' + a.n_pairs.toLocaleString();
+
+    box.innerHTML = '';
+    items.forEach(function (p, i) {
+      var f = norm(p.t, a.thalf_max);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rank';
+      b.setAttribute('aria-pressed', String(p.p === state.peptide));
+      b.innerHTML =
+        '<span class="rank-ord">' + (i + 1) + '</span>' +
+        '<span class="rank-body">' +
+          '<span class="rank-seq">' + esc(p.p) +
+            (structures[structureKey(a.allele, p.p)]
+              ? '<span class="solved" title="Boltz-2 structure available"></span>'
+              : p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
+          '</span>' +
+          '<span class="bar" style="width:' + Math.max(3, f * 100) + '%;background:var(' +
+            rampVar(f) + ')"></span>' +
+        '</span>' +
+        '<span class="rank-val">' + hours(p.t) + '</span>';
+      b.addEventListener('click', function () { pickPeptide(p.p); });
+      box.appendChild(b);
+    });
   }
 
-  function showPeptideInfo(seq, pep) {
-    clearViewer();
-    document.getElementById("struct-title").textContent = selectedAllele.allele + " · " + seq;
-    document.getElementById("struct-subtitle").textContent = "No crystal structure available for this pair";
-    var detail = document.getElementById("struct-detail");
-    detail.hidden = false;
-    document.getElementById("struct-detail-grid").innerHTML =
-      '<div class="detail-cell"><span class="detail-label">Half-life</span><span class="detail-value">' + (pep.t != null ? pep.t.toFixed(1) + " h" : "—") + '</span></div>' +
-      '<div class="detail-cell"><span class="detail-label">Peptide</span><span class="detail-value" style="font-size:12px;letter-spacing:0.05em">' + seq + '</span></div>' +
-      '<div class="detail-cell"><span class="detail-label">Length</span><span class="detail-value">' + seq.length + '-mer</span></div>' +
-      '<div class="detail-cell"><span class="detail-label">Structure</span><span class="detail-value" style="color:var(--text-3)">Not solved</span></div>';
-    document.getElementById("struct-empty").innerHTML =
-      '<div class="icon" style="font-size:40px;opacity:0.3">📐</div>' +
-      '<p>No crystal structure in PDB for<br><b style="color:var(--text);font-family:var(--mono)">' + seq + '</b><br>bound to ' + selectedAllele.allele + '</p>';
-    document.getElementById("struct-empty").hidden = false;
+  /* ---- tier 3 ---- */
+
+  /* Boltz-2 structure lookup. complex_id format: A0101_PEPTIDE */
+  var structures = D.structures || {};
+  function structureKey(allele, peptide) {
+    return allele.replace('HLA-', '').replace(/\*/g, '').replace(/:/g, '') + '_' + peptide;
   }
 
-  function loadStructure(sol, seq) {
-    var pdbId = sol.pdbs[0];
-    document.getElementById("struct-title").textContent = selectedAllele.allele + " · " + seq;
-    document.getElementById("struct-subtitle").textContent = "PDB " + pdbId + " · " + sol.res + "Å · " + sol.year;
-    document.getElementById("struct-empty").hidden = true;
-    document.getElementById("viewer-legend").hidden = true;
-    document.getElementById("viewer-controls").hidden = true;
+  function paintStructure() {
+    var a = byAllele[state.allele];
+    if (!a || !state.peptide) return;
 
-    var detail = document.getElementById("struct-detail");
-    detail.hidden = false;
-    document.getElementById("struct-detail-grid").innerHTML =
-      '<div class="detail-cell"><span class="detail-label">Half-life</span><span class="detail-value">' + sol.thalf.toFixed(1) + ' h</span></div>' +
-      '<div class="detail-cell"><span class="detail-label">Resolution</span><span class="detail-value">' + sol.res + ' Å</span></div>' +
-      '<div class="detail-cell"><span class="detail-label">PDB</span><span class="detail-value"><a href="' + sol.link + '" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">' + pdbId + '</a></span></div>' +
-      '<div class="detail-cell"><span class="detail-label">TCR</span><span class="detail-value">' + (sol.tcr ? "Yes" : "No") + '</span></div>';
+    var pep = null;
+    a.peptides.some(function (p) { if (p.p === state.peptide) { pep = p; return true; } });
+    var hit = solvedFor[a.allele + '|' + state.peptide] || null;
+    var tpl = a.tpl;
 
-    var wrap = document.getElementById("viewer-wrap");
-    var loader = wrap.querySelector(".loading-spinner");
-    if (!loader) {
-      loader = document.createElement("div");
-      loader.className = "loading-spinner";
-      loader.innerHTML = '<div class="spinner"></div><span>Fetching PDB…</span>';
-      wrap.appendChild(loader);
-    }
-    loader.hidden = false;
-    document.getElementById("viewer-hint").hidden = true;
+    Structure3D.setPeptideColour(css(rampVar(norm(pep && pep.t, a.thalf_max))));
 
-    fetch("https://files.rcsb.org/download/" + pdbId + ".pdb")
-      .then(function(r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.text();
-      })
-      .then(function(pdbText) {
-        loader.hidden = true;
-        renderMolecule(pdbText, seq, sol);
-      })
-      .catch(function(err) {
-        loader.hidden = true;
-        document.getElementById("struct-empty").hidden = false;
-        document.getElementById("struct-empty").innerHTML =
-          '<div class="icon" style="font-size:32px;opacity:0.4">⚠</div>' +
-          '<p>Could not fetch from RCSB PDB<br><small style="color:var(--text-3)">' + err.message + '</small></p>';
-      });
-  }
+    /* Load Boltz-2 Cα trace if available, otherwise fall back to schematic */
+    var skey = structureKey(a.allele, state.peptide);
+    var boltzAtoms = structures[skey];
+    var hasBoltz = boltzAtoms && boltzAtoms.length > 0;
 
-  function renderMolecule(pdbText, seq, sol) {
-    var container = document.getElementById("mol-viewer");
-    if (viewer) { try { viewer.clear(); } catch(e) {} }
-    container.innerHTML = "";
-    spinning = false; surfaceOn = false; surfaceHandle = null;
-
-    viewer = $3Dmol.createViewer(container, {
-      backgroundColor: "#080a10", antialias: true
-    });
-    viewer.addModel(pdbText, "pdb");
-
-    // All chains as cartoon ribbon (silver-slate)
-    viewer.setStyle({}, { cartoon: { color: "#8a92a4", opacity: 0.75 } });
-
-    // Find peptide chain: shortest chain with 5–15 residues
-    var model = viewer.getModel();
-    var atoms = model.selectedAtoms({});
-    var chainRes = {};
-    atoms.forEach(function(a) {
-      if (!chainRes[a.chain]) chainRes[a.chain] = new Set();
-      chainRes[a.chain].add(a.resi);
-    });
-    var pepChain = null, pepN = Infinity;
-    Object.keys(chainRes).forEach(function(ch) {
-      var n = chainRes[ch].size;
-      if (n >= 5 && n <= 15 && n < pepN) { pepN = n; pepChain = ch; }
-    });
-
-    if (pepChain) {
-      // Peptide: colored sticks (green carbon scheme like the reference image)
-      viewer.setStyle({chain: pepChain}, {
-        stick: { colorscheme: "greenCarbon", radius: 0.22 }
-      });
-
-      var pepResis = Array.from(chainRes[pepChain]).sort(function(a,b){return a-b;});
-
-      // P2 anchor: blue / cyan
-      if (pepResis.length >= 2) {
-        var p2 = pepResis[1];
-        viewer.addStyle({chain: pepChain, resi: p2}, {
-          stick: { colorscheme: "cyanCarbon", radius: 0.32 }
-        });
-        viewer.addLabel("P2", {
-          fontSize: 11, fontColor: "#fff",
-          backgroundColor: "#3b82f6", backgroundOpacity: 0.85,
-          borderColor: "#60a5fa", borderWidth: 1, borderRadius: 4
-        }, {chain: pepChain, resi: p2, atom: "CA"});
-      }
-
-      // PΩ anchor: orange
-      if (pepResis.length >= 2) {
-        var pO = pepResis[pepResis.length - 1];
-        viewer.addStyle({chain: pepChain, resi: pO}, {
-          stick: { colorscheme: "orangeCarbon", radius: 0.32 }
-        });
-        viewer.addLabel("PΩ", {
-          fontSize: 11, fontColor: "#fff",
-          backgroundColor: "#c2410c", backgroundOpacity: 0.85,
-          borderColor: "#fb923c", borderWidth: 1, borderRadius: 4
-        }, {chain: pepChain, resi: pO, atom: "CA"});
-      }
-
-      viewer.zoomTo({chain: pepChain}, 700);
+    if (hasBoltz) {
+      Structure3D.load(boltzAtoms);
     } else {
-      viewer.zoomTo({}, 700);
+      Structure3D.schematic(state.peptide);
     }
+    Structure3D.resetSpin();
 
-    viewer.render();
+    $('cap-seq').textContent = state.peptide;
+    $('cap-note').textContent = hasBoltz
+      ? 'Boltz-2 prediction · Cα trace · drag to rotate'
+      : hit
+        ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
+        : 'Drag to rotate. Schematic geometry.';
+    $('tally-struct').textContent = hasBoltz ? 'Boltz-2 fold' : (hit ? 'solved complex' : 'allele template');
 
-    document.getElementById("viewer-legend").hidden = false;
-    document.getElementById("viewer-controls").hidden = false;
-    document.getElementById("viewer-hint").hidden = false;
-    document.getElementById("legend-title").textContent = sol.pdbs[0] + " — " + seq;
+    var pdb = hit ? hit.pdbs[0] : (tpl ? tpl.pdb : null);
+    var res = hit ? hit.res : (tpl ? tpl.res : null);
+    var year = hit ? hit.year : (tpl ? tpl.year : null);
 
-    viewer._pepChain = pepChain;
-    viewer._chainRes = chainRes;
-    document.getElementById("btn-spin").className = "viewer-btn";
-    document.getElementById("btn-surface").className = "viewer-btn";
+    var cells = [
+      ['Half-life', pep ? hours(pep.t) : 'n/a'],
+      ['Source', hasBoltz ? 'Boltz-2' : (pdb || 'none')],
+      ['Resolution', hasBoltz ? 'predicted' : (res != null ? res + ' Å' : 'n/a')],
+      ['Chains', hasBoltz ? 'H + β₂m + pep' : (year || 'n/a')]
+    ];
+    $('readouts').innerHTML = cells.map(function (c) {
+      return '<div><dt>' + c[0] + '</dt><dd>' + esc(c[1]) + '</dd></div>';
+    }).join('');
+
+    var link = hit ? hit.link : (tpl ? tpl.link : null);
+    $('provenance').innerHTML = hasBoltz
+      ? 'Boltz-2 ectodomain fold (3-chain: HLA α + β₂m + peptide). Cα backbone trace, centred on the peptide groove.' +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Compare with ' +
+                esc(pdb) + ' on RCSB →</a>' : '')
+      : 'Alleles, peptides and half-lives are measured. ' +
+        (Object.keys(structures).length
+          ? 'Boltz-2 structures available for ' + Object.keys(structures).length + ' pairs.'
+          : 'Run <code>fetch_structures.py</code> then <code>build_payload.py</code> to load Boltz-2 folds.') +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
+                esc(pdb) + ' on RCSB →</a>' : '');
   }
 
-  // Controls
-  document.getElementById("btn-spin").addEventListener("click", function() {
-    if (!viewer) return;
-    spinning = !spinning;
-    viewer.spin(spinning);
-    this.className = spinning ? "viewer-btn active" : "viewer-btn";
-  });
-
-  document.getElementById("btn-surface").addEventListener("click", function() {
-    if (!viewer) return;
-    surfaceOn = !surfaceOn;
-    if (surfaceOn) {
-      var atoms = viewer.getModel().selectedAtoms({});
-      var cc = {};
-      atoms.forEach(function(a) { cc[a.chain] = (cc[a.chain]||0)+1; });
-      var maxCh = null, maxN = 0;
-      Object.keys(cc).forEach(function(ch) {
-        if (cc[ch] > maxN && ch !== viewer._pepChain) { maxCh = ch; maxN = cc[ch]; }
-      });
-      surfaceHandle = viewer.addSurface($3Dmol.SurfaceType.VDW, {
-        opacity: 0.22, color: "#475569"
-      }, maxCh ? {chain: maxCh} : {});
-      viewer.render();
-    } else {
-      if (surfaceHandle != null) { viewer.removeSurface(surfaceHandle); surfaceHandle = null; }
-      viewer.render();
-    }
-    this.className = surfaceOn ? "viewer-btn active" : "viewer-btn";
-  });
-
-  document.getElementById("btn-reset").addEventListener("click", function() {
-    if (!viewer) return;
-    viewer.zoomTo(viewer._pepChain ? {chain: viewer._pepChain} : {}, 700);
-    viewer.render();
-  });
-
-  function clearViewer() {
-    if (viewer) { try { viewer.clear(); } catch(e) {} viewer = null; }
-    document.getElementById("mol-viewer").innerHTML = "";
-    document.getElementById("viewer-legend").hidden = true;
-    document.getElementById("viewer-controls").hidden = true;
-    document.getElementById("struct-detail").hidden = true;
-    var loader = document.querySelector(".loading-spinner");
-    if (loader) loader.hidden = true;
-    spinning = false; surfaceOn = false; surfaceHandle = null;
+  /* ---- selection ---- */
+  function pickAllele(name) {
+    state.allele = name;
+    var a = byAllele[name];
+    state.peptide = a && a.peptides.length ? a.peptides[0].p : null;
+    $('sieve-pep').value = '';
+    paintAlleles(); paintPeptides(); paintStructure();
+  }
+  function pickPeptide(seq) {
+    state.peptide = seq;
+    paintPeptides(); paintStructure();
   }
 
-  // Auto-select first allele that has solved structures
-  var first = alleles.find(function(a) { return a.peptides.some(function(p){return p.s;}); });
-  if (first) {
-    selectAllele(first.allele);
-    var btn = alleleList.querySelector('[data-allele="' + first.allele + '"]');
-    if (btn) btn.scrollIntoView({ block: "center" });
-  }
+  /* ---- wiring ---- */
+  $('sieve-allele').addEventListener('input', paintAlleles);
+  $('sieve-pep').addEventListener('input', paintPeptides);
+
+  $('theme').addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? 'Dark' : 'Light';
+    this.setAttribute('aria-pressed', String(!dark));
+    Structure3D.refreshColours();
+    paintStructure();
+  });
+
+  Structure3D.attach($('stage'), $('canvas'));
+
+  // open on a pair that has a solved structure, so tier 3 is full at rest
+  var first = (D.overlap && D.overlap.length) ? D.overlap[0] : null;
+  pickAllele(first ? first.allele : D.alleles[0].allele);
+  if (first) pickPeptide(first.peptide);
 })();
 </script>
-</body>
-</html>
