@@ -1,3 +1,5 @@
 arm,group,hidden,l2,ladder,n_points,interior
-additive,onehot,256x64,0.01,0.001|0.01|0.1,3,True
-additive,blosum,256x64,0.01,0.001|0.01|0.1,3,True
+additive,onehot,256x64,0.01,0.0001|0.001|0.01|0.1|1,5,True
+additive,blosum,256x64,0.01,0.0001|0.001|0.01|0.1|1,5,True
+esm,mid,256x64,0.01,0.0001|0.001|0.01|0.1|1|10,6,True
+esm,final,256x64,0.01,0.0001|0.001|0.01|0.1|1|10,6,True

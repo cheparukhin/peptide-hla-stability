@@ -1,9 +1,14 @@
 # Stage 3b — does auxiliary affinity training help the ESM-2 arm?
 
-Status: **harness built and tested, leakage audit re-verified, no training
-run.** Sections 1–5 were written before any comparison was fitted. Section 6 is
-pending and is gated on `esm-arm` reporting its headline comparison and its
-selected representation.
+Status: **complete. The design could not resolve the effect it measured.**
+Sections 1–5 were written before any comparison was fitted. §6 is the sequence
+half, §7 the ESM half and the difference-in-differences.
+
+**Headline.** Δ_esm − Δ_seq is **+0.012 to +0.028** across the four λ, every
+interval crossing zero. But the DiD's own paired interval has a half-width of
+**0.033–0.036**, which is *larger than every point estimate*. So this is not a
+null — it is a measurement the design cannot resolve, and §7.4 reports the
+floor that establishes that rather than forcing a conclusion.
 
 Scope: validation split only. The test split is not read; a structural test
 (`tests/test_stage3b.py::test_harness_scores_validation_only`) checks that.
@@ -361,7 +366,7 @@ DiD one is the one the verdict is read against.
 
 ---
 
-## 6. Results — sequence arm (the ESM arms are not yet run)
+## 6. Results — sequence arm
 
 Run: `scripts/stage3b_esm_multitask.py --arms seq --mde --mde-boot 500
 --n-boot 2000`. 150 networks, 14.2 min, one worker, BLAS pinned.
