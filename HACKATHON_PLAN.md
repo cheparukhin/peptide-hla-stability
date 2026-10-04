@@ -20,9 +20,34 @@ workstream edits this file, `CLAUDE.md`, or `EVALUATION.md`.
 | `elution` | 3c scoring pass | `scripts/stage3c_*`, `pepstab/elution.py`, `reports/stage3c_*`, `external/` | running |
 | Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | running (separate session) |
 
+Added later the same morning: `inverse-folding` (ProteinMPNN, stage 5's third
+model class), `stats-stretch` (stage 7 censored likelihood and allele hold-out),
+and `struct-features` (stage 4c.5 extraction). FoldX and Rosetta were requested
+as stretch goals and declined — see the out-of-scope register.
+
+**Two remaining items are blocked, not unowned.** Both are assigned in advance
+so neither falls through when its blocker clears:
+
+- **Stage 3b's ESM-2 arm** (multi-task affinity) goes to `esm-arm`, behind the
+  core stage 3 comparison and stage 3d. The sequence half is already done and
+  negative at stage 2c.
+- **Stage 5's ablations** — training heads on structural features — go to
+  `struct-features` as a third phase, since it will know the feature semantics
+  best. Its phases are: (1) build and validate the extractor against the 90
+  local pilot folds, free; (2) extract from the production Volumes on Modal,
+  CPU-only, on explicit go-ahead; (3) the stage 5 ablations.
+
 Dependency order for what remains: stage 3 unblocks the ESM half of stage 3b;
-stage 4c production unblocks stage 5; stages 3, 5 and the stage 6 machinery all
-feed the single test scoring at stage 6, which happens **once**, last.
+stage 4c production unblocks stage 4c.5, which unblocks stage 5; stages 3, 5
+and the stage 6 machinery all feed the single test scoring at stage 6, which
+happens **once**, last, under the single-pass rule predeclared in that stage.
+
+**Resource note, 4 October 04:30 BST.** Seven concurrent workstreams on an
+8-core / 16 GB laptop drove load average to 59 and swap to 289 MB free. Agents
+are throttled to one worker each and ESM-2 650M is dropped. The binding
+constraint is not CPU but the two client processes driving the production fold:
+they must survive ~6.5 more hours, and an OOM that kills them costs the
+structural arm and the GPU spend. Scope is cut before footprint is grown.
 
 ## Recommended scope
 
