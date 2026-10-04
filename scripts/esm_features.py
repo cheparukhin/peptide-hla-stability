@@ -63,7 +63,8 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--checkpoint", default=pesm.DEFAULT_CHECKPOINT,
                     choices=sorted(pesm.CHECKPOINTS))
-    ap.add_argument("--device", default="auto", choices=["auto", "cpu", "mps"])
+    ap.add_argument("--device", default="auto",
+                    choices=["auto", "cpu", "mps", "cuda"])
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--verify-index", action="store_true",
                     help="only check that the 34 contact positions reproduce "

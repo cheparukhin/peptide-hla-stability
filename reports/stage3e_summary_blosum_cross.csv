@@ -1,0 +1,4 @@
+model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,delta_vs_baseline,ci_low_vs_baseline,ci_high_vs_baseline,verdict_vs_baseline,delta_vs_esm_stacked,ci_low_vs_esm_stacked,ci_high_vs_esm_stacked,verdict_vs_esm_stacked
+seq_ensemble_pep_pseudo (stage 2),2802,68,68,0,0.6904,0.5647,0.7589,0.4733,0.7,0.8014,0.8106,,,,,,,,
+blosum_cross_alone (30 nets),2802,68,68,0,0.3717,0.1856,0.547,0.6352,0.5,0.6422,0.6619,-0.3187,-0.3683,-0.2347,worse: CI entirely below 0,-0.1671,-0.2413,-0.0759,worse: CI entirely below 0
+blosum_cross_stacked (30 nets),2802,68,68,0,0.6277,0.522,0.7413,0.4987,0.7,0.7737,0.7854,-0.0627,-0.0908,-0.0088,worse: CI entirely below 0,0.089,0.0372,0.1579,"real improvement, but whether it clears the 0.05 bar is unresolved (CI straddles 0.05)"
