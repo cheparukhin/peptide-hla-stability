@@ -31,7 +31,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # enablement:true turns Pages on for the repo the first time this runs,
+      # using the workflow's own pages:write token. Without it the action only
+      # reads existing Pages config and fails with 404 on a repo that has
+      # never had Pages enabled.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
