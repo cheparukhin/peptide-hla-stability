@@ -62,7 +62,10 @@ function FilmEyebrow({ op, text, y, size = 22 }) {
 // qualified; there is no illustrated quantity left on screen to qualify.
 // ══════════════════════════════════════════════════════════════════════════
 const CO = {
-  dur: 6,            // must match the shell's slot for this act
+  // Must match the shell's slot. The card is fully landed by ~1.7s (punch line
+  // in at 1.70), so 6s left 4.3s of a motionless frame before the cut — long
+  // enough to read as a stall on the film's opening.
+  dur: 4.5,
   settle: 0.90,      // the headline's breathe-into-place, from frame one
   rule: 0.30,        // crimson rule draws
   tldr: 0.60,        // the first two TL;DR lines

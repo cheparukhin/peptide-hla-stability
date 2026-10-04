@@ -2740,8 +2740,10 @@ function FilmEyebrow({
 // qualified; there is no illustrated quantity left on screen to qualify.
 // ══════════════════════════════════════════════════════════════════════════
 const CO = {
-  dur: 6,
-  // must match the shell's slot for this act
+  // Must match the shell's slot. The card is fully landed by ~1.7s (punch line
+  // in at 1.70), so 6s left 4.3s of a motionless frame before the cut — long
+  // enough to read as a stall on the film's opening.
+  dur: 4.5,
   settle: 0.90,
   // the headline's breathe-into-place, from frame one
   rule: 0.30,
@@ -5974,23 +5976,29 @@ const FILM_W = 1920,
 
 // Authored running order. `dur` is the act's own length; `at` is derived.
 // Act I's length is INTRO_LEN below, which must match the intro cue sum.
-// Act I is trimmed from 38s to 14s for the results-first cut: the groove and
-// the peptide locking in are kept, the TCR docking / activation / clonal
-// expansion / body arc is dropped. A judge does not need the full immunology
-// arc to read a ranking metric, and the deck gives biology one section.
+// Act I keeps four beats and DROPS the rest outright, rather than giving the
+// dropped ones a fraction of a second each.
+//
+// Every beat has a duration below which its own choreography cannot finish —
+// the frame at which its last callout, residue pop or ripple lands. Squeezing
+// a beat under that does not speed it up, it cuts it mid-motion; at the
+// extreme the beat renders nothing at all. The previous 14s Act I ran eight of
+// twelve beats under their minimum (Expansion at 3% of what it needs) and its
+// final second was a blank frame.
+//
+// So: Groove, Anatomy, Candidates and Lock at their true minimums, and the TCR
+// docking / wobble / activation / clonal-expansion arc removed. The deck gives
+// biology one section titled "Peptide-MHC interface", and a results-first film
+// does not need the immunology payoff to set up a ranking metric.
+//
+// Approach is kept only as a terminal cue: BeatGroove fades itself out across
+// it, so it is the act's out-point rather than a beat of its own.
 const INTRO_CUES = {
-  Groove: 1.8,
-  Anatomy: 3.6,
-  Candidates: 3.0,
-  Lock: 1.4,
-  Approach: 1.6,
-  Interface: 1.2,
-  Wobble: 0.6,
-  Anchors: 0.3,
-  Contact: 0.2,
-  Activation: 0.1,
-  Expansion: 0.1,
-  Body: 0.1
+  Groove: 1.3,
+  Anatomy: 3.8,
+  Candidates: 2.1,
+  Lock: 1.0,
+  Approach: 0.5
 };
 
 // Turn the duration map into absolute starts, the same way the runtime derives
@@ -6015,7 +6023,7 @@ const INTRO_LEN = INTRO_A.__total;
 // method, and the deck leads with results. Their files are kept on disk.
 const ACTS = [{
   key: 'coldopen',
-  dur: 6,
+  dur: 4.5,
   comp: () => window.ColdOpen
 }, {
   key: 'intro',
@@ -6070,6 +6078,10 @@ function ActIntro({
   if (t < -0.2 || t > INTRO_LEN + 0.4) return null;
   if (typeof BeatHLA !== 'function') return null;
   const A = INTRO_A;
+  // Only the two beats whose cues INTRO_CUES actually defines. The dropped
+  // beats are not mounted at all: giving them a near-zero cue would still let
+  // their opacity math fire for a frame or two, which is what produced the
+  // flashes and the blank tail in the previous cut.
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(BeatHLA, {
     T: t,
     A: A,
@@ -6078,25 +6090,6 @@ function ActIntro({
     T: t,
     A: A,
     L: L
-  }), /*#__PURE__*/React.createElement(BeatTCR, {
-    T: t,
-    A: A,
-    L: L
-  }), /*#__PURE__*/React.createElement(BeatStability, {
-    T: t,
-    A: A,
-    L: L
-  }), /*#__PURE__*/React.createElement(BeatContact, {
-    T: t,
-    A: A,
-    L: L
-  }), /*#__PURE__*/React.createElement(BeatResponse, {
-    T: t,
-    A: A,
-    L: L
-  }), /*#__PURE__*/React.createElement(BeatBody, {
-    T: t,
-    A: A
   }));
 }
 
