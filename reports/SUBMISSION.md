@@ -1266,8 +1266,44 @@ Because no two peptides within 3 substitutions straddle a split, this benchmark
 **cannot assess mutant ranking** — scoring point mutants of a known binder, which
 is often the practically relevant design question. The partial recovery is a
 cross-validation on the d≤2 peptide clusters that live entirely inside the
-training split, touching neither the test set nor the frozen assignments.
-Result: **‹HOLE S6c›**.
+training split, touching neither the test set nor the frozen assignments. Test
+result: **‹HOLE S6c›**.
+
+**On validation it is an exact dead heat.** All three shipped arms on identical
+folds, head class, member count and seed; **490 comparisons on 96 independent
+clusters**:
+
+| Arm | Concordance | vs chance |
+|---|---:|---|
+| sequence baseline | 0.485075 | −0.0149 [−0.0968, +0.0745] |
+| ESM-2 only | 0.485075 | −0.0149 [−0.0896, +0.0622] |
+| sequence + ESM-2 | 0.480100 | −0.0199 [−0.1000, +0.0616] |
+| *mean-pooled 650M (ablation)* | *0.390547* | *−0.1095 [−0.1712, −0.0384]* — **conclusive** |
+
+ESM-2 and the sequence baseline agree **to six decimal places**, and the paired
+comparison between them is **+0.0000 [−0.0433, +0.0445]**.
+
+**That looked like a bug, so it was checked at the pair level before being
+reported.** An unqualified "+0.0000" in a results table reads as an error, and a
+reader is right to suspect it. It is not one:
+
+- both arms earn exactly **195.0 credits of 402 decidable pairs**;
+- their per-pair scores correlate at **r = 0.961** — close, but not identical;
+- they **disagree on 60 pairs, split exactly 30–30** — thirty the sequence arm
+  gets right, thirty the ESM arm gets right.
+
+So the zero is **a net of offsetting disagreements, verified pair by pair** — not
+two identical prediction vectors, and not a metric too blunt to tell them apart.
+The arms genuinely rank different mutants correctly and arrive at the same
+total.
+
+**One note on reading the intervals:** the half-width is a property of *the arm
+pair*, not of the harness — 0.044, 0.053 and 0.046 across these comparisons,
+ordered by how correlated the two arms are. More correlated arms give a tighter
+paired interval. It must therefore be quoted per comparison rather than once for
+the analysis.
+
+**And the ablation row is why this null means anything** — see §6.8.
 
 ### 6.4 Failure analysis, not just aggregate scores
 
@@ -1400,7 +1436,7 @@ against the committed CSVs:
 | **differential concordance** | 8 | **5** |
 | distance strata (gap + within) | 12 | 0 |
 | precision@10 median | 4 | 0 |
-| nested mutant ranking | 1 | 0 |
+| nested mutant ranking | 3 | 0 |
 
 > **The differential target resolves more comparisons than every other analysis
 > combined.**
@@ -1463,6 +1499,27 @@ statements is machinery that knows what it can and cannot detect. An evaluation
 that returns four inconclusive results *and can prove they are inconclusive
 rather than null* is doing its job. One that returns four inconclusive results
 and cannot tell you which is which has told you nothing at all.
+
+#### Not all four nulls are equal — the positive-control asymmetry
+
+> **A null is only informative next to a positive control on the same
+> measurement.**
+
+This is the principle the rest of the evaluation leans on, and applying it
+honestly **splits our four inconclusive analyses into two unequal pairs**:
+
+| Analysis | Positive control on the same measurement? | What its null is worth |
+|---|---|---|
+| **nested mutant ranking** | **yes** — the mean-pooled ablation, blind to point mutations by construction, scores **conclusively below chance** (−0.1095 [−0.1712, −0.0384]) while every representation that *can* see the substitution lands in an unresolvable band around 0.5 | the instrument demonstrably works, and there is nothing there |
+| **differential concordance** | **yes** — two conclusive separations on the same comparisons under the same bootstrap (§4.0) | as above; this is what licenses the tight equivalence |
+| distance strata | **no** | we measured and found nothing, and have **not** shown the instrument could have found something |
+| precision@10 | **no** | as above — and worse, its lattice structure suggests it *could not* have |
+
+**So two of our nulls are much stronger claims than the other two**, and saying
+so is more honest than presenting four inconclusive results as a uniform block.
+The distance strata and precision@10 nulls are the weakest things in this run.
+A reader should discount them accordingly — and the reason we can tell them
+apart at all is that the controls were run, not assumed.
 
 ---
 

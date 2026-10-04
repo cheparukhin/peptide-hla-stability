@@ -27,7 +27,24 @@ the single easiest way to overclaim. The predeclared reading in
 | Crosses 0, upper ≥ 0.05 | **Inconclusive** | We learned nothing. |
 
 Rows 5 and 6 look alike and are not. **This project's negative results are all
-row 5, not row 6, and not "the effect is zero".** Stage 2b's best arm is
+row 5, not row 6, and not "the effect is zero".**
+
+**And a verdict table is not enough on its own.** A second principle governs how
+much any of these verdicts is worth:
+
+> **A null is only informative next to a positive control on the same
+> measurement.**
+
+Two of this project's analyses have one — the nested mutant evaluation, where a
+mean-pooled ablation blind to point mutations scores *conclusively below chance*
+while every representation that can see the substitution sits in an unresolvable
+band around 0.5; and the differential target, where two conclusive separations
+license its tight equivalence. **Two do not**: the distance strata and
+precision@10. Their nulls are correspondingly weaker — "we measured and found
+nothing, and have not shown the instrument could have found something" — and
+§7.3 below records why. The asymmetry is stated rather than left for a reader to
+notice, because presenting four inconclusive results as a uniform block would
+overstate half of them. Stage 2b's best arm is
 +0.024 [−0.026, +0.048]: the data are consistent with a real +0.04 improvement.
 What is ruled out is +0.05. Saying "augmentation does nothing" would be a
 stronger claim than the evidence supports, and it is not the claim made.
@@ -859,6 +876,16 @@ made in advance, unless the order of events is written down. It is written down
 here, **before the test set has been scored**, so the record cannot be
 reconstructed favourably afterwards. The same rule applies to any other pattern
 first noticed on validation.
+
+### The nested table covers four arms, not five — declined deliberately
+
+The 150M arm has no out-of-fold prediction file, so it is absent from the nested
+mutant table. Generating one was **declined, not overlooked**: it is the weakest
+arm on every other measurement, the analysis is underpowered (490 comparisons on
+96 independent clusters, half-widths near 0.05), and a fifth inconclusive row
+would add a number without adding information. Recorded here so the gap is not
+read as an oversight, and so the cost of closing it is on the record: about
+seven minutes.
 
 ### Precision@10 is quantised past the point of usefulness
 
