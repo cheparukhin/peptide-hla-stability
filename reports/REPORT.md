@@ -10,11 +10,11 @@
 > **−0.112 [−0.134, −0.057]**, after a full-cohort fold costing **$212.71,
 > derived from recorded container-hours**.
 
-**Evidence status.** The six-arm test summary and paired intervals are available
-and reported in §7; the run's completion manifest is still outstanding in the
-reviewed artifacts. Validation comparisons remain separate in §3. ProteinMPNN
-and FoldX are diagnostic pilots, with narrower conclusions than the predictive
-benchmark.
+**Evidence status.** The six-arm test summary and paired intervals are final and
+reported in §7; the completion manifest is
+[`stage6_test_manifest.json`](stage6_test_manifest.json). Validation comparisons
+remain separate in §3. ProteinMPNN and FoldX are diagnostic pilots, with narrower
+conclusions than the predictive benchmark.
 
 ## 1. The problem
 
@@ -200,9 +200,10 @@ precision@10 is 0.9 for the sequence and ESM arms and 0.8 for the structural
 arm; the paired precision intervals cross or touch zero, so that secondary
 metric does not establish a difference.
 
-**The completion manifest remains outstanding in the reviewed artifacts**;
-the results above are taken from the written summary and paired-output files.
-The final benchmark procedure is specified in the
+The run is recorded in the [completion manifest](stage6_test_manifest.json) —
+per-arm prediction hashes, distance strata, the differential and the file list —
+alongside the [test provenance record](test_scoring_provenance.json). The final
+benchmark procedure is specified in the
 [test-scoring runbook](TEST_SCORING_RUNBOOK.md), with the earlier exposure
 disclosed in §2.
 
@@ -219,8 +220,8 @@ disclosed in §2.
 - The assay floor creates tied labels, and no assay replicates are available
   to estimate a noise ceiling. The panel was partly selected by predicted
   affinity, limiting broader biological generalisation.
-- Earlier test exposure, validation model selection, pending completion audit
-  and incomplete provider-bill reconciliation limit the strength of the claims.
+- Earlier test exposure, validation model selection and an unreconciled provider
+  bill for the fold cost limit the strength of the claims.
 
 Full register: [limitations.md](limitations.md).
 
@@ -237,32 +238,32 @@ allele-specific transfer result. Inverse folding and empirical energy pilots
 identify useful implementation limits while leaving their broader predictive
 value open.
 
-## Submission checks
+## Provenance and open work
 
-This report collects the submission results, interpretation and outstanding
-checks. Linked stage reports and scored tables provide the supporting evidence.
+This report is the authoritative write-up; the linked stage reports and scored
+tables hold the supporting evidence. Test scoring ran once, on 4 October 2026,
+recorded in [`test_scoring_provenance.json`](test_scoring_provenance.json) and
+the [`stage6_test_manifest.json`](stage6_test_manifest.json) completion record.
+The figure in §7 is generated from the published test tables by
+[`make_report_comparison.py`](figures/make_report_comparison.py).
 
-- **Completion record:** archive the original pass's
-  `stage6_test_manifest.json` when available and check it against the prediction
-  hashes and scored outputs. The paired intervals are already included here.
-  Do not relaunch test scoring solely to finish the prose.
-- **Frozen configurations:** the current provenance records the dirty-tree
-  flag, hashes and arm list, but omits the per-arm frozen configurations and
-  stage-report references requested by the runbook. Preserve the original
-  capture; date any supplemental record and use pre-score evidence for freezes.
-- **Companion documents:** reconcile [SUBMISSION.md](SUBMISSION.md),
-  [README.md](../README.md) and [the compute ledger](compute_ledger.md) with the
-  results here. They still describe an unscored test set, a missing structural
-  result or an unrun ProteinMPNN QC sample. Their historical figures also need
-  updating: the old distribution plot omits the structural arm and the cost
-  plot shows its accuracy as pending. The figure in §7 uses the published test
-  tables directly; its generator is
-  [make_report_comparison.py](figures/make_report_comparison.py).
-- **Structural source correction:** change the source report's claim that
-  sequence-only wins at all six L2 settings to five of six, and identify the
-  quantity as development MSE. The exact values and limits are in §3 above.
+Still open:
 
-Review verification: the reported primary scores and intervals, all six test
-prediction hashes, both pinned input hashes and document links were checked
-against saved artifacts. No models were fitted and no test scores were
-recomputed during the review.
+- **Provider-bill reconciliation of the fold cost.** The $212.71 is derived from
+  recorded container-hours at the measured A10G rate; no post-run metered bill
+  was captured. See [the compute ledger](compute_ledger.md).
+- **Elution transfer on the ESM-2 and structural arms.** The §5 pass covers the
+  sequence arm only ([stage 3c](stage3c_elution_validation.md)).
+- **ESM-2 likelihood features (stage 3d).** Not run; untested scope, not a null.
+  A second pLM family and a chimeric peptide-linker-groove ESM input are also
+  untested ([limitations §5.3](limitations.md)).
+- **Full-cohort ProteinMPNN and FoldX scoring.** Declined on evidence, not
+  pending: no deployed predictor rests on either
+  ([stage 5](stage5_inverse_folding.md), [stage 8](stage8_foldx.md)).
+
+Per-stage detail lives in the stage reports: the structural pilot and features
+([stage 4c](stage4c_ectodomain_pilot.md), [stage 4c5](stage4c5_features.md)),
+inverse folding ([stage 5](stage5_inverse_folding.md)), FoldX
+([stage 8](stage8_foldx.md)), elution ([stage 3c](stage3c_elution_validation.md))
+and the transfer and hold-out analyses
+([stage 7a](stage7_censored.md), [stage 7b](stage7_allele_holdout.md)).

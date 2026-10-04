@@ -26,20 +26,20 @@ stage,item,hardware,cpu_minutes,gpu_type,gpu_hours,wall_clock,usd,status,source
 4c,"ESMFold2 production (rejected at the gate, never funded)",L40S,,L40S,,,884,FORECAST_rejected,reports/stage4c_ectodomain_pilot.md
 4c,Structure storage on Modal Volumes (~22 GB across two workspaces),Modal Volume,,,,,1.98,derived_forecast_per_month,"22 GB x $0.09/GiB-month, reports/ectodomain_rates.json"
 3,"ESM-2 embedding extraction, 3 checkpoints, cached per unique sequence",laptop mps,,laptop mps,,7.5 s (35M) to 59.5 s (650M) embed time,0,measured,reports/stage3_embedding_cost.csv
-3,ESM-2 regression head fit and inference,TBD,,,,,,PLACEHOLDER_in_flight_E1b,owner: esm-arm
+3,ESM-2 regression head fit and inference (30-network ensemble),laptop CPU,,,,,0,measured,reports/stage3_esm.md
 3c,"Elution external validation: 2 arms x 3 control sets, 897600 rows each, 51 alleles",laptop CPU,16.4,,,16.4 min,0,measured,reports/stage3c_elution_validation.md
 7a,"Censored (Tobit) likelihood: 130 networks (2x30-net ensembles, 5-point threshold sweep, stopping-rule control)",laptop CPU,29.6,,,29.6 min,0,measured,reports/stage7_censored.md
 7b,"Leave-allele-out evaluation: 68 folds x 6 networks, second evaluation contract",laptop CPU,72.4,,,36.2 min on 2 workers,0,measured,reports/stage7_allele_holdout.md
 5,"ProteinMPNN inverse-folding pilot: 90 folds + circularity matrix + wrong-backbone control",laptop CPU,28.3,,,481 s + 1107 s + 107 s,0,measured,reports/stage5_inverse_folding.md
 5,"ProteinMPNN aborted cross-peptide sweep (killed under memory pressure, output discarded)",laptop CPU,13,,,~780 s,0,measured_wasted,reports/stage5_inverse_folding.md
 5,"ProteinMPNN ::forecast + --dry-run checks (assumed free; --dry-run started a container and would have failed against a missing production root)",Modal CPU,,,,minutes,,measured_not_separately_metered,reports/stage5_inverse_folding.md
-5,"ProteinMPNN QC sample: 2000 folds at 16 decoding orders (approved, STILL NOT SPENT; fold-completion blocker now cleared, hole R1). Check for reports/stage5_inverse_folding_qcsample_*.csv before relaunching - a run was dispatched and the client was killed at handoff",Modal CPU,990,,,0.8 h at 20 containers,1.04,FORECAST_approved_not_spent_hole_R1,reports/stage5_inverse_folding.md
+5,"ProteinMPNN QC sample REALISED (2000/2000 scored, 0 failures, 426.8 s; a prior attempt was killed and discarded for ~0.46 sunk; ~1.15 total)",Modal CPU,,,,426.8 s at 16 orders,0.69,derived_realised_measured_hole_R1_filled,reports/stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json
 5,"ProteinMPNN full-cohort regression scoring (declined on evidence)",Modal CPU,13920,,,2.9 h parallel,14.68,FORECAST_declined,reports/stage5_inverse_folding.md
 4c5,"Structural feature extraction, both halves, REALISED (28166/28166 extracted, 0 failures); Volume-read-bound 1.57 s wall vs 0.096 s CPU per fold",Modal CPU,1125,,,1044.9 s + 1206.1 s at 30 containers,1.18,derived_realised_container_hours_x_metered_rate,reports/stage4c5_features.md section 9.1
 4c5,"Structural feature extraction, both halves, as forecast (realised +51%; the overrun is chunk sizing, not the data: 36 chunks against 30 containers ran a second 6-wide wave for a full wave of wall)",Modal CPU,738,,,~12.3 min parallel,0.78,FORECAST_superseded_by_realised,reports/stage4c5_features.md section 7.6
 4c5,Structural feature extraction spend before the full pass (two smokes + two 1000-fold passes; not included in the 1.18),Modal CPU,,,,~1.5 container-hours,0.15,measured_upper_bound,reports/stage4c5_features.md section 7.6
-5,Structural feature head fits and bootstraps (6 arms x 30 networks),laptop CPU,,,,,0,PLACEHOLDER_not_separately_recorded,reports/stage4c5_features.md section 9.2
-3,"Coupling + permutation diagnostics: cross-attention vs mean-pool at matched 94913 params, permuted-embedding sign test, 30 members each",laptop CPU,,,,,0,measured,"SUBMISSION section 4.0; colleague branch, imports project cv_folds/MLP"
+5,Structural feature head fits and bootstraps (6 arms x 30 networks),laptop CPU,,,,,0,measured,reports/stage4c5_features.md section 9.2
+3,"Coupling + permutation diagnostics: cross-attention vs mean-pool at matched 94913 params, permuted-embedding sign test, 30 members each",laptop CPU,,,,,0,measured,"reports/stage3_esm.md; colleague branch, imports project cv_folds/MLP"
 3b,"ESM auxiliary-affinity arms: 300 networks, DiD across 4 lambda, measured DiD power floor with injected-effect check",laptop CPU,47.8,,,68 min wall on 1 core,0,measured,reports/stage3_esm.md
 6,"Stage 6 evaluation machinery, full ESM validation run (8 paired comparisons, 12 stratum intervals, differential over 10365 allele pairs, precision@10, nested mutant)",laptop CPU,75,,,~75 min on 1 core,0,measured,reports/stage6_val_esm_run.md
-6,Final test scoring and uncertainty,laptop CPU,,,,,0,PLACEHOLDER_in_flight,owner: eval-harness
+6,"Final test scoring, single pass (6 arms, 5633 rows each, 2000-resample paired CIs)",laptop CPU,20.4,,,~20 min,0,measured,"reports/test_scoring_provenance.json; reports/stage6_test_manifest.json (elapsed 1222 s)"

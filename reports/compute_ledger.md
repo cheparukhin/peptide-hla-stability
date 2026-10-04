@@ -2,12 +2,8 @@
 
 Every dollar, CPU-minute and GPU-hour this project has spent or forecast, with
 the report each figure comes from. Machine-readable twin:
-[`compute_ledger.csv`](compute_ledger.csv).
-
-The challenge brief asks *"Are they useful for this problem"*, and usefulness
-has a denominator. This file is the denominator. It exists so the accuracy table
-in [`SUBMISSION.md`](SUBMISSION.md) can be read as a price list rather than a
-leaderboard.
+[`compute_ledger.csv`](compute_ledger.csv). The accuracy figures these costs sit
+beside are in [`REPORT.md`](REPORT.md).
 
 **Three labels are used throughout and never mixed:**
 
@@ -28,49 +24,31 @@ did not record its own timing, the cell says so rather than carrying a guess.
 |---|---:|---:|---|
 | Modal `a-cheparukhin` | $15 pilots + $150 production | **$4.41 metered** pre-launch; production **$103.83 derived** — 141/141 shards, 14,083 folds, **0 failures**, 70.1 A10G-h | `reports/ectodomain_billing_after.json` (`metered_cost`), snapshot 02:39 BST 4 Oct; `ectodomain-20261004/production_verification.json` |
 | Modal `sofyaleyn` (`colleague`) | $150 production | production **$108.88 derived** — 141/141 shards, 14,083 folds, **0 failures**, 73.5 A10G-h. No metered figure exists for this workspace at any point | same `production_verification.json`; `production_colleague.jsonl` |
-| Hugging Face | $60 | **pending stage 3** | HACKATHON_PLAN.md, "Budget and GPU decision rule" |
+| Hugging Face | $60 | **$0 — not used; ESM-2 ran on laptop GPU/CPU** | HACKATHON_PLAN.md, "Budget and GPU decision rule" |
 | Laptop CPU | — | **$0** | stages 1, 2, 2b, 2c, 3c, 4b.1 and all MSA preparation |
 
-**$4.41 was the whole GPU bill for this project up to the production launch**,
-covering a five-GPU hardware benchmark, two engine pilots and a 90-fold matched
-model comparison. Production folding — the only large spend — is **complete**:
-**28,166 of 28,166 pairs folded, zero failures**, 282 of 282 shards, **143.6
-A10G-hours** in **7 h 32 min** of wall clock (04:00:22 → 11:32:24 BST, 4
-October), for **$212.71**. Hole **B3** is filled from
-`reports/ectodomain-20261004/production_verification.json`, which also confirms
-the forecast's one stated risk: **10 `fold_shard` containers were in fact
-granted in each workspace**, counted seven minutes into the run.
+**$4.41 is the whole GPU bill up to the production launch**, covering a five-GPU
+hardware benchmark, two engine pilots and a 90-fold matched model comparison.
+Production folding — the only large spend — folded **28,166 of 28,166 pairs with
+zero failures** across 282 of 282 shards, using **143.6 A10G-hours** in **7 h
+32 min** of wall clock (04:00:22 → 11:32:24 BST, 4 October), for **$212.71**
+($103.83 + $108.88). The forecast's one flagged risk, worker concurrency, did
+not bite: **10 `fold_shard` containers were granted in each workspace**. Source:
+`reports/ectodomain-20261004/production_verification.json`.
 
-**The label on $212.71 is `derived`, not `measured`, and the distinction is the
-residual of B3.** It is realised container-hours — counted from the 28,166 fold
-records, not projected from a prefix — multiplied by the measured $1.4812/h
-shape rate (A10G + 4 CPU + 24 GiB, which reproduces exactly from
-`ectodomain_rates.json`: 1.10 + 4 × 0.04730 + 24 × 0.00800). What it is **not**
-is a provider bill: **no post-run metered snapshot was taken in either
-workspace**, so there is no `before`/`after` pair bracketing the production
-window the way the pilot has one. That is tracked as hole **B3a** below, and it
-is why the `measured` label is withheld.
+**The $212.71 is `derived`, not `measured`.** It is realised container-hours —
+counted from the 28,166 fold records — multiplied by the measured $1.4812/h
+shape rate (A10G + 4 CPU + 24 GiB = 1.10 + 4 × 0.04730 + 24 × 0.00800, from
+`ectodomain_rates.json`). No post-run metered snapshot was taken in either
+workspace, so there is no provider bill bracketing the production window. That
+gap is hole **B3a** below, and it is why the `measured` label is withheld.
 
-Two reconciliations a reader should be able to perform:
-
-- `stage4_benchmark.md` computes its own two-chain spend as **~$2.64** from
-  published per-second rates. The metered workspace total immediately before the
-  stage 4c pilot was **$2.92** (`ectodomain_billing_before.json`). The ~$0.28
-  difference is setup, CPU and volume work outside that report's table. The
-  computed estimate is therefore accurate to roughly 10% against the bill, which
-  is the only independent check we have that the computed figures elsewhere in
-  this ledger are the right order.
-- The 02:39 snapshot predates the production runner's `::smoke`. The stage 4c
-  report estimates that at ~$0.03 per workspace; it is not in the $4.41 and is
-  not metered anywhere we captured.
-
-That ~10% agreement is the **only** metered check in this file, and it sits on
-the pilot rather than on production. So the honest reading of the headline is:
-$4.41 is a bill, $212.71 is arithmetic over measured container-hours at a rate
-that has been checked to ~10% once. The one thing that *is* independently
-verified for production is the quantity being billed — 282 shard markers on the
-Volumes and a whole-run scan of all 28,166 fold records, neither of which
-relies on the progress counters (`stage4c_ectodomain_pilot.md` §Verification).
+One independent cost check exists, and it sits on the pilot rather than
+production: `stage4_benchmark.md` computes its two-chain spend as **~$2.64** from
+published per-second rates, against a **$2.92** metered workspace total
+immediately before the stage 4c pilot (`ectodomain_billing_before.json`). The
+~$0.28 difference is setup, CPU and volume work outside that report's table, so
+the computed estimate is accurate to roughly 10% against the bill.
 
 ---
 
@@ -98,13 +76,10 @@ not record that quantity.
 
 **Total recorded sequence-side compute: about 36 CPU-minutes of fitting and
 bootstrapping, and $0.** The external-validation and inverse-folding pilots add
-a further 16.4 and 28.3 CPU-minutes respectively, also at $0 — so **every
-non-GPU result in this project cost about 95 CPU-minutes on one laptop**. In
-both 2b and 2c the *uncertainty estimate* costs more
-than the models: 11 of 2b's ~13 minutes are the paired cluster bootstrap. That
-is the right way round for a submission judged on evaluation quality, and it is
-worth saying out loud — the expensive part of this project's sequence arm is
-measuring how confident we are, not fitting.
+a further 16.4 and 28.3 CPU-minutes respectively, also at $0, so **every
+non-GPU result in this project cost about 95 CPU-minutes on one laptop**. Most
+of that is the paired cluster bootstrap, not model fitting: 11 of 2b's ~13
+minutes are bootstrap.
 
 ### Structural work (stages 4a/4b, 4b.1, 4c)
 
@@ -122,32 +97,23 @@ measuring how confident we are, not fitting.
 | 4c | ESMFold2 production — **rejected at the gate, never funded** | L40S | — | — | 884 | forecast, rejected | same |
 | 4c | Structure storage, ~22 GB on two Modal Volumes | Modal Volume | — | — | ~1.98 / month | derived | 22 GB × $0.09/GiB-month, `ectodomain_rates.json` |
 
-The 90-fold pilot cost **$1.49 to settle an engine choice that would otherwise
-have been settled by preference**. That is the cheapest decision in the project
-and the one with the largest downstream consequence: it ruled out an $884
-production run — on a pre-registered quality gate first, with cost as the third
-of three supporting reasons. **The pilot cost 0.17% of the run it averted**, and
-it was spent before any production compute was booked.
+The 90-fold pilot cost **$1.49** and ruled out an **$884** ESMFold2 production
+run, on a pre-registered quality gate first with cost as a supporting reason. It
+was spent before any production compute was booked.
 
-**Where the production forecast was wrong, now that it can be checked.** Cost
-came in at +5.9% ($212.71 against $200.8) and wall clock at +11% (7 h 32 min
-against 6.8 h). The cost error is small and the wall-clock error is structural,
-which is the more useful finding: the forecast divided total GPU-seconds by 10
-workers, and that silently assumes 100% packing. Measured worker utilisation
-was **84% on `a-cheparukhin` and 88% on `colleague`**, and 6.8 h / 0.86 ≈ 7.9 h
-recovers most of the gap; the rest is model load at a measured 67–79 s per
-shard (p50 74 s) against an assumed 57 s. **Dividing GPU-seconds by worker
-count is a cost estimate, not a wall-clock estimate, and the error is
-approximately the packing loss.** One asymmetry worth carrying into future
-shape choices: `sofyaleyn` ran 11% slower per fold (18.75 s vs 16.90 s)
-consistently across all 14,083 of its folds on the same requested shape, image
-and inputs, which is the whole of its $5 higher spend.
+**Where the production forecast was wrong.** Cost came in at +5.9% ($212.71
+against $200.8) and wall clock at +11% (7 h 32 min against 6.8 h). The forecast
+divided total GPU-seconds by 10 workers, which assumes 100% packing. Measured
+worker utilisation was **84% on `a-cheparukhin` and 88% on `colleague`**, and
+6.8 h / 0.86 ≈ 7.9 h recovers most of the gap; the rest is model load at a
+measured 67–79 s per shard (p50 74 s) against an assumed 57 s. `sofyaleyn` ran
+11% slower per fold (18.75 s vs 16.90 s) across all 14,083 of its folds on the
+same requested shape, image and inputs, which accounts for its $5 higher spend.
 
-MSA preparation — the step most likely to be assumed expensive — cost **$0 and
-under four minutes in total** across both constructs, because it runs on CPU
-against a public server and is cached once per allele rather than once per pair.
-All 75 alleles are cached, so the per-pair marginal MSA cost of the structural
-arm is zero.
+MSA preparation cost **$0 and under four minutes in total** across both
+constructs: it runs on CPU against a public server and is cached once per allele
+rather than once per pair. All 75 alleles are cached, so the per-pair marginal
+MSA cost of the structural arm is zero.
 
 ### Stage 3: ESM-2 embedding extraction — measured, local GPU, $0
 
@@ -164,8 +130,6 @@ peptide embeddings and 75 HLA embeddings.
 The whole dataset's embeddings cost **7.5 s at 35M and 59.5 s at 650M**
 (`embed_seconds` summed), on a laptop, for $0. The 650M checkpoint's 5.06 GB
 peak RSS is the only hardware constraint in sight, and it fits a laptop.
-
-### Still to be ledgered
 
 ### Stage 3c: elution external validation — measured, CPU, $0
 
@@ -187,10 +151,10 @@ other agents on the same 8-core laptop at `OMP_NUM_THREADS=3`; an uncontended
 earlier run did the two model arms in 20.1 min including a separate set build,
 so the figure is stable to a few minutes either way.
 
-### Stage 5 inverse folding (ProteinMPNN) — pilot measured $0, QC sample forecast
+### Stage 5 inverse folding (ProteinMPNN) — pilot $0, QC sample ~$1.15 realised
 
-`stage5_inverse_folding.md`. Everything executed so far ran on laptop CPU with
-**$0 of cloud spend**.
+`stage5_inverse_folding.md`. The pilot ran on laptop CPU with **$0 of cloud
+spend**.
 
 | Run | Folds | Workers | Wall |
 |---|---:|---:|---:|
@@ -199,41 +163,19 @@ so the figure is stable to a few minutes either way.
 | Wrong-backbone control, `B*07:02` arm A | 3 | 1 | 107 s |
 | *Aborted cross-peptide sweep (killed under memory pressure, output discarded)* | *7 of 45* | *2* | *~780 s* |
 
-The aborted sweep is recorded rather than quietly dropped — it is 780 s of
-compute that produced nothing, and a ledger that only lists successful runs is
-not a ledger.
+The aborted sweep is recorded rather than dropped: 780 s of compute that
+produced nothing.
 
-**A second entry in the same spirit: the `--dry-run` that everyone assumed was
-free.** It was written, reviewed and scheduled as a zero-cost check, and both
-the implementing agent and the orchestrator referred to it that way. It was not
-free: it called `list_folds.remote()`, which **starts a container** — and
-against a production root that does not yet exist it would have raised
-`FileNotFoundError` instead of printing a plan. **The "free check we can run any
-time" would have failed at exactly the moment it was needed.** Nobody had run
-it; it was fixed only because it was finally executed, hours before the window
-rather than inside it. `--dry-run` is now purely local and never lists the
-Volume.
-
-This is the project's own standing lesson — *verify a harness measures what it
-claims* — applied to a harness written for this ledger's own forecasts. It is
-the third time that discipline has paid out here, after the 4.6x fold-cost error
-and the rate check below.
-
-**Forecast** from the measured 14.70 s mean per arm-B fold at 16 decoding
-orders, priced at the repo's metered rates:
-
-| | folds | core-hours | wall | cost |
-|---|---:|---:|---:|---:|
-| **QC sample, 16 orders — the approved buy** | **2,000** | **16.5** | **0.8 h** | **$1.04** |
-| QC sample, 8 orders | 2,000 | 8.3 | 0.4 h | $0.53 |
-| Both profiles, 16 orders — **declined** | 28,166 | 232.0 | 2.9 h parallel | $14.68 |
-
-Cost is linear in decoding orders. The QC sample buys 16 rather than 8 so its
-scores are directly comparable to the pilot's reference points, which were
-measured at 16; the extra $0.51 buys that comparability. **The full cohort is
-declined on evidence, not on price** — the n=5 label correlation is −0.100 at
-p=0.87, so $14.68 would buy a feature with no demonstrated relationship to the
-target.
+**QC sample — realised, ~$1.15 total.** The approved 2,000-fold sample ran on
+`a-cheparukhin` at 16 decoding orders: **2,000 of 2,000 scored, 0 failed**,
+426.8 s wall, 9.83 s per fold, **$0.69 derived** at the metered rate — under the
+$1.04 forecast, which assumed 14.70 s per fold. An earlier attempt was killed
+when the client disconnected before the Volume was written, sinking **~$0.46**
+with nothing recoverable. Source:
+`stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json`. This is a
+diagnostic sample; no half-life predictor was deployed from it. The full-cohort
+regression (a forecast **$14.68** for 28,166 folds at 16 orders) was declined on
+evidence: the n=5 pilot label correlation is −0.100 at p=0.87.
 
 ### Stage 4c.5 structural feature extraction — realised, CPU, ≈$1.18
 
@@ -255,67 +197,40 @@ memory rates. **The 51% overrun is chunk sizing, not the data** — 14,083 folds
 at `chunk=400` is 36 chunks against 30 containers, so a second wave ran only 6
 chunks wide and still cost a full wave of wall time. `chunk = ceil(n /
 containers)` would have been one wave at roughly $0.70. The failure rate of
-0.000 is **measured after the run, not projected from a prefix**: a fold with an
-unexpected layout becomes a recorded `status` row rather than a crash, so a
-late-shard surprise would have been counted.
+0.000 is measured over the whole run: a fold with an unexpected layout becomes a
+recorded `status` row rather than a crash.
 
 Earlier spend on this workstream — two smokes and two 1,000-fold passes — was
 **under $0.15**, and is not inside the $1.18.
 
 ### Stage 3b, the ESM auxiliary-affinity arms — measured, CPU, $0
 
-**300 networks, 47.8 min of fitting, 68 min wall on one core, $0.** The gap
-between fitting and wall time is the paired bootstraps.
-
-That is doubly true here, because the run's most important output is **not** a
-delta but a **power floor** — the measured DiD minimum detectable effect, and
-the injected-effect check that established it. Neither is a model fit.
-
-**Three for three, with receipts.** This is now the pattern across every
-sequence-side stage that measured it:
-
-| Stage | Fitting | Uncertainty / power |
-|---|---:|---:|
-| 2b | 1.3 min (21 networks) | ~11 min (8 paired bootstraps) |
-| 2c | 92 s probe, 12.1 min ensemble sweep | the bootstrap dominates wall time |
-| 3b | 47.8 min (300 networks) | the remaining ~20 min, plus the injected-effect power floor |
-
-> **On the sequence side of this project, measuring uncertainty reliably costs
-> more than fitting the models.**
-
-That is an unusual thing to be able to say in a compute ledger, and it is the
-counterweight to the headline cost story: the arms that look free on the
-accuracy-versus-dollars figure are free *to fit*. Knowing whether their
-differences are real is what actually costs.
+**300 networks, 47.8 min of fitting, 68 min wall on one core, $0.** The ~20-min
+gap between fitting and wall time is the paired bootstraps and the
+injected-effect power floor that set the difference-of-differences minimum
+detectable effect.
 
 ### Stage 3 coupling and permutation diagnostics — CPU, $0
 
 Two diagnostics from an independent branch, importing this project's own
-`cv_folds`, fit block, MLP class, seeds and member counts (SUBMISSION §4.0):
-a **cross-attention** arm against a mean-pooling ablation at identical parameter
-count (94,913 both), and a **permuted-embedding** sign test. 30 members per arm,
-CPU, **$0**.
-
-Worth noting what they bought: neither rescues the arm, and that is the point —
-they close the two readings under which the stage 3 null would have been
-uninformative. **A control that cannot change the verdict is still worth its
-compute if it removes an alternative explanation**, and at $0 these were the
-cheapest defensive spend in the project.
+`cv_folds`, fit block, MLP class, seeds and member counts: a **cross-attention**
+arm against a mean-pooling ablation at identical parameter count (94,913 both),
+and a **permuted-embedding** sign test. 30 members per arm, CPU, **$0**. Neither
+rescues the arm; both close readings under which the stage 3 null would have been
+uninformative.
 
 ### Stage 6 evaluation machinery — measured, CPU, $0
 
 The full ESM stage 6 validation run — 8 paired comparisons, 12 stratum
 intervals, the differential over 10,365 allele-pair comparisons, precision@10
 and the nested mutant evaluation — took **~75 minutes on one core, $0**. Budget
-similarly per arm for the test pass.
-
-Worth noting against that number: the analysis that resolved the most
-comparisons, the differential target, is a **re-aggregation of predictions
-already made** and costs no new model fitting at all (SUBMISSION §6.8).
+the test pass similarly per arm; its measured cost is still open (hole **S6**).
+The differential target, which resolved the most comparisons, is a
+re-aggregation of predictions already made and costs no new model fitting.
 
 ### Stages 7a and 7b — measured, CPU, $0
 
-Both ran to completion on the laptop while the GPU budget sat untouched.
+Both ran to completion on the laptop.
 
 | Stage | Work | Networks | Time | $ |
 |---|---|---:|---:|---:|
@@ -323,28 +238,28 @@ Both ran to completion on the laptop while the GPU budget sat untouched.
 | 7b | Leave-allele-out: 68 folds × 6 networks, a second evaluation contract end to end | **408** | 36.2 min on 2 workers | 0 |
 
 **538 networks and two complete experiments for about an hour of laptop CPU**,
-against $212.71 realised for one structural fold. That ratio is the submission's
-argument in miniature: the cheap arms are not cheap *because they are small* —
-they are cheap because inference on a one-hot MLP is a matrix multiply, and
-nothing about running 538 of them changes the order of magnitude.
+against $212.71 for one structural fold. Stage 7b is a second evaluation contract
+— its own split, eligibility rule and bootstrap unit (the allele, not the
+peptide cluster) — which the plan listed as a reason not to run it. It cost 36
+minutes.
 
-Stage 7b in particular is a **second evaluation contract** — its own split, its
-own eligibility rule, its own bootstrap unit (the allele, not the peptide
-cluster) — which the plan listed as a reason *not* to run it. It cost 36 minutes.
+### Stage 8 FoldX empirical energy — pilot only, ≈$0.33 derived
+
+`stage8_foldx.md` §R5. Spend so far is **≈$0.33**, derived from observed wall
+times at the metered rates, not a billing dashboard: two smoke runs at roughly
+$0.03 each and an aborted 48-structure pilot at roughly $0.27. No FoldX
+predictive production pass has run, and neither FoldX arm has been scored for
+half-life prediction, so there is no incurred production cost. The repaired
+full-cohort arm is forecast at ~$185 (`stage8_foldx.md` §R4) and remains unspent.
 
 ### A note on published versus metered rates
 
-Both forecasts above are built from the repo's **metered** rates
-(`ectodomain_rates.json`), not from a pricing page, because this project was
-once bitten by a cost figure that was 4.6× wrong. For the record, on CPU and
-memory the published list rates agreed with the metered ones here to **0.3%**
-(CPU 1.0030×, memory 1.0010×).
-
-**The right lesson from the 4.6× error is "check it", not "never trust published
-rates".** That error was never a wrong price list — it was a harness that
-reloaded 6.2 GB of weights inside every timed fold, so the *seconds* were wrong
-and the rate was fine. Distrusting the rate would have fixed nothing; measuring
-what the harness actually did is what fixed it.
+The forecasts above are built from the repo's **metered** rates
+(`ectodomain_rates.json`), not from a pricing page. On CPU and memory the
+published list rates agreed with the metered ones here to **0.3%** (CPU
+1.0030×, memory 1.0010×). The earlier 4.6× cost error was not a wrong price list
+but a harness that reloaded 6.2 GB of weights inside every timed fold, so the
+measured seconds were wrong and the rate was fine.
 
 ### Still to be ledgered
 
@@ -434,12 +349,13 @@ production:
 | **Sequence ensemble, 30 networks** | **$9.6 × 10⁻⁷** end to end | 0 | **measured** (stage 3 harness) | **0.693** |
 | Sequence ensemble, full domain | $7.9 × 10⁻⁷ | 0 | derived | 0.653 |
 | **ESM-2 (frozen representations)** | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** end to end | 0 (laptop `mps`) | **measured** | **0.683** (−0.0101 vs baseline; rules out 0.05) |
-| **Boltz-2 structural (arm B)** | **$6.90** fold only / **$7.55 as realised** over the cohort | 4.66 fold only / 5.10 realised | **measured unit cost; cohort figure realised** | **‹HOLE B2›** |
-| ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.6 of SUBMISSION) |
+| **Boltz-2 structural (arm B)** | **$6.90** fold only / **$7.55 as realised** over the cohort | 4.66 fold only / 5.10 realised | **measured unit cost; cohort figure realised** | **0.622** (−0.071 vs seq, val) |
+| ProteinMPNN inverse folding | $0.35 ($0.69 / 2,000 folds) | 0 (CPU) | measured, QC sample | not a half-life predictor |
 | *ESMFold2 structural (rejected)* | *$31.40* | *11.8* | *forecast only* | *not run* |
 
-Accuracy figures are **validation** medians from `stage2_baselines.md`; the test
-column is filled once at stage 6.
+Accuracy figures are **validation** medians. The Boltz-2 and test figures are in
+[`REPORT.md`](REPORT.md) §3 and §7; the structural arm's test Δ is **−0.112
+[−0.134, −0.057]**.
 
 ### What the ratio says
 
@@ -483,16 +399,12 @@ Cost measurement is not bookkeeping here; it changed what was run.
 | ESMFold2 dropped from production | 4.55× the cost per fold *and* a failed pose gate; its $884 full-cohort forecast never fitted the combined balance | `stage4c_ectodomain_pilot.md` |
 | Production scope set to the full cohort, not the 2,000-pair panel | The measured 16.76 s fold put all 28,166 pairs inside the ceiling for Boltz-2 alone | `stage4c_ectodomain_pilot.md` |
 | Feature-extraction container cut from 2 cores to 1 | Extraction is Volume-read-bound: 1.57 s wall against 0.096 s CPU per fold, ~6% core utilisation. The second core was billing idle; dropping it moved throughput by ~8% | `stage4c5_features.md` §7.6 |
-| ProteinMPNN bought as a ~$1 QC sample, **not** as a $14.68 regression feature | Spearman against half-life is −0.100 at p=0.87, n=5. The QC sample is bought for a different reason: no PAE or pLDDT threshold catches pose failure, so the project has no cohort-wide way to estimate the pose-failure rate | `stage5_inverse_folding.md` |
+| ProteinMPNN bought as a ~$1.15 QC sample, **not** as a $14.68 regression feature | Spearman against half-life is −0.100 at p=0.87, n=5. The QC sample serves a different purpose: no PAE or pLDDT threshold catches pose failure, so the project has no cohort-wide way to estimate the pose-failure rate | `stage5_inverse_folding.md` |
 
-The 4.6× correction is worth dwelling on. The original harness was copied from
-Modal's own published Boltz example, which runs one input per function call — a
-shape in which the weight load is invisible because there is nothing to amortise
-it over. Copied into a batch loop it became 86% of every timed fold. **A
-benchmark that measures the wrong thing is worse than no benchmark**, because it
-is quoted with confidence. This project caught one such error; the rule it
-produced — verify that a harness measures what it claims before trusting its
-number — is why every figure above carries its source.
+On the 4.6× correction: the original harness was copied from Modal's published
+Boltz example, which runs one input per function call, so the weight load was
+invisible with nothing to amortise it over. Copied into a batch loop it became
+86% of every timed fold.
 
 ---
 
@@ -504,12 +416,12 @@ number — is why every figure above carries its source.
 | **E1b** | ESM-2 **head** inference cost per 1,000 new pairs | `esm-arm` | Head inference seconds per 1,000 rows, ensemble member count, and which checkpoint/layer/representation was selected (per-position vs pooled changes the head width) |
 | **E2** | ESM-2 validation accuracy | `esm-arm` | Median per-allele ρ on validation under `cv_folds()` with matched ensemble size, and the paired CI against `preds/seq_ensemble_pep_pseudo.csv` |
 | ~~B1~~ | ~~Stage 5 feature-extraction cost~~ | — | **Filled**: ≈$1.18 derived over 28,166 / 28,166 extractions, **0 failures**, 1,044.9 s + 1,206.1 s of 30-container wall, 1.57 s of wall per fold against 0.096 s of CPU. `stage4c5_features.md` §9.1 and §Stage 4c.5 above |
-| **B2** | Boltz-2 structural validation accuracy | blocked on 4c production + stage 5 | Median per-allele ρ on validation, and the paired CI against the sequence ensemble |
+| ~~B2~~ | ~~Boltz-2 structural validation accuracy~~ | — | **Filled**: val median per-allele ρ **0.622**, Δ **−0.071 [−0.123, −0.025]** vs the sequence ensemble; test Δ **−0.112 [−0.134, −0.057]**. [`REPORT.md`](REPORT.md) §3 and §7 |
 | ~~B3~~ | ~~Actual production spend~~ | — | **Filled**: 282/282 shards, **28,166 / 28,166 folded, 0 failures**, **143.6 A10G-h**, **7 h 32 min** wall (04:00:22 → 11:32:24 BST), **$212.71** ($103.83 + $108.88), and **10 concurrent `fold_shard` containers confirmed granted in each workspace**. `ectodomain-20261004/production_verification.json` |
 | **B3a** | The **metered** reconciliation of that $212.71 | nobody — the window has closed | A post-run `before`/`after` metered billing snapshot per workspace, bracketing 04:00–11:32 BST. **Neither was taken**, so $212.71 is labelled `derived` (realised container-hours × the measured $1.4812/h shape rate) and not `measured`. The only metered snapshots in the repo are the pilot's, at 02:22 and 02:39, and there is no metered figure for `sofyaleyn` at any point. A snapshot taken now would include every subsequent CPU job and could not be attributed to the fold |
 | **S6** | Stage 6 scoring cost | `eval-harness` | CPU-minutes for the single test pass plus the paired cluster bootstraps |
-| **S7a** | Censored (Tobit) likelihood cost | stage 7a | CPU-minutes for 60 networks (2 arms × 30) plus the paired bootstrap; protocol is predeclared in `stage7_censored.md`, §6 is still "pending" |
-| **R1** | **Realised** spend for the two approved-but-unspent items — **half filled** | stage 5 | The 4c.5 full extraction pass is **done**: ≈$1.18 against a $0.78 forecast (see **B1**). The **ProteinMPNN QC sample has not run** — no `reports/stage5_inverse_folding_qcsample_*.csv` exists — so its realised cost against the $1.04 forecast is still open. Its blocker on the fold completing is now cleared; relaunch command is in `stage5_inverse_folding.md`. **Check for the output file before relaunching**: a run was dispatched and the local client was killed at handoff, so a blind relaunch pays twice |
+| ~~S7a~~ | ~~Censored (Tobit) likelihood cost~~ | — | **Filled**: 130 networks, 29.6 min on one core, $0 (§2, "Stages 7a and 7b") |
+| ~~R1~~ | ~~Realised spend for the two approved-but-unspent items~~ | — | **Filled**: the 4c.5 full extraction pass cost ≈$1.18 against a $0.78 forecast (see **B1**); the ProteinMPNN QC sample cost **$0.69** for the good run plus **~$0.46** sunk on a killed earlier attempt, **~$1.15** total, against a $1.04 forecast (`stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json`) |
 
 **No workspace-access blocker remains.** `::forecast --profile colleague`
 created both functions in `sofyaleyn` (`ap-GUceVVHdiPHrNHQlCz3fFY`). That check
@@ -523,12 +435,10 @@ otherwise have surfaced at fold completion with everyone waiting.
 `production_verification.json` is the whole-run scan over all 28,166 records and
 is the source for every realised production figure in this file.
 
-**Production figures in this file are now realised, not forecast** — with the
-labels kept apart. The forecast's own stated risk was concurrency rather than
-price, and that risk did not materialise: 10 A10Gs were granted in each
-workspace. The error that *did* show up was the one the forecast did not flag —
-wall clock, by 11%, from packing loss rather than from price. Price was right to
-5.9%. See §2, "Where the production forecast was wrong".
+**Production figures in this file are realised, not forecast.** The forecast's
+stated concurrency risk did not materialise: 10 A10Gs were granted in each
+workspace. The error that showed up was wall clock (+11%, from packing loss),
+not price (+5.9%). See §2, "Where the production forecast was wrong".
 
 ---
 

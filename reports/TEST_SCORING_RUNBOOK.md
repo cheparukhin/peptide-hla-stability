@@ -98,7 +98,7 @@ flatters:
 
 ## 6. Afterwards
 
-Fill the holes tagged in `reports/SUBMISSION.md`, regenerate
+Fill the holes tagged in `reports/REPORT.md`, regenerate
 `reports/figures/make_figures.py` with `--split test`, and update
 `reports/compute_ledger.md` with realised spend. The limitations register in
 `reports/limitations.md` is reviewed once more **after** the numbers are known,

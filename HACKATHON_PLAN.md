@@ -6,34 +6,39 @@
 
 Our main claim is about **unseen peptides on HLA alleles we trained on**. Whether the model works on entirely new alleles is a separate test, not the headline.
 
-## Live execution status — 4 October 2026, ~10:50 BST
+## Execution status — complete, 4 October 2026
 
-Each workstream owns a disjoint set of files; **only the orchestrator commits**,
-to avoid index contention in the shared worktree. No workstream edits
-`EVALUATION.md`, and only `docs-reconcile` edits this file and `README.md`.
+The project is complete. The narrative source of truth is
+[`reports/REPORT.md`](reports/REPORT.md); this plan keeps the scope, stage
+procedures, and decision record. During the run each workstream owned a disjoint
+set of files and only the orchestrator committed, to avoid index contention in
+the shared worktree.
 
 | Workstream | Stage | Owns | State |
 |---|---|---|---|
 | `esm-arm` | 3, 3b | `pepstab/esm.py`, `scripts/esm_*.py`, `scripts/stage3b_*`, `features/esm/`, `reports/stage3_*`, `preds/esm_*` | **complete** |
-| `eval-harness` | 6 machinery | `pepstab/stage6.py`, `scripts/stage6_report.py`, `reports/stage6_*` | **complete** — exercised twice on validation |
-| `elution` | 3c scoring pass | `scripts/stage3c_*`, `pepstab/elution.py`, `reports/stage3c_*`, `external/` | **complete** |
-| `inverse-folding` | 5 (ProteinMPNN) | `pepstab/inverse_folding.py`, `scripts/proteinmpnn_score.py`, `modal_app/proteinmpnn_scoring.py`, `reports/stage5_*` | **pilot complete**; QC sample run ($1.15, 2,000 folds, 0 failed) — pilot reference points do **not** transfer to the cohort, so it yields a distribution and a triage list, not a pose-failure estimate; `::score` not launched |
+| `eval-harness` | 6 machinery | `pepstab/stage6.py`, `scripts/stage6_report.py`, `reports/stage6_*` | **complete** — exercised twice on validation, then the single test pass |
+| `elution` | 3c scoring pass | `scripts/stage3c_*`, `pepstab/elution.py`, `reports/stage3c_*`, `external/` | **complete** (sequence arm; ESM-2/structural elution pass not run) |
+| `inverse-folding` | 5 (ProteinMPNN) | `pepstab/inverse_folding.py`, `scripts/proteinmpnn_score.py`, `modal_app/proteinmpnn_scoring.py`, `reports/stage5_*` | **complete** — QC sample run ($1.15, 2,000 folds, 0 failed); pilot reference points do **not** transfer to the cohort (negative transfer), so it yields a distribution and a triage list, not a pose-failure estimate; full-cohort `::score` declined |
 | `stats-stretch` | [7a, 7b](#7-stretch-evaluations-promoted-from-the-out-of-scope-register) | `pepstab/censored.py`, `pepstab/allele_holdout.py`, `scripts/stage7_*`, `reports/stage7_*` | **complete** |
-| Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | **running** (separate session) — launched 04:00 BST; live shard progress in [4c](#4c-ectodomain--beta-2-microglobulin-folding), which is the only place it is recorded |
-| `struct-features` | 4c.5 → 5 | `pepstab/structural_features.py`, `scripts/extract_structural_features.py`, `modal_app/feature_extraction.py`, `reports/stage4c5_*` | **phase 1 complete, phase 2 validated at real scale** (2,000 live folds extracted, zero failures); full pass and the stage 5 ablations wait on the fold |
-| `submission` | 6 deliverable | `reports/SUBMISSION.md`, `reports/compute_ledger.*`, `reports/limitations.md`, `reports/figures/` | running |
-| `docs-reconcile` | — | `README.md`, `HACKATHON_PLAN.md` | running |
+| Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | **complete** — 28,166 / 28,166 folded, 0 failures, $212.71, wall 7 h 32 min (04:00→11:32 BST); actuals in [4c.4](#4c-ectodomain--beta-2-microglobulin-folding) |
+| `struct-features` | 4c.5 → 5 | `pepstab/structural_features.py`, `scripts/extract_structural_features.py`, `modal_app/feature_extraction.py`, `reports/stage4c5_*` | **complete** — full extraction pass of 28,166 rows, 0 failures; the stage 5 ablation ran on validation and test |
+| `submission` | 6 deliverable | `reports/REPORT.md`, `reports/compute_ledger.*`, `reports/limitations.md`, `reports/figures/` | **complete** |
+| `docs-reconcile` | — | `README.md`, `HACKATHON_PLAN.md` | **complete** |
 
-FoldX and Rosetta were requested as stretch goals and declined — see the
-out-of-scope register. **Stage 3d (ESM-2 likelihood features) was not run**; it
-is recorded below as untested scope, not as a null.
+A FoldX pilot ran (RepairPDB required; no half-life arm scored; incremental
+value open) — see [`reports/stage8_foldx.md`](reports/stage8_foldx.md) and the
+out-of-scope register. Rosetta remains declined on access grounds. **Stage 3d
+(ESM-2 likelihood features) was not run**; it is recorded below as untested
+scope, not as a null.
 
-**What remains, in dependency order.** The production fold unblocks stage 4c.5's
-full extraction pass, which unblocks the stage 5 structural ablations; stages 3,
-5 and the stage 6 machinery all feed the single test scoring at stage 6, which
-happens **once**, last, under the single-pass rule predeclared in that stage.
-**The test split has not been scored.** Every number this project has produced
-is a validation number.
+**What ran, in dependency order.** The production fold fed stage 4c.5's full
+extraction pass, which fed the stage 5 structural ablation; stages 3, 5 and the
+stage 6 machinery all fed the single test scoring at stage 6, which ran **once**,
+last, under the single-pass rule predeclared in that stage. The test split was
+scored on 4 October at 13:35 BST (manifest
+[`reports/stage6_test_manifest.json`](reports/stage6_test_manifest.json)); the
+six-arm result is in [§6](#6-evaluate-and-prepare-the-submission).
 
 **Resource note, 4 October 04:30 BST, recorded as a decision and its outcome.**
 Seven concurrent workstreams on an 8-core / 16 GB laptop drove load average to
@@ -41,8 +46,8 @@ Seven concurrent workstreams on an 8-core / 16 GB laptop drove load average to
 650M was dropped. The binding constraint was not CPU but the two client
 processes driving the production fold: an OOM that killed them would have cost
 the structural arm and the GPU spend. Scope was cut before footprint was grown,
-and **both client processes have survived with zero failures** (progress in 4c),
-so the call held.
+and **both client processes completed the full cohort with zero failures**, so
+the call held.
 
 ## Recommended scope
 
@@ -69,7 +74,7 @@ The baseline, ESM extraction, and folding pilot can run in parallel. The orderin
 | ESMFold2 geometry + confidence | Stage 4c pilot; same production cohort as Boltz-2 | Does changing the folding model change predictive value at fixed inputs? | Same full construct, prepared MSAs, shared geometry/confidence definitions; verified pair-specific ipTM is a separate feature. | Matched-row gain, pose quality, resource cost, and failure rate. |
 | Boltz-2 geometry | Stage 4c pilot; full dataset preferred if feasible | Do full-construct structural features add predictive value? | Three-chain ectodomain + beta2m + peptide predictions; comparable groove contacts and burial per peptide position. | Added accuracy on matched rows, peptide pose quality, measured cost, runtime, and failure rate. |
 | Boltz-2 confidence | Same full-construct structures | Does model confidence carry signal? | Peptide pLDDT; peptide/groove PAE in both directions; global ipTM labeled as global. Pair-specific scores require verified availability and chain mapping. | Gain from confidence alone and beyond geometry; global three-chain confidence is not peptide-interface confidence. |
-| ProteinMPNN | Out of scope this round | Is the peptide sequence "compatible" with the predicted backbone shape? Uses another pretrained model, no refolding needed. | Peptide-only overall likelihood and per-position scores from ProteinMPNN (an inverse-folding model that asks: given this 3D backbone, how probable is this amino acid sequence?), with HLA held fixed. | **Promoted 4 October 2026.** The structures blocker cleared: 90 stage 4c pilot folds sit on local disk, so the pilot runs now and the harness scales to production unchanged. Gated on a seed-variation control — if the score moves more across seeds of one complex than between complexes, the feature is noise and does not proceed. |
+| ProteinMPNN | Out of scope this round | Is the peptide sequence "compatible" with the predicted backbone shape? Uses another pretrained model, no refolding needed. | Peptide-only overall likelihood and per-position scores from ProteinMPNN (an inverse-folding model that asks: given this 3D backbone, how probable is this amino acid sequence?), with HLA held fixed. | **Promoted 4 October 2026.** The structures blocker cleared: 90 stage 4c pilot folds sat on local disk, so the pilot ran and the harness scaled to production unchanged. Gated on a seed-variation control — if the score moves more across seeds of one complex than between complexes, the feature is noise and does not proceed. |
 
 Each experiment must earn its place by improving prediction on the same held-out examples, with uncertainty and compute cost reported alongside accuracy. A useful negative result tells us which approach didn't help under these conditions — it doesn't rule out every use of that model family.
 
@@ -200,7 +205,7 @@ comparison would need post-2016 measurements absent from its training set. A
 **superseded version of that calibration consumed frozen test rows** (3,350 into
 fitting, 448 into early stopping, 585 into scoring) and produced the
 since-retracted +0.018 grouping figure; disclosed in EVALUATION.md, "Disclosed
-test exposure". No model that will be scored at stage 6 saw a test row.
+test exposure". No model scored at stage 6 saw a test row.
 
 **Cost:** CPU only, no credits. **Inference under 1 ms per 1,000 predictions** —
 the floor ESM-2 extraction and GPU folding must justify themselves against.
@@ -520,18 +525,17 @@ or replace its output-completeness and pose checks.
 
 ### 4c. Ectodomain + beta-2-microglobulin folding
 
-**Current execution plan, 4 October 2026. Status: shared MSAs, CPU preflight,
-and the matched 90-fold GPU pilot are complete. Boltz-2 passed its gate;
-ESMFold2 failed on both sentinel criteria. Production scope is frozen as
-Boltz-2 / arm B / all 28,166 pairs across two workspaces, and the run is live.**
+**Execution plan, 4 October 2026. Status: shared MSAs, CPU preflight, the matched
+90-fold GPU pilot, and the full production fold are all complete. Boltz-2 passed
+its gate; ESMFold2 failed on both sentinel criteria. Production scope was frozen
+as Boltz-2 / arm B / all 28,166 pairs across two workspaces, and the run
+finished.**
 
-**Live progress — the only place in the repository this is recorded.** Launched
-04:00 BST; at ~10:50 BST it has committed **251 of 282 shards — 25,100 of 28,166
-pairs — with zero failures**, tracking completion around 11:30–12:20 BST.
-Shard-by-shard records are in
-`reports/ectodomain-20261004/production_<profile>.jsonl`. Feature extraction
-(4c.5) and the stage 5 ablation follow it, so **no structural accuracy number
-exists yet**. Results and the full verdict are in
+**The fold completed at 11:32 BST** (launched 04:00 BST): **28,166 of 28,166
+pairs folded with zero failures**. Shard-by-shard records are in
+`reports/ectodomain-20261004/production_<profile>.jsonl`; the forecast-versus-
+actuals table is in 4c.4 below. Feature extraction (4c.5) and
+the stage 5 ablation ran after it. Results and the full verdict are in
 [`reports/stage4c_ectodomain_pilot.md`](reports/stage4c_ectodomain_pilot.md).
 This section governs structural scope, pilot gates, and rollout; that report
 holds the executed procedure, the launch sequence, and the stage 5 feature
@@ -582,7 +586,7 @@ rows and insertion/deletion features. ESMFold2 uses `msa_max_depth=1024` and
 `msa_column_mask_rate=0.0` to avoid its default row sampling and column masking;
 Boltz subsampling is disabled. Full raw alignments are retained. All 75
 ectodomain MSAs are now prepared. ESMFold2 weight revision is
-`69869f737beffec5294845ede23db5fc0b4f509e`. Evidence and live pilot results
+`69869f737beffec5294845ede23db5fc0b4f509e`. Evidence and pilot results
 are under `reports/ectodomain-20261004/`.
 
 **4c.3 — Run the matched 90-fold pilot.** Use three seeds (0, 1, 2) on each of
@@ -743,16 +747,16 @@ Stage 5 compares features on matched rows; stage 6 retains the frozen evaluation
 contract and one final test scoring. Export artifacts before event resources
 are removed.
 
-**Status of 4c.5: phase 1 complete, phase 2 validated at real scale, the full
-pass pending the fold.**
+**Status of 4c.5: complete.** The full extraction pass covered all **28,166
+folds with zero failures** at about **$1.18**.
 [`reports/stage4c5_features.md`](reports/stage4c5_features.md),
 `pepstab/structural_features.py`, `scripts/extract_structural_features.py`,
-`modal_app/feature_extraction.py`, `reports/stage4c5_pilot_features.csv` (90
-folds × 129 columns: 20 key/provenance, **109 numeric features**),
+`modal_app/feature_extraction.py`, `reports/stage4c5_features_production.csv`
+(the full cohort), `reports/stage4c5_pilot_features.csv` (90 folds × 129 columns:
+20 key/provenance, **109 numeric features**),
 `reports/stage4c5_feature_variation.csv`, `tests/test_structural_features.py`
-(36 guards). The extractor is validated against all 90 pilot folds, has passed a
-5-prediction CPU-only smoke in **both** workspaces, and has extracted **2,000
-live production folds (1,000 per half) with zero failures**.
+(36 guards). The extractor was validated against all 90 pilot folds and passed a
+5-prediction CPU-only smoke in **both** workspaces before the full pass.
 
 The anticipated 383 × 383 PAE and the zero-based slices HLA `0:275`, beta2m
 `275:374`, peptide `374:383` are **correct on all 30 arm-B folds** — but the
@@ -791,10 +795,17 @@ absolute disagreement **0.005** over all 90 folds against a 0.01 tolerance.
 **Deliverable:** matched-row geometry/confidence ablations showing incremental
 predictive value, uncertainty, coverage, and compute cost.
 
-**Status: the structural ablation has not started** — `scripts/stage5_structural_arm.py`
-is pre-built and dry-run, and is blocked on 4c.5's full extraction pass, which
-is blocked on the fold. **No structural accuracy number exists**, and the
-submission carries that as an explicitly marked hole rather than an estimate.
+**Status: the structural ablation is complete on validation and test, and is
+conclusively worse.** `scripts/stage5_structural_arm.py`,
+`reports/stage5_structural_val.csv`, `reports/stage5_structural_bootstrap.csv`,
+`reports/stage5_structural_selected.json`. On validation, sequence + Boltz-2
+geometry + confidence scores median per-allele Spearman 0.622 against the 0.6931
+sequence ensemble (Δ −0.071 [−0.123, −0.025]); on test it scores 0.5947 against
+the 0.7064 sequence ensemble (Δ −0.112 [−0.134, −0.057]). The implemented arm's
+encoding mix differs from the reference ensemble, so the delta measures the
+implemented arm rather than isolating structural features; see
+[`reports/REPORT.md`](reports/REPORT.md) §3 and §7 and the attribution control in
+[`reports/stage4c5_features.md`](reports/stage4c5_features.md).
 
 **The inverse-folding arm of this stage is complete** (ProteinMPNN, promoted
 from the out-of-scope register on 4 October):
@@ -825,13 +836,16 @@ and none is optional:**
    structural features isolates the failure**; `pep_ll_mean` was a single
    predeclared quantity, fixed before any score existed.
 
-**Decision: no regression feature; buy the ~$1 QC sample** (2,000 folds, $1.04,
-predeclared protocol, seeded draw from a *complete* half). The full $14.68 pass
-is declined — spending it to add a feature with no label correlation would be
-buying a number to put in a table. What will be reported is **a distribution and
-a triage list, never a failure count or rate**, the reference points **must not
-filter the production cohort**, and the single-complex provenance travels with
-the number wherever it is quoted.
+**Decision taken: no regression feature; the ~$1 QC sample was bought and run**
+(2,000 folds, **$1.15** total including a discarded ~$0.46 attempt, $0.69 for the
+good run, predeclared protocol, seeded draw from a *complete* half; 0 failures).
+The pilot's absolute score thresholds **did not transfer** to the cohort
+(negative transfer), so the output is **a distribution and a triage list, never a
+failure count or rate**. The full $14.68 full-cohort pass was declined — spending
+it to add a feature with no label correlation would be buying a number to put in
+a table. The reference points **must not filter the production cohort**, and the
+single-complex provenance travels with the number wherever it is quoted. See
+[`reports/stage5_inverse_folding.md`](reports/stage5_inverse_folding.md).
 
 **Two of our own controls disagree about ESMFold2's seed stability, and the
 disagreement is reported as a finding about granularity, not resolved by
@@ -909,10 +923,11 @@ Global three-chain ipTM must not be presented as peptide-interface confidence.
 **The single-pass rule, predeclared 4 October 2026 before any test number existed.**
 The test set is scored **once**, in one pass, covering every arm whose
 validation-selected configuration is frozen at the cutoff. This creates a real
-scheduling tension worth stating plainly: the structural fold lands ~10:50 BST
-and feature extraction follows it, while the sequence and ESM-2 arms are ready
-much earlier. Scoring test early would forfeit any structural test number;
-waiting indefinitely risks scoring nothing. The rule resolves it in advance:
+scheduling tension worth stating plainly: the structural fold was not expected to
+land until late morning (it completed at 11:32 BST) with feature extraction after
+it, while the sequence and ESM-2 arms were ready much earlier. Scoring test early
+would forfeit any structural test number; waiting indefinitely risks scoring
+nothing. The rule resolved it in advance:
 
 1. **Cutoff.** Freeze arms at a cutoff set **three hours before the submission
    deadline**, leaving time for the pass itself, uncertainty estimates, figures,
@@ -937,9 +952,28 @@ waiting indefinitely risks scoring nothing. The rule resolves it in advance:
 
 **Deliverable:** reproducible code and configs, final comparison table, limitations section, and a concise presentation.
 
-**Status: the machinery is complete and has been exercised twice on validation.
-The single test pass has not run, and no test number exists anywhere in this
-repository.**
+**Status: complete. The machinery was exercised twice on validation, and the
+single test pass ran once on 4 October at 13:35 BST** under the
+[test-scoring runbook](reports/TEST_SCORING_RUNBOOK.md), with the manifest at
+[`reports/stage6_test_manifest.json`](reports/stage6_test_manifest.json). Six
+arms were scored on 5,565 rows across 67 eligible alleles, against the sequence
+ensemble as reference:
+
+| Arm | Test median per-allele Spearman | Δ vs. sequence ensemble [paired 95% CI] |
+|---|---:|---|
+| **Sequence ensemble (peptide + contact residues)** | **0.7064** (MAE 0.4657) | — (winner) |
+| Single sequence MLP | 0.6181 | −0.088 |
+| Sequence ensemble, full HLA domain | 0.6904 | −0.016 |
+| ESM-2 35M ensemble | 0.6979 | −0.009 [−0.029, +0.023] |
+| Sequence + ESM-2 ensemble | 0.6816 | −0.025 |
+| Sequence + Boltz-2 geometry + confidence | 0.5947 | −0.112 [−0.134, −0.057] (worse) |
+
+Both ESM test intervals cross zero and exclude the predeclared +0.05 gain; the
+structural arm's interval lies entirely below zero. ESM-2 150M was **not** in the
+test pass (its refit failed). The six-arm result and paired intervals are in
+[`reports/REPORT.md`](reports/REPORT.md) §7. The single-pass rule stated above is
+the methodology that was followed.
+
 [`reports/stage6_evaluation_machinery.md`](reports/stage6_evaluation_machinery.md)
 (the library, with every count this plan states verified against the data),
 [`reports/stage6_val_esm_run.md`](reports/stage6_val_esm_run.md) (the four
@@ -1044,11 +1078,13 @@ balance.
 |---|---:|---|
 | HF: embedding extraction and regression experiments | $60 | Core sequence/ESM-2 comparison. |
 | Modal `a-cheparukhin`: pilots to date | $15 total | Stage 4c pilot spent **$1.49** of this; prior benchmark spend included. |
-| Modal `a-cheparukhin`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight.** Realised spend is not metered here yet. |
-| Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight.** Realised spend is not metered here yet. |
+| Modal `a-cheparukhin`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **Realised $103.83**, under ceiling. |
+| Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **Realised $108.88**, under ceiling. |
 | Modal: contingency | remainder of each balance | Reserve; not automatically available to the folding launcher. |
 
-The per-profile $150 ceiling is checked by hand: the production entrypoint
+Realised production spend was **$103.83 + $108.88 = $212.71**, both halves under
+the $150 per-workspace ceiling (actuals in 4c.4). The per-profile $150 ceiling is
+checked by hand: the production entrypoint
 prints its forecast with margin (`--dry-run` prints it without spawning
 anything), and that figure is what to compare against the ceiling before
 launching. ESMFold2 production is **not** funded: it
@@ -1094,8 +1130,8 @@ no longer fits.
 The original engine pilots and groove MSA cache are complete, as are the
 full-construct input/MSA preparation, the corrected scoring and feature mapping
 for both models, the matched 90-fold pilot, and the resumable production
-workflow. **Participant 3's remaining work is the tail of the production fold,
-4c.5's full extraction pass, and the stage 5 ablations.** The core sequence and
+workflow. **Participant 3's work is complete: the production fold, 4c.5's full
+extraction pass, and the stage 5 ablation all finished.** The core sequence and
 ESM-2 comparison is complete and did not wait on any of it.
 
 - **Before GPU work:** pin supplied inputs, complete MSAs and CPU preflight,
@@ -1133,10 +1169,10 @@ The following work is deferred or rejected for this round. Completed engine diag
 |---|---|
 | **Allele-axis hold-out** | **Promoted 4 October 2026** to `stage7_allele_holdout`. The long-form rationale below still stands in full and is reported alongside every number it produces — reason 1 is a confound, not a caveat |
 | Template threading | We co-fold instead. Threading assumes the canonical register and cannot represent the non-canonical bulges that may be exactly the unstable complexes. `data/allele_pdb_templates.csv` (33 tier-A exact-groove templates) makes it cheap if this is ever revisited |
-| FoldX, Rosetta, any empirical energy layer | **Still out, and now also blocked by access.** The scientific objection is unchanged: these estimate equilibrium ΔG, not the ΔG‡ barrier to unbinding, which is a known mismatch with a kinetic label. Independently, FoldX is proprietary and gated behind registration and a per-user licence file, and Rosetta/PyRosetta likewise require a licence; neither is installed and neither can be obtained without the user's own account. Requested as a stretch goal on 4 October and declined on both grounds |
+| FoldX, Rosetta, any empirical energy layer | **A FoldX pilot ran; no half-life arm was scored.** The scientific objection is unchanged: these estimate equilibrium ΔG, not the ΔG‡ barrier to unbinding, which is a known mismatch with a kinetic label. The stage 8 pilot found that `RepairPDB` is required before FoldX returns plausible energies (~$0.33 spent); neither standalone FoldX nor sequence + FoldX was scored for half-life prediction, so incremental predictive value stays open — see [`reports/stage8_foldx.md`](reports/stage8_foldx.md). Rosetta/PyRosetta remain declined on access: they require a licence and neither is installed |
 | Per-pocket energy decomposition (A/B/F ↔ P1/P2/PΩ) | A good idea, but premised on FoldX `AnalyseComplex`; it falls with FoldX, which is now licence-blocked as well as scientifically mismatched |
 | OpenMM minimisation energy | Not a drop-in replacement for interface scoring, and the same thermodynamic/kinetic mismatch applies |
-| ProteinMPNN | **Promoted 4 October 2026** to `stage5_inverse_folding`, and **now complete** — see the stage 5 status above. The blocker was structures; the stage 4c pilot left 90 folds on local disk, so the pilot and the scale-ready harness no longer wait on production. Inverse folding is the third of the three model classes the challenge brief names, so covering it turns a two-class answer into a three-class one. Outcome: not a half-life predictor, but a crystal-free pose-failure triage signal resting on **n = 1 failing complex**; a ~$1 QC sample is approved and the $14.68 production pass is declined |
+| ProteinMPNN | **Promoted 4 October 2026** to `stage5_inverse_folding`, and **now complete** — see the stage 5 status above. The blocker was structures; the stage 4c pilot left 90 folds on local disk, so the pilot and the scale-ready harness no longer wait on production. Inverse folding is the third of the three model classes the challenge brief names, so covering it turns a two-class answer into a three-class one. Outcome: not a half-life predictor, but a crystal-free pose-failure triage signal resting on **n = 1 failing complex**; the ~$1 QC sample is **done** ($1.15, 2,000 folds, 0 failures) and showed the pilot thresholds do not transfer (negative transfer), and the $14.68 full-cohort scoring pass was declined |
 | ESMFold v1 (`facebook/esmfold_v1`) | No native multi-chain support or ipTM; its frozen ESM-2 trunk also overlaps the model family under test at stage 3. |
 | Different input policies for the two folding models | Primary comparison fixes constructs and MSA content. Single-sequence ESMFold2 versus MSA-assisted Boltz-2 is deferred as a separate experiment. |
 | Chai-1 | A third folding engine adds integration cost beyond the agreed Boltz-2/ESMFold2 comparison. |

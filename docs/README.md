@@ -1,8 +1,9 @@
 # docs
 
-Reference material for the peptide–HLA stability project. Start with
-[HACKATHON_PLAN.md](../HACKATHON_PLAN.md) — it is the source of truth for scope
-and stage order. These documents describe the data behind it.
+Reference material for the peptide–HLA stability project.
+[HACKATHON_PLAN.md](../HACKATHON_PLAN.md) is the source of truth for scope and
+stage order; [reports/REPORT.md](../reports/REPORT.md) holds the results. These
+documents describe the data behind them.
 
 ## Data
 
@@ -16,15 +17,15 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [SPLITS.md](SPLITS.md) | **superseded** by `data/splits.csv` and [EVALUATION.md](../EVALUATION.md) — kept for the BLOSUM62-vs-Hamming method comparison and the threshold argument |
+| [SPLITS.md](SPLITS.md) | superseded by `data/splits.csv` and [EVALUATION.md](../EVALUATION.md); kept for the BLOSUM62-vs-Hamming method comparison and the threshold argument |
 
 ## Augmentation
 
 | document | covers |
 | --- | --- |
 | [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md) | the public binding-affinity table behind stages 2b and 2c — provenance, allele coverage, why the C67S constructs are flagged rather than matched, and the leakage filters to apply before training on it |
-| [../reports/stage2b_augmentation.md](../reports/stage2b_augmentation.md) | **the stage 2b result** — measured-affinity vs predicted-affinity negatives against the stage 2 baseline, the candidate manifests and leakage ledger, and why the two sources supply different *kinds* of negative |
-| [../reports/stage2c_affinity.md](../reports/stage2c_affinity.md) | **the stage 2c result** — auxiliary affinity training does not help, bounded below the 0.05 bar in 20 paired comparisons; why the signal is redundant rather than absent; the declined expansion and its leakage audit |
+| [../reports/stage2b_augmentation.md](../reports/stage2b_augmentation.md) | stage 2b — measured-affinity vs predicted-affinity negatives against the stage 2 baseline, the candidate manifests and leakage ledger, and why the two sources supply different kinds of negative |
+| [../reports/stage2c_affinity.md](../reports/stage2c_affinity.md) | stage 2c — auxiliary affinity training does not help, bounded below the 0.05 bar in 20 paired comparisons; why the signal is redundant rather than absent; the declined expansion and its leakage audit |
 
 ## Structures
 
@@ -38,9 +39,9 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [../reports/stage4c_ectodomain_pilot.md](../reports/stage4c_ectodomain_pilot.md) | **everything on stage 4c** — the completed matched pilot (75 ectodomain MSAs, CPU control checks, both gate verdicts, per-seed pose and confidence results, measured resources and spend), the frozen Boltz-2 two-workspace production scope and how to run it, and the stage 5 feature contract |
-| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | historical two-chain protocol, MSA preparation, Modal cost traps, and the completed engine/hardware comparison |
-| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **measured two-chain results** — throughput and cost across 5 GPUs, harness corrections, between-container variation, historical engine-selection recommendation (superseded: stage 4c's matched pilot settled the engine choice on measurement), pose validation, spend, and limitations |
+| [../reports/stage4c_ectodomain_pilot.md](../reports/stage4c_ectodomain_pilot.md) | stage 4c — the matched pilot (75 ectodomain MSAs, CPU control checks, both gate verdicts, per-seed pose and confidence results), the Boltz-2 production fold (complete, 28,166 structures), and the stage 5 feature contract |
+| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | historical two-chain protocol, MSA preparation, and Modal cost traps, superseded by stage 4c |
+| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | two-chain benchmark — throughput and cost across 5 GPUs, harness corrections, between-container variation, pose validation, spend, and limitations |
 
 ## Regenerating
 
@@ -59,8 +60,9 @@ and stage order. These documents describe the data behind it.
 | `reports/boltz_pose_check.csv`, `reports/esmfold_pose_check.csv` | `python3 scripts/boltz_pose_check.py --structures <dir> --out <csv>` |
 
 The commands above regenerate completed stages and historical two-chain
-diagnostics. For the new construct, follow the stage 4c execution checklist.
-Historical folding runs use Modal; see the Reproduce section of
+diagnostics. The production ectodomain fold is complete; its procedure is in the
+[stage 4c report](../reports/stage4c_ectodomain_pilot.md). Historical folding
+runs use Modal; see the Reproduce section of
 [reports/stage4_benchmark.md](../reports/stage4_benchmark.md) for the
 `modal run` sequence behind `boltz_bench_results.csv`,
 `esmfold_bench_results.csv` and the pilot tables.

@@ -45,11 +45,12 @@ illustrative.
 | Distance stratum badge (near / intermediate / distant) | `reports/stage7_allele_holdout_per_allele_seq_pep_pseudo.csv` |
 | Crystallographic template per allele | `data/allele_pdb_templates.csv` |
 | "solved" pairs — measured *and* in the PDB | `data/pdb_rasmussen_overlap.csv` |
-| Headline table | `reports/SUBMISSION.md` §4.1 |
+| Headline table | `reports/REPORT.md` §7 (test), §3 (validation) |
 
 The per-allele score shown is the **30-network sequence baseline** — the arm the
-whole study is measured against — not an ESM arm. All figures are **validation**
-numbers; the test set is scored once, at stage 6.
+whole study is measured against — not an ESM arm. The per-allele values above are
+**validation** numbers; the test set was scored once at stage 6 (see
+`reports/REPORT.md` §7).
 
 ## The groove map is a schematic, not a structure
 

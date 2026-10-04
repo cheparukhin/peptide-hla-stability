@@ -44,7 +44,7 @@ under-calls weak rather than over-calls it.
 | `engineered_construct_mismatch` | the affinity is wild-type but the stability allele is a C67S construct — never join these |
 | `in_stability_dataset` | this exact `(allele, peptide)` pair has a measured half-life |
 | `stability_thalf_hours` | that half-life, else empty |
-| `padding_eligible` | `is_weak_binder & ~in_stability_dataset & ~engineered_construct_mismatch` — **still not a safe training filter, see below** |
+| `padding_eligible` | `is_weak_binder & ~in_stability_dataset & ~engineered_construct_mismatch`; not a safe training filter on its own — see "Before training on it" |
 
 ## What it contains
 
@@ -115,7 +115,7 @@ the padding idea behind `padding_eligible` is empirically supported.
 
 ## Before training on it
 
-### 1. `padding_eligible` still leaks held-out peptides
+### 1. `padding_eligible` leaks held-out peptides
 
 `in_stability_dataset` matches on the `(allele, peptide)` **pair**, but the
 frozen splits group peptides across *all* alleles. A peptide held out in val or

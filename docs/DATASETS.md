@@ -80,12 +80,9 @@ They would inflate the zero spike without being informative:
 | HLA-B*14:02(C67S) | 382 | 74.9% | 0.0 h | 4.39 h | 66.3 h |
 | HLA-B*39:06(C67S) | 379 | 92.1% | 0.0 h | 0.50 h | 8.5 h |
 
-Note on provenance: the challenge brief lists these as "75%, 89% and 92% zeros"
-with 95th-percentile half-lives of "4.5, 0.6 and 0.5 h" in the allele order
-B\*14:01, B\*14:02, B\*39:06. Recomputed from the raw CSV, the first two pairs
-belong to the opposite alleles — 74.9%/4.39 h is **B\*14:02** and 89.0%/0.60 h is
-**B\*14:01**. The set of values matches; only the pairing differs. The table
-above is the recomputed version.
+Note on provenance: the challenge brief reports the same zero fractions and
+95th-percentile half-lives but pairs the B\*14:01 and B\*14:02 values the
+opposite way round. The table above is recomputed from the raw CSV.
 
 ## Effect of the exclusion
 

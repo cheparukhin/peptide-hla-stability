@@ -1,7 +1,8 @@
 # Experimental structures for the Rasmussen complexes
 
 Ground-truth pMHC crystal structures matched against the stability dataset,
-assembled before any prediction is run. Three tables, from broadest to narrowest:
+assembled before the structure predictions were run. Three tables, from broadest
+to narrowest:
 
 | file | rows | what it is | readable version |
 | --- | --- | --- | --- |
@@ -49,24 +50,26 @@ of 32 at 2.0 Å or better.
 
 **Six were deposited in 2021 or later** (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`,
 `7LFZ`), but only one is clearly post-cutoff for all models under consideration:
-`21EX` ("Wild type p53WT-HLA-A2") was deposited 2025-12-10 and **released
-2026-09-09** — under a month ago. It is the only pair that a September 2026
-co-folding run could not have memorised. The other five may or may not post-date
-ESMFold2's training snapshot (undocumented); check the model card before
-claiming them as controls. Stage 4b.2 in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md)
-uses these rows as the pilot gate for both structure arms.
+`21EX` ("Wild type p53WT-HLA-A2") was deposited 2025-12-10 and released
+2026-09-09. It is the only pair that a September 2026 co-folding run could not
+have memorised. The other five may or may not post-date ESMFold2's training
+snapshot (undocumented); check the model card before claiming them as controls.
+Stage 4c in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) used these rows as the
+pilot gate for both structure arms.
 
-### Two uses, not just a note
+### Two uses
 
-1. **Pilot gate (stage 4a.1 and 4b.2).** These are the complexes used to validate
-   both structure arms before any batch job launches. Co-fold them, measure RMSD
-   against the crystal, and verify the peptide lands in the groove before
-   committing budget to 28,000 folds. See
-   [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stages 4a.1 and 4b.2 for the exit
-   criteria.
-2. **Register check.** Verify the predicted peptide sits in the canonical
-   P2/PΩ-anchored conformation *here*, where the answer is known, before
-   trusting predicted structures for the other 99.9%.
+1. **Pilot gate (stage 4c).** These complexes validated both structure arms
+   before the batch fold: the pilot co-folded them, measured RMSD against the
+   crystal, and confirmed the peptide lands in the groove. Boltz-2 passed and
+   ESMFold2 failed, so production folded Boltz-2 only. The full structural arm
+   was later scored on the test set and underperformed the sequence ensemble by
+   0.112 median per-allele Spearman; see [reports/REPORT.md](../reports/REPORT.md).
+   Exit criteria are in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 4c and
+   the [stage 4c report](../reports/stage4c_ectodomain_pilot.md).
+2. **Register check.** The pilot confirmed the predicted peptide sits in the
+   canonical P2/PΩ-anchored conformation here, where the answer is known, before
+   the other 99.9% were folded.
 
 ### Caveats on the 32
 

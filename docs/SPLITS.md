@@ -2,9 +2,10 @@
 
 > **Superseded by [`data/splits.csv`](../data/splits.csv)**, frozen in stage 1
 > by `scripts/make_splits.py` with single-linkage clustering at Hamming ≤ 3 and
-> documented in [EVALUATION.md](../EVALUATION.md). Load that file. This document
-> describes the earlier BLOSUM62 grouping at 0.70 and is kept for the method
-> comparison and the threshold argument below; the two assign peptides
+> documented in [EVALUATION.md](../EVALUATION.md) and
+> [reports/audit_summary.md](../reports/audit_summary.md). Load that file. This
+> document describes the earlier BLOSUM62 grouping at 0.70 and is kept for the
+> method comparison and the threshold argument below; the two assign peptides
 > differently, so do not mix them.
 
 
