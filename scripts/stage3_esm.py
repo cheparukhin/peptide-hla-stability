@@ -60,11 +60,21 @@ def reduce_block(block: np.ndarray, keys: np.ndarray, train_keys: set,
                  n_components: int, seed: int = 0) -> tuple[np.ndarray, float]:
     """Flatten a (n_keys, positions, hidden) block and PCA it on training keys.
 
-    Returns the transformed block (n_keys, n_components), standardised to unit
-    variance per component, and the retained variance fraction.
+    ``n_components <= 0`` means **no reduction**: the block is used at full
+    width, standardised on training keys only. That is the primary peptide
+    representation -- a lossy PCA here is the step suspected of corrupting the
+    first attempt at this arm, so it has to be available as a measured
+    alternative rather than an unavoidable preprocessing step.
+
+    Returns the transformed block, standardised per column on training keys, and
+    the retained variance fraction (1.0 when no reduction is applied).
     """
     flat = block.reshape(len(block), -1).astype(np.float32)
     fit_mask = np.array([k in train_keys for k in keys])
+    if n_components <= 0:
+        mu = flat[fit_mask].mean(axis=0, keepdims=True)
+        sd = flat[fit_mask].std(axis=0, keepdims=True) + 1e-6
+        return ((flat - mu) / sd).astype(np.float32), 1.0
     n_components = int(min(n_components, fit_mask.sum() - 1, flat.shape[1]))
     pca = PCA(n_components=n_components, random_state=seed)
     pca.fit(flat[fit_mask])
