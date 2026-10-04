@@ -61,8 +61,12 @@ unresolved; an upper bound below +0.05 excludes that gain under this procedure.
 An improvement clears the bar only if its lower bound exceeds +0.05.
 
 **Comparison controls.** The headline sequence, ESM and structural arms each
-use 30-network ensembles on the same validation rows. Arm-specific tuning
-ranges and sequence controls are recorded in the stage reports. The single
+use 30-network ensembles on the same validation rows. Ensembling alone is worth
+**+0.074 mean Spearman** against the deployed single network, from no new
+information, so unequal ensembling would manufacture a difference
+([limitations §4.5](limitations.md#45-arms-must-be-ensembled-identically-or-the-comparison-is-manufactured)).
+Arm-specific tuning ranges and sequence controls are recorded in the stage
+reports. The single
 network and feature-only ablations below provide context. NetMHCstabpan is
 excluded as a held-out comparator because its training data overlap this
 benchmark, including test peptides.
