@@ -5,6 +5,9 @@ Reference material for the peptide–HLA stability project.
 stage order; [reports/REPORT.md](../reports/REPORT.md) holds the results. These
 documents describe the data behind them.
 
+[DEVELOPMENT.md](DEVELOPMENT.md) has setup, the prediction/evaluation loop, the
+repo rules and the per-stage regeneration commands.
+
 ## Data
 
 | document | covers |

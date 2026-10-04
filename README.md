@@ -1,64 +1,135 @@
-# Peptide–HLA stability
+# Does a pretrained protein model earn its compute?
 
-Predicting peptide–HLA dissociation half-life (London AI × Science protein
-engineering track, 3–4 October 2026). HLA molecules hold short protein fragments
-at the cell surface for immune inspection; we predict how long a 9-residue
-peptide stays bound, measured as its dissociation half-life.
+**Peptide–HLA stability prediction — London AI × Science, Protein Engineering
+Track, 3–4 October 2026.**
 
-**Read [reports/REPORT.md](reports/REPORT.md) first.** It is the written-up
-answer, with every claim sourced to the stage report behind it.
-[HACKATHON_PLAN.md](HACKATHON_PLAN.md) has scope and stage order;
-[EVALUATION.md](EVALUATION.md) is the evaluation contract, frozen at stage 1;
-[reports/limitations.md](reports/limitations.md) is everything to discount the
-result by; [reports/compute_ledger.md](reports/compute_ledger.md) is every
-dollar and GPU-hour.
+Your cells constantly shred their own proteins and display the fragments on the
+surface, held in a groove by an HLA molecule, so passing immune cells can check
+what is being made inside. How *long* a fragment stays in that groove — its
+**dissociation half-life** — is a large part of what makes it visible to the
+immune system, and it is what a vaccine or cancer-neoantigen designer wants to
+predict. We predict the half-life of a 9-residue peptide in a given HLA groove.
 
-## Result
+Pretrained protein models are the obvious thing to reach for. **We tested
+whether they actually help here, against a predeclared bar, on a split that was
+scored once.** They did not.
 
-All deltas below are against the **sequence ensemble** reference (30 networks on
-the peptide plus 34 HLA contact residues). The sequence ensemble leads: median
-per-allele Spearman **0.693 on validation** and **0.7064 on test**. Frozen ESM-2
-does not establish a worthwhile gain — on test, ESM-2 35M is −0.009 [−0.029,
-+0.023] and sequence + ESM-2 is −0.025 [−0.046, +0.007], both intervals crossing
-zero and both excluding the predeclared +0.05 bar. The Boltz-2 structural arm is
-conclusively worse (test −0.112 [−0.134, −0.057]) despite dominating project
-compute at **$212.71** for the full-cohort fold. Test agrees with validation.
+## The answer
 
-## Status
+![Paired test comparisons against the sequence ensemble](reports/figures/report_test_comparisons.png)
 
-Project complete. The frozen test split was scored **once**, on 4 October 2026
-at 13:35 BST ([runbook](reports/TEST_SCORING_RUNBOOK.md); completion manifest
-`reports/stage6_test_manifest.json`). The Boltz-2 production fold is done:
-28,166 folds, 0 failures. Three items are genuinely open:
+- **A supervised sequence ensemble wins** — median per-allele Spearman
+  **0.7064** on the held-out test split, from 30 small networks reading the
+  peptide plus 34 HLA contact residues, trained on CPU in about a minute.
+- **Frozen ESM-2 embeddings do not establish a gain.** ESM-2 35M lands at
+  −0.009 [−0.029, +0.023]. The interval crosses zero, so the *direction* is
+  unresolved — but its upper bound sits below the +0.05 we predeclared as
+  worthwhile, so the gain we said we were looking for is excluded.
+- **Boltz-2 structures made it worse** — −0.112 [−0.134, −0.057], interval
+  entirely below zero, after folding all 28,166 complexes for **$212.71**. That
+  arm cost roughly **7 million times** more per prediction than the winner —
+  and lost.
 
-- Provider-bill reconciliation of the $212.71 fold cost (the figure is derived
-  from recorded container-hours × the measured worker rate, not a vendor bill).
-- The elution transfer pass (stage 3c) on the ESM-2 and structural arms; only
-  the sequence arm has been scored.
-- Stage 3d ESM-2 likelihood features — not run, so the stage 3 conclusion is
-  bounded to embeddings.
+The third one is the result we'd defend hardest: we spent the money, folded the
+full cohort with zero failures, and the structural features still subtracted
+accuracy. That is a measurement rather than an opinion — though it measures
+*this* structural arm, whose sequence encoding also differs from the reference,
+not structure-based prediction in general
+([why that matters](reports/REPORT.md#3-main-result-validation-comparisons)).
 
-## Dataset and evaluation
+## Test results
 
-| Property | Value |
-|---|---:|
-| Peptide–HLA pairs | 28,166 |
-| Unique 9-mer peptides | 5,633 |
-| HLA alleles | 75 |
-| Labels at 0 h (assay floor) | 20.2% |
-| Train / validation / test rows | 19,716 / 2,817 / 5,633 |
+Scored once, 4 October 2026 at 13:35 BST. 5,565 rows across 67 eligible
+alleles. All deltas are against the sequence ensemble, paired 95% intervals
+from 2,000 whole-peptide-cluster resamples.
 
-Peptides are grouped by Hamming ≤ 3 single-linkage before splitting; the minimum
-cross-split peptide Hamming distance is 4. Scoring covers eligible alleles only:
-68 alleles / 2,802 rows on validation, 67 / 5,565 on test. The primary metric is
-median per-allele Spearman; the predeclared worthwhile-gain bar is Δ +0.05. An
-interval crossing zero is **inconclusive, not negative**. See
-[EVALUATION.md](EVALUATION.md) for the frozen contract and the disclosed earlier
-test-exposure diagnostic.
+| Approach | Test Spearman | Δ vs. reference [95% CI] | Verdict |
+|---|---:|---|---|
+| **Sequence ensemble: peptide + contact residues** | **0.7064** | — | **reference** |
+| ESM-2 35M ensemble | 0.6979 | −0.009 [−0.029, +0.023] | unresolved; excludes +0.05 |
+| Sequence ensemble: full HLA domain | 0.6904 | −0.016 [−0.039, +0.004] | unresolved; excludes +0.05 |
+| Sequence + ESM-2 ensemble | 0.6816 | −0.025 [−0.046, +0.007] | unresolved; excludes +0.05 |
+| Single sequence network | 0.6181 | −0.088 [−0.120, −0.055] | worse |
+| Sequence + Boltz-2 geometry + confidence | 0.5947 | −0.112 [−0.134, −0.057] | **worse** |
 
-## Stage index
+Validation agrees with test on every one of these verdicts — see
+[§3 of the report](reports/REPORT.md#3-main-result-validation-comparisons).
 
-Per-stage detail lives in each report; this table replaces the long prose.
+## Why you can believe the numbers
+
+This is the part we spent the most care on, because a negative result is only
+worth reporting if the comparison is honest.
+
+| Guard | What it does |
+|---|---|
+| **Frozen splits by peptide similarity** | Peptides within 3 substitutions are clustered and kept in the same split; minimum cross-split distance is 4. Without this, a model scores well by recognising near-copies of its training data. |
+| **Predeclared bar** | +0.05 median Spearman, written into [EVALUATION.md](EVALUATION.md) at stage 1, before any model existed. We cannot move it after seeing results. |
+| **Paired cluster bootstrap** | Intervals resample whole peptide clusters, not rows, so correlated near-duplicate peptides cannot narrow an interval. |
+| **Test scored once** | One pass, six arms, [a runbook](reports/TEST_SCORING_RUNBOOK.md) fixed in advance and a [completion manifest](reports/stage6_test_manifest.json) with per-arm prediction hashes. |
+| **Ensemble parity** | Every arm is 30 networks or none is. Ensembling alone is worth **+0.074** mean Spearman from no new information — comparing an ensembled ESM arm to a single sequence network would have manufactured a win. |
+| **Disclosed contamination** | An early diagnostic re-partitioned the data and exposed 3,350 frozen test rows to fitting. We retracted its conclusion, refit the benchmark on the frozen training split, and [wrote down exactly what leaked](EVALUATION.md#disclosed-test-exposure) rather than quietly reusing the split. |
+
+An interval crossing zero is reported as **inconclusive, not negative**.
+NetMHCstabpan, the obvious external comparator, trained on our test peptides,
+so it appears only as a calibration check and never as a baseline.
+
+## Does the compute pay for itself?
+
+![Accuracy against compute cost per 1,000 predictions](reports/figures/fig2_cost_vs_accuracy.png)
+
+| Arm | Cost per 1,000 new predictions | Project spend |
+|---|---:|---:|
+| Single sequence network | ~$6.6 × 10⁻⁹ | $0 |
+| Sequence ensemble, 30 nets | ~$9.6 × 10⁻⁷ (0.073 s of CPU) | $0 |
+| ESM-2 35M ensemble | ~$4.7 × 10⁻⁴ (1.14 s) | $0 |
+| Boltz-2 structural | **≈$6.90** (fold only, ≈$7.55 at the realised cohort rate) | **$212.71** |
+
+Accuracy varies by 0.11 Spearman across **nine orders of magnitude** of compute,
+and the most expensive arm is the worst one. The $212.71 is **derived** —
+realised container-hours × the measured $1.4812/h worker rate — not a reconciled
+vendor bill, and we label it that way rather than rounding it into a claim. Full
+accounting: [compute_ledger.md](reports/compute_ledger.md).
+
+## The model does transfer — just not from the foundation models
+
+The sequence ensemble, with **no retraining**, separates 81,600 naturally
+presented peptides from 816,000 matched decoys across 51 alleles at median
+**AUROC 0.9656**. Two controls make that meaningful: it holds at 0.9157 when
+the decoys are real ligands from *other* alleles, and collapses to 0.6965 when
+the model is handed the wrong HLA sequence. So it has learned allele-specific
+recognition, not a generic "looks like a peptide" prior.
+
+This is a different assay, not a second measurement of half-life accuracy.
+Protocol and caveats: [stage 3c](reports/stage3c_elution_validation.md).
+
+## What we did not establish
+
+- Conclusions cover **frozen** ESM-2 embeddings and **single-pose** Boltz-2
+  features. Fine-tuning, other model families and other structural
+  representations are untested — this is a bounded negative, not a verdict on
+  structure or on protein language models.
+- ESM-2 × affinity multitask (stage 3b) is **unresolved**: we never established
+  sensitivity at the +0.05 bar. Underpowered is not the same as null.
+- ProteinMPNN and FoldX are diagnostic pilots. Neither was scored for half-life.
+- 20.2% of labels sit at the assay floor, with no replicates to estimate a noise
+  ceiling, and the allele panel was partly selected by predicted affinity.
+
+Full register: [limitations.md](reports/limitations.md).
+
+## Where to look
+
+| | |
+|---|---|
+| **[reports/REPORT.md](reports/REPORT.md)** | **The write-up.** Every claim sourced to the stage report behind it. Start here. |
+| [site/index.html](site/index.html) | One-page visual version, with the intro animation. |
+| [EVALUATION.md](EVALUATION.md) | The evaluation contract, frozen at stage 1. |
+| [reports/limitations.md](reports/limitations.md) | Everything to discount the result by. |
+| [reports/compute_ledger.md](reports/compute_ledger.md) | Every dollar and GPU-hour. |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, reproduction commands, repo rules. |
+| [HACKATHON_PLAN.md](HACKATHON_PLAN.md) | Scope and stage order. |
+
+### Stage index
+
 Validation unless a row says otherwise. Deltas use the sequence ensemble.
 
 | Stage | Outcome | Report |
@@ -81,107 +152,23 @@ Validation unless a row says otherwise. Deltas use the sequence ensemble.
 | 7b leave-allele-out | Near 0.741 / distant 0.339, near − distant +0.403 [+0.223, +0.478]; separate contract, not comparable to frozen-split numbers | [stage7_allele_holdout](reports/stage7_allele_holdout.md) |
 | 8 FoldX empirical energy | Pilot only; RepairPDB required; the arm was not scored for half-life | [stage8_foldx](reports/stage8_foldx.md) |
 
-NetMHCstabpan is calibration only, never a comparator: it trained on our test
-rows.
+## Dataset
 
-## Setup
+| Property | Value |
+|---|---:|
+| Peptide–HLA pairs | 28,166 |
+| Unique 9-mer peptides | 5,633 |
+| HLA alleles | 75 |
+| Labels at 0 h (assay floor) | 20.2% |
+| Train / validation / test rows | 19,716 / 2,817 / 5,633 |
 
-```bash
-uv venv --python 3.12 .venv
-uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow pytest
-```
+Measured half-lives from Rasmussen et al.; see [docs/DATASETS.md](docs/DATASETS.md).
 
-## Quick start
+## Status
 
-```python
-from pepstab.data import load_with_splits
+Project complete. The Boltz-2 production fold is done: 28,166 folds, 0
+failures. Three items are genuinely open — provider-bill reconciliation of the
+$212.71, the elution transfer pass on the ESM-2 and structural arms, and stage
+3d ESM-2 likelihood features.
 
-df = load_with_splits()                 # never recompute the splits
-train = df[df.split == "train"]
-# inputs: peptide, hla_seq, hla_pseudoseq   target: y_log1p
-```
-
-Write predictions as `pair_id,y_pred` on the `log1p` scale, then:
-
-```bash
-.venv/bin/python scripts/evaluate.py --split val \
-    preds/seq_ensemble_pep_pseudo.csv preds/esm_ensemble.csv
-```
-
-The first file is the baseline; the rest get paired cluster-bootstrap CIs
-against it. For the full table set — distance strata, differential concordance,
-nested mutant ranking, precision@10 — use the stage 6 CLI:
-
-```bash
-.venv/bin/python scripts/stage6_report.py --split val \
-    --n-boot 2000 --stratum-min-rows 10 --nested \
-    seq_ensemble_pep_pseudo=preds/seq_ensemble_pep_pseudo.csv \
-    esm_ensemble=preds/esm_ensemble.csv \
-    esm_plus_seq_ensemble=preds/esm_plus_seq_ensemble.csv
-```
-
-The first arm is the baseline every interval is taken against; a structural
-prediction file drops straight in. `--stratum-min-rows 10` is the validation
-bar; test keeps the frozen 20.
-
-## Rules
-
-- `data/rasmussen_et_al_dataset.csv` is read-only;
-  `(cd data && shasum -a 256 -c SHA256SUMS)` must pass. Derived data goes to a
-  new file.
-- Load splits from `data/splits.csv`, never recompute them. Regenerating drops
-  the peptide-cluster grouping and leaks training data into test. Join on
-  `(allele, peptide)`, not on `pair_id`.
-- Select on validation. The test set is scored once, at stage 6.
-- Ensemble every arm identically, or ensemble none of them. Ensembling alone is
-  worth +0.074 mean SCC against the deployed single network, from no new
-  information. Always state which reference a delta uses.
-- Augmented rows in `data/augmentation/` are assumed labels (`thalf_hours = 0`),
-  not measurements. They enter the fit set only, never validation or test, and
-  never overwrite a measured value. Verify any manifest with
-  `pepstab.augment.verify_manifest` first.
-- Load the frozen production cohort from `data/structural_cohort.csv`, never
-  recompute it. Each Modal profile folds its own half; `--profile` must match
-  `MODAL_PROFILE`.
-- No batch GPU job without a passing pilot on 3–5 examples. That applies to a
-  new runner as well as a new model.
-
-## Regenerating
-
-```bash
-.venv/bin/python scripts/make_splits.py        # deterministic; rewrites data/splits.csv
-.venv/bin/python scripts/audit_data.py         # rewrites reports/audit_summary.md
-.venv/bin/python scripts/baseline_constant.py  # constant reference baselines
-.venv/bin/python scripts/baseline_sequence.py  # stage 2 grid, ~10 CPU-minutes
-.venv/bin/python scripts/baseline_ensemble.py  # 30-network ensemble baseline, ~1 min
-.venv/bin/python scripts/compare_to_paper.py   # NetMHCstabpan calibration, ~3 min
-.venv/bin/python scripts/augment_affinity.py   # stage 2b manifests, ~40 s (downloads a proteome)
-.venv/bin/python scripts/baseline_augmented.py # stage 2b arms + intervals, ~13 min
-.venv/bin/python scripts/stage2b_negatives.py  # stage 2b pool characterisation, ~10 s
-.venv/bin/python scripts/affinity_multitask.py # stage 2c probe, ~10 CPU-minutes
-.venv/bin/python scripts/esm_features.py --verify-index              # stage 3 contact indexing
-.venv/bin/python scripts/esm_features.py --checkpoint esm2_t12_35M_UR50D
-.venv/bin/python scripts/esm_arm.py sweep --checkpoint esm2_t12_35M_UR50D
-.venv/bin/python scripts/stage3b_esm_multitask.py      # stage 3b; exact flags in its report
-.venv/bin/python scripts/stage3c_elution_validation.py # stage 3c external pass
-.venv/bin/python scripts/stage6_report.py --split val ...   # stage 6 tables
-.venv/bin/python scripts/stage7_censored.py            # stage 7a, 130 networks, ~30 CPU-minutes
-.venv/bin/python scripts/stage7_allele_holdout.py      # stage 7b, 68 folds × 6 networks
-.venv/bin/python reports/figures/make_figures.py       # figures, CPU, no network
-.venv/bin/python -m pytest tests/ -q                   # 540 guards collected
-```
-
-Several stages have more flags than fit here; each report gives the exact
-commands that produced the committed artifacts.
-
-The MSA cache needs boltz, which pulls torch, so it is kept out of `.venv`:
-
-```bash
-uv venv /tmp/boltzenv --python 3.12
-uv pip install --python /tmp/boltzenv/bin/python boltz
-/tmp/boltzenv/bin/python scripts/make_msas.py --all-alleles   # ~2.5 min, $0
-```
-
-Structural production and feature extraction run on Modal, not locally — see
-[the stage 4c report](reports/stage4c_ectodomain_pilot.md) for the launch
-sequence. The fold is complete.
+To run any of it: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
