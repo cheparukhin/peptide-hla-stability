@@ -304,6 +304,42 @@ above). What remains here is only the ESM-2 arm, which needs stage 3 features.
 
 **Data note:** the affinity reference ([`data/data_augmentation_iedb/affinity_reference_75alleles.csv`](data/data_augmentation_iedb/affinity_reference_75alleles.csv), 110,591 rows) carries both strong binders (64,112 rows with affinity <20,000 nM) and weak binders (46,479 rows at ≥20,000 nM). Both are needed: weak binders supply negative examples for classification-style augmentation; strong binders are the positives. The test of whether augmentation helps requires both — a dataset of only negatives cannot teach affinity prediction. See [docs/AFFINITY_REFERENCE.md](docs/AFFINITY_REFERENCE.md) for leakage filtering and the C67S construct exclusion.
 
+### 3d. ESM-2 likelihood features (added 4 October 2026)
+
+**Work**
+
+- The challenge brief names three ways to use a protein foundation model:
+  embeddings, **log-likelihoods/perplexities**, and confidence metrics, and
+  invites running them "with different inputs masked". Stage 3 covers
+  embeddings, stage 4c covers structural confidence, and seed variation is
+  tested in both. Likelihoods were not covered anywhere, so this stage closes
+  that gap.
+- Compute, from the same ESM-2 checkpoint stage 3 selects: peptide
+  pseudo-log-likelihood (sum and per-position masked marginals), peptide
+  perplexity, and per-position entropy. Cache once per unique peptide, as in
+  stage 3.
+- Test them as a feature group on their own and appended to the stage 3 and
+  stage 2 feature sets, selected on validation, with the same ensemble size and
+  tuning budget as every other arm.
+
+**Deliverable:** likelihood feature cache, a validation comparison on matched
+rows with paired uncertainty, and the marginal compute cost over stage 3.
+
+**Why:** it is nearly free once the stage 3 cache and weights exist, and it
+tests a different claim from embeddings. An embedding asks "where does this
+sequence sit in representation space"; a likelihood asks "how surprising is
+this sequence to a model of natural protein sequence space". Neither is
+obviously the right prior for a *kinetic* property, which is what makes the
+comparison informative either way.
+
+**Known limitation, stated up front.** ESM-2 scores the peptide without its
+HLA. A 9-mer's likelihood under a model of whole natural proteins is a weak,
+context-free signal, and the HLA-conditioned version of this feature would need
+the chimeric peptide-linker-groove input that the out-of-scope register rejects
+as far outside ESM-2's training distribution. So a null result here bounds to
+context-free peptide likelihood, and must be reported that way rather than as
+"likelihoods don't work".
+
 ### 3c. Elution as external validation (non-training)
 
 **Work**
