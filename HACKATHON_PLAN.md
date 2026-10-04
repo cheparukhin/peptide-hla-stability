@@ -651,6 +651,23 @@ Global three-chain ipTM must not be presented as peptide-interface confidence.
 - Report per-allele Spearman correlation (how well the model ranks peptides within each allele), with test-set sizes and a median/IQR summary across alleles. Use a common set of eligible alleles across models and report small or undefined cases explicitly.
 - Report MAE on `log1p` half-life for numerical error. Add **precision@10 at a predeclared 2-hour threshold** — of the top 10 predictions per allele, how many actually have a half-life above 2 hours? This directly measures whether the model identifies sufficiently stable peptides. Treat pooled metrics as secondary. Distinguish within-allele ranking from cross-allele effects.
 - **Stratify test metrics by nearest-neighbour distance to training.** For each test peptide, compute the Hamming distance to its closest training peptide and report metrics in **two strata: d=4 (57.8% of test rows) and d≥5 (42.2%)**. A separate d≥6 stratum is not viable — measured on the frozen split only 6 test peptides (12 rows) sit that far from training. Score both strata on the *same* allele set (the intersection of those eligible in each, 65 alleles at a 20-row bar), or the comparison measures allele panels rather than distance. If label similarity decays as expected, performance should visibly differ across strata. If it doesn't, that's a strong signal the model genuinely generalises rather than exploiting residual similarity at the split boundary.
+- **The distance-stratum figures above are test-specific.** Verified 4 October
+  against the frozen splits: test is d=4 3,256 rows (57.80%) / d>=5 2,377
+  (42.20%), and d>=6 holds 12 rows across 6 peptides, confirming it is not
+  viable as a third stratum. **Validation sits at 61.41% / 38.59%** (d=4 1,730
+  rows; d=5 1,072; d=6 15 rows across 3 peptides). The two splits differ, so
+  57.8/42.2 must never be restated as a dataset-wide fact.
+- **The 20-row stratum bar holds on test but not on validation.** On test it
+  leaves 67 eligible alleles at d=4 and 66 at d>=5, intersecting at 65, as
+  stated. Validation is half the size, so each stratum holds roughly 1.4k rows
+  and the same bar leaves a 6-allele shared panel covering only 15.2% / 21.7%
+  of the two strata — too thin to compare. Validation therefore uses a
+  **10-row bar**, giving 55 alleles at 79.6% / 91.3% coverage. The frozen
+  constant in `pepstab/evaluation.py` is unchanged and test keeps 20; the bar
+  is a CLI argument with a coverage warning. **The validation bar was chosen
+  from row counts and coverage alone, before any model was scored** — a
+  stratum bar chosen after seeing performance would be a selection effect that
+  no reader could detect from the resulting number.
 - **Nested near-neighbour evaluation inside training.** Cross-validate mutant ranking on the d≤2 peptide clusters that live entirely within the training split. This recovers the question the grouped split cannot answer — can the model rank point mutants of a known binder? — without touching the test set or the frozen split assignments.
 - **The differential target.** For peptides measured on two or more alleles, evaluate Δ log half-life *between* alleles. This subtracts out whatever is intrinsic to the peptide and tests groove chemistry directly, which is the sharpest available version of "distinguish within-allele ranking from cross-allele effects". It is abundant — **3,941 peptides sit on ≥2 alleles, covering 26,474 rows (94% of the dataset), up to 36 alleles for a single peptide** — and it costs no new compute, being a re-aggregation of predictions already made.
 - Use paired uncertainty estimates that keep peptide clusters together across alleles.
