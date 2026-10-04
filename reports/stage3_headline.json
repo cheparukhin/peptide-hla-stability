@@ -92,5 +92,28 @@
   },
   "excluded": {
     "esm2_t33_650M_UR50D": "cached but not used; 5.06 GB peak RSS did not fit alongside concurrent workstreams on a 16 GB machine"
+  },
+  "out_of_fold_training_predictions": {
+    "purpose": "stage 6 nested near-neighbour (mutant-ranking) evaluation",
+    "fold_source": "pepstab.stage6.nested_folds",
+    "n_folds": 5,
+    "fold_unit": "peptide",
+    "seed": 20261004,
+    "n_rows": 19716,
+    "networks_per_arm": 150,
+    "transforms_refitted_per_outer_fold": true,
+    "representation": "stage-3 selected (peptide per-position, HLA 34-contact, 35M middle layer)",
+    "files": {
+      "esm_only": {
+        "path": "preds/esm_ensemble_oof.csv",
+        "wall_minutes": 18.8,
+        "pooled_pearson_vs_label": 0.7955
+      },
+      "sequence_plus_esm": {
+        "path": "preds/esm_plus_seq_ensemble_oof.csv",
+        "wall_minutes": 31.0,
+        "pooled_pearson_vs_label": 0.7919
+      }
+    }
   }
 }

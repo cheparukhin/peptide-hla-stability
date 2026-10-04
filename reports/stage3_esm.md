@@ -396,7 +396,46 @@ more than an order of magnitude:
 
 ---
 
-## 8. What this does and does not establish
+## 8. Out-of-fold predictions for the nested mutant-ranking evaluation
+
+Stage 6's nested near-neighbour evaluation asks the one question the grouped
+split cannot: can a model rank *point mutants* of a known binder? It lives
+entirely inside `train`, so the validation prediction files above cannot serve
+it — it needs predictions on training rows that were never fitted on.
+
+Both shipped arms now emit out-of-fold predictions over all **19,716 training
+rows**, on `pepstab.stage6.nested_folds` (5 folds **by peptide**, seed
+20261004, imported rather than reimplemented). For each outer fold the full
+30-member ensemble is rebuilt on the other four and predicts the held-out one:
+**5 x 30 = 150 networks per arm**.
+
+| file | arm | networks | wall | pooled Pearson vs label |
+|---|---|---:|---:|---:|
+| `preds/esm_ensemble_oof.csv` | ESM-2 only | 150 | 18.8 min | 0.7955 |
+| `preds/esm_plus_seq_ensemble_oof.csv` | sequence + ESM-2 | 150 | 31.0 min | 0.7919 |
+
+**Standardisation and PCA are refitted inside each outer fold**, on that fold's
+training rows only, so the PCA basis never sees a row it will later predict. A
+basis fitted once across all folds would leak the held-out peptides into the
+representation — a subtle leak, because the labels are untouched and the arm
+would still look honest.
+
+One caution carried over from how this measurement can go wrong: these
+predictions use the **stage-3-selected** representation (peptide per-position,
+HLA 34-contact). Mean-pooling is close to the worst possible choice for this
+particular question and would not be a fair stand-in — a single substitution
+is one ninth of a mean-pooled 9-mer, and the HLA block is identical within a
+same-allele mutant pair, so the representation discards most of what the
+comparison is asking about. These files should not be regenerated at any other
+representation without relabelling them.
+
+Scoring and uncertainty belong to stage 6, not here. The relevant power
+limitation is recorded there: the nested evaluation rests on roughly 490
+scoreable mutant comparisons sitting on only ~96 independent peptide clusters,
+so an inconclusive interval is the expected outcome and should be read with
+its half-width beside it.
+
+## 9. What this does and does not establish
 
 **Bounded to what was tested.** This is a result about *frozen* ESM-2
 representations of the peptide and the HLA domain **embedded separately**, at
