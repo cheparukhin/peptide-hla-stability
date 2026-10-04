@@ -1,0 +1,7 @@
+arm,reference,n_rows,n_alleles,n_features,reference_median_rho,arm_median_rho,delta,ci_low,ci_high,verdict,n_members_arm,n_members_reference,l2_arm
+cross_alone,seq_ensemble_pep_pseudo,2817,68,306,0.6931,0.4121,-0.2811,-0.3379,-0.2064,worse: CI entirely below 0,30,30,0.001
+cross_alone,esm_ensemble,2817,68,306,0.683,0.4121,-0.271,-0.3427,-0.2021,worse: CI entirely below 0,30,30,0.001
+cross_alone,esm_plus_seq_ensemble,2817,68,306,0.6761,0.4121,-0.264,-0.331,-0.1952,worse: CI entirely below 0,30,30,0.001
+cross_stacked,seq_ensemble_pep_pseudo,2817,68,1166,0.6931,0.6099,-0.0832,-0.1084,-0.0235,worse: CI entirely below 0,30,30,0.01
+cross_stacked,esm_ensemble,2817,68,1166,0.683,0.6099,-0.0732,-0.1116,-0.0164,worse: CI entirely below 0,30,30,0.01
+cross_stacked,esm_plus_seq_ensemble,2817,68,1166,0.6761,0.6099,-0.0662,-0.1077,-0.0077,worse: CI entirely below 0,30,30,0.01

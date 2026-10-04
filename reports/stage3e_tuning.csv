@@ -1,0 +1,4 @@
+arm,ladder,n_points,argmax,selected,rule,interior,rho_at_argmax,rho_at_selected,seed_spread_at_argmax,seed_spread_at_selected,ladder_range_rho,rho_at_min,rho_at_max
+xattn,1e-06 1e-05 0.0001 0.001 0.01,5,0.0001,0.001,largest l2 within 1 SE of the best,True,0.4531,0.4478,0.0748,0.0496,0.0484,0.4489,0.4048
+meanpool,1e-06 1e-05 0.0001 0.001 0.01,5,1e-06,0.001,largest l2 within 1 SE of the best,True,0.4461,0.4447,0.0277,0.05,0.0418,0.4461,0.4044
+COMMON (pooled),1e-06 1e-05 0.0001 0.001 0.01,5,1e-06,0.001,largest l2 within 1 SE of the best,True,0.4475,0.4463,0.0677,0.0679,0.043,0.4475,0.4046

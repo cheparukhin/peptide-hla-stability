@@ -1,0 +1,24 @@
+{
+  "feature_seconds": 0.23,
+  "n_features": {
+    "cross_alone": 306,
+    "cross_stacked": 1166
+  },
+  "n_networks": 90,
+  "ladder_networks": 30,
+  "ensemble_wall_minutes": 2.4,
+  "total_fit_seconds": 205.89999999999998,
+  "median_fit_seconds": 2.0,
+  "selected_l2": {
+    "cross_alone": {
+      "l2": 0.001,
+      "l2_second": 0.01,
+      "interior": true
+    },
+    "cross_stacked": {
+      "l2": 0.01,
+      "l2_second": 0.001,
+      "interior": true
+    }
+  }
+}
