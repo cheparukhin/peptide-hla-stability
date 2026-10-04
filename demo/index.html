@@ -155,6 +155,7 @@ table.dt th {
 table.dt td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.dt tr:last-child td { border-bottom: none; }
 table.dt .n { text-align: right; font-family: var(--mono); white-space: nowrap; }
+table.dt th .g { text-transform: none; }
 .scroll-x { overflow-x: auto; }
 
 /* ---------- triptych ---------- */
@@ -340,25 +341,32 @@ footer.foot {
 
     <div class="panel" style="margin-bottom:14px">
       <div class="phead">
-        <h3>The headline, in one table</h3>
-        <span class="tag">validation &middot; same comparator &middot; same bootstrap</span>
+        <h3>The headline: read all three rows</h3>
+        <span class="tag">validation &middot; differential concordance &middot; same bootstrap</span>
       </div>
-      <p class="sub">Both rows are improvements over the full-domain sequence ensemble.</p>
+      <p class="sub">
+        Taking the first row alone says &ldquo;pretraining works&rdquo;. The third row is the control,
+        and it inverts the reading.
+      </p>
       <div class="scroll-x">
         <table class="dt">
           <thead>
-            <tr><th>Improvement over full-domain</th><th class="n">Mean per-allele &rho;</th><th class="n">&Delta; concordance</th><th class="n">Cost / 1k</th></tr>
+            <tr><th>Comparison</th><th class="n"><span class="g">&Delta;</span> concordance</th><th class="n">95% CI</th><th>Verdict</th></tr>
           </thead>
           <tbody>
-            <tr><td><strong>From pretraining</strong> &mdash; ESM-2 on the same 182 residues</td><td class="n">+0.0312</td><td class="n">+0.0152</td><td class="n">$4.7&times;10<sup>&minus;4</sup></td></tr>
-            <tr><td><strong>From 34 hand-picked contact residues</strong> &mdash; the pseudosequence</td><td class="n">+0.0348</td><td class="n">+0.0124</td><td class="n">$9.6&times;10<sup>&minus;7</sup></td></tr>
+            <tr><td>ESM-2 vs <strong>full-domain</strong> &mdash; same 182 residues</td><td class="n">+0.0152</td><td class="n">[+0.0046, +0.0241]</td><td><span class="pill p-a">conclusive</span></td></tr>
+            <tr><td>34 hand-picked residues vs <strong>full-domain</strong></td><td class="n">+0.0124</td><td class="n">[+0.0061, +0.0186]</td><td><span class="pill p-a">conclusive</span></td></tr>
+            <tr><td><em>ESM-2 vs those 34 hand-picked residues</em></td><td class="n">+0.0028</td><td class="n">[&minus;0.0052, +0.0102]</td><td><span class="pill p-c">null</span></td></tr>
           </tbody>
         </table>
       </div>
       <p class="note">
-        Hand-picking the 34 contact residues recovers what pretraining buys here, at about
-        <strong>500&times; less compute</strong>. Both are conclusive on these two secondary statistics
-        and inconclusive on the predeclared primary metric; neither clears the 0.05 worthwhile-gain bar.
+        Two quite different things beat the full-domain arm by almost the same margin, and they do not
+        beat each other. <strong>The conclusive finding is that full-domain one-hot encoding is a weak
+        arm &mdash; not that pretraining is a strong one.</strong> That reframing came from an
+        independent review on a colleague&rsquo;s branch, not from us. The full-domain arm was added at
+        stage 1, before any model existed, precisely so &ldquo;more input sequence&rdquo; could never be
+        mistaken for &ldquo;benefit of pretraining&rdquo;.
       </p>
     </div>
 
@@ -400,6 +408,69 @@ footer.foot {
       selected peptide&rsquo;s own sequence; <strong>it is a contact schematic, not predicted
       coordinates</strong>. The 3D structure opens at the RCSB entry listed for that allele.
     </p>
+
+    <div class="panel" style="margin-top:14px">
+      <div class="phead">
+        <h3>And the structures themselves do not help</h3>
+        <span class="tag">stage 5 &middot; 100% coverage &middot; zero fallback</span>
+      </div>
+      <p class="sub">
+        The production fold completed: <strong>28,166 of 28,166 complexes, zero failures</strong>, poses
+        reproducing the pilot within 0.04 &Aring;. Every structural arm is then measured against the same
+        sequence ensemble (&rho; = 0.6931) on 2,817 validation rows across 68 alleles.
+      </p>
+      <div class="scroll-x">
+        <table class="dt">
+          <thead>
+            <tr><th>Structural arm</th><th class="n">Median <span class="g">&rho;</span></th><th class="n"><span class="g">&Delta;</span> vs sequence</th><th class="n">95% CI</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Geometry only</td><td class="n">0.268</td><td class="n">&minus;0.4254</td><td class="n">[&minus;0.4995, &minus;0.3518]</td></tr>
+            <tr><td>Confidence only</td><td class="n">0.393</td><td class="n">&minus;0.3006</td><td class="n">[&minus;0.3693, &minus;0.2270]</td></tr>
+            <tr><td>Geometry + confidence</td><td class="n">0.421</td><td class="n">&minus;0.2722</td><td class="n">[&minus;0.3378, &minus;0.2051]</td></tr>
+            <tr><td>Sequence + geometry</td><td class="n">0.614</td><td class="n">&minus;0.0788</td><td class="n">[&minus;0.1157, &minus;0.0268]</td></tr>
+            <tr><td>Sequence + confidence</td><td class="n">0.596</td><td class="n">&minus;0.0973</td><td class="n">[&minus;0.1116, &minus;0.0200]</td></tr>
+            <tr><td>Sequence + geometry + confidence</td><td class="n">0.622</td><td class="n">&minus;0.0715</td><td class="n">[&minus;0.1228, &minus;0.0251]</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        <strong>Every interval sits entirely below zero.</strong> Adding a predicted structure to the
+        sequence model does not merely fail to help &mdash; it costs about 0.07 of Spearman, at
+        <strong>$6.90 per 1,000 predictions</strong> against the baseline&rsquo;s $9.6&times;10<sup>&minus;7</sup>.
+        A sequence-only control through the same pipeline and folds beats
+        sequence+geometry+confidence at all six L2 values tested, so the drop is the features and not a
+        tuning artefact. This is a well-powered negative, not a failed experiment: the fold succeeded
+        completely, and good structures still failed to carry half-life signal beyond sequence &mdash;
+        which is what a static co-folded pose estimating well depth against a barrier-height label
+        would predict.
+      </p>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <div class="phead">
+        <h3>All three model classes the brief named</h3>
+        <span class="tag">none clears the bar</span>
+      </div>
+      <div class="scroll-x">
+        <table class="dt">
+          <thead>
+            <tr><th>Model class</th><th>Arm</th><th class="n">Cost / 1k</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>&mdash;</td><td>Sequence baseline, 34 contact residues</td><td class="n">$9.6&times;10<sup>&minus;7</sup></td><td><span class="pill p-a">&rho; = 0.693, the arm to beat</span></td></tr>
+            <tr><td>Protein language model</td><td>ESM-2 35M</td><td class="n">$4.7&times;10<sup>&minus;4</sup></td><td><span class="pill p-b">null, rules out +0.05</span></td></tr>
+            <tr><td>Inverse folding</td><td>ProteinMPNN</td><td class="n">$0.52</td><td><span class="pill p-b">structural QC only</span></td></tr>
+            <tr><td>Structure prediction</td><td>Boltz-2</td><td class="n">$6.90</td><td><span class="pill p-c">conclusively worse</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        Seven orders of magnitude of compute, and the cheapest arm is still the one to beat. A
+        structural arm never needed to be <em>better</em> &mdash; it needed to be better by enough that
+        someone would pay seven orders of magnitude for the difference.
+      </p>
+    </div>
   </section>
 
   <!-- ================= WHAT'S NEXT ================= -->
@@ -445,10 +516,12 @@ footer.foot {
       </div>
       <div class="next-card" style="border-top-color:var(--bad)">
         <p class="rank">Priority 5</p>
-        <h4>Full structural coverage</h4>
-        <p>Boltz-2 production is the open hole. Coverage and the declared sequence fallback must be
-        reported on the frozen cohort, not on whatever happened to fold.</p>
-        <span class="status s-blocked">Fold in progress</span>
+        <h4>Why the pose carries no signal</h4>
+        <p>Stage 5 closed the structural arm as a conclusive negative at full coverage. The open
+        question is now mechanistic: a static co-folded pose estimates well depth, while the label is a
+        barrier height. Dynamics, or an ensemble of poses, is the version of the question this one
+        could not ask.</p>
+        <span class="status s-live">Arm closed</span>
       </div>
       <div class="next-card" style="border-top-color:var(--ink-3)">
         <p class="rank">Priority 6</p>
