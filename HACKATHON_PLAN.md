@@ -6,6 +6,24 @@
 
 Our main claim is about **unseen peptides on HLA alleles we trained on**. Whether the model works on entirely new alleles is a separate test, not the headline.
 
+## Live execution status — 4 October 2026, final push
+
+Five workstreams run concurrently. Each owns a disjoint set of files; **only the
+orchestrator commits**, to avoid index contention in the shared worktree. No
+workstream edits this file, `CLAUDE.md`, or `EVALUATION.md`.
+
+| Workstream | Stage | Owns | State |
+|---|---|---|---|
+| `esm-arm` | 3 | `pepstab/esm.py`, `scripts/esm_*.py`, `features/esm/`, `reports/stage3_*`, `preds/esm_*` | running |
+| `eval-harness` | 6 machinery | `pepstab/stage6.py`, `scripts/stage6_report.py`, `reports/stage6_*` | running |
+| `submission` | 6 deliverable | `reports/SUBMISSION.md`, `reports/compute_ledger.*`, `reports/limitations.md`, `reports/figures/` | running |
+| `elution` | 3c scoring pass | `scripts/stage3c_*`, `pepstab/elution.py`, `reports/stage3c_*`, `external/` | running |
+| Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | running (separate session) |
+
+Dependency order for what remains: stage 3 unblocks the ESM half of stage 3b;
+stage 4c production unblocks stage 5; stages 3, 5 and the stage 6 machinery all
+feed the single test scoring at stage 6, which happens **once**, last.
+
 ## Recommended scope
 
 Commit to comparing a supervised sequence baseline against frozen ESM-2 features across the full dataset. Only add a structural experiment (predicted 3D shapes, confidence scores) if a small end-to-end pilot works first.
