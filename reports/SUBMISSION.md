@@ -323,13 +323,17 @@ gain the median ρ reports does not translate into a better top-10 shortlist at
 this panel size, and a submission that led with P@10 would have called the
 ensemble a wash.
 
-**Ensembling alone is worth +0.090 mean SCC, from no new information at all** —
-paired Δ median ρ = +0.083 [+0.029, +0.124]. This produces the project's single
-most important procedural rule:
+**Ensembling alone is worth +0.074 mean SCC against the deployed single
+network, from no new information at all** — paired Δ median ρ = **+0.083
+[+0.029, +0.124]**. (The larger +0.090 sometimes quoted for this step is the
+ensemble minus the mean of its own 30 members, a different and less relevant
+reference; +0.074 is the one the parity rule below needs, and neither figure
+should be quoted bare.) This produces the project's single most important
+procedural rule:
 
 > **Ensemble every arm identically, or ensemble none of them.** An ensembled
 > ESM-2 arm compared against a single-network sequence arm would manufacture a
-> result worth nearly twice the predeclared bar out of nothing.
+> result worth about 1.5× the predeclared bar out of nothing.
 
 So **0.693 is the number to beat**, not 0.610, and every later arm uses the same
 `cv_folds()` protocol and the same member count.
@@ -1223,7 +1227,7 @@ dash-dot line is the entire result.
 | **E1** | ESM-2 cost per 1,000 new predictions | `esm-arm` | Embedding extraction time and hardware, cache size per unique sequence, head inference seconds per 1,000 rows, ensemble member count |
 | ~~E2~~ | ~~ESM-2 validation accuracy and its paired CI~~ | — | **Filled**: §4.0 (vs the pseudosequence ensemble, −0.0101) and §4.1 (vs the full-domain ensemble, +0.0301), both as required |
 | **B2** | Boltz-2 structural accuracy and its paired CI | stage 4c production → stage 5 | Same, on identical train/val/test rows with matched head architecture, ensemble size and tuning budget. Plus coverage and the declared sequence fallback for structural failures |
-| **B3** | Realised production spend | Modal production session | Metered before/after snapshots per workspace, realised GPU-hours and wall clock, failure count, actual concurrency granted. `production_<profile>.jsonl` exist for both profiles and are currently **empty** |
+| **B3** | Realised production spend | Modal production session | **Status: in flight** — 265 of 282 shards committed (136 `a-cheparukhin` + 129 `colleague`), 26,500 pairs, **zero failures**. Still needed: metered before/after snapshots per workspace, realised GPU-hours and wall clock, final failure count, actual concurrency granted |
 | **A1** | Per-stratum leave-allele-out for the ESM-2 and structural arms (§6.6) | `esm-arm` / stage 5 | A **feature matrix plus its `pair_id` index**, refit across all 68 folds at the fixed 6 networks per fold — **not** a `preds/*.csv`, which the runner rejects. A stratum may come back inconclusive and must be reported as such |
 | **B4** | Structural coverage and failure rate (§6.5) | stage 5 | Pairs with a valid structure, pairs falling back to the sequence model, and the primary result reported on the **frozen cohort**, not on whatever folded |
 | ~~E1b~~ | ~~ESM-2 head inference cost~~ | — | **Filled**: 0.0150 s / 1,000 rows for the 30-network ensemble; 1.14 s end to end including embedding. §4.0 |
@@ -1637,7 +1641,10 @@ MSA preparation for both constructs — ran on **one laptop core for $0**, about
 
 Production folding of all 28,166 pairs is forecast at **$200.8 (135.6 A10G
 hours), $251 with the required 25% margin**, split across two Modal workspaces
-in parallel at ~6.8 hours wall clock. **It has not been launched.**
+in parallel at ~6.8 hours wall clock. **It is in flight** — **265 of 282 shards committed, 26,500 pairs folded, zero failures** (snapshot at the time of writing; the run is still going).
+The realised spend is not yet known and is held open as hole **B3**; every
+production figure in this document remains a forecast from the pilot's measured
+unit cost until it lands.
 
 Two further spends are **approved and not yet made**, both forecast from
 measured unit costs:
@@ -1725,9 +1732,11 @@ reader's interpretation most:
    makes them trainable and compresses a 5.86-skew target to 0.91; it does **not**
    make them measurements. MAE at the floor is error against a *recorded* label
    with uncertain sign — neither an upper nor a lower bound on true error. A
-   censored (Tobit) likelihood is the principled fix; it was recorded as out of
-   scope and is now in flight as stage 7a, with its protocol predeclared and
-   its results pending (hole **S7a**).
+   censored (Tobit) likelihood is the principled fix, and **it was built and
+   tested: it is conclusively worse on ranking** (Δ −0.0414 [−0.0780, −0.0062],
+   interval entirely below zero) while delivering the floor calibration it was
+   designed for. So the `log1p` compromise is not an unchecked substitute — it
+   was checked, and it won on the primary metric (§4.7).
 2. **The peptide panels are allele-confounded by design — though not in the way
    we first wrote down.** Each allele was assayed on its own panel; the grid is
    6.7% full, and this broke the first split. The plan then claimed that holding
@@ -1817,9 +1826,9 @@ then worry about which checkpoint.**
 
 Ordered by expected value per hour, not by appeal.
 
-1. **Finish the in-flight arms and score the test set once** (holes E1b, E2,
-   B2–B4, S3C, S6, S7a). Everything else is downstream of knowing whether the
-   expensive arms clear 0.05.
+1. **Finish the structural arm and score the test set once** (holes B2–B4,
+   S6a–d). Everything else is downstream of knowing whether the expensive arm
+   clears 0.05.
 2. **Re-run the censored likelihood with the MSE stopping rule.** §4.7 settled
    the headline question — as predeclared, the censored loss is **worse on
    ranking**, conclusively. But it localised a likely cause: the censored arm's
@@ -1891,7 +1900,7 @@ uv pip install --python .venv/bin/python numpy pandas scipy scikit-learn pyarrow
 .venv/bin/python scripts/baseline_augmented.py    # stage 2b, ~13 min
 .venv/bin/python scripts/affinity_multitask.py --protocol ensemble   # stage 2c
 .venv/bin/python reports/figures/make_figures.py  # figures
-.venv/bin/python -m pytest tests/ -q              # 327 collected contract guards
+.venv/bin/python -m pytest tests/ -q              # 458 collected contract guards
                                                   # (some skip when optional
                                                   #  structural inputs are absent)
 

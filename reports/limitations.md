@@ -399,9 +399,13 @@ same order as the predeclared bar — both reflect what this dataset can resolve
 
 ### 4.5 Arms must be ensembled identically or the comparison is manufactured
 
-**Ensembling alone is worth +0.090 mean SCC from no new information**
-(`stage2_baselines.md`). An ensembled ESM-2 arm compared against a
-single-network sequence arm would produce a result out of thin air. The rule is
+**Ensembling alone is worth +0.074 mean SCC against the deployed single
+network, from no new information** — paired Δ median ρ +0.083 [+0.029, +0.124]
+(`stage2_baselines.md`). The +0.090 sometimes quoted is the ensemble minus the
+mean of its own 30 members, which is a different reference; **neither figure
+should be quoted without saying which**, and +0.074 is the one this parity rule
+needs. An ensembled ESM-2 arm compared against a single-network sequence arm
+would produce a result out of thin air. The rule is
 `cv_folds()` with matched member count for every arm, or none. The stage 3
 comparator is the 30-network ensemble at median per-allele ρ 0.693, not the
 single network at 0.610.
@@ -626,14 +630,19 @@ from production is a **labelled revision** of the agreed plan, not a silent drop
 
 ### 6.1 Measured, and currently unfinished
 
-The production fold **has not been launched** at the time of writing. Every
-production cost, GPU-hour and wall-clock figure in `compute_ledger.md` is a
-forecast from the pilot's measured 16.76 s steady fold and 57 s shard startup,
-and is labelled as such. Unverified: whether each workspace is actually granted
-10 concurrent A10Gs. If fewer, wall time scales linearly; cost does not move.
-`::smoke` has passed on `a-cheparukhin` (5/5 ok, 17.0 s folds, 6.08 GiB peak
-against the pilot's 16.76 s and 6.11 GiB) but **has not been run on
-`sofyaleyn`**.
+The production fold is **in flight, not finished**: at the time of writing 265
+of 282 shards have committed (136 `a-cheparukhin`, 129 `colleague`), 26,500
+pairs folded, **zero failures**. Every production cost, GPU-hour and wall-clock
+figure in `compute_ledger.md` is still a **forecast** from the pilot's measured
+16.76 s steady fold and 57 s shard startup, and is labelled as such — the
+realised spend is hole **B3** and needs post-run billing snapshots.
+
+Two consequences while it runs. **No downstream result may be computed from a
+partial cohort**: shards are ordered by allele, so a mid-run subset is
+allele-biased, and the stage 4c.5 and ProteinMPNN QC samples are both gated on a
+*complete* half for exactly that reason. And **a zero failure count at 94% is
+not a final failure rate** — the remaining shards are the ones most likely to
+contain a layout neither the pilot nor the first 26,500 folds exposed.
 
 ### 6.2 The central bulge is several Ångströms uncertain
 

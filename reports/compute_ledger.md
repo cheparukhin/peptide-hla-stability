@@ -26,15 +26,17 @@ did not record its own timing, the cell says so rather than carrying a guess.
 
 | Provider / workspace | Allocation ceiling | Spent | Evidence |
 |---|---:|---:|---|
-| Modal `a-cheparukhin` | $15 pilots + $150 production | **$4.41 metered** | `reports/ectodomain_billing_after.json` (`metered_cost`), snapshot 02:39 BST 4 Oct |
-| Modal `sofyaleyn` (`colleague`) | $150 production | **no GPU fold executed** | stage 4c: `::smoke` has not been run there; the app deploys and dry-runs only |
+| Modal `a-cheparukhin` | $15 pilots + $150 production | **$4.41 metered** pre-launch; production **in flight — 136 shards, 13,600 pairs, 0 failures** | `reports/ectodomain_billing_after.json` (`metered_cost`), snapshot 02:39 BST 4 Oct; `production_a-cheparukhin.jsonl` |
+| Modal `sofyaleyn` (`colleague`) | $150 production | **in flight — 129 shards committed, 12,900 pairs, 0 failures** | `production_colleague.jsonl`; metered spend pending (hole **B3**) |
 | Hugging Face | $60 | **pending stage 3** | HACKATHON_PLAN.md, "Budget and GPU decision rule" |
 | Laptop CPU | — | **$0** | stages 1, 2, 2b, 2c, 3c, 4b.1 and all MSA preparation |
 
-**$4.41 is the whole GPU bill for this project to date**, covering a five-GPU
-hardware benchmark, two engine pilots and a 90-fold matched model comparison.
-Production folding — the only large spend — is forecast and **has not been
-launched**.
+**$4.41 was the whole GPU bill for this project up to the production launch**,
+covering a five-GPU hardware benchmark, two engine pilots and a 90-fold matched
+model comparison. Production folding — the only large spend — is **now in
+flight**: **265 of 282 shards committed, 26,500 pairs folded, zero failures** (snapshot at the time of writing; the run is still going). Its realised cost is hole **B3** and is not yet
+known; every production figure below remains a forecast from the pilot's
+measured unit cost.
 
 Two reconciliations a reader should be able to perform:
 
@@ -440,7 +442,7 @@ number — is why every figure above carries its source.
 | **E2** | ESM-2 validation accuracy | `esm-arm` | Median per-allele ρ on validation under `cv_folds()` with matched ensemble size, and the paired CI against `preds/seq_ensemble_pep_pseudo.csv` |
 | **B1** | Stage 5 feature-extraction cost | blocked on 4c production | Modal CPU-hours with the Volume mounted, per-pair extraction time, coverage and failure counts |
 | **B2** | Boltz-2 structural validation accuracy | blocked on 4c production + stage 5 | Median per-allele ρ on validation, and the paired CI against the sequence ensemble |
-| **B3** | Actual production spend | the Modal production session | Metered `before`/`after` billing snapshots per workspace, realised GPU-hours, realised wall clock, failure count, and whether 10 concurrent A10Gs were actually granted in each workspace |
+| **B3** | Actual production spend | the Modal production session | **In flight**: 265 of 282 shards committed, 26,500 pairs, 0 failures. Still needed — metered `before`/`after` billing snapshots per workspace, realised GPU-hours, realised wall clock, final failure count, and whether each workspace was actually granted 10 concurrent A10Gs |
 | **S6** | Stage 6 scoring cost | `eval-harness` | CPU-minutes for the single test pass plus the paired cluster bootstraps |
 | **S7a** | Censored (Tobit) likelihood cost | stage 7a | CPU-minutes for 60 networks (2 arms × 30) plus the paired bootstrap; protocol is predeclared in `stage7_censored.md`, §6 is still "pending" |
 | **R1** | **Realised** spend for the two approved-but-unspent items | stage 4c.5 / stage 5 | Actual cost of the ProteinMPNN QC sample (forecast $1.04) and the 4c.5 full extraction pass (forecast $0.78), against those forecasts. Both are gated on the fold completing, and the QC sample additionally on `::smoke` in each workspace |
@@ -452,9 +454,10 @@ workspace without a verified payment method cannot declare one at all. Stage 4c
 had ruled that out for the GPU fold app but never for this one, and it would
 otherwise have surfaced at fold completion with everyone waiting.
 
-`reports/ectodomain-20261004/production_<profile>.jsonl` now exist for both
-profiles and are **empty** — the runner has been wired up but no shard has
-committed a record yet. That is the first place B3 will appear.
+`reports/ectodomain-20261004/production_<profile>.jsonl` are where B3 will land.
+They are **no longer empty**: 136 and 129 shard records respectively, 26,500
+pairs folded, **zero failures** across both halves at the time of writing. The
+missing piece is the metered cost, which needs post-run billing snapshots.
 
 Until **B3** lands, every production figure in this file is a forecast from the
 pilot's measured unit cost and is labelled as such. The forecast's own stated
