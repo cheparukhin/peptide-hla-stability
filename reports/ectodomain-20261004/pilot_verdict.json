@@ -1,0 +1,82 @@
+{
+  "models": {
+    "boltz2": {
+      "quality_pass": true,
+      "checks": {
+        "complete_45_predictions": true,
+        "all_B_backbone_and_anchors": true,
+        "sentinel_absolute": true,
+        "sentinel_improvement": true,
+        "other_complex_no_regression": true
+      },
+      "median_heavy_rmsd": {
+        "A0201_LLWNGPMAV": {
+          "B": 0.22821307712638797,
+          "A": 0.2699264186171165,
+          "B_minus_A": -0.041713341490728556
+        },
+        "A1101_KTFPPTEPK": {
+          "B": 0.6245875673595369,
+          "A": 0.9302857956167159,
+          "B_minus_A": -0.30569822825717896
+        },
+        "B0702_IPRRNVATL": {
+          "B": 0.31755230782386246,
+          "A": 2.2995412432192612,
+          "B_minus_A": -1.9819889353953988
+        },
+        "B0801_ELRRKMMYM": {
+          "B": 0.36834090524722946,
+          "A": 0.7010202158119215,
+          "B_minus_A": -0.3326793105646921
+        },
+        "B1501_ILGPPGSVY": {
+          "B": 0.42422195554621,
+          "A": 0.49567283372502385,
+          "B_minus_A": -0.07145087817881385
+        }
+      },
+      "scored": 45
+    },
+    "esmfold2": {
+      "quality_pass": false,
+      "checks": {
+        "complete_45_predictions": true,
+        "all_B_backbone_and_anchors": true,
+        "sentinel_absolute": false,
+        "sentinel_improvement": false,
+        "other_complex_no_regression": true
+      },
+      "median_heavy_rmsd": {
+        "A0201_LLWNGPMAV": {
+          "B": 0.7384446327168235,
+          "A": 0.9301049529910823,
+          "B_minus_A": -0.19166032027425883
+        },
+        "A1101_KTFPPTEPK": {
+          "B": 1.107173117162066,
+          "A": 1.0197674932355494,
+          "B_minus_A": 0.08740562392651663
+        },
+        "B0702_IPRRNVATL": {
+          "B": 2.5641040275395306,
+          "A": 2.572495877152806,
+          "B_minus_A": -0.008391849613275326
+        },
+        "B0801_ELRRKMMYM": {
+          "B": 1.0044348306352584,
+          "A": 0.6718097483295556,
+          "B_minus_A": 0.33262508230570276
+        },
+        "B1501_ILGPPGSVY": {
+          "B": 1.2351109141845535,
+          "A": 1.0508726694822728,
+          "B_minus_A": 0.18423824470228078
+        }
+      },
+      "scored": 45
+    }
+  },
+  "paired_quality_pass": false,
+  "resource_gate": "pending measured production forecast and deadline"
+}

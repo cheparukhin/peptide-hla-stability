@@ -24,6 +24,7 @@ import modal
 from esmfold_common import (
     ESM_CACHE,
     HF_REPO,
+    HF_REVISION,
     MINUTES,
     esm_weights_vol,
     probe_image,
@@ -218,6 +219,7 @@ def download_weights(allow_patterns: list[str] | None = None) -> dict:
     t0 = time.monotonic()
     path = snapshot_download(
         HF_REPO,
+    HF_REVISION,
         local_dir=str(ESM_CACHE / "ESMFold2"),
         allow_patterns=allow_patterns,
     )

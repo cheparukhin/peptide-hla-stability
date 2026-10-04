@@ -1,0 +1,81 @@
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-3f6XwOQTh6DlCp1sY4xJg2
+✓ Created objects.
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/modal_app/ectodomain_pilot.py
+├── ✓ Uploaded PythonPackage:boltz_common
+├── ✓ Uploaded PythonPackage:esmfold_common, PythonPackage:boltz_common
+├── ✓ Uploaded PythonPackage:ectodomain_common, PythonPackage:boltz_bench
+├── ✓ Uploaded PythonPackage:ectodomain_common, PythonPackage:esmfold_common, 
+│   PythonPackage:boltz_bench
+├── ✓ Created Function fold_boltz.
+└── ✓ Created Function fold_esm.
+ESMC: Transformer Engine is not installed; falling back to pure-PyTorch LayerNorm+Linear / LayerNorm+MLP. Outputs will differ numerically - measured on the unnormalized residual stream (before the final LayerNorm), ~O(10) max-diff in fp32 and ~O(100) in bf16; after the final LayerNorm these shrink to a few ULP and perplexity stays within rounding noise. Install with `pip install transformer-engine[pytorch]` to enable fused fp32-reduction LayerNorm.
+ESMC: neither xformers nor flash-attn is installed; falling back to PyTorch ``F.scaled_dot_product_attention``. The attention reduction order in bf16 differs from a fused kernel by ~1 bf16 ULP per attention block; compounded across the 80-block stack this reaches ~O(100) max-diff on the unnormalized residual stream. Install an xformers build matching your PyTorch and CUDA versions for a fused attention kernel.
+ESMC: flash-attn rotary kernel not installed; falling back to pure-PyTorch RoPE. For faster GPU inference run `pip install flash-attn`.
+/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading CCD dictionary from /esmweights/ESMFold2/ccd.pkl
+{"model": "esmfold2", "seed": 0, "complex_id": "B0702_IPRRNVATL", "arm": "B", "ok": true, "is_warmup": true, "fold_s": 44.027442407, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.35, "cgroup_peak_gb": null}
+{
+  "model": "boltz2",
+  "seed": 0,
+  "returncode": 0,
+  "container_s": 108.363916138,
+  "batch_s": 108.236043774,
+  "peak_gpu_gb": 6.11,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 6.11,
+      "host_peak_rss_gb": 9.8,
+      "cgroup_peak_gb": null,
+      "fold_s": 102.234467668,
+      "is_warmup": true,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    }
+  ],
+  "stdout_tail": "Checking input data.\nProcessing 1 inputs with 1 threads.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nRunning structure prediction for 1 input.\n\nPredicting: |          | 0/? [00:00<?, ?it/s]\nPredicting:   0%|          | 0/1 [00:00<?, ?it/s]\nPredicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:29<00:00,  0.03it/s]Number of failed examples: 0\n\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:29<00:00,  0.03it/s]\n",
+  "stderr_tail": "/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n  warnings.warn(\nSeed set to 0\n\n  0%|          | 0/1 [00:00<?, ?it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00,  1.81it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00,  1.81it/s]\nUsing bfloat16 Automatic Mixed Precision (AMP)\nGPU available: True (cuda), used: True\nTPU available: False, using: 0 TPU cores\nHPU available: False, using: 0 HPUs\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0\nYou are using a CUDA device ('NVIDIA A10G') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision\nLOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n/usr/local/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=10) is multi-threaded, use of fork() may lead to deadlocks in the child.\n  self.pid = os.fork()\n/usr/local/lib/python3.12/site-packages/cuequivariance_ops_torch/triangle_attention.py:623: UserWarning: Generic kernel expects bias to be float32 so it's going to be cast to torch.float32. Check if you can change your code for maximum performance.\n  warn_eager_only(\n"
+}
+{
+  "model": "esmfold2",
+  "seed": 0,
+  "weight_load_s": 32.163051474,
+  "container_s": 77.442486544,
+  "peak_gpu_gb": 27.35,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": true,
+      "fold_s": 44.027442407,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.35,
+      "cgroup_peak_gb": null
+    }
+  ]
+}
+✓ App completed. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-3f6XwOQTh6DlCp1sY4xJg2

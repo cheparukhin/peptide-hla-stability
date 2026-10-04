@@ -1,0 +1,276 @@
+{
+  "model": "boltz2",
+  "ok": true,
+  "cap": 1024,
+  "seconds": 11.020273807999999,
+  "cases": [
+    {
+      "id": "A1101_KTFPPTEPK_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    }
+  ],
+  "control_checks": [
+    {
+      "complex_id": "A0201_LLWNGPMAV",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "A1101_KTFPPTEPK",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0702_IPRRNVATL",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0801_ELRRKMMYM",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B1501_ILGPPGSVY",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    }
+  ],
+  "cgroup_peak_gb": null
+}

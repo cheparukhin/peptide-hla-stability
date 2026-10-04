@@ -4,6 +4,16 @@ Predicting peptide–HLA dissociation half-life.
 [HACKATHON_PLAN.md](HACKATHON_PLAN.md) has scope and stages;
 [EVALUATION.md](EVALUATION.md) has the evaluation rules.
 
+Structural work folds a **383-residue, three-chain construct**: 275-residue HLA
+ectodomain + 99-residue beta2m + 9-residue peptide. The matched 90-fold pilot
+(45 per model) is **complete**: Boltz-2 passed its gate, ESMFold2 failed on the
+sentinel complex, and production is frozen as **Boltz-2 over all 28,166 pairs,
+split across two Modal workspaces**. See
+[stage 4c of the main plan](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding),
+the [execution checklist](docs/ECTODOMAIN_FOLDING_PLAN.md), and the
+[pilot report](reports/stage4c_ectodomain_pilot.md). The production run has not
+been launched; earlier two-chain measurements remain historical evidence.
+
 ## Setup
 
 ```bash
@@ -82,7 +92,7 @@ give. Redundant signal, not absent signal. The expansion to 64,226
 leakage-filtered IEDB rows is declined on this evidence; the **ESM-2 arm is
 still open** and needs stage 3.
 
-## Stage 4b.1 output (done — arm B's MSA cache)
+## Completed stage 4b.1 output — 182-residue groove MSA cache
 
 | Artifact | Description |
 |---|---|
@@ -93,12 +103,14 @@ still open** and needs stage 3.
 | `structures/msa/<stem>.csv` | The MSAs — **gitignored**, 141.3 MB, regenerable |
 | `tests/test_msa_cache.py` | 14 guards on manifest/cache consistency |
 
-All **75** alleles cached, not just the six panel alleles: 137 s of CPU, **$0**,
-no GPU booked. Measured findings that change the plan — the parse cost at the
+All **75** 182-residue grooves cached, not just the six panel alleles: 137 s of
+CPU, **$0**, no GPU booked. Measured findings for that cache — the parse cost at the
 default `--max_msa_seqs 8192` is ~$0.25 across 2,000 complexes, so **do not trim
 for cost**; `--subsample_msa` defaults to *False* despite its help text;
 and the C67S pseudosequence collision does not reach this arm, because the full
-domains differ.
+domains differ. This cache supplies pilot arm A. Stage 4c still needs complete
+275-residue ectodomain MSAs and the verified cropped-MSA control; the groove
+cache does not clear those dependencies.
 
 ## Quick start
 

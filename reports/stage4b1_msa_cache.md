@@ -1,5 +1,11 @@
 # Stage 4b.1: the Boltz-2 MSA cache
 
+This completed cache contains **182-residue groove** alignments. It supplies
+arm A of the new [stage 4c pilot](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding);
+the [ectodomain checklist](../docs/ECTODOMAIN_FOLDING_PLAN.md) specifies the
+remaining 275-residue MSAs and cropped-MSA control. Counts and measurements
+below describe the original groove cache.
+
 **Status: done.** 75 MSAs — one per unique HLA domain sequence, the whole
 dataset, not just the panel. CPU only, no GPU booked, **$0 spent**: 137 s of
 wall clock and 141.3 MB on disk.

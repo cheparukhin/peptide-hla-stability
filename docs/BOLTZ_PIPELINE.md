@@ -1,8 +1,16 @@
-# Stage 4: Boltz-2 folding pipeline and GPU benchmark
+# Completed two-chain Boltz-2 pipeline and GPU benchmark
 
-Design and protocol for [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 4. This
-document records the decisions and the measurement protocol. **Measured numbers
-land in `reports/stage4_benchmark.md`; nothing here is a measurement.**
+Historical protocol and findings for the **182-residue groove + 9-residue
+peptide**, two-chain workload completed in stage 4b. The measured tables are in
+[reports/stage4_benchmark.md](../reports/stage4_benchmark.md).
+
+Current structural work follows
+[HACKATHON_PLAN.md, stage 4c](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
+and [ECTODOMAIN_FOLDING_PLAN.md](ECTODOMAIN_FOLDING_PLAN.md). The earlier input
+builders, mapping rules, commands, and resource measurements below describe
+the completed two-chain runs; the 383-residue construct needs its own pilot.
+The earlier single-engine recommendation below is superseded: stage 4c runs
+both Boltz-2 and ESMFold2 with the same constructs and prepared MSAs.
 
 ## MSAs: fewer than you would think, and not on the GPU
 
@@ -149,14 +157,12 @@ against freshly fetched RCSB mmCIFs):
 - 5N6B holds two copies in the asymmetric unit (A–C and D–F); the checker takes
   the first matching pair.
 
-**One caveat this exposes: every pilot crystal contains β2-microglobulin as
-chain B (99–100 residues), and our input does not.** We fold a 2-chain complex
-against a 3-chain structure. The plan defers full-length HLA with β2m
-explicitly — it "would require a new pilot and runtime benchmark" — so this is
-a known scope decision, not an oversight. It is defensible for this comparison
-because β2m sits beneath the α1/α2 platform rather than in the groove, and the
-pose check superposes on the α1/α2 domain and measures only the peptide. It
-remains a caveat on absolute RMSD, and belongs in the limitations section.
+**Historical caveat: every pilot crystal contains β2-microglobulin as chain B
+(99–100 residues), and the two-chain predictions omitted it.** Those pose
+checks fit the α1/α2 groove and measure the peptide. Stage 4c now tests the
+275-residue ectodomain + β2m + peptide construct with a new pilot and resource
+measurement; the omission and central-bulge error remain limitations of the
+earlier benchmark.
 
 ## Benchmark protocol
 
@@ -340,7 +346,7 @@ and report a median of container medians — and since within-container spread i
 negligible, it should trade folds-per-container for container count rather than
 adding folds.
 
-## ESMFold2: evaluated, rejected
+## ESMFold2: historical benchmark and superseded recommendation
 
 [ESMFold2](https://huggingface.co/biohub/ESMFold2) (Biohub, MIT) is a diffusion
 predictor on ESMC embeddings with native multi-chain input, published DockQ wins
@@ -349,7 +355,8 @@ over AlphaFold 3 on protein-protein interfaces, and a richer confidence set
 `modal_app/esmfold_*.py`; it runs in-process with the model resident, so it was
 never affected by the harness bug above.
 
-Rejected on three measurements, not on principle:
+The original recommendation favored Boltz-2 based on three measurements.
+It is superseded by the agreed matched experiment with both models:
 
 - **26.0 GB peak** vs Boltz-2's 8.4 GB. A 7B ESMC backbone plus diffusion trunk
   does not fit a 24 GB card even with bf16 weights, which removes A10 and L4 —
@@ -361,10 +368,10 @@ Rejected on three measurements, not on principle:
 
 Two results worth retaining:
 
-- **MSAs do not help ESMFold2 on pMHC.** Given the same alignments Boltz-2 uses,
+- **The small two-chain MSA test did not improve ESMFold2 poses.** Given the same alignments Boltz-2 used,
   B1501 degraded 1.35 -> 1.72 A while fold time rose 32%. Single-sequence is
-  strictly better here, which contradicts Biohub's general-case guidance and is
-  therefore a pMHC-specific finding.
+  better in these tested cases; this is not evidence to omit MSAs from the
+  agreed full-construct comparison.
 - **`pair_chains_iptm` is the peptide-HLA interface ipTM** that stage 5 wants as
   a confidence feature; Boltz-2 exposes only a global ipTM. If that feature
   earns its place, ESMFold2 is the cheaper way to get it.
@@ -389,12 +396,12 @@ cost figure — concurrency buys wall-clock, not dollars.
 | Harness bug found and fixed (one process per batch) | **done**, invalidated the first sweep |
 | Pilot: 5 complexes on L40S | **done**, 5/5 in groove, median 0.29 Å |
 | Hardware sweep: 8 complexes x 5 GPUs | **done** (re-run after the fix) |
-| ESMFold2 evaluated as an alternative engine | **done**, rejected on VRAM + pose quality |
-| **Engine + GPU chosen: Boltz-2 on A10** | $0.004/complex, $8.00 per 2,000, 0.56 h at 10 workers |
+| ESMFold2 evaluated as an alternative engine | **done**; original rejection recommendation superseded by stage 4c |
+| **Historical two-chain choice: Boltz-2 on A10** | $0.004/complex, $8.00 per 2,000, 0.56 h at 10 workers |
 | Multi-container re-run (~3 per GPU) | **open** — n=1 cannot rank the middle cards |
 
 The `CLAUDE.md` gate — "no batch GPU job without a passing end-to-end pilot on
-3–5 examples" — **is cleared**: 5 complexes folded end to end, all five in the
+3–5 examples" — **was cleared for the historical two-chain run only**: 5 complexes folded end to end, all five in the
 groove, PAE written, chain and residue mapping verified.
 
 Results in [reports/stage4_benchmark.md](../reports/stage4_benchmark.md).

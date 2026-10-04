@@ -28,6 +28,7 @@ import modal
 # Set from the probe's reported version. A floating version would make the
 # benchmark unreproducible, the same reason boltz is pinned to 2.1.1.
 ESM_PACKAGE = "esm==3.4.1.post1"  # version the probe reported; pinned for reproducibility
+HF_REVISION = "69869f737beffec5294845ede23db5fc0b4f509e"
 HF_REPO = "biohub/ESMFold2"  # == esm.models.esmfold2.ESMFOLD2_HF_REPO
 
 # --- worker shape ---------------------------------------------------------

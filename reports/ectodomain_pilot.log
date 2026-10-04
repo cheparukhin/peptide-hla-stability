@@ -1,0 +1,1774 @@
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-Ab76a4rmvSmr0Xuse5BLhI
+✓ Created objects.
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/modal_app/ectodomain_pilot.py
+├── ✓ Uploaded PythonPackage:boltz_common
+├── ✓ Uploaded PythonPackage:esmfold_common, PythonPackage:boltz_common
+├── ✓ Uploaded PythonPackage:ectodomain_common, PythonPackage:boltz_bench
+├── ✓ Uploaded PythonPackage:ectodomain_common, PythonPackage:esmfold_common, 
+│   PythonPackage:boltz_bench
+├── ✓ Created Function fold_esm.
+└── ✓ Created Function fold_boltz.
+ESMC: Transformer Engine is not installed; falling back to pure-PyTorch LayerNorm+Linear / LayerNorm+MLP. Outputs will differ numerically - measured on the unnormalized residual stream (before the final LayerNorm), ~O(10) max-diff in fp32 and ~O(100) in bf16; after the final LayerNorm these shrink to a few ULP and perplexity stays within rounding noise. Install with `pip install transformer-engine[pytorch]` to enable fused fp32-reduction LayerNorm.
+ESMC: neither xformers nor flash-attn is installed; falling back to PyTorch ``F.scaled_dot_product_attention``. The attention reduction order in bf16 differs from a fused kernel by ~1 bf16 ULP per attention block; compounded across the 80-block stack this reaches ~O(100) max-diff on the unnormalized residual stream. Install an xformers build matching your PyTorch and CUDA versions for a fused attention kernel.
+ESMC: flash-attn rotary kernel not installed; falling back to pure-PyTorch RoPE. For faster GPU inference run `pip install flash-attn`.
+/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading CCD dictionary from /esmweights/ESMFold2/ccd.pkl
+{"model": "esmfold2", "seed": 0, "complex_id": "A0201_LLWNGPMAV", "arm": "A", "ok": true, "is_warmup": true, "fold_s": 10.413385878999996, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 25.99, "cgroup_peak_gb": null}
+ESMC: Transformer Engine is not installed; falling back to pure-PyTorch LayerNorm+Linear / LayerNorm+MLP. Outputs will differ numerically - measured on the unnormalized residual stream (before the final LayerNorm), ~O(10) max-diff in fp32 and ~O(100) in bf16; after the final LayerNorm these shrink to a few ULP and perplexity stays within rounding noise. Install with `pip install transformer-engine[pytorch]` to enable fused fp32-reduction LayerNorm.
+ESMC: neither xformers nor flash-attn is installed; falling back to PyTorch ``F.scaled_dot_product_attention``. The attention reduction order in bf16 differs from a fused kernel by ~1 bf16 ULP per attention block; compounded across the 80-block stack this reaches ~O(100) max-diff on the unnormalized residual stream. Install an xformers build matching your PyTorch and CUDA versions for a fused attention kernel.
+ESMC: flash-attn rotary kernel not installed; falling back to pure-PyTorch RoPE. For faster GPU inference run `pip install flash-attn`.
+{"model": "esmfold2", "seed": 0, "complex_id": "A0201_LLWNGPMAV", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.59179092299999, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+ESMC: Transformer Engine is not installed; falling back to pure-PyTorch LayerNorm+Linear / LayerNorm+MLP. Outputs will differ numerically - measured on the unnormalized residual stream (before the final LayerNorm), ~O(10) max-diff in fp32 and ~O(100) in bf16; after the final LayerNorm these shrink to a few ULP and perplexity stays within rounding noise. Install with `pip install transformer-engine[pytorch]` to enable fused fp32-reduction LayerNorm.
+ESMC: neither xformers nor flash-attn is installed; falling back to PyTorch ``F.scaled_dot_product_attention``. The attention reduction order in bf16 differs from a fused kernel by ~1 bf16 ULP per attention block; compounded across the 80-block stack this reaches ~O(100) max-diff on the unnormalized residual stream. Install an xformers build matching your PyTorch and CUDA versions for a fused attention kernel.
+ESMC: flash-attn rotary kernel not installed; falling back to pure-PyTorch RoPE. For faster GPU inference run `pip install flash-attn`.
+/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+{"model": "esmfold2", "seed": 0, "complex_id": "A0201_LLWNGPMAV", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.049286683999995, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "A1101_KTFPPTEPK", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.770174683999997, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+Loading CCD dictionary from /esmweights/ESMFold2/ccd.pkl
+Loading CCD dictionary from /esmweights/ESMFold2/ccd.pkl
+{"model": "esmfold2", "seed": 1, "complex_id": "A0201_LLWNGPMAV", "arm": "A", "ok": true, "is_warmup": true, "fold_s": 10.491650955000004, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 25.99, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A0201_LLWNGPMAV", "arm": "A", "ok": true, "is_warmup": true, "fold_s": 10.695488557000004, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 25.99, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "A1101_KTFPPTEPK", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.52288521400001, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "A1101_KTFPPTEPK", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.012282161999991, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "A0201_LLWNGPMAV", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.550457919, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.17, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B0702_IPRRNVATL", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.012645832999993, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A0201_LLWNGPMAV", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.659735973, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "A0201_LLWNGPMAV", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.00071813400001, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B0702_IPRRNVATL", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.003506942000001, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A0201_LLWNGPMAV", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.107609777999997, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "A1101_KTFPPTEPK", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 8.940885703999996, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B0801_ELRRKMMYM", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 8.989970742999986, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A1101_KTFPPTEPK", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.154722351000004, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{
+  "model": "boltz2",
+  "seed": 0,
+  "returncode": 0,
+  "container_s": 241.38653190699998,
+  "batch_s": 235.99566552800002,
+  "peak_gpu_gb": 5.94,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.87457658599999,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 17.240275647999994,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.877086785000003,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 74.443747024,
+      "is_warmup": true,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.744989527,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.880896002000014,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.140838602000002,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.876540231000007,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.865415116999998,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.750534076999998,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.89355494999998,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.874421467999994,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.750614302000002,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.886235090000014,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    }
+  ],
+  "stdout_tail": "Checking input data.\nProcessing 14 inputs with 14 threads.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nRunning structure prediction for 14 inputs.\n\nPredicting: |          | 0/? [00:00<?, ?it/s]\nPredicting:   0%|          | 0/14 [00:00<?, ?it/s]\nPredicting DataLoader 0:   0%|          | 0/14 [00:00<?, ?it/s]\nPredicting DataLoader 0:   7%|\u258b         | 1/14 [00:18<04:06,  0.05it/s]\nPredicting DataLoader 0:  14%|\u2588\u258d        | 2/14 [00:28<02:53,  0.07it/s]\nPredicting DataLoader 0:  21%|\u2588\u2588\u258f       | 3/14 [00:38<02:22,  0.08it/s]\nPredicting DataLoader 0:  29%|\u2588\u2588\u258a       | 4/14 [00:48<02:01,  0.08it/s]\nPredicting DataLoader 0:  36%|\u2588\u2588\u2588\u258c      | 5/14 [00:58<01:45,  0.09it/s]\nPredicting DataLoader 0:  43%|\u2588\u2588\u2588\u2588\u258e     | 6/14 [01:08<01:31,  0.09it/s]\nPredicting DataLoader 0:  50%|\u2588\u2588\u2588\u2588\u2588     | 7/14 [01:18<01:18,  0.09it/s]\nPredicting DataLoader 0:  57%|\u2588\u2588\u2588\u2588\u2588\u258b    | 8/14 [01:28<01:06,  0.09it/s]\nPredicting DataLoader 0:  64%|\u2588\u2588\u2588\u2588\u2588\u2588\u258d   | 9/14 [01:38<00:54,  0.09it/s]\nPredicting DataLoader 0:  71%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258f  | 10/14 [01:48<00:43,  0.09it/s]\nPredicting DataLoader 0:  79%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258a  | 11/14 [02:05<00:34,  0.09it/s]\nPredicting DataLoader 0:  86%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c | 12/14 [02:22<00:23,  0.08it/s]\nPredicting DataLoader 0:  93%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e| 13/14 [02:39<00:12,  0.08it/s]\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 14/14 [02:55<00:00,  0.08it/s]Number of failed examples: 0\n\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 14/14 [02:55<00:00,  0.08it/s]\n",
+  "stderr_tail": "/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n  warnings.warn(\nSeed set to 0\n/usr/local/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=10) is multi-threaded, use of fork() may lead to deadlocks in the child.\n  self.pid = os.fork()\n\n  0%|          | 0/14 [00:00<?, ?it/s]\n  7%|\u258b         | 1/14 [00:01<00:16,  1.25s/it]\n 14%|\u2588\u258d        | 2/14 [00:01<00:06,  1.74it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 14/14 [00:01<00:00, 10.22it/s]\nUsing bfloat16 Automatic Mixed Precision (AMP)\nGPU available: True (cuda), used: True\nTPU available: False, using: 0 TPU cores\nHPU available: False, using: 0 HPUs\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0\nYou are using a CUDA device ('NVIDIA A10G') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision\nLOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n/usr/local/lib/python3.12/site-packages/cuequivariance_ops_torch/triangle_attention.py:623: UserWarning: Generic kernel expects bias to be float32 so it's going to be cast to torch.float32. Check if you can change your code for maximum performance.\n  warn_eager_only(\n"
+}
+{"model": "esmfold2", "seed": 0, "complex_id": "B0801_ELRRKMMYM", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.65093295499997, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "A1101_KTFPPTEPK", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.82442505399999, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A1101_KTFPPTEPK", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.825579895999994, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B0801_ELRRKMMYM", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.227778779000005, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "A1101_KTFPPTEPK", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 8.993836660999989, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "A1101_KTFPPTEPK", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.210865963000003, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0702_IPRRNVATL", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 8.996377139999993, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B1501_ILGPPGSVY", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.593321491999973, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0702_IPRRNVATL", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.236608622999995, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B1501_ILGPPGSVY", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.63137401, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0702_IPRRNVATL", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.59527668000001, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0702_IPRRNVATL", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.54002623599999, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 0, "complex_id": "B1501_ILGPPGSVY", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.139376819000006, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0702_IPRRNVATL", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.230216374000008, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{
+  "model": "esmfold2",
+  "seed": 0,
+  "weight_load_s": 27.43426405,
+  "container_s": 308.70942573400004,
+  "peak_gpu_gb": 27.46,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": true,
+      "fold_s": 10.413385878999996,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 25.99,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.59179092299999,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.049286683999995,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.770174683999997,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.52288521400001,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.012282161999991,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.012645832999993,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.003506942000001,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.989970742999986,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.65093295499997,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.227778779000005,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.593321491999973,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.63137401,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 0,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.139376819000006,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    }
+  ]
+}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0702_IPRRNVATL", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 8.968306976000008, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0801_ELRRKMMYM", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.265894559000003, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0801_ELRRKMMYM", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.007843971, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{
+  "model": "boltz2",
+  "seed": 1,
+  "returncode": 0,
+  "container_s": 268.544339251,
+  "batch_s": 258.065391583,
+  "peak_gpu_gb": 5.94,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.144230295,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 17.257340219000014,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 76.74082308599999,
+      "is_warmup": true,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.120882625000007,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 17.02945314499999,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.123005597000002,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.124363447999997,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.760775076000016,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.132976152999987,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.152331895000003,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 17.08032251199998,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.134182318,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.153607676999997,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.807382824,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 10.397634979000003,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    }
+  ],
+  "stdout_tail": "Checking input data.\nProcessing 15 inputs with 15 threads.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nRunning structure prediction for 15 inputs.\n\nPredicting: |          | 0/? [00:00<?, ?it/s]\nPredicting:   0%|          | 0/15 [00:00<?, ?it/s]\nPredicting DataLoader 0:   0%|          | 0/15 [00:00<?, ?it/s]\nPredicting DataLoader 0:   7%|\u258b         | 1/15 [00:19<04:29,  0.05it/s]\nPredicting DataLoader 0:  13%|\u2588\u258e        | 2/15 [00:29<03:11,  0.07it/s]\nPredicting DataLoader 0:  20%|\u2588\u2588        | 3/15 [00:39<02:38,  0.08it/s]\nPredicting DataLoader 0:  27%|\u2588\u2588\u258b       | 4/15 [00:49<02:16,  0.08it/s]\nPredicting DataLoader 0:  33%|\u2588\u2588\u2588\u258e      | 5/15 [00:59<01:59,  0.08it/s]\nPredicting DataLoader 0:  40%|\u2588\u2588\u2588\u2588      | 6/15 [01:10<01:45,  0.09it/s]\nPredicting DataLoader 0:  47%|\u2588\u2588\u2588\u2588\u258b     | 7/15 [01:20<01:31,  0.09it/s]\nPredicting DataLoader 0:  53%|\u2588\u2588\u2588\u2588\u2588\u258e    | 8/15 [01:30<01:19,  0.09it/s]\nPredicting DataLoader 0:  60%|\u2588\u2588\u2588\u2588\u2588\u2588    | 9/15 [01:40<01:07,  0.09it/s]\nPredicting DataLoader 0:  67%|\u2588\u2588\u2588\u2588\u2588\u2588\u258b   | 10/15 [01:50<00:55,  0.09it/s]\nPredicting DataLoader 0:  73%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e  | 11/15 [02:08<00:46,  0.09it/s]\nPredicting DataLoader 0:  80%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 12/15 [02:25<00:36,  0.08it/s]\nPredicting DataLoader 0:  87%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258b | 13/15 [02:42<00:24,  0.08it/s]\nPredicting DataLoader 0:  93%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e| 14/15 [02:58<00:12,  0.08it/s]\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [03:15<00:00,  0.08it/s]Number of failed examples: 0\n\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [03:15<00:00,  0.08it/s]\n",
+  "stderr_tail": "/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n  warnings.warn(\nSeed set to 1\n/usr/local/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=10) is multi-threaded, use of fork() may lead to deadlocks in the child.\n  self.pid = os.fork()\n\n  0%|          | 0/15 [00:00<?, ?it/s]\n  7%|\u258b         | 1/15 [00:01<00:19,  1.38s/it]\n 33%|\u2588\u2588\u2588\u258e      | 5/15 [00:01<00:02,  4.20it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [00:01<00:00,  9.77it/s]\nUsing bfloat16 Automatic Mixed Precision (AMP)\nGPU available: True (cuda), used: True\nTPU available: False, using: 0 TPU cores\nHPU available: False, using: 0 HPUs\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0\nYou are using a CUDA device ('NVIDIA A10G') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision\nLOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n/usr/local/lib/python3.12/site-packages/cuequivariance_ops_torch/triangle_attention.py:623: UserWarning: Generic kernel expects bias to be float32 so it's going to be cast to torch.float32. Check if you can change your code for maximum performance.\n  warn_eager_only(\n"
+}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0801_ELRRKMMYM", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.536332939999966, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0801_ELRRKMMYM", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.50486868200002, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B0801_ELRRKMMYM", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.371158988000047, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B0801_ELRRKMMYM", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 8.994390010000018, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B1501_ILGPPGSVY", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.24244610300002, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B1501_ILGPPGSVY", "arm": "A", "ok": true, "is_warmup": false, "fold_s": 9.043332097000018, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B1501_ILGPPGSVY", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.737896261, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B1501_ILGPPGSVY", "arm": "B", "ok": true, "is_warmup": false, "fold_s": 42.771420999999975, "pae_shape": [383, 383], "plddt_shape": [383], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 2, "complex_id": "B1501_ILGPPGSVY", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.401042780000012, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.45, "cgroup_peak_gb": null}
+{"model": "esmfold2", "seed": 1, "complex_id": "B1501_ILGPPGSVY", "arm": "C", "ok": true, "is_warmup": false, "fold_s": 9.014184444999955, "pae_shape": [191, 191], "plddt_shape": [191], "peak_gpu_gb": 27.46, "cgroup_peak_gb": null}
+{
+  "model": "esmfold2",
+  "seed": 1,
+  "weight_load_s": 20.550498214,
+  "container_s": 352.866786485,
+  "peak_gpu_gb": 27.46,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": true,
+      "fold_s": 10.491650955000004,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 25.99,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.550457919,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.17,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.00071813400001,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.940885703999996,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.82442505399999,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.993836660999989,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.996377139999993,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.54002623599999,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.968306976000008,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.007843971,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.50486868200002,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 8.994390010000018,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.043332097000018,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.771420999999975,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 1,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.014184444999955,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.46,
+      "cgroup_peak_gb": null
+    }
+  ]
+}
+{
+  "model": "boltz2",
+  "seed": 2,
+  "returncode": 0,
+  "container_s": 251.162238995,
+  "batch_s": 250.159179925,
+  "peak_gpu_gb": 5.94,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.60976453500001,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 17.238483863,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 73.674048214,
+      "is_warmup": true,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.864374701999992,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.72738915299999,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.872303224999996,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.878478785000013,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.752232471000013,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.617174276,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.610901928000004,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.501373975999996,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.631372569999996,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.630206173999994,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 16.748204455000007,
+      "is_warmup": false,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ]
+    },
+    {
+      "model": "boltz2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "peak_gpu_gb": 5.94,
+      "host_peak_rss_gb": 10.38,
+      "cgroup_peak_gb": null,
+      "fold_s": 9.893171865,
+      "is_warmup": false,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ]
+    }
+  ],
+  "stdout_tail": "Checking input data.\nProcessing 15 inputs with 14 threads.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nFound explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.\nRunning structure prediction for 15 inputs.\n\nPredicting: |          | 0/? [00:00<?, ?it/s]\nPredicting:   0%|          | 0/15 [00:00<?, ?it/s]\nPredicting DataLoader 0:   0%|          | 0/15 [00:00<?, ?it/s]\nPredicting DataLoader 0:   7%|\u258b         | 1/15 [00:18<04:21,  0.05it/s]\nPredicting DataLoader 0:  13%|\u2588\u258e        | 2/15 [00:28<03:04,  0.07it/s]\nPredicting DataLoader 0:  20%|\u2588\u2588        | 3/15 [00:38<02:32,  0.08it/s]\nPredicting DataLoader 0:  27%|\u2588\u2588\u258b       | 4/15 [00:47<02:11,  0.08it/s]\nPredicting DataLoader 0:  33%|\u2588\u2588\u2588\u258e      | 5/15 [00:57<01:55,  0.09it/s]\nPredicting DataLoader 0:  40%|\u2588\u2588\u2588\u2588      | 6/15 [01:07<01:41,  0.09it/s]\nPredicting DataLoader 0:  47%|\u2588\u2588\u2588\u2588\u258b     | 7/15 [01:17<01:28,  0.09it/s]\nPredicting DataLoader 0:  53%|\u2588\u2588\u2588\u2588\u2588\u258e    | 8/15 [01:26<01:16,  0.09it/s]\nPredicting DataLoader 0:  60%|\u2588\u2588\u2588\u2588\u2588\u2588    | 9/15 [01:36<01:04,  0.09it/s]\nPredicting DataLoader 0:  67%|\u2588\u2588\u2588\u2588\u2588\u2588\u258b   | 10/15 [01:46<00:53,  0.09it/s]\nPredicting DataLoader 0:  73%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e  | 11/15 [02:03<00:45,  0.09it/s]\nPredicting DataLoader 0:  80%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 12/15 [02:20<00:35,  0.09it/s]\nPredicting DataLoader 0:  87%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258b | 13/15 [02:37<00:24,  0.08it/s]\nPredicting DataLoader 0:  93%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e| 14/15 [02:53<00:12,  0.08it/s]\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [03:10<00:00,  0.08it/s]Number of failed examples: 0\n\nPredicting DataLoader 0: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [03:10<00:00,  0.08it/s]\n",
+  "stderr_tail": "/usr/local/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n  warnings.warn(\nSeed set to 2\n/usr/local/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=10) is multi-threaded, use of fork() may lead to deadlocks in the child.\n  self.pid = os.fork()\n\n  0%|          | 0/15 [00:00<?, ?it/s]\n  7%|\u258b         | 1/15 [00:01<00:17,  1.27s/it]\n 13%|\u2588\u258e        | 2/15 [00:01<00:07,  1.68it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 15/15 [00:01<00:00, 10.48it/s]\nUsing bfloat16 Automatic Mixed Precision (AMP)\nGPU available: True (cuda), used: True\nTPU available: False, using: 0 TPU cores\nHPU available: False, using: 0 HPUs\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0\nYou are using a CUDA device ('NVIDIA A10G') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision\nLOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]\n/usr/local/lib/python3.12/site-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.\n/usr/local/lib/python3.12/site-packages/cuequivariance_ops_torch/triangle_attention.py:623: UserWarning: Generic kernel expects bias to be float32 so it's going to be cast to torch.float32. Check if you can change your code for maximum performance.\n  warn_eager_only(\n"
+}
+{
+  "model": "esmfold2",
+  "seed": 2,
+  "weight_load_s": 21.317613665000003,
+  "container_s": 345.047553096,
+  "peak_gpu_gb": 27.45,
+  "cgroup_peak_gb": null,
+  "results": [
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": true,
+      "fold_s": 10.695488557000004,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 25.99,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.659735973,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A0201_LLWNGPMAV",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.107609777999997,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.154722351000004,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.825579895999994,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "A1101_KTFPPTEPK",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.210865963000003,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.236608622999995,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.59527668000001,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0702_IPRRNVATL",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.230216374000008,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.265894559000003,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.536332939999966,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B0801_ELRRKMMYM",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.371158988000047,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "A",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.24244610300002,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "B",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 42.737896261,
+      "pae_shape": [
+        383,
+        383
+      ],
+      "plddt_shape": [
+        383
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    },
+    {
+      "model": "esmfold2",
+      "seed": 2,
+      "complex_id": "B1501_ILGPPGSVY",
+      "arm": "C",
+      "ok": true,
+      "is_warmup": false,
+      "fold_s": 9.401042780000012,
+      "pae_shape": [
+        191,
+        191
+      ],
+      "plddt_shape": [
+        191
+      ],
+      "peak_gpu_gb": 27.45,
+      "cgroup_peak_gb": null
+    }
+  ]
+}
+Runner terminated.
+✓ App completed. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-Ab76a4rmvSmr0Xuse5BLhI

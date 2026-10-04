@@ -10,7 +10,7 @@ Our main claim is about **unseen peptides on HLA alleles we trained on**. Whethe
 
 Commit to comparing a supervised sequence baseline against frozen ESM-2 features across the full dataset. Only add a structural experiment (predicted 3D shapes, confidence scores) if a small end-to-end pilot works first.
 
-Do not commit to folding the whole dataset. A clear negative result ("pretrained features didn't help") is a successful submission. Structural work must not block the core comparison.
+The structural path folds a **275-residue HLA ectodomain + 99-residue beta2m + 9-residue peptide** three-chain construct. The matched 90-fold pilot ran **both Boltz-2 and ESMFold2** on the same sequences, prepared MSAs, pilot arms, seeds, and evaluation; it is complete. **Boltz-2 passed its gate and ESMFold2 failed it**, so production is Boltz-2 only, over all 28,166 pairs, split across two Modal workspaces — a labelled revision of the agreed model comparison, with the cross-model result delivered by the pilot rather than by production. A clear negative result ("pretrained features didn't help") remains a successful submission, and structural work must not block the core comparison.
 
 ## Scientific rationale
 
@@ -28,9 +28,9 @@ The baseline, ESM extraction, and folding pilot can run in parallel. The orderin
 | Weak-binder augmentation | Optional, after stage 2 | Does broader negative coverage improve stability prediction, and does the source of negatives matter? | Measured weak-affinity pairs or random natural peptides with predicted weak affinity, assigned assumed zero-hour stability labels. | Gain over the measured-only baseline on unchanged validation examples; label-source effects, allele coverage, and cost. |
 | Auxiliary affinity | Optional, after stage 2 | Does training on binding-affinity labels alongside stability labels improve the sequence baseline? The initial probe needs no ESM features. | A shared encoder with a second head predicting affinity (how strongly a peptide binds, not how long it stays). Tested first on dual-labelled pairs, then optionally on broader IEDB data and the ESM arm. | Gain over single-task training; whether the benefit differs between the sequence and ESM arms. |
 | Frozen ESM-2 | Core | Does a pretrained protein language model add useful signal? Testable across the full dataset, no structures needed. | Learned vector representations of each peptide position and HLA sequence (from ESM-2), used alone and combined with raw sequence features. | Improvement over the sequence baseline; embedding extraction cost; sensitivity to which internal layer and model size we use. |
-| ESMFold2 geometry + confidence | Pilot-gated, no MSA | Does a cheap single-sequence co-folded structure explain stability? Runs first because it needs no MSA. | Contacts and burial per peptide position; per-position pLDDT; the peptide-HLA PAE block; peptide-HLA ipTM. | Added accuracy over the sequence and ESM-2 arms; cost per structure; failure rate; whether the peptide is even placed in the groove. |
-| Boltz-2 geometry | Pilot-gated, MSA panel | Does the predicted physical fit in the HLA groove explain stability? Small panel, because folding is expensive. | Contacts and burial (how deeply each peptide position sits in the groove); hydrogen bonds at the peptide ends; clashes at anchor pockets (positions where the peptide is pinned down). | Added accuracy on matched examples; whether the predicted poses look physically reasonable; cost and failure rate. |
-| Boltz-2 confidence | Same structures | Does the model's own uncertainty carry signal? Tested separately from geometry, reusing the same predicted structures. | Per-position pLDDT plus its peptide mean and minimum (pLDDT = per-residue confidence in the local structure around that residue); peptide-HLA PAE (predicted alignment error — how sure the model is about the relative placement of the two chains); pairwise ipTM (interface predicted TM-score — overall interface quality). | Gain from confidence alone and beyond geometry. |
+| ESMFold2 geometry + confidence | Stage 4c pilot; same production cohort as Boltz-2 | Does changing the folding model change predictive value at fixed inputs? | Same full construct, prepared MSAs, shared geometry/confidence definitions; verified pair-specific ipTM is a separate feature. | Matched-row gain, pose quality, resource cost, and failure rate. |
+| Boltz-2 geometry | Stage 4c pilot; full dataset preferred if feasible | Do full-construct structural features add predictive value? | Three-chain ectodomain + beta2m + peptide predictions; comparable groove contacts and burial per peptide position. | Added accuracy on matched rows, peptide pose quality, measured cost, runtime, and failure rate. |
+| Boltz-2 confidence | Same full-construct structures | Does model confidence carry signal? | Peptide pLDDT; peptide/groove PAE in both directions; global ipTM labeled as global. Pair-specific scores require verified availability and chain mapping. | Gain from confidence alone and beyond geometry; global three-chain confidence is not peptide-interface confidence. |
 | ProteinMPNN | Out of scope this round | Is the peptide sequence "compatible" with the predicted backbone shape? Uses another pretrained model, no refolding needed. | Peptide-only overall likelihood and per-position scores from ProteinMPNN (an inverse-folding model that asks: given this 3D backbone, how probable is this amino acid sequence?), with HLA held fixed. | Not run this round — see the out-of-scope register. It needs the structures first, so it is the last thing to add, not a core arm. |
 
 Each experiment must earn its place by improving prediction on the same held-out examples, with uncertainty and compute cost reported alongside accuracy. A useful negative result tells us which approach didn't help under these conditions — it doesn't rule out every use of that model family.
@@ -45,7 +45,10 @@ Each experiment must earn its place by improving prediction on the same held-out
 | Unique peptides | 5,633 |
 | Unique HLA domain sequences | 75 |
 | Peptide length | 9 residues |
-| Supplied HLA domain length | 182 residues |
+| HLA domain length in the raw dataset | 182 residues |
+| HLA ectodomain length for structural production | 275 residues |
+| Mature beta2m length for structural production | 99 residues |
+| Full structural complex length | 383 residues across three chains |
 | HLA contact pseudosequence length | 34 residues |
 | Duplicate peptide-allele pairs | 0 |
 | Zero-hour labels | 5,679 (20.2%) |
@@ -53,7 +56,7 @@ Each experiment must earn its place by improving prediction on the same held-out
 | Peptides with any neighbour within 3 substitutions | 871 (15.5%) |
 | Largest single-linkage cluster at Hamming ≤ 3 | 22 peptides (157 pairs, 0.56%) |
 
-Inputs are `peptide`, `hla_seq`, and `hla_pseudoseq`; the target `thalf_hours` is dissociation half-life.
+Inputs are `peptide`, `hla_seq`, and `hla_pseudoseq`; the target `thalf_hours` is dissociation half-life. Sequence and ESM-2 comparisons continue to use the original dataset inputs. Structural production joins the supplied ectodomain table on the exact allele identifier; it preserves the 182-residue groove prefix and all C67S constructs. Input provenance and MSA preparation are in stage 4c.
 
 The 34-position contact pseudosequence identifies which HLA positions are likely to touch the peptide, but gives no 3D geometry for any specific peptide-HLA pair. Individual experimental replicates aren't included, so we can't estimate a noise ceiling from the data alone. The released NetMHCstabpan model was trained on this same dataset, so it's not a fair held-out comparison.
 
@@ -306,196 +309,284 @@ Six counterexamples have measured half-life <0.5 h, three at exactly zero. `FPEH
 
 **Why:** a single scoring pass with no retraining demonstrates transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation.
 
-### 4a. Structure arm A — ESMFold2
+### 4a. Completed two-chain ESMFold2 pilot and benchmark
 
-**The model is ESMFold2 (`biohub/ESMFold2`), not ESMFold v1.** Name the checkpoint explicitly everywhere; the two differ on exactly the properties that matter here.
+**Status: historical diagnostic complete; matched three-chain production planned in 4c.** ESMFold2
+(`biohub/ESMFold2`) was tested on the same two-chain groove/peptide workload as
+Boltz-2. Its measured peak GPU memory was 26.0 GB, its speed overlapped
+Boltz-2's between-container variation, and median peptide CA RMSD on five
+complexes was 0.68 A versus Boltz-2's 0.29 A.
 
-| | ESMFold v1 (`facebook/esmfold_v1`) | **ESMFold2 (`biohub/ESMFold2`)** |
+The measured results and limitations remain in
+[reports/stage4_benchmark.md](reports/stage4_benchmark.md), with the original
+implementation in `modal_app/esmfold_*.py`. The earlier recommendation to
+reject ESMFold2 is superseded: both models will run the same experiment under
+stage 4c. The measurements remain useful for hardware planning; they do not
+validate the new three-chain construct or justify changing one model's inputs.
+
+### 4b. Completed two-chain Boltz-2 pilot and benchmark
+
+**Status: groove MSA cache, pose pilot, and hardware benchmark complete.**
+These outputs describe **182-residue HLA groove + 9-residue peptide**, two
+chains and 191 residues; an ectodomain production batch has not run.
+
+| Completed artifact | What it establishes |
+|---|---|
+| [reports/stage4b1_msa_cache.md](reports/stage4b1_msa_cache.md), `reports/msa_manifest.csv` | 75 groove MSAs cached in 137 s on CPU at $0; depths 9,505-10,454. They supply pilot arm A, not the 275-residue HLA input. |
+| [reports/stage4_benchmark.md](reports/stage4_benchmark.md), `reports/gpu_decision.csv` | Two-chain A10 measurement: $0.004/complex, projected $8 for 2,000 pairs or about $113 for 28,166. The two-chain panel projection was 0.56 h at ten workers. |
+| `reports/boltz_pose_check.csv`, `reports/boltz_pilot.csv` | Five training-split peptides were in the groove; median CA RMSD 0.29 A. B*07:02/IPRRNVATL had 1.296 A CA RMSD and up to 3.329 A deviation at P6 despite correctly placed anchors. |
+| `modal_app/boltz_*.py`, `scripts/boltz_pose_check.py`, [docs/BOLTZ_PIPELINE.md](docs/BOLTZ_PIPELINE.md) | Historical two-chain harness, pose scorer, and measurement protocol to adapt for stage 4c. |
+
+The benchmark recorded 68 Boltz folds with no failures and approximately $2.64
+spend. It established three implementation lessons that carry forward:
+
+- Keep weights resident across a batch. Reloading per complex initially
+  overstated cost by about 4.6x.
+- Measure separate allocations: L40S container timings ranged from 6.3 to
+  10.9 s, while variation within a container was small.
+- Verify peptide geometry directly. High confidence did not flag the central
+  bulge error, so the earlier coarse groove-placement gate is insufficient for
+  accepting the new construct.
+
+The old cost, memory, 191 x 191 PAE boundaries, engine arm names, and automatic
+restart assumptions are historical. They do not establish stage 4c feasibility
+or replace its output-completeness and pose checks.
+
+### 4c. Ectodomain + beta-2-microglobulin folding
+
+**Current execution plan, 4 October 2026. Status: shared MSAs, CPU preflight,
+and the matched 90-fold GPU pilot are complete. Boltz-2 passed its gate;
+ESMFold2 failed on both sentinel criteria. Production scope is frozen as
+Boltz-2 / arm B / all 28,166 pairs across two workspaces, and has not been
+launched.** Results and the full verdict are in
+[`reports/stage4c_ectodomain_pilot.md`](reports/stage4c_ectodomain_pilot.md).
+This section governs structural scope, pilot gates, and rollout;
+the [ectodomain execution checklist](docs/ECTODOMAIN_FOLDING_PLAN.md) contains
+the detailed preparation, mapping, scoring, and handoff procedure. **The pilot
+ran both Boltz-2 and ESMFold2 with the same constructs, MSA content, unpaired
+policy, complexes, and seeds.** Model was a separate variable from pilot arm,
+and neither model was an optional fallback: ESMFold2 is dropped from production
+by its gate result, recorded in 4c.4, not by preference.
+
+**4c.1 — Pin inputs and prepare MSAs on CPU.** Preserve the four colleague-supplied
+files with their hashes. Track the ectodomain table as a modeling input and
+retain the exact IPD-IMGT/HLA FASTA. Record the release if known; keep unknown
+release metadata explicit without delaying use of the pinned bytes. Preserve
+all C67S constructs and flag the three borrowed alpha3 alleles.
+
+The archive contains **75 groove MSAs, five ectodomain MSAs, and one beta2m
+MSA**. Validate and normalize the five ectodomain alignments to 275 query
+columns and generate the missing 70. Use the supplied 99-residue beta2m
+alignment if valid. Prepare B and C from a common ordered row set that survives
+both pinned parsers' selection rules in full and cropped forms. Serialize the
+same canonical rows as Boltz CSV and ESMFold2 A3M, including the same arm A
+groove and beta2m alignments. Respect lowercase A3M insertions and verify
+identical B/C processed groove rows and applicable deletion, pairing, and
+profile features within each model; verify shared biological MSA content across
+models. Use the same effective depth cap if either parser needs a lower limit. Boltz independent MSAs use CSV keys `-1`; validate the equivalent
+unpaired ESMFold2 input. The peptide is single-sequence for both models.
+Keep server requests off GPU workers.
+
+**4c.2 — Complete CPU preflight.** Adapt the input builder, pose checker, feature
+mapping, and resumable launchers for three chains in both models. Pin
+`boltz==2.1.1`, weight
+revision `6fdef46d763fee7fbb83ca5501ccceff43b85607`, one diffusion sample,
+three recycling steps, 200 sampling steps, mmCIF, full PAE, and an MSA parse
+cap of 8,192. Omit `--subsample_msa` to select this version's false CLI default
+and record the effective setting and retained depth. Pin `esm==3.4.1.post1`
+and the exact `biohub/ESMFold2` snapshot revision and hashes; the existing
+ESMFold2 downloader needs a revision pin. Use native multi-chain inputs with
+MSAs enabled, one diffusion sample, 200 sampling steps, and `num_loops=20`.
+Fix the current ESMFold2 single-sequence default and hard-coded seed 0.
+Boltz recycling and ESMFold2 loops are different internal algorithms; hold
+these model configurations fixed across arms and report them. Both save mmCIF,
+full PAE, pLDDT, and available confidence scores in a common schema. Record
+model/run identities, seeds, shard ordering, and input hashes; verify mappings.
+
+**Executed preprocessing configuration:** shared 1,024-row cap; both model
+adapters and B/C groove-feature checks passed, including cross-model decoded
+rows and insertion/deletion features. ESMFold2 uses `msa_max_depth=1024` and
+`msa_column_mask_rate=0.0` to avoid its default row sampling and column masking;
+Boltz subsampling is disabled. Full raw alignments are retained. All 75
+ectodomain MSAs are now prepared. ESMFold2 weight revision is
+`69869f737beffec5294845ede23db5fc0b4f509e`. Evidence and live pilot results
+are under `reports/ectodomain-20261004/`.
+
+**4c.3 — Run the matched 90-fold pilot.** Use three seeds (0, 1, 2) on each of
+the five training-split complexes in `reports/boltz_pilot.csv`, for all three
+inputs with each model: **45 Boltz-2 + 45 ESMFold2 predictions**:
+
+| Pilot arm | Construct | HLA alignment |
 |---|---|---|
-| Backbone | ESM-2 3B, frozen | **ESM-C** |
-| Multi-chain | No — needs a poly-glycine linker hack | **Native, via a per-token `asym_id`** |
-| Interface confidence | None (no ipTM) | **`iptm`, `pair_chains_iptm`, `complex_iplddt`** |
-| Structure head | Direct regression | Diffusion, `num_diffusion_samples` |
-| Parameters | ~3.7B | ~6.6-7B |
+| A | Groove + peptide | Existing groove MSA |
+| B | Ectodomain + beta2m + peptide | Selected ectodomain MSA |
+| C | Groove + peptide | The same selected rows as B, cropped to 182 query columns |
 
-Arm A runs first because it has **no MSA step at all**, so it is producing structures while arm B's MSAs are still generating. Neither arm blocks the other.
+Both models run all three arms with the same prepared inputs. The arm letters
+identify constructs and alignments; model identity is recorded separately.
+Pin reference crystals before scoring:
+A*11:01/KTFPPTEPK -> 1X7Q; A*02:01/LLWNGPMAV -> 5N6B;
+B*15:01/ILGPPGSVY -> 1XR9; B*07:02/IPRRNVATL -> 7LFZ;
+B*08:01/ELRRKMMYM -> 4QRU. The supplied 6JOZ sequence-coherence check concerns
+a different A*11:01 peptide and does not replace the KTFPPTEPK reference.
 
-**Why the version matters.** Published benchmarks put ESMFold **v1** at roughly 6-7 Å median peptide RMSD on peptide-HLA class I: the HLA fold itself comes out near 0.85 Å while the peptide is placed *outside* the groove, against ~0.7 Å for AlphaFold-based peptide-HLA methods. That is the worst possible error shape for this project — global confidence looks fine while the one thing we measure is wrong. ESMFold2's native multi-chain support is designed to fix precisely that failure mode, **but no published peptide-HLA benchmark of ESMFold2 exists.** Arm A is genuinely unvalidated on this task, which is why 4a.1 is a hard gate rather than a formality.
+Score new A/B/C predictions in the same groove reference frame: fit on common
+HLA CA atoms at residues 1-182, then measure the peptide. Report CA and
+heavy-atom RMSD plus per-position deviation with one atom-matching policy.
+Start with one B fold per model to validate outputs and extraction, then finish
+the pilot.
+Measure full-construct steady-state throughput, startup, peak VRAM, host memory,
+and billed cost; the old two-chain multiplier is not a resource measurement.
 
-**4a.1 — Smoke pilot (3-5 complexes).** Use the same five crystal-matched complexes as stage 4b.2, so both arms are measured against identical ground truth from the first hour.
+Apply the same operational gate separately to each model, fixed before the
+new pilot. B-versus-A comparisons are within-model; also report cross-model
+results on identical arm/complex/seed inputs. Seed numbers do not imply identical
+random draws across architectures:
 
-- **Peptide RMSD is go / no-go here, not a diagnostic.** Predeclare a pass threshold. If the peptide lands outside the groove on most of the five, arm A reports that as its result and does not proceed to a batch. Cutting arm A at the pilot is a legitimate and cheap outcome.
-- Confirm the `asym_id` to output-index mapping, so feature code slices the right 9 residues.
-- Confirm `pair_chains_iptm` indexes chain 0 as the HLA and chain 1 as the peptide.
-- Push one complex all the way to a scored prediction through `scripts/evaluate.py` before trusting the pipeline.
+- Every B prediction has valid structures, full PAE, pLDDT, a finite mapped
+  feature row, and verified peptide register.
+- All five B complexes at all three seeds have peptide CA RMSD <= 2.0 A and
+  P2/P9 CA deviations <= 1.0 A.
+- B*07:02/IPRRNVATL has median B heavy-atom RMSD <= 1.0 A and improves by at
+  least 0.5 A over the new A median scored under the same protocol.
+- Each other complex has median B heavy-atom RMSD no more than 0.5 A worse
+  than A. Inspect per-position errors as well as means.
+- Measured memory headroom and the resource forecast permit the chosen scope.
 
-**4a.2 — Throughput measurement and the scale decision.** Arm A folds one of two row sets, and the measurement decides which:
+C succeeding is **not** a reason to reject B: it suggests the new groove MSA
+may suffice and identifies a cheaper candidate for later work. B versus C
+measures the added construct and its extra evolutionary information together;
+it does not isolate alpha3 from beta2m or prove a physical mechanism. If either
+model's B fails, resolve or document the failure before scaling the paired
+experiment. Do not silently drop one model, switch its MSA policy, or substitute
+C for it. Label any revised matched plan or threshold/pilot explicitly.
 
-- **Option 1 — the full dataset (all 28,166 rows).** Take this if the measured cost per structure fits the arm A budget. It is much the stronger result: arm A then scores on the *same* rows, the *same* frozen splits and the *same* 67-allele panel as the sequence and ESM-2 arms, through the same evaluation call. No subsetting and no caveat about which rows were compared.
-- **Option 2 — the same ~2,000-complex panel as arm B (`data/structural_panel.csv`).** Take this if the full dataset does not fit the budget. Arm A then folds exactly the complexes arm B folds, so ESMFold2 and Boltz-2 are compared structure for structure, with neither model having seen a larger or easier set of rows.
+**4c.4 — Production scope, frozen 4 October 2026 from measured feasibility.**
+Construct B: three separate chains, **275 + 99 + 9 = 383 residues**. A and C
+were pilot controls and are not folded in production.
 
-The cost driver to measure is `num_diffusion_samples` — it defaults to 32 and is roughly linear in runtime. Benchmark at 1 and at 8 before assuming arm A is the cheap arm; at the default it may well cost more per structure than Boltz-2. Decide on measured dollars per successful structure, and predeclare the threshold before measuring so the choice is arithmetic.
+**Model: Boltz-2 only.** ESMFold2 failed the 4c.3 gate — median arm-B heavy
+RMSD 2.564 A on the B*07:02 sentinel against a 1.0 A bar, improving 0.008 A
+over arm A against a 0.5 A bar, with no construct effect in any arm or seed.
+This is a **labelled revision of the matched plan, not a silent drop**: the
+cross-model comparison it was designed to produce has already been delivered by
+the pilot on identical inputs, and ESMFold2 costs 4.55x more per fold
+($0.0314 vs $0.0069), so its full-cohort forecast of $884 never fitted
+alongside Boltz-2 in the first place. Recorded limits: pose accuracy is not
+feature utility, and a five-complex gate is an operational rule rather than a
+general claim about ESMFold2 on peptide-MHC. Both belong in the write-up.
 
-**4a.3 — Batch fold.** Shard by worker; keep a manifest of successes and failures keyed by `pair_id`. The diffusion head is stochastic, so fix and record the seed. If `num_diffusion_samples > 1`, sample spread is a free uncertainty feature that arm B will not have.
+**Cohort: all 28,166 pairs, one prediction each at seed 0**, frozen with its
+shard schedule in `data/structural_cohort.csv` by
+`scripts/freeze_structural_cohort.py`. Join on `(allele, peptide)` and attach
+`pair_id` afterwards; splits are loaded, never recomputed.
 
-**4a.4 — Extract features** into `features/esmfold2_<scope>.parquet`, keyed by `pair_id`, **sharing one schema with arm B**: per-position peptide pLDDT, the peptide-HLA PAE block, peptide-HLA ipTM, and contacts and burial per peptide position.
+**Execution: two Modal workspaces in parallel, 10 workers each.** The cohort is
+interleaved pair-by-pair across the `a-cheparukhin` and `colleague`
+(workspace `sofyaleyn`) profiles, so each half is balanced across alleles and
+splits and either half alone stays unbiased. 141 shards of 100 pairs per
+profile, A10G at the pilot-measured $1.4812/h shape.
 
-**Infrastructure.** Use the HuggingFace `transformers` route. ESMFold2 runs in bf16 (~13 GB of weights), wants 24 GB or more of VRAM, and has a fused-kernel path. Modal publishes an ESMFold2 example to start from. Pin the revision.
+| | Per profile | Total |
+|---|---:|---:|
+| Pairs | 14,083 | 28,166 |
+| Forecast | 67.8 GPU-h, $100.4 | 135.6 GPU-h, $200.8 |
+| With 25% margin | $125.5 | **$251** |
+| Wall at 10 workers | 6.8 h | **~6.8 h in parallel** (8.5 h with margin) |
+| Output | ~11 GB | ~22 GB |
 
-**Deliverable:** pilot RMSDs against crystal structures, a throughput and cost measurement, the scale decision with its arithmetic, the structures, and a success/failure manifest.
+Forecasts use the measured 16.76 s steady fold and 57 s shard startup. Each
+shard also writes compact per-pair confidence features, so stage 5 can start
+before the structures finish downloading. Reserve export, feature extraction,
+and evaluation time before the deadline; for parallel runs use the later
+finish, for serial runs sum elapsed times.
 
-**Why:** it is the cheaper structural integration and it removes the MSA dependency from the critical path, so a structural result survives even if arm B is cut entirely.
+**Before launching:** the production runner is new code, so run its 5-case
+end-to-end check (`::smoke`) in each workspace first, per the project
+invariant. Re-running `::production` resumes: only shards without a committed
+success marker are folded again.
 
-### 4b. Structure arm B — Boltz-2
+**Retained fallback.** Full scope now fits for Boltz-2 alone, so the panel
+below is no longer the planned scope. Keep it as the contingency if the
+overnight run cannot complete or must be abandoned: freeze this approximately
+**2,000-pair, six-allele panel (2,000 Boltz-2 predictions)** from existing
+splits without consulting labels, in advance and never by keeping whichever
+pairs happened to finish. Reuse an already valid frozen panel if present;
+otherwise use these quotas:
 
-Input: the supplied 182-residue HLA domain plus a separate 9-residue peptide chain. Keep Chai-1 as a fallback rather than running both.
+| Allele | Panel pairs |
+|---|---:|
+| HLA-B*15:01 | 434 |
+| HLA-A*02:01 | 415 |
+| HLA-A*03:01 | 349 |
+| HLA-B*39:01 | 276 |
+| HLA-B*35:01 | 264 |
+| HLA-B*07:02 | 262 |
 
-**4b.1 — Precompute the MSAs (CPU, ~$0, before any GPU is booked).**
+Preserve split proportions, record selection seed/algorithm, verify >= 50 test
+and >= 20 validation rows per allele, and save `data/structural_panel.csv`
+before folding. Never recompute `data/splits.csv`. If neither scope fits,
+record the same reduced scope for both models in advance or retain the pilot
+result; unfinished output must not become a convenience evaluation subset.
 
-**Status: done, and wider than planned.** All **75** alleles are cached, not
-just the six panel alleles: `reports/stage4b1_msa_cache.md` (findings),
-`scripts/make_msas.py` (regenerates), `reports/msa_manifest.csv` (committed
-record, with `sha256` per HLA sequence and per MSA file),
-`reports/msa_parse_benchmark.json`. The MSA files land in
-`structures/msa/<stem>.csv` and are gitignored — 141.3 MB of regenerable data.
-**137 s of CPU, $0, no GPU booked.**
+**4c.5 — Batch, export, and extract.** Use bounded shards within function timeouts,
+configured concurrency, resident weights, and durable checkpoints. Validate the
+mmCIF and all required arrays before declaring success; a directory alone is
+not sufficient. Allow at most one retry per failed pair within the resource
+forecast, record seed/order changes, retain unresolved failures, and stop new
+dispatches if forecasts no longer fit.
 
-One MSA per unique HLA sequence, reused across every complex on that allele. Alleles and HLA domain sequences are 1:1 — **75 alleles, 75 distinct domain sequences** (asserted in code before any server call) — so there is never a reason to compute an MSA per complex.
+Join inputs on `(allele, peptide)` and then attach the raw `pair_id`. Key output
+records by `(model, allele, peptide)` and share the frozen pair/order/seed
+schedule across model queues. Save model, run, construct, MSA, seed/shard/order,
+output hashes, attempts, cost, and failures.
+Verify the anticipated 383 x 383 PAE and token mapping against actual output.
+Core features use peptide pLDDT, peptide/groove PAE in both directions, and
+contacts/burial against HLA residues 1-182. Additional ectodomain/beta2m
+features need their own definitions. Global ipTM remains global; use a pair
+score only if the pinned model emits it with a verified mapping.
 
-**The whole dataset was cached because it is free.** At ~2 s and $0 per allele, all 75 cost 137 s, removing the ordering dependency between this step and 4b.4: the panel is still unfrozen, the hour-5 call may move it, and no tier change now costs new MSA work. Depth: 9,505–10,454 rows per allele (median 9,991).
-
-**Route: call `boltz.main.compute_msa` directly, not the `boltz predict` harvest.** The harvest route works, but it downloads all **6.2 GB** of model weights before generating a single MSA (`download_boltz2` at `main.py:1141`, `process_inputs` at `main.py:1162`), then requires the process to be killed before the model loads. `compute_msa` is the function that route eventually reaches — importable, needs neither checkpoint nor CCD. With one sequence in `data` it takes the unpaired branch and writes `msa_dir/<name>.csv` directly. Same code path, no download, no YAML, no kill hack.
-
-Every batch YAML looks like this:
-
-```yaml
-version: 1
-sequences:
-  - protein:
-      id: A
-      sequence: <182-residue hla_seq>
-      msa: /abs/path/structures/msa/<stem>.csv
-  - protein:
-      id: B
-      sequence: <9-mer peptide>
-      msa: empty
-```
-
-The four constraints, now verified in source — three confirmed, one reversed:
-
-- **`msa: empty` on the peptide is mandatory.** Confirmed — a missing key defaults to auto-generate (`schema.py:1111`), and Boltz refuses to mix custom and auto-generated MSAs (`schema.py:1311`).
-- **Only `.a3m` and `.csv` accepted.** Confirmed (`main.py:615-624`). `.a3m.gz` fails because `Path.suffix` is `.gz`.
-- **Omit `--use_msa_server` on the batch run.** Confirmed — any chain still needing an MSA raises an error (`main.py:581-582`).
-- **Trimming the MSA is not worth doing for cost — concern overturned.** The re-parse has no cross-complex reuse, but measured at **0.176 s per complex at the default `--max_msa_seqs 8192`** — ~5.9 min across 2,000 complexes, ~**$0.25** of L40S time, under 0.2% of arm B's ceiling. Trim only if a depth-versus-accuracy benchmark at 4b.3 says to.
-
-Two further facts the batch YAML depends on:
-
-- **`msa:` paths must be absolute.** Boltz resolves `Path(msa_id)` verbatim (`main.py:605-608`), so a relative path resolves against the worker's CWD.
-- **Generation and parse caps differ.** `compute_msa` truncates at 16,384; the batch run's `--max_msa_seqs` (CLI default 8,192) decides what the model sees. Cached files hold full depth, so changing depth needs no regeneration.
-
-**`--subsample_msa` is a broken flag.** Declared `is_flag=True` with no `default=`, so click defaults to **False** while the help text and `predict()` signature say True. Omitting it uses full depth; passing it subsamples to 1,024. Pin it explicitly.
-
-**The C67S collision does not reach this arm.** The two C67S alleles share a pseudosequence but their 182-residue domains differ (position 10, `A` vs `S`), producing distinct MSAs. The collision caps the pseudosequence arm only.
-
-**Still open after this step.** No YAML has been parsed by Boltz yet — the batch YAML shape is verified by source reading, not execution. **First 4b.2 item: parse one YAML with a custom `msa:` path and `msa: empty` peptide.**
-
-**4b.2 — Smoke pilot on 5 complexes with crystal ground truth (1 GPU, <$5).**
-
-`data/pdb_rasmussen_overlap.csv` holds 32 pairs with both a measured half-life and a deposited structure, 19 of them TCR-free, and 17 of those 19 are in the training split — so a pilot drawn from them touches no held-out data. Proposed set — all training rows, all TCR-free, four alleles that are also on the structural panel so their MSAs get reused:
-
-| Allele | Peptide | Half-life | PDB | Resolution (Å) | Released |
-|---|---|---:|---|---:|---|
-| `HLA-A*02:01` | VVPYEPPEV | 0.5 h | 21EX | 2.02 | **2026-09-09** |
-| `HLA-B*07:02` | IPRRNVATL | 4.0 h | 7LFZ | 1.90 | 2021 |
-| `HLA-B*35:01` | LPFERATVM | 5.5 h | 3LKR | 2.00 | 2010 |
-| `HLA-B*15:01` | ILGPPGSVY | 11.0 h | 1XR9 | 1.79 | 2005 |
-| `HLA-A*02:01` | LLWNGPMAV | 38.2 h | 5N6B | 1.60 | 2017 |
-
-**The first row is a free recall-versus-prediction control.** `21EX` was deposited 2025-12-10 and released **2026-09-09**, after the training cutoff of every model under consideration, and it is the only pair among the 32 clearly post-cutoff for Boltz-2. Compare its peptide RMSD against the pre-2020 rows, which the model could have memorised: comparable RMSD means the model is predicting, markedly worse RMSD on `21EX` means it was recalling. Report it with the obvious limit — n=1, so it is directional, not a measurement.
-
-Six of the 32 are 2021 or later (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`, `7LFZ`). Whether those count as post-cutoff for ESMFold2 depends on its training snapshot; check the model card before claiming them as controls.
-
-Exit criteria — **all** must pass before any batch launches:
-
-1. Peptide backbone RMSD to the crystal peptide, after superposing on the HLA domain, below a predeclared threshold.
-2. Canonical register: P2 and PΩ seated in the B and F pockets.
-3. **Token-to-chain mapping verified.** The PAE matrix should be 191×191 with indices 0-181 the HLA and 182-190 the peptide. Boltz does not document this boundary — confirm it from the CIF residue order before any code slices the peptide-HLA PAE block.
-4. **`pair_chains_iptm["0"]["1"]` confirmed to be HLA-to-peptide.** Chain index follows YAML entity order, also undocumented.
-5. `--write_full_pae` produced `pae_*.npz`, and `plddt_*.npz` is present.
-6. One feature row per complex, joined on `(allele, peptide)` to a `pair_id`, scored end to end through `scripts/evaluate.py` without error.
-
-These five complexes are the ones *most* likely to have been memorised. The pilot is a **pipeline-correctness gate, not an accuracy estimate** — do not quote its RMSDs as evidence that Boltz predicts peptide-HLA structures well.
-
-**4b.3 — Hardware and throughput benchmark (20-30 complexes).**
-
-- Compare L40S 48 GB, A100 40 GB and H100 80 GB on identical settings. The metric is **measured billed dollars per successful complex**, not dollars per hour.
-- Pre-stage weights in a persistent volume and set `BOLTZ_CACHE` to an absolute path. Boltz downloads all three files unconditionally — `boltz2_conf.ckpt` 2.29 GB, `boltz2_aff.ckpt` 2.06 GB, `mols.tar` 1.86 GB, ~6.2 GB total — even though the affinity head is never used. Pin the revision.
-- Pin settings: `--diffusion_samples 1 --recycling_steps 3 --sampling_steps 200 --write_full_pae --output_format mmcif`. Pin `--subsample_msa` explicitly — 4b.1 established it is a broken flag, not just a documentation mismatch: `is_flag=True` with no `default=` makes the CLI default **False** while the help text and function signature both say True. Omitting it uses full depth up to `--max_msa_seqs`; passing it subsamples to 1,024. Benchmark both and record which way it was pinned. Leave `--max_msa_seqs` at 8192 unless accuracy says otherwise — 4b.1 measured the parse at $0.25 across the whole panel, so there is no cost case for trimming.
-- Batch by **directory**: `boltz predict <dir>` loads weights once for every YAML inside, which satisfies the "keep models loaded" requirement natively.
-- Capacity = the arm B budget divided by measured cost per successful complex.
-
-**4b.4 — Freeze the structural panel (CPU; labels never consulted).**
-
-Selected from `data/splits.csv` and allele row counts alone — spread across the top 6 alleles proportionally, ~2,000 complexes, preserving 70/10/20 within each allele.
-
-| Allele | In panel | Allele total | Test rows |
-|---|---:|---:|---:|
-| `HLA-B*15:01` | 434 | 1,070 | ~87 |
-| `HLA-A*02:01` | 415 | 1,023 | ~83 |
-| `HLA-A*03:01` | 349 | 861 | ~70 |
-| `HLA-B*39:01` | 276 | 680 | ~55 |
-| `HLA-B*35:01` | 264 | 650 | ~53 |
-| `HLA-B*07:02` | 262 | 647 | ~52 |
-
-Every allele clears the 50-row test bar in [EVALUATION.md](EVALUATION.md), so the primary metric has six alleles to take a median over. The deep alternative — three alleles folded in full, 2,954 complexes — gives tighter per-allele rho, but a median over three alleles is uninformative, and it runs ~950 folds over budget.
-
-Freeze to `data/structural_panel.csv` (`pair_id, allele, peptide, split`), committed like `data/splits.csv`, selection deterministic and seeded.
-
-Tiers, predeclared against measured throughput so the hour-5 call is arithmetic:
-
-| Tier | Complexes | Alleles | When |
-|---|---:|---|---|
-| 0 | 5 | pilot only | pipeline works but throughput can't finish by hour 10 |
-| 1 | ~700 | 3 | reduced |
-| 2 | ~2,000 | 6 | target |
-| 3 | +subset | 6 | stretch: a second diffusion sample on a subset, for seed spread |
-
-**4b.5 — Batch fold.** Shard the panel YAMLs into one subdirectory per worker. Restart is free — Boltz skips any target with an existing `predictions/<id>/` directory unless `--override`. Keep a manifest of successes and failures keyed by `pair_id`.
-
-**4b.6 — Extract features** from the CIF, `plddt_*.npz`, `pae_*.npz` and `confidence_*.json` into `features/boltz_panel.parquet`, keyed by `pair_id`, on the schema shared with arm A.
-
-Moving to full-length HLA with beta-2-microglobulin (the additional chain that stabilises the HLA structure in vivo) would require a new pilot and runtime benchmark.
-
-**Deliverable:** MSA manifest (**done** — `reports/msa_manifest.csv`, 75 alleles), hardware and runtime benchmark, the frozen structural panel, the structures themselves, and a manifest of successes and failures.
-
-**Status: done.** `reports/stage4_benchmark.md` (measured result), `docs/BOLTZ_PIPELINE.md` (design and protocol), `modal_app/` (Boltz-2 and ESMFold2 Modal apps), `scripts/boltz_panel.py` (panels), `scripts/gpu_decision.py` (cost model), `scripts/boltz_pose_check.py` (pose validation). Engine and GPU chosen: **Boltz-2 on A10 at $0.004/complex**, $8.00 for 2,000 complexes, 0.56 h at 10 workers. Total benchmark spend ~$2.64 against the $15 ceiling. Pilot gate cleared: 5/5 in the groove, median 0.29 Å peptide CA RMSD, PAE written, chain mapping verified. 68 folds, zero failures.
-
-Four findings constrain later stages:
-
-- **This stage's "keep models loaded across complexes" requirement was initially violated.** The first harness spawned a fresh `boltz predict` per complex, putting an 86% process-and-weight-load overhead inside every timed fold and overstating cost 4.6x ($0.018 vs $0.004). Fixed to one process per batch. Any future folding harness must verify that the model is resident across the timed region.
-- **Between-container variance (73%) dwarfs within-container variance (±1%).** The same GPU type gave 6.3 s and 10.9 s in two allocations, so the sweep's n=1 container per GPU cannot rank the middle cards. A10's lead and the H100 verdict survive it; the L40S/A100 ordering does not.
-- **Folding is not a budget constraint.** At $0.004/complex the whole 28,166-pair dataset costs ~$113, inside the $330 ceiling. Panel size is now a statistical and wall-clock decision, not a financial one.
-- **Peptide error is concentrated at P5–P7, not uniform.** Anchors (P1–P2, P8–P9) sit under 0.25 Å while central positions reach 3.3 Å on some complexes, in both Boltz-2 and ESMFold2. Stage 5 geometry features at central positions are intrinsically noisier than the same features at anchors.
-
-**ESMFold2 was evaluated and rejected** (not on principle — on three measurements): 26.0 GB peak removes the cheap 24 GB cards, its speed is indistinguishable from Boltz-2's inside the between-container range, and pose quality is worse at matched n=5 (median 0.68 Å vs 0.29 Å). It does expose `pair_chains_iptm`, the peptide-HLA interface ipTM this stage's confidence arm wants, which Boltz-2 gives only globally.
-
-**Why:** folding is the biggest compute and integration risk. Cheaper-per-hour hardware may be slower per structure, so the metric that matters is measured cost per completed prediction. A smaller, interpretable experiment with adequate test coverage is worth more than many structures that can't support a comparison.
+**Deliverable:** pinned input and shared MSA manifests, both CPU preflights,
+90 pilot predictions and per-model gate verdicts, shared frozen scope and
+separate plus combined resource forecasts, durable production outputs with
+success/failure records, and validated feature tables.
+Stage 5 compares features on matched rows; stage 6 retains the frozen evaluation
+contract and one final test scoring. Export artifacts before event resources
+are removed.
 
 ### 5. Test additional feature groups
 
 **Work**
 
-- Start with geometry and confidence features, which come from the existing structure predictions. Add each group separately, then test combinations that validation supports.
-- **Test every feature group per arm**, so the ESMFold2-versus-Boltz-2 comparison lands in the ablation table rather than in prose. Report the two arms on the rows **both** folded; if arm A took the full dataset, report its unrestricted numbers separately, clearly labelled, never against a panel-restricted arm B.
-- Train sequence, ESM, and augmented models on **exactly the same structural training rows**, with identical validation and test rows. Separately report full-training-data sequence models on that same test set as practical comparators.
-- Keep low-confidence but usable predictions. Predefine how to handle outright failures, report coverage, and show a sequence-model fallback for structures that fail.
-- Try multiple poses only on a small diagnostic subset if budget remains.
+- Use both models' stage 4c full-construct predictions. Test geometry and confidence
+  separately, then combinations supported by validation, on top of both the
+  sequence baseline and ESM-2 features.
+- Train comparators on **exactly the same structural training rows**, with
+  identical validation and test rows. Reuse compatible full-data baselines at
+  full scope. At panel scope, refit baseline heads on panel training rows using
+  cached inputs/embeddings; also report full-training-data models on the same
+  panel held-out rows as practical comparators. No new embedding extraction is
+  required solely by the structural construct change.
+- Keep usable low-confidence predictions, report coverage and outright failures,
+  and show a sequence-model fallback for unresolved structural failures.
+- Compare Boltz-2 and ESMFold2 on the same production rows using shared
+  feature definitions, head architecture, ensemble size, and tuning budget.
+  Label model-specific extra confidence features separately; test combinations
+  only if validation supports them. Report the frozen cohort with the declared
+  sequence fallback and common successful rows as an additional diagnostic.
+- Limit A/B/C construct comparisons to the shared pilot rows. Their 90 folds
+  do not provide a dataset-wide structural ablation.
+- Try multiple poses or extra feature groups only on a small diagnostic subset
+  if time and budget remain and validation supports the work.
 
-**Deliverable:** ablation table showing the incremental predictive value and cost of each feature group, per arm.
+**Deliverable:** matched-row geometry/confidence ablations showing incremental
+predictive value, uncertainty, coverage, and compute cost.
 
-**Why:** a feature can look useful alone but add nothing on top of the sequence baseline. Important conceptual guardrails: pLDDT is the model's confidence in its prediction, not a measure of physical stability; seed disagreement captures model uncertainty, not real molecular motion; inverse-folding likelihood tells you if the sequence fits the backbone, not how long the complex lasts; interaction energy estimates the strength of binding, not the energy barrier to unbinding.
-
-One guardrail specific to arm A: ESMFold2 is built on **ESM-C** and stage 3 uses **ESM-2**, so the two are related by model family but not by weights. Stack arm A's features on the ESM-2 arm as well as on the sequence baseline — it is cheap and it closes the question instead of leaving it open in the write-up. (Had arm A been ESMFold v1 this would have been a hard confound rather than a check: v1's trunk consumes frozen ESM-2 3B hidden states directly.)
+**Why:** a structural feature can be useful alone yet add nothing beyond the
+sequence baseline. Model confidence is not physical stability; seed variation
+is model uncertainty rather than molecular motion. Better crystal agreement
+is a pipeline/pose result and must earn its predictive value on validation.
+Global three-chain ipTM must not be presented as peptide-interface confidence.
 
 ### 6. Evaluate and prepare the submission
 
@@ -519,53 +610,82 @@ One guardrail specific to arm A: ESMFold2 is built on **ESM-C** and stage 3 uses
 
 ## Budget and GPU decision rule
 
-Team credits: **$450 Modal + approximately $60 Hugging Face**. Keep provider budgets separate. The figures below are **ceilings, not spending targets**.
+**Revised 4 October 2026.** Modal credit now spans **two workspaces holding
+approximately $300 each** — `a-cheparukhin` and `sofyaleyn` (local profile
+`colleague`) — plus approximately **$60 Hugging Face**. Keep providers and
+workspaces separate: credit in one workspace cannot pay for work in the other,
+so each half of the cohort must fit its own workspace's balance on its own.
+These are ceilings, not spending targets or a claim about the remaining
+balance.
 
-| Allocation | Ceiling | Note |
+| Allocation | Ceiling | Current use |
 |---|---:|---|
-| HF: embedding extraction and regression experiments | $60 | |
-| Modal: end-to-end and hardware pilot | $15 | covers both arms' pilots |
-| Modal: structure arm A (ESMFold2) | $90 | scales with the 4a.2 decision; `num_diffusion_samples` is the cost driver |
-| Modal: structure arm B (Boltz-2) | $240 | |
-| Modal: contingency | $105 | includes the $45 formerly held for inverse-folding and energy scoring, both now out of scope |
+| HF: embedding extraction and regression experiments | $60 | Core sequence/ESM-2 comparison. |
+| Modal `a-cheparukhin`: pilots to date | $15 total | Stage 4c pilot spent **$1.49** of this; prior benchmark spend included. |
+| Modal `a-cheparukhin`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. |
+| Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. |
+| Modal: contingency | remainder of each balance | Reserve; not automatically available to the folding launcher. |
 
-If arm A's measured cost comes in well under its ceiling, the remainder moves to arm B's panel tier, not to a third model.
+The per-profile $150 ceiling is enforced in code by `--max-usd` on the
+production entrypoint, which refuses to spawn if the 25%-margin forecast for
+the remaining shards exceeds it. ESMFold2 production is **not** funded: it
+failed its gate (4c.4), and its $884 full-cohort forecast exceeded the
+combined balance regardless.
 
-Claude, Devin, Antigravity, and AMASS credits support implementation and research; don't assume they fund folding GPUs. Recheck rates and credit availability before launch.
+At launch, verify actual credit, prior spend, other commitments, and current
+GPU/CPU/memory rates in **each** workspace. A budget table does not authorize
+spending unavailable credit.
 
-Reference worker rates assume standard Functions at base rates, four physical CPU cores, and 32 GiB host memory per GPU worker. These exclude startup, retries, extra poses, and storage/egress; region and non-preemptible options change pricing.
-
-| GPU | GPU-only $/hour | Including CPU/memory $/hour |
-|---|---:|---:|
-| L40S, 48 GB | 1.95 | 2.40 |
-| A100, 40 GB | 2.10 | 2.54 |
-| A100, 80 GB | 2.50 | 2.94 |
-| H100, 80 GB | 3.95 | 4.39 |
+Historical worker rates, two-chain timings, and right-sizing measurements are
+in `reports/stage4_benchmark.md`. Measure the 383-residue construct and choose
+the cheapest worker shape that meets memory and deadline requirements. Keep
+weights resident and use prepared MSAs; concurrency shortens elapsed time but
+does not reduce total compute cost.
 
 ```text
-cost = total billed worker seconds * combined GPU/CPU/memory rate
-capacity = folding budget / measured cost per successful complex
-elapsed time ~ total worker hours / concurrent workers
+forecast_cost = 1.25 * (N * steady_cost_per_success
+                       + total_startup_cost + export_storage_cost)
+forecast_time = 1.25 * ((N * steady_seconds_per_success
+                        + total_startup_seconds) / available_workers)
+                + export_and_feature_time
 ```
 
-**Any seconds-per-complex figure is a budget threshold, not measured throughput.** Choose hardware based on measured dollars per successful prediction and the deadline. Running more workers in parallel shortens wall-clock time but doesn't reduce total compute cost. Pick the cheapest GPU that meets the deadline and memory requirements.
+Include failed attempts in per-success measurements, account for expected
+restarts, and avoid adding startup twice if it is already in a quoted cost.
+Plan from observed allocation variability, verify actual concurrency on the
+first production shards, and refresh cost and completion forecasts at shard
+boundaries. The 25% margin is an operational allowance, not a statistical
+guarantee. Calculate costs per model and sum them. Allocate shared GPU capacity
+explicitly across both queues; for parallel runs use the later finish, and for
+serial runs sum elapsed times. Stop dispatching new work if the paired scope
+no longer fits.
 
 ## Team workstreams and checkpoints
 
 | Participant | Primary responsibility | Handoff |
 |---|---|---|
-| 1 | Data audit, splits, sequence baselines, evaluation | Shared split IDs and prediction/evaluation format |
-| 2 | ESM-2 embeddings, regression heads, representation comparisons | Cached features and validation-selected models |
-| 3 | GPU pilots, both structure arms, additional feature extraction | Structure and feature manifests keyed by complex ID, with success and failure records |
+| 1 | Frozen data contract, sequence baselines, matched-row evaluation | Validated joins, comparator predictions, evaluation format, and final uncertainty estimates. |
+| 2 | ESM-2 embeddings, regression heads, representation comparison | Cached embeddings and validation-selected models; matched panel heads if needed. |
+| 3 | Stage 4c shared inputs/MSAs, both model pilots and production, structural features | Pilot verdict, frozen scope/resource forecast, exported outputs, and feature/coverage manifests. |
 
-Participant 3 now owns two arms. They are not serial: **arm A has no MSA step, so it starts immediately, and arm B's 4b.1 MSA generation is already done** — all 75 alleles cached in 137 s of CPU for $0, so arm B's only remaining prework is freezing the panel (4b.4). Neither arm blocks the other.
+The original engine pilots and groove MSA cache are complete. Participant 3's
+remaining work is the full-construct input/MSA preparation, corrected scoring
+and feature mapping for both models, matched 90-fold pilot, and resumable
+production workflows on the same cohort. The core sequence/ESM-2 comparison
+can continue while this preparation runs.
 
-- **First 3 hours:** freeze data and evaluation, establish a baseline, begin ESM extraction, complete both arms' pilots on the same five crystal-matched complexes.
-- **By hour 5:** review validation results. Make **two** structural decisions — arm A's scale decision (full dataset versus panel, from 4a.2) and arm B's go / reduce / stop against the 4b.4 tier table. Arm A proceeding while arm B is cut to tier 0 is a legitimate and reasonably likely outcome, and it still leaves a structural result. Run the auxiliary affinity probe if the core comparison is on track.
-- **Hours 5-12:** finish the selected workload and ablations. Stop adding features at hour 10; freeze configurations by hour 12.
-- **Final 4 hours:** evaluate on held-out data, compute uncertainty, prepare figures and the presentation, save deliverables.
-- Adjust these cutoffs if the official deadline requires it.
-- Save code, data, splits, features, checkpoints, structures, and results locally before the **Antigravity event resources are deleted after the event on Sunday, October 4**. Modal and Hugging Face credits are separate per-participant offers and aren't affected by that deletion. Keep credentials out of shared manifests and exported artifacts.
+- **Before GPU work:** pin supplied inputs, complete MSAs and CPU preflight,
+  and record the absolute completion deadline in Europe/London.
+- **After the new pilot:** apply the quality/resource gates, verify credit and
+  available concurrency, and freeze full scope or the six-allele panel.
+- **During production:** check forecasts and output completeness at shard
+  boundaries; export durable checkpoints while the core comparison progresses.
+- **Before final scoring:** finish features, freeze validation-selected model
+  configurations, and reserve time for the single test evaluation, uncertainty,
+  figures, and presentation.
+- Save code, data, MSAs, splits, features, checkpoints, structures, and results
+  locally before temporary Antigravity event resources are deleted after the
+  event on Sunday, October 4. Keep credentials out of exported artifacts.
 
 ## Stretch work and stopping rules
 
@@ -577,7 +697,7 @@ Participant 3 now owns two arms. They are not serial: **arm A has no MSA step, s
 
 ## Out of scope this round
 
-Nothing correct is deleted from this plan — it is listed here with its reason. An entry means "decided against for this round", not "wrong".
+The following work is deferred or rejected for this round. Completed engine diagnostics and the active ectodomain workflow are recorded in stage 4.
 
 | Item | Why out of scope this round |
 |---|---|
@@ -586,10 +706,11 @@ Nothing correct is deleted from this plan — it is listed here with its reason.
 | FoldX, Rosetta, any empirical energy layer | Estimates equilibrium ΔG, not the ΔG‡ barrier to unbinding — a known mismatch with a kinetic label. Also a setup cost we would not recover in 16 hours |
 | Per-pocket energy decomposition (A/B/F ↔ P1/P2/PΩ) | A good idea, but premised on FoldX `AnalyseComplex`; it falls with FoldX |
 | OpenMM minimisation energy | Not a drop-in replacement for interface scoring, and the same thermodynamic/kinetic mismatch applies |
-| ProteinMPNN | Correct and cheap per structure, but it needs the structures first, so it is the last thing to add rather than a core arm. Revisit after both folding arms report |
-| ESMFold v1 (`facebook/esmfold_v1`) | Not the model in arm A and not a substitute for it: no native multi-chain support (it needs a poly-glycine linker), no ipTM, and published peptide-HLA benchmarks put its peptide ~6-7 Å outside the groove. Its trunk is frozen ESM-2 3B, which would also confound it with stage 3 |
-| Chai-1 | Fallback for Boltz-2 only. Running both doubles integration cost to answer a question nobody asked |
-| β2-microglobulin / full-length HLA | Would require a fresh pilot and runtime benchmark; the α1/α2 groove is what contacts the peptide |
+| ProteinMPNN | Requires structures first. Revisit after both folding pipelines and the core comparison are complete. |
+| ESMFold v1 (`facebook/esmfold_v1`) | No native multi-chain support or ipTM; its frozen ESM-2 trunk also overlaps the model family under test at stage 3. |
+| Different input policies for the two folding models | Primary comparison fixes constructs and MSA content. Single-sequence ESMFold2 versus MSA-assisted Boltz-2 is deferred as a separate experiment. |
+| Chai-1 | A third folding engine adds integration cost beyond the agreed Boltz-2/ESMFold2 comparison. |
+| Separate alpha3/beta2m mechanism ablations | Stage 4c tests the full input pipeline. Additional mechanistic controls are deferred until its predictive value and resource feasibility are established. |
 | Chimeric peptide-linker-groove ESM input | The sharpest version of the stage 3 question and a real risk to a negative result, but a linkered 9-mer construct sits far outside ESM-2's distribution. Listed so that "ESM-2 didn't help" is reported as bounded by the separate-embedding representation actually tested |
 | Tobit / censored likelihood | Principled for the 20.2% floor; `log1p` plus rank-led metrics is the 16-hour substitute. Already recorded as a stage 1 limitation |
 | Source-protein / UniProt mapping, gene-level splits | The splits are frozen and cannot be rebuilt |

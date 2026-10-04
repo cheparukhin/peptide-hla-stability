@@ -38,8 +38,10 @@ and stage order. These documents describe the data behind it.
 
 | document | covers |
 | --- | --- |
-| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | why MSAs are per-sequence and cost almost nothing, the pilot and benchmark panels, the Modal cost traps (`H100!`, billed startup, oversized host requests, **subprocess-per-fold**), the verified rate table, the ESMFold2 evaluation, and the GPU decision rule |
-| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **the measured result** — throughput and cost per complex across 5 GPUs, the harness bug that made the first sweep 4.6x too expensive, why between-container variance limits the ranking, why H100 is a trap, why ESMFold2 was rejected, pose validation, spend, and limitations |
+| [ECTODOMAIN_FOLDING_PLAN.md](ECTODOMAIN_FOLDING_PLAN.md) | current stage 4c execution checklist: complete MSAs, verified cropped-MSA control, matched 90-fold pilot for Boltz-2 and ESMFold2, shared quality gates and scope, resumable production, and frozen-split evaluation; scope and allocations are governed by the main plan |
+| [../reports/stage4c_ectodomain_pilot.md](../reports/stage4c_ectodomain_pilot.md) | **the completed matched pilot** — all 75 ectodomain MSAs, CPU control checks, both gate verdicts (Boltz-2 pass, ESMFold2 fail), per-seed pose and confidence results, measured resources and spend, and the frozen Boltz-2 two-workspace production scope |
+| [BOLTZ_PIPELINE.md](BOLTZ_PIPELINE.md) | historical two-chain protocol, MSA preparation, Modal cost traps, and the completed engine/hardware comparison |
+| [../reports/stage4_benchmark.md](../reports/stage4_benchmark.md) | **measured two-chain results** — throughput and cost across 5 GPUs, harness corrections, between-container variation, historical engine-selection recommendation (superseded by the dual-model plan), pose validation, spend, and limitations; new full-construct resources remain unmeasured |
 
 ## Regenerating
 
@@ -57,8 +59,9 @@ and stage order. These documents describe the data behind it.
 | `reports/gpu_decision.csv` | `python3 scripts/gpu_decision.py` (needs `reports/boltz_bench_results.csv`; pass `--results` for the ESMFold2 table) |
 | `reports/boltz_pose_check.csv`, `reports/esmfold_pose_check.csv` | `python3 scripts/boltz_pose_check.py --structures <dir> --out <csv>` |
 
-Folding itself runs on Modal and is not reproducible from a local command; see
-the Reproduce section of
+The commands above regenerate completed stages and historical two-chain
+diagnostics. For the new construct, follow the stage 4c execution checklist.
+Historical folding runs use Modal; see the Reproduce section of
 [reports/stage4_benchmark.md](../reports/stage4_benchmark.md) for the
 `modal run` sequence behind `boltz_bench_results.csv`,
 `esmfold_bench_results.csv` and the pilot tables.

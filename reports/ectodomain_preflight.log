@@ -1,0 +1,874 @@
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-lAi2XB8997D6kZPRDjM2wU
+✓ Created objects.
+├── ✓ Uploaded /Users/cheparukhin/ai_science_hack/modal_app/ectodomain_setup.py
+├── ✓ Uploaded PythonPackage:ectodomain_common
+├── ✓ Uploaded PythonPackage:boltz_common
+├── ✓ Uploaded PythonPackage:ectodomain_common, PythonPackage:esmfold_common
+├── ✓ Uploaded PythonPackage:esmfold_common, PythonPackage:boltz_common
+├── ✓ Created Function esm_preflight.
+└── ✓ Created Function boltz_preflight.
+Error while loading libcue_ops.so: libcuda.so.1: cannot open shared object file: No such file or directory
+Loading CCD dictionary from /esmweights/ESMFold2/ccd.pkl
+Error while loading libcue_ops.so: libcuda.so.1: cannot open shared object file: No such file or directory
+Processing 15 inputs with 1 threads.
+
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A  0%|          | 0/15 [00:00<?, ?it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A  7%|▋         | 1/15 [00:00<00:01,  8.51it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 13%|█▎        | 2/15 [00:00<00:02,  5.52it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 20%|██        | 3/15 [00:00<00:03,  3.79it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 27%|██▋       | 4/15 [00:00<00:02,  4.92it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 33%|███▎      | 5/15 [00:01<00:02,  4.79it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 40%|████      | 6/15 [00:01<00:01,  5.71it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 47%|████▋     | 7/15 [00:01<00:01,  6.47it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 53%|█████▎    | 8/15 [00:01<00:01,  5.68it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 60%|██████    | 9/15 [00:01<00:00,  6.40it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 67%|██████▋   | 10/15 [00:01<00:00,  6.96it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 73%|███████▎  | 11/15 [00:01<00:00,  6.04it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 80%|████████  | 12/15 [00:02<00:00,  6.71it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 87%|████████▋ | 13/15 [00:02<00:00,  7.35it/s]
+Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+[1A 93%|█████████▎| 14/15 [00:02<00:00,  6.21it/s]
+[1A100%|██████████| 15/15 [00:02<00:00,  6.84it/s]100%|██████████| 15/15 [00:02<00:00,  6.07it/s]
+{
+  "model": "boltz2",
+  "ok": true,
+  "cap": 1024,
+  "seconds": 11.020273807999999,
+  "cases": [
+    {
+      "id": "A1101_KTFPPTEPK_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1024,
+        383
+      ],
+      "asym_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1024,
+        191
+      ],
+      "asym_ids": [
+        0,
+        1
+      ]
+    }
+  ],
+  "control_checks": [
+    {
+      "complex_id": "A0201_LLWNGPMAV",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "A1101_KTFPPTEPK",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0702_IPRRNVATL",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0801_ELRRKMMYM",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B1501_ILGPPGSVY",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "profile": true,
+        "msa_paired": true,
+        "msa_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    }
+  ],
+  "cgroup_peak_gb": null
+}
+/usr/local/lib/python3.12/site-packages/esm/models/esmfold2/prepare_input.py:724: UserWarning: No MSA provided for C, using single sequence mode
+  warnings.warn(
+{
+  "model": "esmfold2",
+  "ok": true,
+  "cap": 1024,
+  "weight_revision": "69869f737beffec5294845ede23db5fc0b4f509e",
+  "seconds": 24.717077521,
+  "cases": [
+    {
+      "id": "A1101_KTFPPTEPK_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1,
+        1024,
+        383
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 275
+        },
+        {
+          "id": "B",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 99
+        },
+        {
+          "id": "C",
+          "asym_id": 2,
+          "entity_id": 2,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "A1101_KTFPPTEPK_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1,
+        1024,
+        383
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 275
+        },
+        {
+          "id": "B",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 99
+        },
+        {
+          "id": "C",
+          "asym_id": 2,
+          "entity_id": 2,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "A0201_LLWNGPMAV_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1,
+        1024,
+        383
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 275
+        },
+        {
+          "id": "B",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 99
+        },
+        {
+          "id": "C",
+          "asym_id": 2,
+          "entity_id": 2,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B1501_ILGPPGSVY_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1,
+        1024,
+        383
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 275
+        },
+        {
+          "id": "B",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 99
+        },
+        {
+          "id": "C",
+          "asym_id": 2,
+          "entity_id": 2,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0702_IPRRNVATL_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_A",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_B",
+      "tokens": 383,
+      "msa_shape": [
+        1,
+        1024,
+        383
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 275
+        },
+        {
+          "id": "B",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 99
+        },
+        {
+          "id": "C",
+          "asym_id": 2,
+          "entity_id": 2,
+          "tokens": 9
+        }
+      ]
+    },
+    {
+      "id": "B0801_ELRRKMMYM_arm_C",
+      "tokens": 191,
+      "msa_shape": [
+        1,
+        1024,
+        191
+      ],
+      "chains": [
+        {
+          "id": "A",
+          "asym_id": 0,
+          "entity_id": 0,
+          "tokens": 182
+        },
+        {
+          "id": "C",
+          "asym_id": 1,
+          "entity_id": 1,
+          "tokens": 9
+        }
+      ]
+    }
+  ],
+  "control_checks": [
+    {
+      "complex_id": "A0201_LLWNGPMAV",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "msa_attention_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "A1101_KTFPPTEPK",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "msa_attention_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0702_IPRRNVATL",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "msa_attention_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B0801_ELRRKMMYM",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "msa_attention_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    },
+    {
+      "complex_id": "B1501_ILGPPGSVY",
+      "checks": {
+        "msa": true,
+        "deletion_value": true,
+        "has_deletion": true,
+        "deletion_mean": true,
+        "msa_attention_mask": true
+      },
+      "groove_msa_shape": [
+        1024,
+        182
+      ]
+    }
+  ],
+  "cgroup_peak_gb": null
+}
+Runner terminated.
+✓ App completed. View run at 
+https://modal.com/apps/a-cheparukhin/main/ap-lAi2XB8997D6kZPRDjM2wU
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 362, in hydrate_function
+    service = get_function_service(function_def, _client)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_container_entrypoint.py", line 340, in get_function_service
+    service = import_single_function_service(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/ectodomain_setup.py", line 6, in <module>
+    from esmfold_common import esmfold_image,esm_weights_vol,ESM_CACHE
+ModuleNotFoundError: No module named 'esmfold_common'
+Runner failed with exception: ModuleNotFoundError("No module named 'esmfold_common'")
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 362, in hydrate_function
+    service = get_function_service(function_def, _client)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_container_entrypoint.py", line 340, in get_function_service
+    service = import_single_function_service(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/ectodomain_setup.py", line 6, in <module>
+    from esmfold_common import esmfold_image,esm_weights_vol,ESM_CACHE
+ModuleNotFoundError: No module named 'esmfold_common'
+Function ectodomain_setup.boltz_preflight is crash-looping: containers are repeatedly failing to start.
+Runner failed with exception: ModuleNotFoundError("No module named 'esmfold_common'")
+Stopping app - user stopped from CLI.
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /Users/cheparukhin/ai_science_hack/modal_app/ectodomain_setup.py:74 in       │
+│ preflight                                                                    │
+│                                                                              │
+│   73 │   for model,handle in handles:                                        │
+│ ❱ 74 │   │   result=handle.get(); (dest/f'preflight_{model}.json').write_tex │
+│   75                                                                         │
+│                                                                              │
+│ /private/tmp/ectodomain-modal-env/lib/python3.12/site-packages/modal/_object │
+│ .py:49 in wrapped                                                            │
+│                                                                              │
+│    48 │   │   await self.hydrate()                                           │
+│ ❱  49 │   │   return await method(self, *args, **kwargs)                     │
+│    50                                                                        │
+│                                                                              │
+│ /private/tmp/ectodomain-modal-env/lib/python3.12/site-packages/modal/_functi │
+│ ons.py:2405 in get                                                           │
+│                                                                              │
+│   2404 │   │   """                                                           │
+│ ❱ 2405 │   │   return await self._invocation().poll_function(timeout=timeout │
+│   2406                                                                       │
+│                                                                              │
+│ /private/tmp/ectodomain-modal-env/lib/python3.12/site-packages/modal/_functi │
+│ ons.py:348 in poll_function                                                  │
+│                                                                              │
+│    347 │   │                                                                 │
+│ ❱  348 │   │   return await _process_result(                                 │
+│    349 │   │   │   response.outputs[0].result, response.outputs[0].data_form │
+│                                                                              │
+│ /private/tmp/ectodomain-modal-env/lib/python3.12/site-packages/modal/_utils/ │
+│ function_utils.py:574 in _process_result                                     │
+│                                                                              │
+│   573 │   │                                                                  │
+│ ❱ 574 │   │   raise RemoteError(result.exception)                            │
+│   575                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+RemoteError

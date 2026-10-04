@@ -3,8 +3,17 @@
 Measured 2026-10-03 on Modal. Design rationale in
 [docs/BOLTZ_PIPELINE.md](../docs/BOLTZ_PIPELINE.md).
 
-**Decision: Boltz-2 on A10** at $0.004 per complex. A 2,000-complex panel costs
+**Historical decision for the 191-residue, two-chain construct: Boltz-2 on A10**
+at $0.004 per complex. A 2,000-complex panel costs
 $8.00 (2% of the $330 ceiling) and finishes in 0.56 h at 10 workers.
+
+The new 383-residue ectodomain + beta2m + peptide workload follows
+[stage 4c](../HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
+and the [execution checklist](../docs/ECTODOMAIN_FOLDING_PLAN.md). Its pilot,
+memory requirements, throughput, and production costs are pending measurement.
+The values in this report remain the original two-chain results. The earlier
+recommendation to use Boltz-2 alone is superseded: stage 4c runs both models
+with the same constructs, prepared MSAs, pilot arms, and production cohort.
 
 > **Correction.** An earlier version of this report published $0.018/complex and
 > $37.00 per 2,000, measured with a harness that reloaded the model inside every
@@ -134,7 +143,7 @@ Caveat: cgroup counters were unreadable under Modal's gVisor sandbox, so 9.89 GB
 is the Boltz child process peak, not whole-container demand. Hence 16 GiB rather
 than 12.
 
-## ESMFold2 evaluated and rejected
+## ESMFold2 historical benchmark and superseded recommendation
 
 [ESMFold2](https://huggingface.co/biohub/ESMFold2) (Biohub, MIT, `esm==3.4.1.post1`)
 was benchmarked as an alternative engine: a diffusion structure predictor on
@@ -152,7 +161,8 @@ harness bug.
 | peptide CA RMSD, median (n=5) | **0.29 Å** | 0.68 Å |
 | poses > 0.5 Å (n=5) | **1/5** | 3/5 |
 
-**Verdict: stay on Boltz-2.** Three reasons:
+**Original recommendation: stay on Boltz-2; superseded by stage 4c.**
+The historical reasons were:
 
 - **The speed difference is unresolvable.** ESMFold2's 6.7 s sits inside Boltz's
   own 6.3–10.9 s between-container range on the same card. The apparent 5.8x
@@ -170,15 +180,17 @@ understate its true cost — at a 48 GiB host request its 2,000-panel goes from
 $8.69 to $9.67. The caveat is that safetensors are memory-mapped, so the
 26.7 GB of weight file pages count toward RSS without being anonymous
 allocations; the real requirement is lower than 45 GB but certainly above
-Boltz-2's. Resolving it would need a request-size sweep, which was not worth
-spending on a rejected engine.
+Boltz-2's. The original benchmark did not resolve this with a request-size
+sweep. The new matched-model plan requires remeasuring full-construct host
+memory and billed cost before production.
 
 Two findings worth keeping anyway:
 
-- **MSAs do not help ESMFold2 on pMHC.** With the same alignments Boltz-2 used,
+- **The small two-chain MSA test did not improve ESMFold2 poses.** With the same alignments Boltz-2 used,
   B1501 went 1.35 → 1.72 Å and A1101 was unchanged, while fold time rose 32%
-  (7.3 → 9.6 s). Single-sequence is strictly better here. Biohub's benchmarks
-  report MSA mode as stronger in general, so this is a pMHC-specific result.
+  (7.3 → 9.6 s). These cases favored single-sequence. They do not establish
+  an MSA policy for the new three-chain workload; the primary comparison
+  supplies the same prepared MSAs to both models.
 - **ESMFold2 exposes `pair_chains_iptm`**, the peptide-HLA interface ipTM that
   stage 5 lists as a confidence feature. Boltz-2 only gives a global ipTM. If
   that feature proves important, ESMFold2 is the cheaper source for it.
