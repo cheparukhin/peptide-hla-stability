@@ -1,7 +1,19 @@
-# Does a pretrained protein model earn its compute?
+# Antigen Presentation Stability: Sequence Is All You Need?
 
 **Peptide–HLA stability prediction — London AI × Science, Protein Engineering
 Track, 3–4 October 2026.**
+
+### Start here
+
+- **[The one-pager →](https://claude.ai/artifact/VDSMa967oxqnZNH6TnU6Cg)** — the
+  whole result in one scrolling page, with the intro animation. The fastest way
+  to see what we found.
+- **[pMHC-I Stability Explorer →](https://claude.ai/artifact/HzCqEa1HBXMKywcoNiN2tT)**
+  — browse the measured peptides for any of the 75 alleles, ordered by
+  half-life, with a rotatable 3D view of the peptide in the HLA groove.
+
+Everything below is the long form: the numbers, the guards on them, and the
+code.
 
 Your cells constantly shred their own proteins and display the fragments on the
 surface, held in a groove by an HLA molecule, so passing immune cells can check
@@ -121,7 +133,9 @@ Full register: [limitations.md](reports/limitations.md).
 | | |
 |---|---|
 | **[reports/REPORT.md](reports/REPORT.md)** | **The write-up.** Every claim sourced to the stage report behind it. Start here. |
-| [site/index.html](site/index.html) | One-page visual version, with the intro animation. |
+| [The one-pager](https://claude.ai/artifact/VDSMa967oxqnZNH6TnU6Cg) | Hosted visual version of the result (linked at the top). |
+| [pMHC-I Stability Explorer](https://claude.ai/artifact/HzCqEa1HBXMKywcoNiN2tT) | Interactive dataset browser (linked at the top). |
+| [site/index.html](site/index.html) | Local source for the one-pager, with the intro animation. |
 | [EVALUATION.md](EVALUATION.md) | The evaluation contract, frozen at stage 1. |
 | [reports/limitations.md](reports/limitations.md) | Everything to discount the result by. |
 | [reports/compute_ledger.md](reports/compute_ledger.md) | Every dollar and GPU-hour. |
