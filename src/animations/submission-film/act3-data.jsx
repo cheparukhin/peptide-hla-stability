@@ -432,7 +432,7 @@ function AD_Histogram({ t, d, L }) {
             </div>
             {d.floorRows != null && (
               <div style={{ font: `500 19px ${AD_FONT}`, color: AD_INK, opacity: 0.78, marginTop: 5, fontVariantNumeric: 'tabular-nums' }}>
-                {AD_fmt(d.floorRows)} measurements on the assay floor
+                {AD_fmt(d.floorRows)} measurements at the detection limit
               </div>
             )}
           </div>
@@ -543,13 +543,13 @@ function AD_Firewall({ t, s, L }) {
   let note = null;
   if (ch && ch.blocked && t >= ch.hit + 0.04) {
     note = { gx: AD_GATE[0], crim: true, op: AD_win(t, ch.hit + 0.04, ch.hit + 0.42, 0.12, 0.16),
-      big: `${ch.k} substitution${ch.k === 1 ? '' : 's'} — blocked`, small: `distance ${ch.k} ≤ 3 · one cluster, one split` };
+      big: `${ch.k} substitution${ch.k === 1 ? '' : 's'} — blocked`, small: `only ${ch.k} amino acid${ch.k === 1 ? '' : 's'} differ — too similar to separate` };
   } else if (ch && !ch.blocked) {
     if (ch.x > AD_GATE[1] - 40) {
       note = { gx: AD_GATE[1], crim: false, op: AD_win(t, AD_P0 + 0.70, 14.0, 0.28, 0.0),
-        big: `${ch.k} substitutions — admitted`, small: `distance ${ch.k} > 3 · a different cluster` };
+        big: `${ch.k} substitutions — admitted`, small: `${ch.k} amino acids differ — different enough to separate` };
     } else if (flash[0] > 0.02) {
-      note = { gx: AD_GATE[0], crim: false, op: flash[0], big: `distance ${ch.k} > 3`, small: 'the gate stays open' };
+      note = { gx: AD_GATE[0], crim: false, op: flash[0], big: `${ch.k} changes apart`, small: 'different enough — no block' };
     }
   }
   if (note) {                                  // keep the card inside the frame
@@ -708,7 +708,7 @@ function AD_Decision({ t, L }) {
           <AD_Txt x={AD_RX0 - 22} y={AD_RBASE} op={ax} size={17} color={AD_DIM} align="right">0.00</AD_Txt>
           <AD_Txt x={AD_RX0 - 22} y={AD_RLINE} op={tick} size={19} weight={600} color={AD_CRIM} align="right">+0.05</AD_Txt>
           <AD_Txt x={AD_RX0 + 12} y={AD_RBASE + 36} op={ax} size={17} color={AD_DIM} track="0.14em" caps>
-            gain over the baseline · median per-allele spearman
+            improvement over baseline · median per-allele Spearman correlation
           </AD_Txt>
           <div style={{
             position: 'absolute', left: AD_RX1, top: AD_RLINE - 36, opacity: lab,
@@ -719,7 +719,7 @@ function AD_Decision({ t, L }) {
               +0.05 median per-allele Spearman
             </div>
             <div style={{ font: `500 23px ${AD_FONT}`, color: AD_INK, opacity: 0.72, marginTop: 8 }}>
-              minimum worthwhile gain — frozen before scoring
+              minimum worthwhile improvement — locked in before scoring
             </div>
           </div>
           <AD_Txt x={(AD_RX0 + AD_RX1) / 2} y={AD_RLINE + 120} op={ghost * 0.75} size={23} color={AD_DIM} align="center">
@@ -746,10 +746,10 @@ function AD_Body({ T, t0, L }) {
   const word = (r && AD_WORDS[r]) ? AD_WORDS[r] : (r || '—');
   const caps = [];
   if (d.pairs != null) caps.push([0.90, 4.00, `${AD_fmt(d.pairs)} measured peptide–HLA half-lives.`]);
-  if (d.floor != null) caps.push([4.70, 8.00, `One in ${word} measurements — ${AD_pct(d.floor)} % — sits on the floor of the assay. Those are ties, not zeros.`]);
-  caps.push([8.60, 11.30, 'Train, validation and test are split by peptide, not by row.']);
-  caps.push([11.60, 14.00, 'Peptides within three substitutions cannot appear in different splits.']);
-  caps.push([15.00, 18.00, 'The bar is declared before any result exists.']);
+  if (d.floor != null) caps.push([4.70, 8.00, `One in ${word} measurements — ${AD_pct(d.floor)} % — recorded zero, the lowest the assay can report. These are tied at the detection limit, not truly zero.`]);
+  caps.push([8.60, 11.30, 'The data is split by peptide sequence, not by individual measurements.']);
+  caps.push([11.60, 14.00, 'Peptides three or fewer amino-acid changes apart are kept in the same split.']);
+  caps.push([15.00, 18.00, 'This threshold was locked in before any model was scored.']);
 
   return (
     <div data-act="act3-data" data-act-t={t.toFixed(2)} style={{

@@ -171,17 +171,17 @@ function AT6_rows(d) {
   const rows = [];
   if (d.random != null) rows.push({
     key: 'random', v: d.random, color: C.helix, dash: '6 7',
-    label: 'random scores', note: 'the scoring harness itself, fed noise',
+    label: 'random scores', note: 'the scoring setup itself, given random numbers',
     verdict: 'chance — the floor',
   });
   if (d.other != null) rows.push({
     key: 'other', v: d.other, color: '#1D3557', dash: null,
-    label: "other alleles' ligands as decoys", note: 'negatives that are themselves presented',
+    label: "other HLA types' peptides as decoys", note: 'decoy peptides that are real ligands of other HLA types',
     verdict: 'not just "looks presentable"',
   });
   if (d.wrong != null) rows.push({
     key: 'wrong', v: d.wrong, color: C.crimson, dash: null, collapse: true,
-    label: 'the WRONG HLA pseudosequence', note: 'same peptides, a different groove',
+    label: 'the WRONG HLA groove sequence', note: 'same peptides paired with the wrong HLA',
     // this row's verdict is the measured drop, drawn by the delta below
   });
   return rows;
@@ -319,8 +319,8 @@ function ActTransfer({ T, t0, L }) {
           </AT6Txt>
           <AT6Txt x={AT6_RX} y={424} op={tw(t, AT6_T.body, AT6_T.body + 0.5, Easing.linear)}
             size={29} weight={400} lh="1.5" width={900} wrap color="#3C3E52">
-            Trained on dissociation half-life alone and never retrained, it
-            ranked peptides recovered from living cells above matched decoys.
+            Trained only to predict how long peptides stay bound — and never
+            retrained — it ranked peptides recovered from living cells above matched decoys.
           </AT6Txt>
           <AT6Txt x={AT6_RX} y={576} op={tw(t, AT6_T.curve, AT6_T.curve + 0.4, Easing.linear)}
             size={108} weight={600} lh="1">
@@ -417,7 +417,7 @@ function ActTransfer({ T, t0, L }) {
             It learned the allele.
           </AT6Txt>
           <AT6Txt x={AT6_RX} y={972} op={tw(t, AT6_T.claim, AT6_T.claim + 0.5, Easing.linear)} size={25} color="#3C3E52">
-            Evidence it learned real biology — not dataset artefacts.
+            Evidence it learned real biology, not quirks of the training data.
           </AT6Txt>
           <AT6Txt x={AT6_P.x0} y={930} op={tw(t, AT6_T.ladder + 0.15, AT6_T.ladder + 0.55, Easing.linear)}
             size={20} color="#6A6C7A">
@@ -446,7 +446,7 @@ function ActTransfer({ T, t0, L }) {
           </div>
           <AT6Txt x={AT6_P.x0} y={930} size={18} color="#8A8B90"
             op={tw(t, AT6_T.curveEnd, AT6_T.curveEnd + 0.5, Easing.linear) * col1}>
-            curve shape drawn to the measured AUROC; per-allele medians
+            curve shape matches the measured AUROC; statistics are per-allele medians
           </AT6Txt>
         </div>
       )}

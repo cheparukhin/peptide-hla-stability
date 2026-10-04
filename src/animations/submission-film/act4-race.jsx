@@ -208,9 +208,9 @@ const RACE_LAND = 20.25;                   // the failure card
 // ── lanes ────────────────────────────────────────────────────────────────
 const RACE_PEP = 'SLLMWITQV';
 const RACE_LANES = [
-  { k: 'A', name: 'SEQUENCE', sub: 'peptide + 34 contact residues' },
-  { k: 'B', name: 'ESM-2 35M', sub: 'frozen embeddings, same positions' },
-  { k: 'C', name: 'BOLTZ-2', sub: 'one predicted complex per pair' },
+  { k: 'A', name: 'SEQUENCE', sub: 'peptide + 34 HLA binding-site residues' },
+  { k: 'B', name: 'ESM-2 35M', sub: 'frozen embeddings from the same residues' },
+  { k: 'C', name: 'BOLTZ-2', sub: 'one predicted 3-D structure per pair' },
 ];
 const RACE_CY = [350, 540, 730];                         // lane centre lines
 const RACE_HOME = [[RACE_L, 304], [RACE_L, 494], [RACE_L, 684]];
@@ -471,13 +471,13 @@ function ActRace({ T, t0, L }) {
   const ruleY = lerp(196, 232, mAvg);
 
   const caps = [
-    { at: 0.80, text: 'Three feature arms. One evaluation protocol.' },
-    { at: 3.40, text: 'Two of them read sequence. One predicts a structure for every pair.' },
-    { at: 5.70, text: 'The sequence arms finish on a laptop, for nothing.' },
+    { at: 0.80, text: 'Three approaches to features. One evaluation protocol.' },
+    { at: 3.40, text: 'Two of them read sequence. One predicts a 3-D structure for every pair.' },
+    { at: 5.70, text: 'The sequence models finish on a laptop, at no cost.' },
     { at: 8.90, text: foldsTotal
-      ? 'Boltz-2 folds the whole cohort — ' + raceInt(foldsTotal) + ' peptide–HLA complexes.'
-      : 'Boltz-2 folds the whole cohort.' },
-    { at: 13.60, text: 'Two workspaces, disjoint halves. The meter does not stop while it runs.' },
+      ? 'Boltz-2 predicts a structure for every pair — ' + raceInt(foldsTotal) + ' complexes.'
+      : 'Boltz-2 predicts a structure for every pair in the dataset.' },
+    { at: 13.60, text: 'Two parallel workers, each folding its own half of the dataset.' },
     { at: 16.80, text: 'This is the single largest cost in the project.' },
     { at: RACE_LAND + 0.25, text: 'The pipeline did not fail.', accent: 'The features did not help.' },
   ];
@@ -576,7 +576,7 @@ function ActRace({ T, t0, L }) {
           <div style={{ height: 1.5, background: RACE_RULE }} />
           <RaceStat label={'SPEND · USD' + (D.derived ? ' (DERIVED)' : '')} size={104} strong
             value={usdNow === null ? null : raceUSD(usdNow)}
-            note={D.derived ? 'realised container-hours × measured rate — not a provider bill' : null} />
+            note={D.derived ? 'derived from container hours and measured rate — not a direct bill' : null} />
           <div style={{ height: 1.5, background: RACE_RULE }} />
           <div style={{ display: 'flex', gap: 38, paddingTop: 14 }}>
             {gpuNow !== null && (

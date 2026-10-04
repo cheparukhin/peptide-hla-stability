@@ -56,16 +56,16 @@ const NX_ROWS = [
   {
     key: 'esmc', n: '01', glyph: 'concat',
     title: 'ESM-C with concatenated sequences',
-    body: 'Feed peptide–linker–MHC α1α2 into ESM-C as one sequence, so each partner is '
-        + 'represented in the context of the other.',
-    vs: 'encoding peptide and MHC separately',
+    body: 'Feed peptide and HLA binding domain into ESM-C as one joined sequence, '
+        + 'so each is represented in the context of the other.',
+    vs: 'encoding peptide and HLA separately',
   },
   {
     key: 'xattn', n: '02', glyph: 'cross',
     title: 'Separate embeddings + cross-attention',
-    body: 'Keep peptide and MHC embeddings separate, then add a trainable cross-attention '
-        + 'module linking peptide positions to groove positions.',
-    vs: 'concatenated embeddings + a small MLP',
+    body: 'Keep peptide and HLA embeddings separate, then add a trainable cross-attention '
+        + 'layer linking peptide positions to binding-groove positions.',
+    vs: 'concatenated embeddings fed through a small network',
   },
   {
     key: 'energy', n: '03', glyph: 'graph',

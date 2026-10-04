@@ -187,7 +187,7 @@ function CV_Rows({ t, rows, X, rowY, dom, base, L }) {
         const y = rowY(i);
         const weak = a.key === dom.key;
         const col = CV_INK;
-        const tag = weak ? 'the weaker encoding' : (a.key === base.key ? 'contact-residue baseline' : 'ESM-2 embeddings only');
+        const tag = weak ? 'the weaker input format' : (a.key === base.key ? 'binding-site baseline' : 'ESM-2 embeddings only');
         return (
           <g key={a.key} opacity={p}>
             <line x1={CV_X0} y1={y} x2={X(a.score)} y2={y} stroke={CV_INK} strokeWidth="1"
@@ -279,7 +279,7 @@ function CV_Interval({ t, D, X, rowY, iEsm, iBase, iDom, L }) {
       {L && D.covers && gp > 0.004 && (
         <CV_Tx x={(X(D.dom.score) + X(D.base.score)) / 2} y={y + 48} op={gp} size={19}
           color={CV_INK} anchor="middle" halo={7}>
-          {'one interval covers both marks'}
+          {'one confidence interval spans both scores'}
         </CV_Tx>
       )}
     </g>
@@ -329,12 +329,12 @@ function CV_Argument({ t, D, L }) {
       <CV_Line t={t} x={CV_L} y={CV_P1} size={28} weight={500}
         text={'1   ESM-2 is level with the baseline'} at={CVT.prem1} dimAt={CVT.strike1} />
       <CV_Line t={t} x={CV_L} y={CV_P2} size={28} weight={500}
-        text={'2   both clear the full-domain encoding'} at={CVT.prem2} dimAt={CVT.strike2} />
+        text={'2   both outperform the full-domain encoding'} at={CVT.prem2} dimAt={CVT.strike2} />
 
       {L && (
         <CV_Tx x={CV_R} y={CV_P1} op={tw(t, CVT.strike1 + 0.2, CVT.strike1 + 0.7, CV_LIN)} size={21}
           color={CV_INK} anchor="end">
-          {'level is not ahead' + (esmClause ? ' · ' + esmClause : '')}
+          {'tied is not ahead' + (esmClause ? ' · ' + esmClause : '')}
         </CV_Tx>
       )}
       {L && (
@@ -365,7 +365,7 @@ function CV_Argument({ t, D, L }) {
           </CV_Tx>
           {L && (
             <CV_Tx x={CV_L + 26} y={CV_SUB} op={tw(t, CVT.sub, CVT.sub + 0.5, CV_LIN)} size={21} color={CV_GREY}>
-              {'A fact about the weak encoding, not evidence for pretraining.'}
+              {'A fact about the weaker input, not evidence that pretraining helped.'}
             </CV_Tx>
           )}
         </g>

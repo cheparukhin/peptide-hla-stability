@@ -397,12 +397,12 @@ function AV_Gap({ topHi, th, xb, p, L, span }) {
 // at every L2 value tested, on validation. No number is invented for it.
 const AV_CTRL = [
   'A sequence-only control',
-  'through the identical',
-  'pipeline beats it at every',
-  'L2 value tested.',
+  'through the same pipeline',
+  'beats it at every',
+  'regularisation strength tested.',
 ];
 const AV_CTRL2 = [
-  'The loss is the structural',
+  'The problem is the structural',
   'features, not the tuning.',
 ];
 
@@ -545,14 +545,14 @@ function ActVerdict({ T, t0, L }) {
 
   const caps = [
     { at: 0.30, text: 'The rules were fixed before any modelling.' },
-    { at: 4.50, text: 'Nothing had been scored when this bar was set.' },
-    { at: AVT.bars, text: 'Six arms. One test set.', accent: 'Scored once.' },
-    { at: 8.30, text: 'Each bar carries its paired 95% interval.' },
-    { at: AVT.morphE + 0.15, text: 'Redrawn as a difference from the baseline sequence ensemble.' },
-    { at: 12.90, text: 'The ESM-2 arms neither replace nor improve the baseline.' },
-    { at: AVT.gap + 0.4, text: 'Every upper bound stops short of the line.', accent: 'No arm earns the switch.' },
-    { at: AVT.hold + 0.2, text: 'The structural arm is not merely no better —', accent: 'its whole interval is below zero.' },
-    { at: AVT.ctrl + 0.25, text: 'Not a tuning artefact —', accent: 'the loss is the structural features.' },
+    { at: 4.50, text: 'No model had been scored when this threshold was set.' },
+    { at: AVT.bars, text: 'Six approaches. One test set.', accent: 'Scored once.' },
+    { at: 8.30, text: 'Each result carries a 95% confidence interval from paired resampling.' },
+    { at: AVT.morphE + 0.15, text: 'Redrawn as a difference from the baseline.' },
+    { at: 12.90, text: 'The ESM-2 approaches neither replace nor improve the baseline.' },
+    { at: AVT.gap + 0.4, text: 'Every confidence interval falls short of the threshold.', accent: 'No approach justifies switching.' },
+    { at: AVT.hold + 0.2, text: 'The structural approach is not just no better —', accent: 'its entire interval is below zero.' },
+    { at: AVT.ctrl + 0.25, text: 'Not a tuning problem —', accent: 'the structural features themselves are what hurt.' },
   ];
 
   const headA = (1 - m) * fade * frameP, headB = m * fade;
@@ -562,10 +562,10 @@ function ActVerdict({ T, t0, L }) {
       <svg width="1920" height="1080" style={{ position: 'absolute', inset: 0 }}>
         <line x1={AV_L} y1="150" x2={AV_R} y2="150" stroke={AV_INK} strokeWidth="1" opacity={0.25 * fade} />
         <AV_Tx x={AV_L} y={AV_BAND} op={headA} size={18} color={AV_GREY} track="0.18em">
-          {'TEST ρ · MEDIAN PER ALLELE · ' + n + ' ARMS'}
+          {'TEST CORRELATION · MEDIAN PER ALLELE · ' + n + ' APPROACHES'}
         </AV_Tx>
         <AV_Tx x={AV_L} y={AV_BAND} op={headB} size={18} color={AV_GREY} track="0.18em">
-          {'Δ ρ VS THE BASELINE · 95% PAIRED CI'}
+          {'DIFFERENCE FROM BASELINE · 95% PAIRED CI'}
         </AV_Tx>
         <AV_Axis m={m} amax={amax} xa={xa} dmin={dmin} dmax={dmax} xb={xb} frameP={frameP} />
         {labels && <AV_Declare t={t} th={th} out={declOut} ctx={ctx} />}

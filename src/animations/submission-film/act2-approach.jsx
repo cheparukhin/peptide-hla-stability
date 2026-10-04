@@ -69,10 +69,10 @@ const APT = {
 const AP_FAMS = [
   {
     id: 'I', label: 'SEQUENCE', mark: 'square',
-    desc: 'learned from the labels alone',
+    desc: 'trained on measured half-lives alone',
     arms: [
-      { n: 'Allele-mean', q: 'sanity floor' },
-      { n: 'Single sequence MLP', q: 'peptide + HLA contact residues' },
+      { n: 'Allele-mean', q: 'sanity check' },
+      { n: 'Single sequence MLP', q: 'peptide + HLA binding-site residues' },
       { n: 'Sequence ensemble', q: '30 networks' },
     ],
   },
@@ -87,7 +87,7 @@ const AP_FAMS = [
   },
   {
     id: 'III', label: 'STRUCTURE & ENERGY', mark: 'diamond',
-    desc: 'features from a predicted 3-D complex',
+    desc: 'features from predicted 3-D structures',
     arms: [
       { n: 'Boltz-2 structure', q: 'geometry only' },
       { n: 'Boltz-2 structure', q: 'confidence only' },
@@ -313,12 +313,12 @@ function ActApproach({ T, t0, L }) {
               </AP_Tx>
             </g>
             <AP_Tx x={AP_MID} y={AP_SUBY} op={subP} size={26} weight={400} color={AP_GREY} anchor="middle">
-              {'the same rows  ·  the same 30-network ensembling  ·  an equal tuning budget'}
+              {'same data  ·  same 30-network ensembling  ·  equal tuning budget'}
             </AP_Tx>
             <AP_Tx x={AP_MID} y={AP_FOOTY} op={footP * 0.95} size={21} weight={400}
               color={AP_FAINT_TX} anchor="middle">
-              {apCap(apWord(tested)) + ' of the ten were carried to the held-out test —'
-                + ' FoldX and ESM-2 150M were not.'}
+              {apCap(apWord(tested)) + ' of the ten advanced to the held-out test.'
+                + ' FoldX and ESM-2 150M did not.'}
             </AP_Tx>
           </g>
         )}

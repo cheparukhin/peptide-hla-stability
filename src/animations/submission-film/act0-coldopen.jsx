@@ -21,8 +21,8 @@
 const TITLE_KICKER = 'ANTIGEN PRESENTATION STABILITY';
 const TITLE_QUESTION = 'Sequence Is All You Need?';
 const TLDR = [
-  'We tested language-model embeddings and predicted structures against',
-  'a supervised model trained on sequences.',
+  'We tested protein language-model embeddings and predicted 3-D structures',
+  'against a baseline trained on sequences alone.',
   'None of them won.',
 ];
 
@@ -164,8 +164,8 @@ const TASK_GROUP_COLOR = { koff: C.crimson, kon: C.tcrA };
 // subscript, so a shared left edge also aligns the two equals signs.
 const TASK_LABEL_RIGHT = 1012, TASK_FORM_X = 1092;
 const TASK_ROWS = [
-  { y: 498, label: 'Stability — how long it stays bound', tokens: FORM_HALF },
-  { y: 624, label: 'Affinity — how readily it binds',     tokens: FORM_AFF },
+  { y: 498, label: 'Stability — how long a peptide stays bound', tokens: FORM_HALF },
+  { y: 624, label: 'Affinity — how tightly it binds overall',   tokens: FORM_AFF },
 ];
 
 // An inline k_off / k_on for the prose lines, coloured to match the formulas.
@@ -258,8 +258,8 @@ function ActQuestion({ T, t0, L }) {
       {/* The distinction, stated once. Colour carries the link to the formulas. */}
       <div style={{ position: 'absolute', left: 0, right: 0, top: 790, textAlign: 'center', opacity: tieP,
         font: `400 30px ${FONT}`, color: C.ink, lineHeight: 1.5 }}>
-        Both depend on <Chem sym="k" sub="off" color={C.crimson} />. Affinity also divides it by{' '}
-        <Chem sym="k" sub="on" color={C.tcrA} /> — half-life does not.
+        Both use the dissociation rate <Chem sym="k" sub="off" color={C.crimson} />. Affinity also divides by{' '}
+        the binding rate <Chem sym="k" sub="on" color={C.tcrA} /> — half-life does not.
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, top: 862, textAlign: 'center', opacity: closeP,
         font: `400 30px ${FONT}`, color: '#4A4C5E', lineHeight: 1.5 }}>
