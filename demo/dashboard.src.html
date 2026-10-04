@@ -85,15 +85,17 @@ body {
   font-family: var(--ui);
   font-size: 15px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
 
 .shell {
-  max-width: 1360px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-block: 0 56px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-block: 0 48px;
 }
 
 /* ---------------- masthead ---------------- */
@@ -103,24 +105,25 @@ body {
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 14px 28px;
-  padding-block: 28px 18px;
+  gap: 12px 32px;
+  padding-block: 32px 20px;
   border-bottom: 1px solid var(--rule);
 }
 .masthead h1 {
-  font-size: clamp(22px, 3vw, 36px);
-  line-height: 1.12;
-  letter-spacing: -.025em;
+  font-size: clamp(22px, 2.8vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -.02em;
   font-weight: 700;
   margin: 0;
-  max-width: 20ch;
+  max-width: 22ch;
+  text-wrap: balance;
 }
 .standfirst {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: var(--ink-2);
-  max-width: 54ch;
+  max-width: 56ch;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 .masthead-side {
   display: flex;
@@ -132,23 +135,24 @@ body {
   font-family: var(--ui);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: .01em;
+  letter-spacing: .02em;
   color: var(--ink-2);
   background: var(--panel);
   border: 1px solid var(--rule);
   border-radius: 8px;
-  padding: 7px 14px;
+  padding: 7px 16px;
   min-height: 34px;
   cursor: pointer;
-  transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease);
+  transition: border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease);
 }
-.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); }
+.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.ghost:active { transform: scale(.97); }
 
 /* ---------------- the three tiers ---------------- */
 
 .tiers {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) minmax(0, 1.42fr);
+  grid-template-columns: 244px minmax(0, 1fr) minmax(0, 1.45fr);
   grid-template-rows: minmax(560px, calc(100vh - 200px));
   gap: 0;
   margin-top: 20px;
@@ -156,8 +160,11 @@ body {
   border: 1px solid var(--rule);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.03);
-  transition: box-shadow .3s var(--ease);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.02),
+    0 2px 4px rgba(0,0,0,.03),
+    0 8px 24px rgba(0,0,0,.04);
+  transition: box-shadow .4s var(--ease);
 }
 .tier {
   display: flex;
@@ -182,23 +189,23 @@ body {
   z-index: 1;
 }
 .tier-top h2 {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: .02em;
+  letter-spacing: .06em;
   text-transform: uppercase;
   margin: 0;
-  color: var(--ink-2);
+  color: var(--ink-3);
 }
 .tally {
   font-family: var(--seq);
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .sieve {
-  margin: 10px 14px 2px;
+  margin: 10px 14px 4px;
   width: calc(100% - 28px);
   font-family: var(--ui);
   font-size: 13px;
@@ -208,14 +215,14 @@ body {
   border-radius: 8px;
   padding: 8px 12px;
   min-height: 36px;
-  transition: border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+  transition: border-color .25s var(--ease), background .25s var(--ease), box-shadow .3s var(--ease);
 }
-.sieve::placeholder { color: var(--ink-3); }
+.sieve::placeholder { color: var(--ink-3); opacity: .7; }
 .sieve:focus {
   border-color: var(--pick);
   background: var(--panel);
   outline: none;
-  box-shadow: 0 0 0 3px var(--pick-soft);
+  box-shadow: 0 0 0 3px var(--pick-soft), 0 1px 2px rgba(0,0,0,.04);
 }
 
 .scroller {
@@ -238,18 +245,18 @@ body {
   background: none;
   border: 0;
   border-radius: 8px;
-  padding: 9px 10px;
+  padding: 10px 12px;
   cursor: pointer;
   font-family: var(--ui);
   color: var(--ink);
   position: relative;
-  transition: background .18s var(--ease), transform .15s var(--ease);
+  transition: background .22s var(--ease), transform .18s var(--ease), box-shadow .22s var(--ease);
 }
 .allele:hover { background: var(--sunk); }
 .allele:active { transform: scale(.985); }
 .allele[aria-pressed="true"] {
   background: var(--pick-sunk);
-  animation: fadeSelect .28s var(--ease);
+  animation: fadeSelect .32s var(--ease);
 }
 .allele[aria-pressed="true"]::before {
   content: "";
@@ -258,7 +265,8 @@ body {
   width: 3px;
   border-radius: 1.5px;
   background: var(--pick);
-  animation: slideIn .25s var(--ease);
+  animation: slideIn .3s var(--ease);
+  transform-origin: center top;
 }
 .allele-name {
   font-family: var(--seq);
@@ -278,14 +286,14 @@ body {
   display: flex;
   gap: 1px;
   margin-top: 6px;
-  height: 4px;
-  border-radius: 2px;
+  height: 3px;
+  border-radius: 1.5px;
   overflow: hidden;
 }
 .strip i {
   flex: 1;
   display: block;
-  transition: opacity .25s var(--ease);
+  transition: opacity .3s var(--ease);
 }
 
 /* ---------------- tier 2: ranked peptides ---------------- */
@@ -293,24 +301,24 @@ body {
 .rank {
   width: 100%;
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) auto;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
   text-align: left;
   background: none;
   border: 0;
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   cursor: pointer;
   font-family: var(--ui);
   color: var(--ink);
-  transition: background .18s var(--ease), transform .15s var(--ease);
+  transition: background .22s var(--ease), transform .18s var(--ease);
 }
 .rank:hover { background: var(--sunk); }
-.rank:active { transform: scale(.99); }
+.rank:active { transform: scale(.992); }
 .rank[aria-pressed="true"] {
   background: var(--pick-sunk);
-  animation: fadeSelect .28s var(--ease);
+  animation: fadeSelect .32s var(--ease);
 }
 .rank-ord {
   font-family: var(--seq);
@@ -328,12 +336,12 @@ body {
   display: block;
 }
 .bar {
-  height: 4px;
-  border-radius: 2px;
+  height: 3px;
+  border-radius: 1.5px;
   margin-top: 5px;
   background: var(--h2);
   min-width: 2px;
-  transition: width .35s var(--ease);
+  transition: width .4s var(--ease), background .3s var(--ease);
 }
 .rank-val {
   font-family: var(--seq);
@@ -349,6 +357,7 @@ body {
   width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--pick);
+  box-shadow: 0 0 0 2px var(--pick-soft);
 }
 
 /* ---------------- tier 3: structure ---------------- */
@@ -370,25 +379,26 @@ body {
   width: 100%;
   height: 100%;
   opacity: 0;
-  animation: canvasFade .6s var(--ease) .1s forwards;
+  animation: canvasFade .8s var(--ease) .15s forwards;
 }
 
 .stage-caption {
   position: absolute;
-  left: 14px; bottom: 12px; right: 14px;
+  left: 16px; bottom: 14px; right: 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 12px;
+  gap: 4px 10px;
   pointer-events: none;
 }
 .stage-caption b {
   font-family: var(--seq);
   font-size: 13px;
   font-weight: 600;
+  letter-spacing: .03em;
   color: var(--ink);
 }
-.stage-caption span { font-size: 11px; color: var(--ink-3); }
+.stage-caption span { font-size: 11px; color: var(--ink-3); letter-spacing: .01em; }
 
 .readouts {
   display: grid;
@@ -402,19 +412,19 @@ body {
 }
 .readouts > div:last-child { border-right: 0; }
 .readouts dt {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .04em;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-3);
   margin: 0;
 }
 .readouts dd {
   font-family: var(--seq);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  margin: 2px 0 0;
+  margin: 3px 0 0;
 }
 
 .stub {
@@ -431,27 +441,29 @@ body {
 /* ---------------- footnote ---------------- */
 
 .footnote {
-  margin-top: 14px;
+  margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 24px;
+  gap: 8px 28px;
   align-items: baseline;
   font-size: 12px;
   color: var(--ink-3);
+  line-height: 1.6;
 }
 .footnote p { margin: 0; max-width: 72ch; }
 .footnote a {
   color: var(--pick);
   text-decoration: none;
+  transition: color .2s var(--ease);
 }
 .footnote a:hover { text-decoration: underline; }
 .footnote code {
   font-family: var(--seq);
-  font-size: 11px;
+  font-size: 10.5px;
   background: var(--sunk);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: 1px 5px;
+  padding: 2px 6px;
   color: var(--ink-2);
 }
 
@@ -459,14 +471,14 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--ink-3);
 }
 .ramp {
   display: flex;
-  width: 80px;
-  height: 5px;
-  border-radius: 3px;
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
   overflow: hidden;
 }
 .ramp i { flex: 1; }
@@ -474,16 +486,17 @@ body {
 /* ---------------- animations ---------------- */
 
 @keyframes fadeSelect {
-  from { opacity: .6; }
-  to   { opacity: 1; }
+  0%   { opacity: .55; transform: scale(.995); }
+  100% { opacity: 1;   transform: scale(1); }
 }
 @keyframes slideIn {
-  from { transform: scaleY(0); opacity: 0; }
-  to   { transform: scaleY(1); opacity: 1; }
+  0%   { transform: scaleY(0); opacity: 0; }
+  60%  { transform: scaleY(1.05); opacity: .9; }
+  100% { transform: scaleY(1); opacity: 1; }
 }
 @keyframes canvasFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  0%   { opacity: 0; transform: scale(.98); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 /* ---------------- responsive ---------------- */
@@ -773,13 +786,15 @@ body {
         var b = bonds[o.i];
         var a0 = atoms[b[0]], p0 = pr[b[0]], p1 = pr[b[1]];
         var isPep = a0.chain === 'P';
-        var fog = Math.max(0.18, Math.min(1, (o.d + 16) / 30));
+        // smoother depth fog with wider range
+        var fog = Math.max(0.12, Math.min(1, (o.d + 18) / 34));
 
-        ctx.globalAlpha = isPep ? 1 : 0.22 + fog * 0.48;
+        ctx.globalAlpha = isPep ? 1 : 0.15 + fog * 0.55;
         ctx.strokeStyle = isPep ? (pepColour || colours.pep)
                         : (a0.chain === 'S' ? colours.floor : colours.scaffold);
-        ctx.lineWidth = (isPep ? 5.5 : 2.4) * p0.k;
+        ctx.lineWidth = (isPep ? 5.5 : (a0.chain === 'S' ? 1.8 : 2.6)) * p0.k;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
         ctx.moveTo(p0.sx, p0.sy);
         ctx.lineTo(p1.sx, p1.sy);
@@ -794,13 +809,25 @@ body {
       pepIdx.forEach(function (i, k) {
         var p = pr[i];
         var anchor = (k === 1 || k === n - 1);
+        var r = (anchor ? 7.8 : 5) * p.k;
         ctx.globalAlpha = 1;
+
+        // subtle glow behind peptide nodes
+        if (anchor) {
+          ctx.beginPath();
+          ctx.arc(p.sx, p.sy, r + 4, 0, Math.PI * 2);
+          ctx.fillStyle = (pepColour || colours.pep);
+          ctx.globalAlpha = 0.12;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
         ctx.beginPath();
-        ctx.arc(p.sx, p.sy, (anchor ? 7.4 : 5.2) * p.k, 0, Math.PI * 2);
+        ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2);
         ctx.fillStyle = anchor ? colours.anchor : (pepColour || colours.pep);
         ctx.fill();
         if (anchor) {
-          ctx.lineWidth = 2 * p.k;
+          ctx.lineWidth = 2.2 * p.k;
           ctx.strokeStyle = colours.bg;
           ctx.stroke();
         }
