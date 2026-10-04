@@ -1,0 +1,1038 @@
+<title>Groove</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  color-scheme: light;
+
+  --paper:    #F5F7F9;
+  --panel:    #FFFFFF;
+  --sunk:     #EDF1F4;
+  --ink:      #1A2433;
+  --ink-2:    #4F6070;
+  --ink-3:    #8494A3;
+  --rule:     #DDE4EA;
+  --rule-2:   #B8C5CF;
+
+  /* selection / interaction accent */
+  --pick:     #4338CA;
+  --pick-soft:#EEF2FF;
+  --pick-sunk:#E0E7FF;
+  --pick-ink: #FFFFFF;
+
+  /* half-life ramp: pale = unstable, deep = holds */
+  --h0: #E8F4F8;
+  --h1: #9DD1DF;
+  --h2: #4DA8C4;
+  --h3: #1A7A9B;
+  --h4: #0B4D6C;
+
+  --ui:   'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --seq:  'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --ease: cubic-bezier(.23, 1, .32, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper:  #0C1117;
+    --panel:  #141C24;
+    --sunk:   #1A242E;
+    --ink:    #E4ECF2;
+    --ink-2:  #A0B0BD;
+    --ink-3:  #6E7F8E;
+    --rule:   #243040;
+    --rule-2: #364858;
+    --pick:     #818CF8;
+    --pick-soft:#1E1B4B;
+    --pick-sunk:#272360;
+    --pick-ink: #0C0A2A;
+    --h0: #152830;
+    --h1: #1C4E62;
+    --h2: #358CA8;
+    --h3: #62BDD6;
+    --h4: #A6DCEC;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper:  #0C1117;
+  --panel:  #141C24;
+  --sunk:   #1A242E;
+  --ink:    #E4ECF2;
+  --ink-2:  #A0B0BD;
+  --ink-3:  #6E7F8E;
+  --rule:   #243040;
+  --rule-2: #364858;
+  --pick:     #818CF8;
+  --pick-soft:#1E1B4B;
+  --pick-sunk:#272360;
+  --pick-ink: #0C0A2A;
+  --h0: #152830;
+  --h1: #1C4E62;
+  --h2: #358CA8;
+  --h3: #62BDD6;
+  --h4: #A6DCEC;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+.shell {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-block: 0 56px;
+}
+
+/* ---------------- masthead ---------------- */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 28px;
+  padding-block: 28px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.masthead h1 {
+  font-size: clamp(22px, 3vw, 36px);
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  font-weight: 700;
+  margin: 0;
+  max-width: 20ch;
+}
+.standfirst {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  max-width: 54ch;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.masthead-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ghost {
+  font-family: var(--ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--ink-2);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 7px 14px;
+  min-height: 34px;
+  cursor: pointer;
+  transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease);
+}
+.ghost:hover { border-color: var(--rule-2); color: var(--ink); background: var(--sunk); }
+
+/* ---------------- the three tiers ---------------- */
+
+.tiers {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) minmax(0, 1.42fr);
+  grid-template-rows: minmax(560px, calc(100vh - 200px));
+  gap: 0;
+  margin-top: 20px;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.03);
+  transition: box-shadow .3s var(--ease);
+}
+.tier {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--rule);
+}
+.tier:last-child { border-right: 0; }
+
+.tier-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.tier-top h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--ink-2);
+}
+.tally {
+  font-family: var(--seq);
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sieve {
+  margin: 10px 14px 2px;
+  width: calc(100% - 28px);
+  font-family: var(--ui);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--sunk);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 36px;
+  transition: border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+}
+.sieve::placeholder { color: var(--ink-3); }
+.sieve:focus {
+  border-color: var(--pick);
+  background: var(--panel);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--pick-soft);
+}
+
+.scroller {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 12px;
+  min-height: 0;
+  scroll-behavior: smooth;
+}
+.scroller::-webkit-scrollbar { width: 5px; }
+.scroller::-webkit-scrollbar-track { background: transparent; }
+.scroller::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 3px; }
+
+/* ---------------- tier 1: alleles ---------------- */
+
+.allele {
+  width: 100%;
+  display: block;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 10px;
+  cursor: pointer;
+  font-family: var(--ui);
+  color: var(--ink);
+  position: relative;
+  transition: background .18s var(--ease), transform .15s var(--ease);
+}
+.allele:hover { background: var(--sunk); }
+.allele:active { transform: scale(.985); }
+.allele[aria-pressed="true"] {
+  background: var(--pick-sunk);
+  animation: fadeSelect .28s var(--ease);
+}
+.allele[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 3px;
+  border-radius: 1.5px;
+  background: var(--pick);
+  animation: slideIn .25s var(--ease);
+}
+.allele-name {
+  font-family: var(--seq);
+  font-size: 12.5px;
+  font-weight: 600;
+  display: block;
+}
+.allele-sub {
+  font-size: 11px;
+  color: var(--ink-3);
+  display: block;
+  margin-top: 2px;
+}
+
+/* distribution strip */
+.strip {
+  display: flex;
+  gap: 1px;
+  margin-top: 6px;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.strip i {
+  flex: 1;
+  display: block;
+  transition: opacity .25s var(--ease);
+}
+
+/* ---------------- tier 2: ranked peptides ---------------- */
+
+.rank {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-family: var(--ui);
+  color: var(--ink);
+  transition: background .18s var(--ease), transform .15s var(--ease);
+}
+.rank:hover { background: var(--sunk); }
+.rank:active { transform: scale(.99); }
+.rank[aria-pressed="true"] {
+  background: var(--pick-sunk);
+  animation: fadeSelect .28s var(--ease);
+}
+.rank-ord {
+  font-family: var(--seq);
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.rank-body { min-width: 0; }
+.rank-seq {
+  font-family: var(--seq);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  display: block;
+}
+.bar {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 5px;
+  background: var(--h2);
+  min-width: 2px;
+  transition: width .35s var(--ease);
+}
+.rank-val {
+  font-family: var(--seq);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.solved {
+  display: inline-block;
+  vertical-align: 1px;
+  margin-left: 6px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--pick);
+}
+
+/* ---------------- tier 3: structure ---------------- */
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  background: var(--sunk);
+  touch-action: none;
+  cursor: grab;
+  transition: background .3s var(--ease);
+}
+.stage:active { cursor: grabbing; }
+.stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: canvasFade .6s var(--ease) .1s forwards;
+}
+
+.stage-caption {
+  position: absolute;
+  left: 14px; bottom: 12px; right: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  pointer-events: none;
+}
+.stage-caption b {
+  font-family: var(--seq);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.stage-caption span { font-size: 11px; color: var(--ink-3); }
+
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  border-top: 1px solid var(--rule);
+}
+.readouts > div {
+  padding: 10px 14px;
+  border-right: 1px solid var(--rule);
+  min-width: 0;
+}
+.readouts > div:last-child { border-right: 0; }
+.readouts dt {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+}
+.readouts dd {
+  font-family: var(--seq);
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0 0;
+}
+
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+/* ---------------- footnote ---------------- */
+
+.footnote {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: baseline;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.footnote p { margin: 0; max-width: 72ch; }
+.footnote a {
+  color: var(--pick);
+  text-decoration: none;
+}
+.footnote a:hover { text-decoration: underline; }
+.footnote code {
+  font-family: var(--seq);
+  font-size: 11px;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--ink-2);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.ramp {
+  display: flex;
+  width: 80px;
+  height: 5px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ramp i { flex: 1; }
+
+/* ---------------- animations ---------------- */
+
+@keyframes fadeSelect {
+  from { opacity: .6; }
+  to   { opacity: 1; }
+}
+@keyframes slideIn {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+@keyframes canvasFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------------- responsive ---------------- */
+
+@media (max-width: 1080px) {
+  .tiers { grid-template-columns: 210px minmax(0, 1fr); }
+  .tier-structure {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--rule);
+    border-right: 0;
+  }
+}
+@media (max-width: 680px) {
+  .tiers {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .tier { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .tier:last-child { border-bottom: 0; }
+  .tier-alleles .scroller { max-height: 232px; }
+  .tier-peptides .scroller { max-height: 300px; }
+  .stage { min-height: 320px; }
+  .masthead { padding-block: 20px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+  .stage canvas { opacity: 1; animation: none; }
+}
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div>
+      <h1>Which peptides does an HLA allele hold on to?</h1>
+      <p class="standfirst">
+        Every measured peptide for 75 HLA-I alleles, ranked by how long it stays bound, with the
+        groove that holds it.
+      </p>
+    </div>
+    <div class="masthead-side">
+      <button class="ghost" id="theme" type="button" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <div class="tiers">
+
+    <section class="tier tier-alleles" aria-label="Alleles">
+      <div class="tier-top">
+        <h2>Alleles</h2>
+        <span class="tally" id="tally-allele"></span>
+      </div>
+      <input class="sieve" id="sieve-allele" type="search" placeholder="Find an allele" aria-label="Find an allele">
+      <div class="scroller" id="list-allele"></div>
+    </section>
+
+    <section class="tier tier-peptides" aria-label="Peptides">
+      <div class="tier-top">
+        <h2 id="pep-heading">Peptides</h2>
+        <span class="tally" id="tally-pep"></span>
+      </div>
+      <input class="sieve" id="sieve-pep" type="search" placeholder="Find a peptide" aria-label="Find a peptide">
+      <div class="scroller" id="list-pep"></div>
+    </section>
+
+    <section class="tier tier-structure" aria-label="Structure">
+      <div class="tier-top">
+        <h2>Structure</h2>
+        <span class="tally" id="tally-struct"></span>
+      </div>
+      <div class="stage" id="stage">
+        <canvas id="canvas"></canvas>
+        <div class="stage-caption">
+          <b id="cap-seq"></b>
+          <span id="cap-note">Drag to rotate</span>
+        </div>
+      </div>
+      <dl class="readouts" id="readouts"></dl>
+    </section>
+
+  </div>
+
+  <div class="footnote">
+    <div class="legend">
+      <span>Half-life</span>
+      <span class="ramp" aria-hidden="true"><i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i></span>
+      <span>short to long</span>
+    </div>
+    <p id="provenance"></p>
+  </div>
+
+</div>
+
+<script src="payload.js"></script>
+<script>
+/* =========================================================================
+   Groove - three-tier dashboard
+   Tier 1 allele  ->  Tier 2 peptides ranked by half-life  ->  Tier 3 structure
+
+   The structure tier is a self-contained canvas renderer with no external
+   dependency. It draws a schematic MHC class I groove: two flanking helices,
+   a beta-sheet floor, and the selected peptide between them.
+
+   SWAPPING IN REAL COORDINATES
+   ----------------------------
+   Structure3D.load(atoms) takes an array of:
+       { x, y, z, chain, resi, el }
+   chain 'P' is drawn as the peptide and coloured by half-life; everything
+   else is drawn as scaffold. Parse a CIF/PDB into that shape and call load().
+   Structure3D.schematic(peptideSeq) regenerates the placeholder geometry.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var D = window.__DATA__;
+  if (!D) return;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  /* ---- half-life scale -------------------------------------------------
+     Half-lives span minutes to days, so rank on log1p and bucket into the
+     five ramp stops. Scale is per allele: the question is which peptides
+     THIS allele holds longest. */
+  var RAMP = ['--h0', '--h1', '--h2', '--h3', '--h4'];
+  function norm(t, max) {
+    if (t == null || max == null || max <= 0) return 0;
+    return Math.min(1, Math.log1p(Math.max(t, 0)) / Math.log1p(max));
+  }
+  function rampVar(f) {
+    return RAMP[Math.min(RAMP.length - 1, Math.max(0, Math.round(f * (RAMP.length - 1))))];
+  }
+  function hours(t) {
+    if (t == null) return 'n/a';
+    if (t === 0) return '0 h';
+    if (t < 1) return (t * 60).toFixed(0) + ' min';
+    return (t >= 10 ? t.toFixed(0) : t.toFixed(1)) + ' h';
+  }
+
+  /* =======================================================================
+     Structure3D - dependency-free canvas renderer
+     ===================================================================== */
+  var Structure3D = (function () {
+    var cv, ctx, stage;
+    var atoms = [], bonds = [];
+    var yaw = -0.5, pitch = -0.22, spin = 0, spinning = true;
+    var targetSpin = 0;       // for momentum deceleration
+    var spinVel = 0.003;      // radians per frame - smooth idle rate
+    var W = 0, H = 0, dpr = 1;
+    var reduce = window.matchMedia &&
+                 window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function helix(axis, radius, phase, turns, n, lift) {
+      var pts = [];
+      for (var i = 0; i < n; i++) {
+        var f = i / (n - 1);
+        var a = phase + f * turns * Math.PI * 2;
+        pts.push({
+          x: -19 + f * 38,
+          y: lift + Math.sin(a) * radius,
+          z: axis + Math.cos(a) * radius
+        });
+      }
+      return pts;
+    }
+
+    /* Placeholder geometry. Shape only - not predicted coordinates. */
+    function schematic(seq) {
+      var A = [], B = [];
+      function chainOf(pts, chain, el) {
+        var base = A.length;
+        pts.forEach(function (p, i) {
+          A.push({ x: p.x, y: p.y, z: p.z, chain: chain, resi: i + 1, el: el });
+          if (i) B.push([base + i - 1, base + i]);
+        });
+      }
+
+      chainOf(helix(8.4, 2.2, 0, 5.2, 46, 3.4), 'A', 'C');     // alpha1
+      chainOf(helix(-8.4, 2.2, 1.6, 5.2, 46, 3.4), 'B', 'C');  // alpha2
+
+      for (var s = 0; s < 8; s++) {                            // beta floor
+        var z = -7.4 + s * 2.1;
+        var strand = [];
+        for (var k = 0; k < 13; k++) {
+          strand.push({
+            x: -18 + k * 3,
+            y: -4.1 + Math.sin(k * 0.9 + s) * 0.5,
+            z: z
+          });
+        }
+        chainOf(strand, 'S', 'C');
+      }
+
+      var n = (seq || 'XXXXXXXXX').length;                     // peptide
+      var pep = [];
+      for (var i = 0; i < n; i++) {
+        var f = n > 1 ? i / (n - 1) : 0.5;
+        pep.push({
+          x: -13 + f * 26,
+          y: 0.5 + Math.sin(f * Math.PI) * 2.3,
+          z: Math.sin(f * Math.PI * 2) * 0.7
+        });
+      }
+      chainOf(pep, 'P', 'P');
+      load(A, B);
+    }
+
+    function load(nextAtoms, nextBonds) {
+      atoms = nextAtoms || [];
+      if (nextBonds) { bonds = nextBonds; return; }
+      bonds = [];
+      for (var i = 1; i < atoms.length; i++) {
+        var a = atoms[i - 1], b = atoms[i];
+        if (a.chain !== b.chain) continue;
+        var d = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+        if (d < 5) bonds.push([i - 1, i]);
+      }
+    }
+
+    function resize() {
+      if (!stage) return;
+      var r = stage.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.max(1, Math.round(r.width));
+      H = Math.max(1, Math.round(r.height));
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function project(p) {
+      var cy = Math.cos(yaw + spin), sy = Math.sin(yaw + spin);
+      var x1 = p.x * cy - p.z * sy;
+      var z1 = p.x * sy + p.z * cy;
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      var y1 = p.y * cp - z1 * sp;
+      var z2 = p.y * sp + z1 * cp;
+      var scale = Math.min(W, H * 1.55) / 46;
+      var persp = 190 / (190 + z2 * 2.4);
+      return {
+        sx: W / 2 + x1 * scale * persp,
+        sy: H / 2 - y1 * scale * persp,
+        depth: z2,
+        k: persp
+      };
+    }
+
+    var colours = {};
+    function refreshColours() {
+      colours = {
+        scaffold: css('--rule-2') || '#B8C5CF',
+        floor:    css('--rule') || '#DDE4EA',
+        pep:      css('--h3') || '#1A7A9B',
+        anchor:   css('--pick') || '#4338CA',
+        label:    css('--ink-3') || '#8494A3',
+        bg:       css('--sunk') || '#EDF1F4'
+      };
+    }
+
+    var pepColour = null;
+    function setPeptideColour(v) { pepColour = v; }
+
+    function draw() {
+      if (!ctx || !W) return;
+      ctx.clearRect(0, 0, W, H);
+      if (!atoms.length) return;
+
+      var pr = atoms.map(project);
+
+      // depth-sort bonds
+      var order = bonds.map(function (b, i) {
+        return { i: i, d: (pr[b[0]].depth + pr[b[1]].depth) / 2 };
+      }).sort(function (a, b) { return a.d - b.d; });
+
+      order.forEach(function (o) {
+        var b = bonds[o.i];
+        var a0 = atoms[b[0]], p0 = pr[b[0]], p1 = pr[b[1]];
+        var isPep = a0.chain === 'P';
+        var fog = Math.max(0.18, Math.min(1, (o.d + 16) / 30));
+
+        ctx.globalAlpha = isPep ? 1 : 0.22 + fog * 0.48;
+        ctx.strokeStyle = isPep ? (pepColour || colours.pep)
+                        : (a0.chain === 'S' ? colours.floor : colours.scaffold);
+        ctx.lineWidth = (isPep ? 5.5 : 2.4) * p0.k;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(p0.sx, p0.sy);
+        ctx.lineTo(p1.sx, p1.sy);
+        ctx.stroke();
+      });
+
+      // peptide residues on top, anchors larger
+      var pepIdx = [];
+      atoms.forEach(function (a, i) { if (a.chain === 'P') pepIdx.push(i); });
+      var n = pepIdx.length;
+
+      pepIdx.forEach(function (i, k) {
+        var p = pr[i];
+        var anchor = (k === 1 || k === n - 1);
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, (anchor ? 7.4 : 5.2) * p.k, 0, Math.PI * 2);
+        ctx.fillStyle = anchor ? colours.anchor : (pepColour || colours.pep);
+        ctx.fill();
+        if (anchor) {
+          ctx.lineWidth = 2 * p.k;
+          ctx.strokeStyle = colours.bg;
+          ctx.stroke();
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    var raf = null;
+    var dragVelX = 0, dragVelY = 0;
+    function tick() {
+      if (spinning && !reduce) {
+        // gentle sinusoidal breathing on the spin speed
+        spin += spinVel * (0.85 + 0.15 * Math.sin(spin * 0.7));
+      } else if (!spinning) {
+        // momentum decay after drag release
+        if (Math.abs(dragVelX) > 0.0001 || Math.abs(dragVelY) > 0.0001) {
+          yaw += dragVelX;
+          pitch += dragVelY;
+          pitch = Math.max(-1.2, Math.min(1.2, pitch));
+          dragVelX *= 0.94;
+          dragVelY *= 0.94;
+        }
+      }
+      draw();
+      raf = requestAnimationFrame(tick);
+    }
+
+    function attach(stageEl, canvasEl) {
+      stage = stageEl; cv = canvasEl; ctx = cv.getContext('2d');
+      refreshColours();
+      resize();
+      if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+      else window.addEventListener('resize', resize);
+
+      var dragging = false, lastX = 0, lastY = 0, lastT = 0;
+      stage.addEventListener('pointerdown', function (e) {
+        dragging = true; spinning = false;
+        dragVelX = 0; dragVelY = 0;
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = performance.now();
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = (e.clientX - lastX) * 0.0092;
+        var dy = (e.clientY - lastY) * 0.0068;
+        yaw += dx;
+        pitch += dy;
+        pitch = Math.max(-1.2, Math.min(1.2, pitch));
+        // track velocity for momentum
+        var now = performance.now();
+        var dt = Math.max(1, now - lastT);
+        dragVelX = dx * (16 / dt);   // normalise to ~60fps
+        dragVelY = dy * (16 / dt);
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = now;
+      });
+      function end(e) {
+        dragging = false;
+        if (e && e.pointerId != null && stage.hasPointerCapture &&
+            stage.hasPointerCapture(e.pointerId)) {
+          stage.releasePointerCapture(e.pointerId);
+        }
+      }
+      stage.addEventListener('pointerup', end);
+      stage.addEventListener('pointercancel', end);
+
+      if (raf == null) tick();
+    }
+
+    return {
+      attach: attach,
+      load: load,
+      schematic: schematic,
+      setPeptideColour: setPeptideColour,
+      refreshColours: refreshColours,
+      resetSpin: function () { spinning = true; dragVelX = 0; dragVelY = 0; }
+    };
+  })();
+
+  /* =======================================================================
+     State and rendering
+     ===================================================================== */
+  var byAllele = {};
+  D.alleles.forEach(function (a) { byAllele[a.allele] = a; });
+  var solvedFor = {};
+  (D.overlap || []).forEach(function (o) {
+    solvedFor[o.allele + '|' + o.peptide] = o;
+  });
+
+  var state = { allele: null, peptide: null };
+
+  /* ---- tier 1 ---- */
+  function paintAlleles() {
+    var q = $('sieve-allele').value.trim().toUpperCase();
+    var items = D.alleles.filter(function (a) {
+      return !q || a.allele.toUpperCase().indexOf(q) >= 0;
+    });
+    $('tally-allele').textContent = items.length + '/' + D.alleles.length;
+
+    var box = $('list-allele');
+    box.innerHTML = '';
+    items.forEach(function (a) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'allele';
+      b.setAttribute('aria-pressed', String(a.allele === state.allele));
+
+      var strip = a.peptides.slice(0, 10).map(function (p) {
+        return '<i style="background:var(' + rampVar(norm(p.t, a.thalf_max)) + ')"></i>';
+      }).join('');
+
+      b.innerHTML =
+        '<span class="allele-name">' + esc(a.allele) + '</span>' +
+        '<span class="allele-sub">' + a.n_pairs.toLocaleString() + ' peptides, longest ' +
+          hours(a.thalf_max) + '</span>' +
+        '<span class="strip">' + strip + '</span>';
+      b.addEventListener('click', function () { pickAllele(a.allele); });
+      box.appendChild(b);
+    });
+  }
+
+  /* ---- tier 2 ---- */
+  function paintPeptides() {
+    var a = byAllele[state.allele];
+    var box = $('list-pep');
+    if (!a) { box.innerHTML = ''; return; }
+
+    var q = $('sieve-pep').value.trim().toUpperCase();
+    var items = a.peptides.filter(function (p) {
+      return !q || p.p.toUpperCase().indexOf(q) >= 0;
+    });
+
+    $('pep-heading').textContent = 'Peptides in ' + a.allele;
+    $('tally-pep').textContent = items.length + ' of ' + a.n_pairs.toLocaleString();
+
+    box.innerHTML = '';
+    items.forEach(function (p, i) {
+      var f = norm(p.t, a.thalf_max);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rank';
+      b.setAttribute('aria-pressed', String(p.p === state.peptide));
+      b.innerHTML =
+        '<span class="rank-ord">' + (i + 1) + '</span>' +
+        '<span class="rank-body">' +
+          '<span class="rank-seq">' + esc(p.p) +
+            (p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
+          '</span>' +
+          '<span class="bar" style="width:' + Math.max(3, f * 100) + '%;background:var(' +
+            rampVar(f) + ')"></span>' +
+        '</span>' +
+        '<span class="rank-val">' + hours(p.t) + '</span>';
+      b.addEventListener('click', function () { pickPeptide(p.p); });
+      box.appendChild(b);
+    });
+  }
+
+  /* ---- tier 3 ---- */
+  function paintStructure() {
+    var a = byAllele[state.allele];
+    if (!a || !state.peptide) return;
+
+    var pep = null;
+    a.peptides.some(function (p) { if (p.p === state.peptide) { pep = p; return true; } });
+    var hit = solvedFor[a.allele + '|' + state.peptide] || null;
+    var tpl = a.tpl;
+
+    Structure3D.setPeptideColour(css(rampVar(norm(pep && pep.t, a.thalf_max))));
+    Structure3D.schematic(state.peptide);
+    Structure3D.resetSpin();
+
+    $('cap-seq').textContent = state.peptide;
+    $('cap-note').textContent = hit
+      ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
+      : 'Drag to rotate. Schematic geometry.';
+    $('tally-struct').textContent = hit ? 'solved complex' : 'allele template';
+
+    var pdb = hit ? hit.pdbs[0] : (tpl ? tpl.pdb : null);
+    var res = hit ? hit.res : (tpl ? tpl.res : null);
+    var year = hit ? hit.year : (tpl ? tpl.year : null);
+
+    var cells = [
+      ['Half-life', pep ? hours(pep.t) : 'n/a'],
+      ['Entry', pdb || 'none'],
+      ['Resolution', res != null ? res + ' Å' : 'n/a'],
+      ['Solved', year || 'n/a']
+    ];
+    $('readouts').innerHTML = cells.map(function (c) {
+      return '<div><dt>' + c[0] + '</dt><dd>' + esc(c[1]) + '</dd></div>';
+    }).join('');
+
+    var link = hit ? hit.link : (tpl ? tpl.link : null);
+    $('provenance').innerHTML =
+      'Alleles, peptides and half-lives are measured. The groove is placeholder geometry pending ' +
+      'real coordinates — swap them in with <code>Structure3D.load(atoms)</code>.' +
+      (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
+              esc(pdb) + ' on RCSB →</a>' : '');
+  }
+
+  /* ---- selection ---- */
+  function pickAllele(name) {
+    state.allele = name;
+    var a = byAllele[name];
+    state.peptide = a && a.peptides.length ? a.peptides[0].p : null;
+    $('sieve-pep').value = '';
+    paintAlleles(); paintPeptides(); paintStructure();
+  }
+  function pickPeptide(seq) {
+    state.peptide = seq;
+    paintPeptides(); paintStructure();
+  }
+
+  /* ---- wiring ---- */
+  $('sieve-allele').addEventListener('input', paintAlleles);
+  $('sieve-pep').addEventListener('input', paintPeptides);
+
+  $('theme').addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? 'Dark' : 'Light';
+    this.setAttribute('aria-pressed', String(!dark));
+    Structure3D.refreshColours();
+    paintStructure();
+  });
+
+  Structure3D.attach($('stage'), $('canvas'));
+
+  // open on a pair that has a solved structure, so tier 3 is full at rest
+  var first = (D.overlap && D.overlap.length) ? D.overlap[0] : null;
+  pickAllele(first ? first.allele : D.alleles[0].allele);
+  if (first) pickPeptide(first.peptide);
+})();
+</script>
