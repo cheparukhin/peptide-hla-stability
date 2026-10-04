@@ -46,11 +46,22 @@ checkable by someone who was not here, rather than something we assert.
 
 ```bash
 .venv/bin/python scripts/stage6_report.py --split test --n-boot 2000 \
-  --arms <arm_name>=<preds/file.csv> [...] \
-  --out reports/stage6_test
+  --stratum-min-rows 20 \
+  <arm_name>=<preds/file.csv> [...] \
+  --out-dir reports --prefix stage6_test
 ```
 
 `--split test` is gated in that script and must be passed exactly once.
+
+The **first positional arm is the baseline** every paired interval is taken
+against. `--stratum-min-rows 20` is the frozen default; the 10 used elsewhere
+is validation-only, because validation is half the size.
+
+(Flag spelling corrected 4 October 2026 when the pass was run: the arms are
+positional and the outputs are `--out-dir`/`--prefix`, not `--arms`/`--out` as
+first written. The **procedure** is unchanged — this is a typo fix against
+`scripts/stage6_report.py`'s actual interface, made before any test number
+existed, not a reopened decision.)
 
 ## 4. What is reported
 

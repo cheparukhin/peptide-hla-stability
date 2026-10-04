@@ -1,0 +1,59 @@
+{
+  "captured_utc": "2026-10-04T12:35:40+00:00",
+  "captured_london": "2026-10-04T13:35:40+01:00",
+  "git_commit": "fb01b13c60bbc2404d4e4fabe117046d1865d487",
+  "git_dirty": true,
+  "arms": {
+    "seq_ensemble_pep_pseudo": {
+      "path": "preds/test/seq_ensemble_pep_pseudo.csv",
+      "sha256": "a5222efcf096f28c39700338ec16b87a95eb56d050bd880a2caf9afbb6034326",
+      "bytes": 89742,
+      "rows": 5633
+    },
+    "seq_baseline": {
+      "path": "preds/test/seq_baseline.csv",
+      "sha256": "886c712530715e2e08e5365591d793749e6bc937649e1dc80b0d0614bf6e8834",
+      "bytes": 90079,
+      "rows": 5633
+    },
+    "seq_ensemble_pep_domain": {
+      "path": "preds/test/seq_ensemble_pep_domain.csv",
+      "sha256": "f6876e064354197004626e69e16946c0f69295559e59fd8f202d5c4998e13077",
+      "bytes": 89501,
+      "rows": 5633
+    },
+    "esm_ensemble": {
+      "path": "preds/test/esm_ensemble.csv",
+      "sha256": "2f2a7629c687bb806fd2d29dbb7f951763e1b1038e70fbf3eed081ea2d032843",
+      "bytes": 89680,
+      "rows": 5633
+    },
+    "esm_plus_seq_ensemble": {
+      "path": "preds/test/esm_plus_seq_ensemble.csv",
+      "sha256": "42a02edf560cea262a701011e4e7e244b64f35ba0b76cfc519f156e5c1cd63b3",
+      "bytes": 89661,
+      "rows": 5633
+    },
+    "boltz_structural": {
+      "path": "preds/test/boltz_structural.csv",
+      "sha256": "66e2d980206203c5c286201c7438805da13b6d299c564a5a3d6f6fca9a99e84c",
+      "bytes": 138590,
+      "rows": 5633
+    }
+  },
+  "pinned_inputs": {
+    "data/splits.csv": {
+      "path": "data/splits.csv",
+      "sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+      "bytes": 1132751,
+      "rows": 28166
+    },
+    "data/rasmussen_et_al_dataset.csv": {
+      "path": "data/rasmussen_et_al_dataset.csv",
+      "sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+      "bytes": 6912310,
+      "rows": 28166
+    }
+  },
+  "note": ""
+}

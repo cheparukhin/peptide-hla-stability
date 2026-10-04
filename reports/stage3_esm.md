@@ -274,6 +274,39 @@ curve, but it is flat over the range tested, and at 35M the arm is already at
 parity with the baseline — so there is no trend suggesting a larger model
 would close a gap, because at 35M there is no gap to close.
 
+**The 150M arm did not survive a refit, and so was excluded from the test
+pass.** Stage 3 persisted no fitted networks, so scoring any arm on the
+held-out split at stage 6 meant refitting it first
+(`scripts/esm_test_predict.py`), with reproduction of the frozen *validation*
+number as the correctness check. The 35M arm reproduced to four decimals
+(0.6830 against 0.6830) and so did the additive arm (0.6761). **This one did
+not**: 0.6676 under one BLAS thread and 0.6690 under default threading,
+against the 0.6737 recorded above. Two refits differing by 0.0014 while both
+sitting ~0.005 below the frozen value makes float32 reduction order an
+inadequate explanation — the gap is systematic, and larger than the run-to-run
+spread.
+
+What was checked and found to match: the per-group configurations, transcribed
+from this run's own `ensemble_member` rows in `stage3_runs.csv` (this arm
+genuinely differs by layer — middle L2=0.1, final L2=0.01 — which is why the
+refit table is explicit rather than defaulted); the assembled feature width
+(330 columns, as recorded); the imported fold assignment and seed protocol;
+and the embedding cache, which still carries its `content_hash` with
+`mid`=15 and `final`=30. So the cause is **not identified**, and this is
+recorded as an open discrepancy rather than explained away.
+
+The refit script writes no prediction file it cannot certify, so no 150M
+held-out predictions exist. Per
+[TEST_SCORING_RUNBOOK.md](TEST_SCORING_RUNBOOK.md) §1 and §5, an arm that is
+missing or unreproducible is excluded from the single pass and reported on
+validation only — which is what the table above is. **This does not weaken the
+scaling conclusion**, because that conclusion was always a validation
+statement: nothing in it was ever going to come from the held-out split. It
+does mean the 150M row cannot be quoted as a test number, and it bounds how
+much trust the single-refit reproduction check buys for arms in general: it
+caught this, which is the point, but it also shows the frozen record is not
+sufficient on its own to rebuild an arm bit-for-bit.
+
 Per-layer detail at 150M (ladder `1e-3, 1e-2, 1e-1, 1`, all interior): middle
 0.5725, final 0.5878. Note the layer preference **reverses** relative to 35M,
 where the middle layer won; with seed spreads of 0.015-0.021 that reversal is
