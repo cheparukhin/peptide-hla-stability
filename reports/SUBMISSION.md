@@ -474,24 +474,64 @@ just needed a bigger model".** ESM-2 150M lands at **0.6737** — marginally
 checkpoint to close. That weakens the scaling argument without closing it; see
 §8 for what it does not establish.
 
-#### The one comparison that is not a null — do not skip it
+#### The project's one positive result — and its three constraints
 
-Against the **full-domain** sequence ensemble (0.6529), on matching input,
-ESM-2 scores **+0.0301 [−0.0084, +0.0757]**. Still inconclusive — the interval
-crosses zero — but it is **the only interval in this stage whose upper bound
-exceeds the 0.05 bar**, so unlike every other comparison here it does not rule
-a worthwhile gain out.
+Against the **full-domain** sequence ensemble, on matching input, ESM-2 is
+**conclusively ahead on two of three statistics**:
 
-Read plainly: **a pretrained representation of the HLA domain beats one-hot
-encoding the same domain.** That is a real and unsurprising thing for a protein
-language model to do, and it is the strongest result ESM-2 produces here.
+| Statistic | Δ | 95% CI | Verdict |
+|---|---:|---|---|
+| median per-allele ρ — **the contract's primary metric** | +0.0301 | [−0.0084, +0.0757] | inconclusive |
+| mean per-allele ρ | +0.0312 | **[+0.0082, +0.0540]** | **conclusive** |
+| differential concordance | +0.0152 | **[+0.0046, +0.0241]** | **conclusive** |
 
-It does **not** overturn the headline, and the reason is specific: the
-baseline's best configuration **does not use the full domain**. It uses the
-34-residue contact pseudosequence — a piece of domain knowledge about which
-positions touch the peptide — and that hand-built feature is what ESM-2 has to
-beat, not the naive full-domain encoding. **Both halves of that sentence are
-load-bearing** and neither should be quoted without the other.
+The additive arm shows the same thing: sequence + ESM-2 against the domain
+ensemble is **+0.0111 [+0.0012, +0.0207]** on the differential, also conclusive.
+
+**The bounded claim is this:** *given the same 182 HLA residues, ESM-2 extracts
+more usable signal from them than a one-hot or BLOSUM encoding does.*
+
+**And this was a designed comparison, not one found by looking.** The
+full-domain arm was added at **stage 1**, before any model existed, for exactly
+this purpose — so that "more input sequence" could never be mistaken for
+"benefit of pretraining" (§2 and §3). The comparison that produced this result
+is the one the contract was built to make.
+
+Three constraints. **None may be dropped**, and the third is the one a reader
+will miss.
+
+**1. This is not a claim that ESM-2 beats the best sequence arm — and the
+margins say why.** The pseudosequence ensemble beats the full-domain arm by a
+*comparable* amount on the same two statistics (+0.0348 mean, +0.0124
+concordance), and ESM-2 does **not** beat the pseudosequence ensemble (−0.0036
+mean, +0.0028 concordance, both inconclusive). Put those side by side:
+
+| Improvement over the full-domain ensemble | Mean ρ | Concordance |
+|---|---:|---:|
+| from **pretraining** (ESM-2 on the same 182 residues) | +0.0312 | +0.0152 |
+| from **picking 34 residues by hand** (the pseudosequence) | +0.0348 | +0.0124 |
+
+> **Hand-picking the 34 contact residues recovers what pretraining buys here.**
+
+That sentence is the honest summary of this entire project, and it belongs
+right next to the result rather than three paragraphs later. A protein language
+model and a 1990s-era piece of domain knowledge about which positions touch the
+peptide arrive at the same place, and the domain knowledge costs about 500×
+less (§7.2).
+
+**2. It does not establish the predeclared 0.05 bar.** The mean interval runs to
+**+0.0540**, so it contains values below the bar as well as above it.
+"Conclusively better than the full-domain arm" and "worth 0.05" are different
+statements, and only the first is supported.
+
+**3. Both conclusive verdicts come from *secondary* statistics.** The contract's
+median — **the only statistic the predeclared verdict rule governs** — stays
+inconclusive at +0.0301 [−0.0084, +0.0757]. This caveat travels with the claim
+wherever it appears, including every summary table in this document. We spent
+this project refusing to let flattering numbers escape their intervals, and this
+is the single place where that temptation is strongest; §6.8 reports what the
+primary metric did and did not resolve across the whole run, rather than
+quietly switching to whichever statistic was kinder here.
 
 *One further result from this stage is a transferable lesson about **using**
 foundation models rather than evidence for or against the verdict above, so it
