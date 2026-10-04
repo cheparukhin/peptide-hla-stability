@@ -353,8 +353,8 @@ def test_host_floor_is_a_real_share_of_a_budget_card():
 # --------------------------------------------------------------------------
 # Harness: the model must stay resident across the timed region
 # --------------------------------------------------------------------------
-# HACKATHON_PLAN.md:206 requires "keep models loaded across complexes to avoid
-# reload overhead". The first harness violated it by spawning a fresh
+# HACKATHON_PLAN.md ("Budget and GPU decision rule") requires that weights stay
+# resident across a batch. The first harness violated it by spawning a fresh
 # `boltz predict` per complex, putting a Python start, torch import, 6.2 GB
 # weight load and CUDA init inside every timed fold. That was 86% of each
 # measurement and overstated per-complex cost 4.6x ($0.018 against $0.004),

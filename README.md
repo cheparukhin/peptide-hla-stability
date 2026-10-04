@@ -36,7 +36,7 @@ arm is still running.
 | Stage 3 (ESM-2), 3b (ESM-2 × affinity), 3c (elution) | complete |
 | Stage 3d (ESM-2 likelihood features) | **not run** — untested scope, not a null; the stage 3 conclusion is bounded to embeddings because of it |
 | Stage 4a, 4b, 4b.1, 4c pilot | complete |
-| **Stage 4c Boltz-2 production fold** | **running** — launched 04:00 BST, **251 of 282 shards committed, 25,100 of 28,166 pairs, zero failures**; tracking completion ~11:30–12:20 BST |
+| **Stage 4c Boltz-2 production fold** | **running** — launched 04:00 BST, zero failures; [the plan's stage 4c](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding) carries live shard progress |
 | Stage 4c.5 structural feature extraction | extractor validated on all 90 pilot folds and on 2,000 live production folds (1,000 per half, zero failures); **final full pass waits on the fold** |
 | Stage 5 structural ablation | **not started** — blocked on 4c.5 |
 | Stage 5 inverse folding (ProteinMPNN) | pilot complete; ~$1 QC sample approved, not launched |
@@ -47,8 +47,8 @@ arm is still running.
 Structural work folds a **383-residue, three-chain construct**: 275-residue HLA
 ectodomain + 99-residue beta2m + 9-residue peptide. The matched 90-fold pilot
 (45 per model) is complete: Boltz-2 passed its gate, ESMFold2 failed on the
-sentinel complex, and production is frozen as **Boltz-2 over all 28,166 pairs,
-split across two Modal workspaces**. See
+sentinel complex, and production is frozen as **Boltz-2 over all pairs, split
+across two Modal workspaces**. See
 [stage 4c of the main plan](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
 for scope and budget, and the
 [stage 4c report](reports/stage4c_ectodomain_pilot.md) for results, how to run
@@ -334,11 +334,12 @@ failure filter.**
 **Production, live as this is written.** Boltz-2 only, all 28,166 pairs, one
 prediction each at seed 0, interleaved pair-by-pair across the `a-cheparukhin`
 and `colleague` Modal profiles so either half alone stays balanced across
-alleles and splits. 141 shards of 100 pairs per profile, 10 A10G workers each.
-Launched 04:00 BST; **251 of 282 shards committed, 25,100 pairs, zero
-failures**; forecast $200.8 ($251 with the required 25% margin). Each profile
-folds **its own half** — `--profile` must match `MODAL_PROFILE`, and the runner
-asserts it.
+alleles and splits. 141 shards of 100 pairs per profile, 10 A10G workers each;
+forecast $200.8 ($251 with the required 25% margin). Each profile folds **its
+own half** — `--profile` must match `MODAL_PROFILE`, and the runner asserts it.
+Live shard progress is recorded in
+[the plan's stage 4c](HACKATHON_PLAN.md#4c-ectodomain--beta-2-microglobulin-folding)
+and nowhere else.
 
 ## Stage 4c.5 output (extractor done; full pass waits on the fold)
 

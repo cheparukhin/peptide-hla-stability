@@ -18,8 +18,8 @@ to avoid index contention in the shared worktree. No workstream edits
 | `eval-harness` | 6 machinery | `pepstab/stage6.py`, `scripts/stage6_report.py`, `reports/stage6_*` | **complete** — exercised twice on validation |
 | `elution` | 3c scoring pass | `scripts/stage3c_*`, `pepstab/elution.py`, `reports/stage3c_*`, `external/` | **complete** |
 | `inverse-folding` | 5 (ProteinMPNN) | `pepstab/inverse_folding.py`, `scripts/proteinmpnn_score.py`, `modal_app/proteinmpnn_scoring.py`, `reports/stage5_*` | **pilot complete**; ~$1 QC sample approved, not launched |
-| `stats-stretch` | 7a, 7b | `pepstab/censored.py`, `pepstab/allele_holdout.py`, `scripts/stage7_*`, `reports/stage7_*` | **complete** |
-| Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | **running** (separate session) — launched 04:00 BST; **251 of 282 shards, 25,100 of 28,166 pairs, zero failures**; tracking completion ~11:30–12:20 BST |
+| `stats-stretch` | [7a, 7b](#7-stretch-evaluations-promoted-from-the-out-of-scope-register) | `pepstab/censored.py`, `pepstab/allele_holdout.py`, `scripts/stage7_*`, `reports/stage7_*` | **complete** |
+| Boltz-2 production fold | 4c | `modal_app/`, `structures/`, `data/structural_cohort.csv`, Modal volumes | **running** (separate session) — launched 04:00 BST; live shard progress in [4c](#4c-ectodomain--beta-2-microglobulin-folding), which is the only place it is recorded |
 | `struct-features` | 4c.5 → 5 | `pepstab/structural_features.py`, `scripts/extract_structural_features.py`, `modal_app/feature_extraction.py`, `reports/stage4c5_*` | **phase 1 complete, phase 2 validated at real scale** (2,000 live folds extracted, zero failures); full pass and the stage 5 ablations wait on the fold |
 | `submission` | 6 deliverable | `reports/SUBMISSION.md`, `reports/compute_ledger.*`, `reports/limitations.md`, `reports/figures/` | running |
 | `docs-reconcile` | — | `README.md`, `HACKATHON_PLAN.md` | running |
@@ -41,8 +41,8 @@ Seven concurrent workstreams on an 8-core / 16 GB laptop drove load average to
 650M was dropped. The binding constraint was not CPU but the two client
 processes driving the production fold: an OOM that killed them would have cost
 the structural arm and the GPU spend. Scope was cut before footprint was grown,
-and **both client processes have survived to 251 of 282 shards with zero
-failures**, so the call held.
+and **both client processes have survived with zero failures** (progress in 4c),
+so the call held.
 
 ## Recommended scope
 
@@ -158,45 +158,52 @@ Known residual: 8 alleles fall below 50 test rows, 7 of them because they hold �
 
 **Status: done.** `reports/stage2_baselines.md` (results and reasoning), `scripts/baseline_sequence.py` (the full grid, ~10 CPU-minutes), `pepstab/features.py` + `pepstab/mlp.py`, `reports/stage2_runs.csv` (every run), `tests/test_baselines.py` (25 guards). Headline baseline in `preds/seq_baseline.csv`.
 
-Six arms — {one-hot, BLOSUM62} × {peptide, peptide+pseudosequence, peptide+domain} — each given the same budget: a 4-point MLP grid at 3 seeds plus a ridge alpha sweep. All models train on the same 17,744 rows (10% of train is held out as a stopping fold). Validation median per-allele Spearman, mean over seeds:
+Six arms — {one-hot, BLOSUM62} × {peptide, peptide+pseudosequence, peptide+domain}
+— on a matched budget. Three results clear the 0.05 bar (the model beats the
+allele mean; nonlinearity is most of the model; the HLA input contributes the
+other half) and two are unresolved (34 contact residues vs 182 domain residues,
+one-hot vs BLOSUM62). The arm table, every interval, the confirmed C67S
+collision, and the NetMHCstabpan calibration factor by factor are in
+[`reports/stage2_baselines.md`](reports/stage2_baselines.md); the headlines are
+summarised in the README. Distance stratification is not answerable on
+validation and is deferred to stage 6, which states why.
 
-| Arm | MLP | Ridge |
-|---|---:|---:|
-| peptide + pseudosequence (one-hot) | **0.610** | 0.278 |
-| peptide + pseudosequence (BLOSUM) | 0.603 | 0.270 |
-| peptide + domain (one-hot) | 0.574 | 0.274 |
-| peptide + domain (BLOSUM) | 0.521 | 0.259 |
-| peptide only | 0.202–0.244 | 0.169–0.170 |
-| training allele mean | 0.000 | — |
+**Four rules this stage fixes for every later stage.**
 
-Three results clear the 0.05 bar (paired cluster bootstrap), two are inconclusive:
+- **The baseline to beat is the 30-network ensemble, not the single network**
+  (`scripts/baseline_ensemble.py`, `preds/seq_ensemble_pep_pseudo.csv`): median
+  per-allele ρ **0.693** against the single network's **0.610**. The full-domain
+  ensemble reaches 0.653 and stays tied with the pseudosequence arm, so it is a
+  legitimate second comparator — any win for domain embeddings must be checked
+  against it too, not only against the pseudosequence arm.
+- **Ensemble every arm identically, or none of them.** Ensembling alone is worth
+  **+0.074 mean SCC / +0.083 median per-allele ρ [+0.029, +0.124]** over the
+  matched single network, from no new information, so an ensembled ESM arm
+  against a single-network sequence arm would manufacture a result. The +0.090
+  sometimes quoted is against the mean of the ensemble's own members — a
+  different reference; quote it only with the reference stated.
+- **Every model trains on the same rows as its comparator.** Single-network arms
+  use `inner_folds()`: 10% of train (1,972 rows, 357 whole Hamming ≤ 3 clusters)
+  held out as one permanent stopping fold, 17,744 fit rows, minimum fit/dev
+  peptide distance 4. The ensemble comparator uses `cv_folds()`: 5 folds, each
+  member fitting 15,772–15,773 rows, collectively covering all 19,716.
+  **Stage 3 must match the ensemble protocol — `cv_folds()` and the same member
+  count — not `inner_folds()`**, or the comparison is confounded by
+  training-set size and ensembling together.
+- **Seed spread is 0.010–0.051.** Compare seed means, not single seeds; gaps
+  under ~0.05 are noise.
 
-- **The model ranks within allele; the allele mean cannot.** +0.610 [+0.557, +0.656]. MAE 0.734 → 0.517, precision@10 at 2 h 0.359 → 0.70.
-- **Nonlinearity is most of the model.** Ridge on the same features: 0.278; MLP − ridge = +0.331 [+0.256, +0.414]. A linear model cannot capture interactions between a peptide residue and the HLA pocket it sits in.
-- **The HLA input contributes the other half.** Peptide alone 0.202; adding 34 contact residues: +0.404 [+0.300, +0.474].
-- **34 contact residues vs 182 domain residues: unresolved.** +0.016 [−0.031, +0.084]. The full-domain arm is a legitimate matching baseline — any stage 3 win for domain embeddings must be checked against it, not only the pseudosequence arm.
-- **One-hot vs BLOSUM62: unresolved.** +0.005 [−0.049, +0.061]. The other two arms separate in opposite directions, both within seed spread.
+**NetMHCstabpan is calibration, never a comparator.** It was trained on all
+28,166 rows, including every peptide in our test split, so any score on our data
+is memorisation and its 0.69 is a CV score on its own training data. An honest
+comparison would need post-2016 measurements absent from its training set. A
+**superseded version of that calibration consumed frozen test rows** (3,350 into
+fitting, 448 into early stopping, 585 into scoring) and produced the
+since-retracted +0.018 grouping figure; disclosed in EVALUATION.md, "Disclosed
+test exposure". No model that will be scored at stage 6 saw a test row.
 
-Two constraints on later stages:
-
-- **Seed spread is 0.010–0.051.** Compare seed means, not single seeds; gaps under ~0.05 are noise.
-- **Every model trains on the same rows as its comparator.** Single-network arms use `inner_folds()`: 10% of train (1,972 rows, 357 whole Hamming ≤ 3 clusters) held out as one permanent stopping fold, 17,744 fit rows, minimum fit/dev peptide distance 4. The ensemble comparator uses `cv_folds()`: 5 folds, each member fitting 15,772–15,773 rows, collectively covering all 19,716. **Stage 3 must match the ensemble protocol — `cv_folds()` and the same member count — not `inner_folds()`**, or the comparison is confounded by training-set size and ensembling together.
-
-The stage 1 C67S finding is confirmed: the pseudosequence arm predicts `HLA-B*14:01(C67S)` and `HLA-B*14:02(C67S)` identically (max difference 0.00 across 41 shared validation peptides), while their measured labels correlate at only ρ = 0.708. The domain arm separates them (max difference 0.31). The impact on the primary metric is small — per-allele Spearman is computed within each allele, so identical predictions can still rank each allele's labels well (pseudo: 0.487/0.613 vs domain: 0.508/0.498). The collision caps cross-allele discrimination, not within-allele ranking.
-
-Distance stratification is not answerable on validation: the two strata share only 6 alleles and 499 of 2,817 rows at the 20-row bar. Deferred to stage 6.
-
-**Calibration against NetMHCstabpan** (`scripts/compare_to_paper.py`). The paper reports mean per-allotype SCC ≈ 0.69 / PCC 0.676 from 5-fold CV on this dataset; our 30-network ensemble reaches mean SCC 0.645 / PCC 0.649 (median per-allele ρ 0.693). **This is calibration, not reproduction, and no method-parity claim is supported.** Their training set is **5.2× ours and 73% augmentation we do not have** — 28,166 measured rows plus 1,000 assumed-zero weak binders per allele (75,000 rows); our CSV is the measured rows only. They also use BLOSUM50 not 62, smoothed sparse (0.9/0.05) not one-hot, and single hidden layers of 40/50/60 not 256×64. Matching their network count is not matching their method. Of the factors we can test: **split grouping shows no conclusive advantage** — measured at equal row count on a common evaluation set inside train, Δ median ρ = **−0.005 [−0.035, +0.046]** and Δ mean ρ = **−0.000 [−0.024, +0.024]**. Both intervals straddle zero and both still admit a modest positive effect (the retracted +0.018 sits inside each), so this is *no conclusive advantage*, not *no effect*; what it does bound is grouping below ~0.024 on the mean — about half the 0.045 gap. The paper's `2^(-t0/th)` target is 0.022–0.034 *worse* here than `log1p`. Only ensembling clearly moves us (+0.074 against the deployed single network; the +0.090 sometimes quoted is against the mean of the ensemble's own 30 members, a different reference — see `reports/stage2_baselines.md`). So at most half the remaining 0.045 is attributable to the split; the training-set difference is the leading explanation. Stage 2b tested its mechanism and found nothing: assumed-zero padding from either source gives Δ median ρ of at most +0.024, every interval excluding 0.05. That was run at 0.16 augmented rows per measured row against the paper's ~2.7, so it weakens the training-set explanation without eliminating it — but the negatives it adds are ones the baseline already places below the assay floor, so volume is unlikely to change the answer. NetMHCstabpan can never be a comparator — it trained on every peptide in our test split.
-
-**The baseline stage 3 must beat is the 30-network ensemble, not the single network** (`scripts/baseline_ensemble.py`, `preds/seq_ensemble_pep_pseudo.csv`). The paper uses one network per CV fold per architecture; our single networks are a weakened version. The strong form — 5 inner CV folds × 2 encodings × 3 seeds = 30 networks, folds cut along whole Hamming ≤ 3 clusters, configs from `stage2_summary.csv` — reaches **median per-allele ρ 0.693 / mean SCC 0.645** (single network: 0.610 / 0.573; paired Δ median ρ **+0.083 [+0.029, +0.124]**). The full-domain ensemble reaches 0.653; the two arms remain tied (+0.040 [−0.001, +0.073]).
-
-A **superseded version of that calibration consumed frozen test rows** (3,350 into fitting, 448 into early stopping, 585 into scoring) and produced the since-retracted +0.018 grouping figure. Disclosed in EVALUATION.md, "Disclosed test exposure"; no model that will be scored at stage 6 saw a test row.
-
-**Ensemble both arms identically at stage 3, or neither.** Ensembling alone is worth **+0.074 mean SCC / +0.083 median per-allele ρ [+0.029, +0.124]** over the matched single network, from no new information. An ensembled ESM arm against a single-network sequence arm would manufacture a result. (Quote +0.090 only with its reference stated: that figure is against the mean of the ensemble's own members, not against the network we would otherwise ship, and it additionally bundles in that members fit 15,773 rows to the single network's 17,744.)
-
-**NetMHCstabpan cannot be a comparator.** It was trained on all 28,166 rows, including every peptide in our test split, so any score on our data is memorisation. Its 0.69 is a CV score on its own training data, useful for calibration only. An honest comparison would need post-2016 stability measurements absent from its training set.
-
-**Cost:** CPU only, no credits. Feature build under 0.3 s per arm (cached per unique sequence), fit 0.4–28 s, **inference under 1 ms per 1,000 predictions**. This is the floor ESM-2 extraction and GPU folding must justify themselves against.
+**Cost:** CPU only, no credits. **Inference under 1 ms per 1,000 predictions** —
+the floor ESM-2 extraction and GPU folding must justify themselves against.
 
 **Why:** this shows what the task's labelled data can teach a small model on its own. It's not a reproduction of NetMHCstabpan's training and shouldn't be described as one.
 
@@ -216,20 +223,21 @@ A **superseded version of that calibration consumed frozen test rows** (3,350 in
 
 **Status: done. Negative result, and the intervals rule out the bar.** `reports/stage2b_augmentation.md` (results and mechanism), `scripts/augment_affinity.py` (manifests and the in-house affinity predictor), `scripts/baseline_augmented.py` (the arms and intervals), `scripts/stage2b_negatives.py` (pool characterisation), `pepstab/augment.py` (candidate filtering and the leakage rules), `data/augmentation/` (three committed manifests plus `provenance.json` with per-manifest digests), `tests/test_augmentation.py` (47 guards). CPU only, $0.
 
-Both arms ran at **matched per-allele counts** — 2,910 rows each, 51 of 75 alleles, capped at 25% of that allele's fit rows — at assumed weights 0.1 and 0.25, three seeds, on the stage 2 selected peptide+pseudosequence config with the same fit rows and the same measured-only stopping fold. The `measured_only` arm reproduces stage 2 exactly (ρ 0.6096 over 3 seeds), because uniform weights reduce to the unweighted loss bit-identically.
+Both arms ran at **matched per-allele counts** at two assumed weights and three
+seeds, on the stage 2 selected config. **All eight paired intervals cross zero
+and exclude 0.05**, best arm +0.024. The mechanism is the finding and it is the
+reason volume is unlikely to change the answer: the two sources supply different
+*kinds* of negative, and the baseline already scores both at or below the assay
+floor. Arms, intervals, anchor composition and the leakage ledger are in
+[`reports/stage2b_augmentation.md`](reports/stage2b_augmentation.md).
 
-**All eight paired intervals cross zero and exclude 0.05.** Best arms: predicted at full coverage, w=0.25 (**+0.024 [−0.026, +0.048]**) and measured, w=0.25 (**+0.023 [−0.033, +0.039]**). Source comparison at matched counts: **−0.002** (w=0.1) and **−0.017** (w=0.25), both inconclusive and bounded below the bar.
-
-**The mechanism matters more than the number.** The two sources supply different kinds of negative. Measured weak binders have near-canonical anchor residues (77.6% hydrophobic at PΩ, matching the 84.2% of real floor rows) — the baseline already scores them near the floor (+0.13 vs +0.22). Predicted weak binders from random human peptides have the *wrong* anchors (49.1% hydrophobic, 25.9% charged at PΩ) — the baseline scores them *below* the floor (−0.07). More easy negatives are still easy negatives.
-
-Constraints:
+Constraints this stage fixes:
 
 - **Stage 3 runs unaugmented.** The plan requires augmentation to help the sequence arm first. It doesn't. Manifests stay committed if revisited.
 - **Stage 6 scores no augmented model.**
-- **An ensembled rerun would lose 44% of the measured arm** to the stricter `cv_folds` exclusion (1,640 of 2,910 rows survive vs 2,861 of 2,910 predicted).
+- **An ensembled rerun would lose 44% of the measured arm** to the stricter `cv_folds` exclusion.
 - **Volume is untested.** 0.16 augmented rows per measured row vs Rasmussen's ~2.7. The anchor analysis suggests volume wouldn't help, but that's a prediction.
-
-One hypothesis for stage 6: on the 22 alleles with no public weak-affinity data, the full-coverage predicted arm moves the sub-panel median from 0.577 to 0.601 with the best MAE (0.511) and P@10 (0.733). Underpowered — 22 alleles, one weight, no interval.
+- One **underpowered** hypothesis is carried to stage 6: on the 22 alleles with no public weak-affinity data the full-coverage predicted arm looks better on every metric, on 22 alleles at one weight with no interval.
 
 **Why:** Rasmussen et al. padded their training set with ~1,000 predicted weak binders per allele, labelled 0 h, but never compared against measured-affinity negatives. This pilot tests that mechanism at lower volume. Stage 2c separately tests affinity as an auxiliary *target* without assigning zero stability.
 
@@ -248,39 +256,24 @@ One hypothesis for stage 6: on the 22 alleles with no public weak-affinity data,
 `pepstab/multitask.py` + `pepstab/affinity.py`, `reports/stage2c_runs_*.csv`,
 `reports/stage2c_deltas_*.csv`, `tests/test_multitask.py` (17 guards).
 
-Across **20 paired comparisons** — 5 λ settings × {one-hot, BLOSUM} × {single
-network, 30-network ensemble}, plus a censoring-robustness variant — every 95%
-CI crosses zero and **every upper bound sits below 0.05**. Largest upper bound
-+0.034. The predeclared worthwhile gain is ruled out, not merely undetected.
-
-The comparison is controlled by construction: at **λ = 0 the multi-task network
-is bit-identical to `pepstab.mlp.MLPRegressor`** (asserted on the real feature
-grid, not only a toy), so the single-task arm *is* the stage 2 baseline. The
-λ=0 single network reproduces 0.610 exactly, and the λ=0 ensemble is
-**bit-identical** to `scripts/baseline_ensemble.py`'s predictions on all 2,817
-validation rows. Both arms were ensembled identically, per the stage 3 parity
-rule.
-
-Two diagnostics make this a clean null rather than an ambiguous one:
-
-- **The auxiliary task was genuinely learned** — the affinity head reaches
-  ρ 0.55–0.62 against held-out affinity labels, against ≈ 0 at λ = 0. The shared
-  trunk learns affinity about as well as it learns stability, and the stability
-  predictions still do not move. Mean ensemble-member quality is flat at every
-  λ, so affinity is not acting as a diversity source either.
-- **The label's ceiling is below the baseline.** Measured affinity used
-  *directly* as a stability predictor ranks at median per-allele ρ **0.580**
-  [IQR 0.486, 0.696] over the 33 training alleles with ≥ 30 dual-labelled pairs
-  — under the 0.610 a single network already reaches from stability labels
-  alone. The auxiliary signal is **redundant, not absent**.
+Across **20 paired comparisons** every 95% CI crosses zero and **every upper
+bound sits below 0.05** (largest +0.034), so the predeclared worthwhile gain is
+ruled out rather than merely undetected. Two diagnostics make it a clean null:
+the auxiliary task was genuinely learned, and the label's own ceiling as a
+stability predictor (ρ 0.580) sits *below* the 0.610 stability labels alone
+already give — the signal is **redundant, not absent**. The comparison is
+controlled by construction: at **λ = 0 the multi-task network is bit-identical
+to `pepstab.mlp.MLPRegressor`**, so the single-task arm *is* the stage 2
+baseline, and both arms were ensembled identically per the parity rule. Runs,
+intervals and the ceiling diagnostic are in
+[`reports/stage2c_affinity.md`](reports/stage2c_affinity.md). 210 networks, $0.
 
 **The expansion is declined on evidence, not blocked.** The plan gates it on the
 probe helping; it does not. The leakage audit was still completed because stage
-2b needs it: of 66,214 affinity rows on 20,836 peptides absent from the
-stability set, **64,226 rows on 20,195 peptides** clear Hamming > 3 from every
-validation, test *and inner stopping-fold* peptide (2,076 in all). Absence is
+2b needs it, and it establishes the rule that matters downstream: absence is
 tested on `peptide`, never on `(allele, peptide)` — the reference table's
-`padding_eligible` flag tests the pair and therefore leaks.
+`padding_eligible` flag tests the pair and therefore leaks. The surviving row
+counts are in the report.
 
 **The ESM-2 extension is where the hypothesis keeps its strongest form**:
 affinity is redundant with what a *sequence* model already extracts, which does
@@ -317,49 +310,35 @@ a test asserts the string `"test"` never appears in `scripts/esm_arm.py`.
 
 All arms: 30 networks under the stage 2 `cv_folds()` protocol, the same 2,817
 validation rows and 68 eligible alleles, paired cluster bootstrap at 2,000
-resamples.
+resamples. **Frozen ESM-2 neither replaces nor improves the sequence baseline**
+— 0.6830 alone and 0.6761 added on top against the baseline's 0.6931, both
+intervals crossing zero and both upper bounds below the predeclared bar, which
+is the strongest negative this evaluation supports. The arm table, the three
+controls and the tuning-sensitivity check are in
+[`reports/stage3_esm.md`](reports/stage3_esm.md).
 
-| Arm | median per-allele ρ | Δ vs baseline | 95% CI | Verdict |
-|---|---:|---:|---|---|
-| sequence baseline (30-net, pep + pseudoseq) | **0.6931** | — | — | reference |
-| ESM-2 only (35M, mid layer, pep per-position + 34-contact) | 0.6830 | −0.0101 | [−0.0382, +0.0352] | inconclusive at 0, rules out +0.05 |
-| sequence + ESM-2 (additive) | 0.6761 | −0.0170 | [−0.0468, +0.0320] | inconclusive at 0, rules out +0.05 |
-| ESM-2 150M only | 0.6737 | −0.0194 | [−0.0599, +0.0195] | inconclusive at 0, rules out +0.05 |
+**How this result must be framed.** The one conclusive comparison is about the
+**weakness of full-domain one-hot encoding, not the strength of pretraining**:
+ESM-2 and the plain 34-residue pseudosequence each beat the full-domain ensemble
+by about the same margin on differential concordance, while **ESM-2 against the
+pseudosequence arm stays null**, and nothing reaches 0.05 on the contract's
+primary metric. This framing was corrected after review and **must not regress
+into "pretraining helps"**.
 
-**Frozen ESM-2 neither replaces nor improves the sequence baseline.** Both
-intervals cross zero, so this is not a demonstration that ESM-2 is worse; both
-upper bounds sit below the predeclared bar, which is the strongest negative this
-evaluation supports.
+**Two things this stage fixes for later arms.**
 
-**The one conclusive comparison is about the weakness of full-domain one-hot
-encoding, not the strength of pretraining.** Against the full-domain ensemble,
-ESM-2 wins by +0.0152 differential concordance [+0.0046, +0.0241] and the plain
-34-residue pseudosequence ensemble wins by +0.0124 [+0.0061, +0.0186] — both
-conclusive — while **ESM-2 against the pseudosequence arm stays null** (+0.0028
-[−0.0052, +0.0102]). On the contract's primary metric the ESM-2-vs-full-domain
-comparison is **inconclusive** (+0.0301 [−0.0084, +0.0757]); on the mean
-per-allele ρ it is +0.0312 [+0.0082, +0.0540]. Neither establishes 0.05. This
-framing was corrected after review and must not regress into "pretraining
-helps".
+- **Tuning parity is equal *budget*, not equal values.** A transplanted
+  regularisation ladder — stage 2's, chosen for sparse one-hot features — cost
+  the ESM arm **0.109 SCC** and would have shipped a confident false negative.
+  The tell was seed spread far outside stage 2's observed 0.010–0.051. **Every
+  arm's ladder is extended until its selection is interior**, the baseline
+  included; any new arm does the same.
+- **ESM-2 650M is cached but excluded on a measured memory constraint** (5.06 GB
+  peak RSS alongside the concurrent production fold on a 16 GB machine) — an
+  engineering constraint, not a modelling choice.
 
-Three controls make the negative worth reporting:
-
-- **A transplanted regularisation ladder cost the ESM arm 0.109 SCC** (0.4994 at
-  stage 2's `{1e-5, 1e-3}` against 0.6081 at its own boundary-checked L2) and
-  would have shipped a confident false negative. The tell arrived before any
-  comparison: seed spread of 0.110, far outside stage 2's observed 0.010–0.051.
-  Every arm's ladder was then extended until its selection was interior, the
-  baseline included.
-- **The PCA compression adopted for memory reasons helped, by +0.033**, so the
-  negative cannot be attributed to it.
-- **The scaling curve is flat.** 150M lands marginally below 35M at 2.6× the
-  extraction cost. **650M is cached but excluded on a measured memory
-  constraint** (5.06 GB peak RSS alongside the concurrent production fold on a
-  16 GB machine) — recorded as an engineering constraint, not a modelling
-  choice.
-
-**Cost: $0 cloud.** End to end, 1.14 s per 1,000 genuinely new predictions
-against the baseline's 0.073 s — about 16×, both negligible in absolute terms.
+**Cost: $0 cloud**, about 16× the baseline's inference time and negligible in
+absolute terms.
 
 **The bounds on this null are not a formality.** It covers *frozen* embeddings
 of peptide and HLA taken **separately**, at 35M and 150M, with a small MLP head.
@@ -387,28 +366,21 @@ above). The ESM-2 half is
 `tests/test_stage3b.py` (29 guards). Validation only, enforced structurally.
 
 The quantity is a difference-in-differences: does the auxiliary head help the
-ESM arm *more than* the sequence arm? At λ = 0.1 / 0.3 / 1 / 3 it is **+0.0120,
-+0.0122, +0.0143, +0.0281**, every interval crossing zero — and the movement is
-almost entirely the sequence arm degrading rather than ESM improving (the
-ESM-only arm's own Δ never leaves ±0.0041).
+ESM arm *more than* the sequence arm? Every DiD interval crosses zero, and the
+movement is almost entirely the sequence arm degrading rather than ESM
+improving. Per-λ values, the two closed-off objections and the union-of-ladders
+audit are in
+[`reports/stage3b_esm_multitask.md`](reports/stage3b_esm_multitask.md).
 
-**This is an unresolved measurement, not a null.** Every DiD upper bound sits
-below 0.05, so the frozen rule reads *"rules out a worthwhile gain"* — a valid
-property of the intervals obtained. But the DiD power floor was measured on the
-DiD statistic itself and **straddles 0.05**, bracketed in (0.032, 0.071]; and an
-injected DiD of **−0.0319 went undetected** while every observed DiD is smaller
-in magnitude than that. **Stage 3b must not be cited as having been *able* to
-find a worthwhile differential.** This is the only place in the project where a
-"rules out 0.05" verdict is not backed by demonstrated sensitivity at 0.05, and
-it is reported that way.
-
-Two objections are closed off: the auxiliary head genuinely trained on ESM
-features (head ρ ≈ 0.57–0.58 at λ ≥ 0.1), and λ = 0 reproduces stage 3's
-declared headlines to four decimals (additive 0.6761, ESM-only 0.6830), so the
-comparator is the shipped model rather than a near-replica. The union-of-ladders
-audit run alongside it found a real error — the ESM ladders had been borrowing a
-1e-5 point that only ever ran on a different feature matrix — now corrected,
-with two tests enforcing it.
+**This is an unresolved measurement, not a null — and that governs how it may be
+cited.** Every DiD upper bound sits below 0.05, so the frozen rule reads *"rules
+out a worthwhile gain"* — a valid property of the intervals obtained. But the
+DiD power floor was measured on the DiD statistic itself and **straddles 0.05**,
+bracketed in (0.032, 0.071]; and an injected DiD of **−0.0319 went undetected**
+while every observed DiD is smaller in magnitude than that. **Stage 3b must not
+be cited as having been *able* to find a worthwhile differential.** This is the
+only place in the project where a "rules out 0.05" verdict is not backed by
+demonstrated sensitivity at 0.05, and it is reported that way.
 
 **Why:** the stability dataset's peptides were pre-selected for strong predicted affinity, so peptide diversity is limited. IEDB affinity data covers far more peptides and alleles. Multi-task training lets the shared encoder see that broader diversity during training without changing the stability evaluation. Rasmussen et al. showed that combining affinity and stability data improved epitope prediction beyond either alone (p<0.001), with the gain coming from complementary signal, not just more rows.
 
@@ -488,29 +460,18 @@ to the orchestrator before a single AUROC was computed.
 
 51 alleles, 81,600 eluted ligands against 816,000 length- and allele-matched
 human-proteome decoys. No retraining: the atlas enters as a scoring target and
-nothing else.
-
-| Arm | AUROC median [IQR] | AUPRC median | Enrichment top 1% |
-|---|---|---:|---:|
-| `seq_ensemble` (30 nets) | **0.9656** [0.9435, 0.9779] | 0.7804 | 10.33× (of a possible 11.0) |
-| `seq_baseline` (single net) | 0.9502 [0.9182, 0.9648] | 0.6676 | 9.65× |
-| *random scores, same harness* | *0.4974* | *0.0911* | *0.98×* |
-
-The random-score null returns chance on every metric, which is what establishes
-the number comes from the model and not the scoring code; the arm ordering
-reproduces the validation ordering, corroborating the ensembling effect on a
-different assay. Three controls say what it means: **allele-swapped decoys**
-cost 0.050 AUROC (0.9157), bounding the generic-presentability share; a
-**donor-distance gradient** runs 0.8906 near vs 0.9562 far (two bins only, so
-direction and size are established and shape is not); and the **wrong-allele
-pseudosequence** control costs 0.27 AUROC (0.6965) with top-1% enrichment
-collapsing to exactly 1.00×.
+nothing else. The ensemble reaches **median AUROC 0.9656** while random scores
+through the same harness return chance, which is what establishes that the
+number comes from the model and not the scoring code. The full table and the
+three specificity controls — allele-swapped decoys, the donor-distance gradient,
+and the wrong-allele pseudosequence — are in
+[`reports/stage3c_elution_validation.md`](reports/stage3c_elution_validation.md).
 
 **This is not a measurement of stability-prediction accuracy** — elution has at
-least four filters besides stability, and control 1 bounds that share without
-decomposing it. **0.610 / 0.693 remain the numbers to quote for accuracy.**
-Still open: the same pass on the ESM-2 and structural arms; the harness takes an
-arbitrary score file, so it is cheap.
+least four filters besides stability, and the first control bounds that share
+without decomposing it. **0.610 / 0.693 remain the numbers to quote for
+accuracy.** Still open: the same pass on the ESM-2 and structural arms; the
+harness takes an arbitrary score file, so it is cheap.
 
 **Why:** a single scoring pass with no retraining demonstrates transfer to a different assay measuring a different biological event — a stronger claim than any within-dataset correlation.
 
@@ -564,9 +525,10 @@ and the matched 90-fold GPU pilot are complete. Boltz-2 passed its gate;
 ESMFold2 failed on both sentinel criteria. Production scope is frozen as
 Boltz-2 / arm B / all 28,166 pairs across two workspaces, and the run is live.**
 
-Launched 04:00 BST; at ~10:50 BST it has committed **251 of 282 shards —
-25,100 of 28,166 pairs — with zero failures**, tracking completion around
-11:30–12:20 BST. Shard-by-shard records are in
+**Live progress — the only place in the repository this is recorded.** Launched
+04:00 BST; at ~10:50 BST it has committed **251 of 282 shards — 25,100 of 28,166
+pairs — with zero failures**, tracking completion around 11:30–12:20 BST.
+Shard-by-shard records are in
 `reports/ectodomain-20261004/production_<profile>.jsonl`. Feature extraction
 (4c.5) and the stage 5 ablation follow it, so **no structural accuracy number
 exists yet**. Results and the full verdict are in
@@ -827,28 +789,25 @@ from the out-of-scope register on 4 October):
 guards). Pilot on all 90 stage 4c folds, laptop CPU, **$0**.
 
 **The finding is a reframe, not a feature.** ProteinMPNN's peptide
-log-likelihood is *not* a half-life predictor — Spearman(`pep_ll_total`, t½) =
-**−0.100, p = 0.87, n = 5**, which carries no inferential weight at all. It
-behaves instead as an unsupervised, **crystal-free detector of Boltz-2
-peptide-pose failure**, which this project otherwise lacks entirely given 4c.3's
-finding that no PAE or pLDDT threshold catches pose failure without flagging
-accurate predictions. Three constraints travel with that, none optional:
+log-likelihood is *not* a half-life predictor — the correlation with t½ carries
+no inferential weight at all (n = 5). It behaves instead as an unsupervised,
+**crystal-free detector of Boltz-2 peptide-pose failure**, which this project
+otherwise lacks entirely given 4c.3's finding that no PAE or pLDDT threshold
+catches pose failure without flagging accurate predictions. The measurements are
+in the report; **three constraints travel with the claim wherever it is quoted,
+and none is optional:**
 
 1. **n is ONE complex, not six folds.** All six folds above 2.0 Å peptide heavy
    RMSD are the same complex, `HLA-B*07:02`/IPRRNVATL, in arms A and C at three
    seeds each. "The six lowest of 45" would read as six independent failures.
-2. **The within-complex control is the argument.** Hold allele and peptide
-   fixed and vary only the construct: arm A 2.272 Å / `pep_ll_mean` −3.061, arm
-   C 2.251 Å / −3.076, **arm B 0.299 Å / −2.388** — inside the good range the
-   other four complexes occupy (−2.513 to −1.881). Paired with the
-   wrong-backbone control (native-sequence advantage +13.15 nats on the correct
-   arm-B backbone, collapsing to roughly zero on the known-wrong arm-A
-   backbone), that rules out a tautological readback of the folder's own input.
-3. **The claim is specificity, not separation.** Repeating the separation test
-   on every complex yields 7, 9, 2, 13 and 2 "fully separating" features, with
-   the genuinely failing complex scoring the fewest — so clean separation
-   measures complex identity, not pose quality, and **none of the 109
-   structural features isolates the failure**. `pep_ll_mean` was a single
+2. **The within-complex control is the argument**, not the raw separation:
+   holding allele and peptide fixed and varying only the construct moves the
+   score into the good range, and on a known-wrong backbone the native
+   sequence's advantage collapses — together ruling out a tautological readback
+   of the folder's own input.
+3. **The claim is specificity, not separation.** Searching ~100 features for one
+   that splits a six-fold group always succeeds, and **none of the 109
+   structural features isolates the failure**; `pep_ll_mean` was a single
    predeclared quantity, fixed before any score existed.
 
 **Decision: no regression feature; buy the ~$1 QC sample** (2,000 folds, $1.04,
@@ -859,16 +818,14 @@ a triage list, never a failure count or rate**, the reference points **must not
 filter the production cohort**, and the single-complex provenance travels with
 the number wherever it is quoted.
 
-**Two of our own controls disagree about ESMFold2 and the disagreement is
-reported, not resolved by preference.** ProteinMPNN's between-complex /
-within-seed ratio puts ESMFold2 at 1.2–1.9 while 4c.5's 109 structural features
-put it at 5.87; both agree Boltz-2 is comfortably signal-dominated, which is
-what matters operationally since production is Boltz-2 only. The mechanism is
-granularity — ProteinMPNN reads backbone geometry only and is fine-grained,
-the 109 features are coarse aggregates — and that explanation was cross-validated
-directionally in two independently written pipelines. **These two controls must
-not be presented as confirming each other on ESMFold2.** Nothing material turns
-on it; it governs how ESMFold2 is described, not what runs.
+**Two of our own controls disagree about ESMFold2's seed stability, and the
+disagreement is reported as a finding about granularity, not resolved by
+preference** — ProteinMPNN reads backbone geometry only and is fine-grained
+while the 109 features are coarse aggregates. Both agree Boltz-2 is comfortably
+signal-dominated, which is what matters operationally since production is
+Boltz-2 only. **These two controls must not be presented as confirming each
+other on ESMFold2.** Nothing material turns on it; it governs how ESMFold2 is
+described, not what runs.
 
 **Why:** a structural feature can be useful alone yet add nothing beyond the
 sequence baseline. Model confidence is not physical stability; seed variation
@@ -980,48 +937,83 @@ including row-for-row parity with `pepstab/evaluation.py`). Nothing in
 `EVALUATION.md` was modified.
 
 **What the machinery bought**, counted across the eight paired comparisons,
-twelve stratum intervals and the nested row of the ESM run:
+twelve stratum intervals and the nested row of the ESM run: **the differential
+target resolved 5 of 8 while the contract's primary metric resolved 0 of 8**,
+and the distance strata, precision@10 and nested ranking resolved nothing. The
+per-analysis table and the three validation results behind it are in
+[`reports/stage6_val_esm_run.md`](reports/stage6_val_esm_run.md).
 
-| Analysis | Comparisons | Conclusive |
-|---|---:|---:|
-| median per-allele ρ — **the contract's primary metric** | 8 | **0** |
-| mean per-allele ρ | 8 | 4 |
-| **differential concordance** | 8 | **5** |
-| distance strata (gap + within) | 12 | 0 |
-| precision@10 median | 4 | 0 |
-| nested mutant ranking | 3 | 0 |
+That is a finding about the contract, not only about the arms — the median over
+a 68-allele panel is robust, and robustness costs power. **We predeclared it and
+keep it as primary**, because changing the primary metric after seeing which one
+resolves things is exactly the post-hoc selection the contract exists to
+prevent; the recommendation to predeclare differential concordance instead
+belongs to the next study.
 
-**The differential target resolved 5 of 8 while the contract's primary metric
-resolved 0 of 8.** That is a finding about the contract, not only about the
-arms. The median over a 68-allele panel is robust, and robustness costs power.
-**We predeclared it and keep it as primary** — changing the primary metric after
-seeing which one resolves things is exactly the post-hoc selection the contract
-exists to prevent — and the recommendation to predeclare differential
-concordance instead belongs to the next study.
-
-Validation results from the two runs, each of which the submission cites:
-
-- **Nested mutant ranking is an exact dead heat**, verified pair by pair: the
-  sequence baseline and ESM-2 both score 0.485075 over 490 comparisons on 96
-  independent clusters, paired Δ **+0.0000 [−0.0433, +0.0445]** — a net of 60
-  offsetting disagreements split exactly 30–30, not two identical vectors. The
-  mean-pooled 650M ablation scores **conclusively below chance** (−0.1095
-  [−0.1712, −0.0384]), which is the positive control that makes the null worth
-  something.
-- **The distance question was asked three ways and the split answered none** —
-  the arithmetic in the bullets above predicted this, and it held.
-- **Precision@10 could not express a difference**, as recorded above. It stays
-  in the report; no claim rests on it.
-
-**Not all nulls are equal.** The nested ranking and the differential carry
-positive controls on the same measurement. The distance strata and precision@10
-do not. **Stage 3b's partial control fails** — an injected DiD of −0.0319 went
-undetected and its measured floor straddles 0.05 — so its "rules out 0.05"
-reading is a property of the intervals obtained, not demonstrated sensitivity.
+**Not all nulls are equal, and the write-up must say which is which.** The
+nested ranking and the differential carry positive controls on the same
+measurement. The distance strata and precision@10 do not. **Stage 3b's partial
+control fails** — an injected DiD of −0.0319 went undetected and its measured
+floor straddles 0.05 — so its "rules out 0.05" reading is a property of the
+intervals obtained, not demonstrated sensitivity.
 A reader should discount those three accordingly; the reason they can be told
 apart at all is that the power analyses were run rather than assumed.
 
 **Why:** the submission should show what helped, where it helped, and what it cost. A gain on unseen peptides for familiar alleles is useful even without a new-allele result.
+
+### 7. Stretch evaluations (promoted from the out-of-scope register)
+
+**Work**
+
+- **7a — censored likelihood.** Fit the 20.2% assay floor with a left-censored
+  (Tobit) objective instead of `log1p`-MSE, with the expected direction
+  predeclared before any fit: calibration near the floor improves, rank
+  correlation does not. Sweep the assumed detection limit to show the threshold
+  is not load-bearing.
+- **7b — leave-allele-out.** 68 folds, one per eligible allele, stratified by
+  pseudosequence Hamming distance from the held-out allele to its nearest
+  training allele. This runs under a **second, separate evaluation contract**:
+  `split in {train, val}` only, the frozen test split never read, and
+  `data/splits.csv` unmodified.
+
+**Deliverable:** both verdicts with paired intervals, under contracts stated
+before the fits.
+
+**Status: both done.**
+[`reports/stage7_censored.md`](reports/stage7_censored.md),
+[`reports/stage7_allele_holdout.md`](reports/stage7_allele_holdout.md),
+`pepstab/censored.py`, `pepstab/allele_holdout.py`, `scripts/stage7_*.py`,
+`preds/stage7_*.csv`, `tests/test_censored.py` + `tests/test_allele_holdout.py`
+(40 + 36 guards).
+
+**7a delivered its predeclared calibration gain and lost the ranking** —
+Δ median per-allele ρ **−0.0414 [−0.0780, −0.0062]**, an interval lying entirely
+below zero and **the only "worse, conclusively" verdict in the project**. It
+also loses on its own censored objective, and the threshold is not load-bearing.
+**The frozen `log1p`-MSE baseline stands.** The undertraining variant is
+reported **as a control, with no interval**; promoting it would be the post-hoc
+selection this stage exists to avoid.
+
+**7b exposes real headroom, under its own contract.** Near d≤1 **0.741**,
+intermediate d=2–3 0.576, distant d≥4 **0.339**; near−distant **+0.403 [+0.223,
++0.478]** is solid, but the **monotone three-bin trend is not** — near−intermediate
+crosses zero and the strata overlap heavily. Two constraints travel with every
+number: the surviving confound is **panel composition, not panel hold-out**
+(measured form in "Why the allele-axis hold-out is not the headline", below —
+the plan's original mechanism does not hold), and **a `preds/*.csv` cannot be
+scored through this contract**, because those files come from models fitted on
+every allele and scoring one here would report that leak as pan-allele
+generalisation. Each arm must supply features and be refit across all 68 folds;
+the runner rejects a prediction file and a test guards it.
+
+**These numbers are not comparable to a frozen-split number and must never be
+quoted beside one.**
+
+**Why:** 7a is the principled treatment of a floor that is a detection limit
+rather than a measurement, and `log1p` plus rank-led metrics was the
+time-pressured substitute. 7b is the stratum where pretrained features have the
+strongest prior of winning, so a gain confined to distant alleles would be
+reportable even with a flat pooled comparison.
 
 ## Budget and GPU decision rule
 
@@ -1037,8 +1029,8 @@ balance.
 |---|---:|---|
 | HF: embedding extraction and regression experiments | $60 | Core sequence/ESM-2 comparison. |
 | Modal `a-cheparukhin`: pilots to date | $15 total | Stage 4c pilot spent **$1.49** of this; prior benchmark spend included. |
-| Modal `a-cheparukhin`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight** — 128 of 141 shards committed, zero failures. Realised spend is not metered here yet. |
-| Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight** — 123 of 141 shards committed, zero failures. Realised spend is not metered here yet. |
+| Modal `a-cheparukhin`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight.** Realised spend is not metered here yet. |
+| Modal `colleague`/`sofyaleyn`: production half | $150 maximum | 14,083 pairs; forecast $100.4, $125.5 with margin. **In flight.** Realised spend is not metered here yet. |
 | Modal: contingency | remainder of each balance | Reserve; not automatically available to the folding launcher. |
 
 The per-profile $150 ceiling is checked by hand: the production entrypoint
@@ -1135,7 +1127,7 @@ The following work is deferred or rejected for this round. Completed engine diag
 | Chai-1 | A third folding engine adds integration cost beyond the agreed Boltz-2/ESMFold2 comparison. |
 | Separate alpha3/beta2m mechanism ablations | Stage 4c tests the full input pipeline. Additional mechanistic controls are deferred until its predictive value and resource feasibility are established. |
 | Chimeric peptide-linker-groove ESM input | **Promoted 4 October 2026** to a labelled stage 3 diagnostic, not a headline arm — **but it did not reach the clock and was not run.** The original objection stands — a linkered 9-mer sits far outside ESM-2's distribution — but leaving it untested leaves the obvious hole in a negative result: that we never let the model see the complex. It is therefore carried as the sharpest *untested* version of the question, and the stage 3 null is bounded to separate embeddings because of it |
-| Tobit / censored likelihood | **Promoted 4 October 2026** to `stage7_censored`, and **now complete** ([`reports/stage7_censored.md`](reports/stage7_censored.md)). It is the principled treatment of the 20.2% floor, which is a detection limit rather than a measurement; `log1p` plus rank-led metrics was the time-pressured substitute. The predeclared expectation — calibration near the floor improves, rank correlation does not — **held, and then some**: predictive mass below the limit moves 0.070 → **0.168** against an observed 0.196 and ECE 0.0561 → **0.0422**, while median per-allele ρ falls 0.6931 → 0.6518, **Δ −0.0414 [−0.0780, −0.0062] — worse, conclusively**, the project's only such verdict. The frozen `log1p`-MSE baseline stands |
+| Tobit / censored likelihood | **Promoted 4 October 2026** to `stage7_censored`, and **now complete — see [stage 7](#7-stretch-evaluations-promoted-from-the-out-of-scope-register)** for the verdict. Worse, conclusively, on the primary metric; the frozen `log1p`-MSE baseline stands |
 | Source-protein / UniProt mapping, gene-level splits | The splits are frozen and cannot be rebuilt |
 | ESMC / ProtT5 as a second pLM family | **Conditionally promoted 4 October 2026**, queued behind stage 3 and stage 3d — **the condition never cleared and it was not run.** One model family is a thin basis for "foundation models don't help"; a second says whether the stage 3 conclusion is family-specific. It was gated on RAM with six workstreams sharing 16 GB, and the same constraint that dropped ESM-2 650M kept this out. The stage 3 null is bounded to the ESM-2 family accordingly |
 | SaProt, cross-attention, folding-trunk features, geometry-aware GNNs, extensive interpretability probes, molecular-dynamics unbinding | Defer until the core comparison is secure. SaProt's blocker is softening now that structures exist, but it stays deferred behind the three promoted items above |
@@ -1151,7 +1143,10 @@ Leave-allele-out evaluation, stratified by pseudosequence distance from the held
 3. **The frozen split is peptide-grouped, not allele-grouped.** Running it properly means a second split, a second evaluation contract, and every number reported twice, under a 16-hour clock.
 4. **Allele coverage is too skewed to stratify — on the *test* axis.** The counts are verified correct: exactly 8 of 75 alleles hold fewer than 50 test rows, 7 of them because they hold ≤32 pairs in the entire dataset. But they describe test-split rows. On the leave-allele-out axis, which pools train and val, in-scope counts jump **30 → 177 with nothing between**, so three bins are genuinely supported and the 50-row bar is not a judgement call. Measured 4 October; the original concern applies to a different axis than the one this evaluation uses.
 
-**Why it is still worth doing, and what it would buy.** This is the stratum where pretrained features have the strongest prior of winning — pan-allele generalisation is precisely what large-scale pretraining should provide — so a gain confined to distant alleles would be a real, reportable result even if the pooled comparison came out flat. It has now been run (`reports/stage7_allele_holdout.md`): near d≤1 **0.741**, intermediate d=2–3 **0.576**, distant d≥4 **0.339**, with near−distant **+0.403 [+0.223, +0.478]**. The extreme contrast is solid; the monotone three-bin trend is **not** — near−intermediate crosses zero (+0.166 [−0.010, +0.327]) and the strata overlap heavily, with distant's best allele (0.753) beating near's worst (0.419). Reason 1 must still be reported alongside every number, in its **measured** form above rather than its original form. **A `preds/*.csv` cannot be scored through this contract**: those files come from models fitted on every allele, so scoring one here would report that leak as pan-allele generalisation — a number that would look like a win. Each arm must supply features and be refit across all 68 folds.
+**It has now been run** — the verdict, the strata and the two constraints that
+travel with them are in [stage 7](#7-stretch-evaluations-promoted-from-the-out-of-scope-register).
+**Reason 1 must be reported alongside every number it produces**, in its
+**measured** form above rather than its original form.
 
 ## Sources and shared context
 
