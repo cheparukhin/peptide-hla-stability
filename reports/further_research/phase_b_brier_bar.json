@@ -1,0 +1,25 @@
+{
+  "rule": "max 95% paired cluster-bootstrap half-width under no true difference, reference arm only, rounded up to 2 significant figures",
+  "reference_arm": "B0",
+  "p_floor_rule": "mixture",
+  "n_rows": 19716,
+  "n_clusters": 3587,
+  "half_widths": [
+    0.0025834313906055797,
+    0.002634489452437022,
+    0.002957257092037067,
+    0.00270626317909675,
+    0.002660730458412787,
+    0.0023873918162564036,
+    0.002581042109945671,
+    0.0026485449058487633
+  ],
+  "max_half_width": 0.002957257092037067,
+  "median_half_width": 0.0026415171791428927,
+  "worthwhile_delta_brier": 0.003,
+  "n_boot": 2000,
+  "n_splits": 8,
+  "seed": 20261003,
+  "derived_before_any_censored_arm_scored": true,
+  "note": "Written by a separate script and a separate invocation that loads only the reference arm's members, so the ordering is a property of the artifact trail rather than of line order inside one program."
+}

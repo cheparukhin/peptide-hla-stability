@@ -1,0 +1,50 @@
+{
+  "per_network_seconds": 6.6025,
+  "unit_seconds_30_members": 198.075,
+  "forecast_from_measured": {
+    "n_units": 15,
+    "seconds_per_unit": 198.075,
+    "containers": 15,
+    "waves": 1,
+    "wall_clock_minutes": 3.8,
+    "reserved_core_hours": 0.9503,
+    "reserved_gib_hours": 3.801,
+    "startup_share_of_reserved": 0.132,
+    "cpu_usd": 0.0449,
+    "mem_usd": 0.0304,
+    "total_usd": 0.0754,
+    "rates": {
+      "cpu_hour": 0.0473,
+      "mem_gib_hour": 0.008
+    }
+  },
+  "units": [
+    {
+      "arm": "B0",
+      "outer_fold": 0,
+      "n_members": 4,
+      "unit_seconds": 25.8,
+      "memory": {
+        "self_max_rss_gib": 0.393
+      }
+    },
+    {
+      "arm": "B1",
+      "outer_fold": 0,
+      "n_members": 4,
+      "unit_seconds": 19.61,
+      "memory": {
+        "self_max_rss_gib": 0.391
+      }
+    },
+    {
+      "arm": "B2",
+      "outer_fold": 0,
+      "n_members": 4,
+      "unit_seconds": 33.82,
+      "memory": {
+        "self_max_rss_gib": 0.392
+      }
+    }
+  ]
+}

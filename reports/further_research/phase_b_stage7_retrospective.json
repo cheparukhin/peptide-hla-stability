@@ -1,0 +1,24 @@
+{
+  "split": "val",
+  "n_val_rows": 2817,
+  "n_floor_rows": 553,
+  "n_eligible_alleles": 68,
+  "floor_hours": 0.1,
+  "threshold_log1p": 0.09531017980432487,
+  "n_boot": 2000,
+  "seed": 20261003,
+  "reproduction": [
+    {
+      "arm": "mse",
+      "shipped_file": "preds/stage7_mse.csv",
+      "max_abs_diff": 2.1875000033588776e-07,
+      "reproduces": true
+    },
+    {
+      "arm": "censored:nll",
+      "shipped_file": "preds/stage7_censored.csv",
+      "max_abs_diff": 1.3903808593340727e-07,
+      "reproduces": true
+    }
+  ]
+}

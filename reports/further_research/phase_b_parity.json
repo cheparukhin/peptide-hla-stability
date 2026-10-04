@@ -1,0 +1,35 @@
+{
+  "question": "does Phase B's B0 arm inherit A0's budget, and why does it not reproduce A0 bit-for-bit?",
+  "fold": 0,
+  "threads": 1,
+  "n_members": 30,
+  "measurements": [
+    {
+      "pair": "nested.fit_mlp_ensemble (local, macOS/Accelerate arm64) vs A0 shipped predictions",
+      "max_abs_diff": 4.441e-16,
+      "mean_abs_diff": 2.749e-17,
+      "corr": 1.0,
+      "reading": "bit-identical; A0 is reproducible from its own harness function"
+    },
+    {
+      "pair": "phase_b.fit_arm_unit (local) vs nested.fit_mlp_ensemble (local), same platform and threads",
+      "max_abs_diff": 1.176e-06,
+      "mean_abs_diff": 7.713e-08,
+      "reading": "the loops are equivalent; residual is float32 summation order in the member mean, because fit_arm_unit round-trips predictions through Python lists to cross a Modal boundary"
+    },
+    {
+      "pair": "phase_b.fit_arm_unit (local, macOS) vs phase_b.fit_arm_unit (Modal, Linux/OpenBLAS x86-64), both threads=1",
+      "max_abs_diff": 0.1815,
+      "mean_abs_diff": 0.03211,
+      "reading": "the whole discrepancy; cross-platform float32 accumulation order"
+    },
+    {
+      "pair": "nested.fit_mlp_ensemble (local) vs phase_b.fit_arm_unit (Modal)",
+      "max_abs_diff": 0.1815,
+      "mean_abs_diff": 0.03211,
+      "reading": "identical magnitude to the row above, confirming the implementation term is negligible against the platform term"
+    }
+  ],
+  "conclusion": "The budget IS inherited: the implementation difference is 1.18e-06, five orders of magnitude below the platform term. Phase B's B0 differs from A0 because the batch ran on Linux/OpenBLAS x86-64 and A0 ran on macOS/Accelerate arm64, at matched threads=1. On the metric this is 0.0020 of median-of-medians (0.6473 against 0.6493). It does NOT affect any Phase B comparison: B0, B1 and B2 all ran in the same containers on the same platform at the same thread count, so every reported delta is against this study's own B0.",
+  "effect_on_phase_b_verdict": "none"
+}
