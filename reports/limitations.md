@@ -344,7 +344,7 @@ fixing it.
 
 ## 4. The comparators
 
-### 4.2 NetMHCstabpan is calibration, never a comparator
+### 4.1 NetMHCstabpan is calibration, never a comparator
 
 **NetMHCstabpan was trained on all 28,166 rows, including every peptide in our
 test split.** Any score it produces on our data is memorisation. The brief itself
@@ -380,7 +380,7 @@ below ~0.024 on the mean, about half the 0.045 gap. The remainder is consistent
 with the 5.2× training set, richer architecture diversity, and their scoring on
 the stopping fold — and we cannot separate those here.
 
-### 4.3 Validation scores are selection scores
+### 4.2 Validation scores are selection scores
 
 Every number quoted from stages 2, 2b and 2c is a **validation** score, and each
 arm's configuration was chosen on the number reported beside it. They are
@@ -390,14 +390,14 @@ validation, which is why the whole sweep is tabulated rather than its maximum:
 the peak one-hot cell beats the control by 0.004, a sixth of the seed spread
 (`stage2c_affinity.md`).
 
-### 4.4 Seed spread sets a floor on what counts as a difference
+### 4.3 Seed spread sets a floor on what counts as a difference
 
 Seed-to-seed spread for the selected MLP configs is **0.010–0.051**
 (`stage2_baselines.md`). Gaps under ~0.05 are within seed noise, which is the
 same order as the predeclared bar — both reflect what this dataset can resolve.
 **Compare seed means, never single seeds.**
 
-### 4.5 Arms must be ensembled identically or the comparison is manufactured
+### 4.4 Arms must be ensembled identically or the comparison is manufactured
 
 **Ensembling alone is worth +0.074 mean SCC against the deployed single
 network, from no new information** — paired Δ median ρ +0.083 [+0.029, +0.124]
@@ -504,8 +504,8 @@ comparisons, same bootstrap, conclusively separates the 150M checkpoint
 −0.0061])**, so the null is measured rather than an artifact of a metric that
 cannot discriminate. The mean per-allele Spearman separates the same two arms
 (−0.0199 and −0.0348, both excluding zero) while the median calls them
-inconclusive — two independent statistics agreeing. Full detail at SUBMISSION
-§4.0.
+inconclusive — two independent statistics agreeing. Full detail at
+SUBMISSION §4.0.
 
 **The one positive result, which must travel with all three of its
 constraints.** Against the full-domain sequence ensemble on matching input,
