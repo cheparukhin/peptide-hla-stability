@@ -413,6 +413,14 @@ rows**, on `pepstab.stage6.nested_folds` (5 folds **by peptide**, seed
 |---|---|---:|---:|---:|
 | `preds/esm_ensemble_oof.csv` | ESM-2 only | 150 | 18.8 min | 0.7955 |
 | `preds/esm_plus_seq_ensemble_oof.csv` | sequence + ESM-2 | 150 | 31.0 min | 0.7919 |
+| `preds/seq_ensemble_pep_pseudo_oof.csv` | sequence baseline (stage 2) | 150 | 6.8 min | 0.8000 |
+
+The sequence baseline is included so the nested comparison is matched on
+**head and ensemble size as well as representation**. Without it the only
+sequence arm available was a ridge reference, and an ESM 30-network MLP
+ensemble against a single ridge head would confound three things at once. All
+three files share identical folds, head class, member count and seed
+protocol, so the only difference between them is the features.
 
 **Standardisation and PCA are refitted inside each outer fold**, on that fold's
 training rows only, so the PCA basis never sees a row it will later predict. A

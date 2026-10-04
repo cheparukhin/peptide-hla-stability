@@ -113,6 +113,12 @@
         "path": "preds/esm_plus_seq_ensemble_oof.csv",
         "wall_minutes": 31.0,
         "pooled_pearson_vs_label": 0.7919
+      },
+      "sequence_baseline": {
+        "path": "preds/seq_ensemble_pep_pseudo_oof.csv",
+        "wall_minutes": 6.8,
+        "pooled_pearson_vs_label": 0.8,
+        "note": "stage 2 pep+pseudoseq ensemble at its own selected configuration (one-hot L2=1e-5, BLOSUM62 L2=1e-3); included so the nested comparison is matched on head and ensemble size, not only features"
       }
     }
   }
