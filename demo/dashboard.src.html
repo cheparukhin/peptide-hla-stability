@@ -987,7 +987,9 @@ body {
         '<span class="rank-ord">' + (i + 1) + '</span>' +
         '<span class="rank-body">' +
           '<span class="rank-seq">' + esc(p.p) +
-            (p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
+            (structures[structureKey(a.allele, p.p)]
+              ? '<span class="solved" title="Boltz-2 structure available"></span>'
+              : p.s ? '<span class="solved" title="Solved structure in the PDB"></span>' : '') +
           '</span>' +
           '<span class="bar" style="width:' + Math.max(3, f * 100) + '%;background:var(' +
             rampVar(f) + ')"></span>' +
@@ -999,6 +1001,13 @@ body {
   }
 
   /* ---- tier 3 ---- */
+
+  /* Boltz-2 structure lookup. complex_id format: A0101_PEPTIDE */
+  var structures = D.structures || {};
+  function structureKey(allele, peptide) {
+    return allele.replace('HLA-', '').replace(/\*/g, '').replace(/:/g, '') + '_' + peptide;
+  }
+
   function paintStructure() {
     var a = byAllele[state.allele];
     if (!a || !state.peptide) return;
@@ -1009,14 +1018,26 @@ body {
     var tpl = a.tpl;
 
     Structure3D.setPeptideColour(css(rampVar(norm(pep && pep.t, a.thalf_max))));
-    Structure3D.schematic(state.peptide);
+
+    /* Load Boltz-2 Cα trace if available, otherwise fall back to schematic */
+    var skey = structureKey(a.allele, state.peptide);
+    var boltzAtoms = structures[skey];
+    var hasBoltz = boltzAtoms && boltzAtoms.length > 0;
+
+    if (hasBoltz) {
+      Structure3D.load(boltzAtoms);
+    } else {
+      Structure3D.schematic(state.peptide);
+    }
     Structure3D.resetSpin();
 
     $('cap-seq').textContent = state.peptide;
-    $('cap-note').textContent = hit
-      ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
-      : 'Drag to rotate. Schematic geometry.';
-    $('tally-struct').textContent = hit ? 'solved complex' : 'allele template';
+    $('cap-note').textContent = hasBoltz
+      ? 'Boltz-2 prediction · Cα trace · drag to rotate'
+      : hit
+        ? 'Drag to rotate. Solved as ' + hit.pdbs[0] + '.'
+        : 'Drag to rotate. Schematic geometry.';
+    $('tally-struct').textContent = hasBoltz ? 'Boltz-2 fold' : (hit ? 'solved complex' : 'allele template');
 
     var pdb = hit ? hit.pdbs[0] : (tpl ? tpl.pdb : null);
     var res = hit ? hit.res : (tpl ? tpl.res : null);
@@ -1024,20 +1045,25 @@ body {
 
     var cells = [
       ['Half-life', pep ? hours(pep.t) : 'n/a'],
-      ['Entry', pdb || 'none'],
-      ['Resolution', res != null ? res + ' Å' : 'n/a'],
-      ['Solved', year || 'n/a']
+      ['Source', hasBoltz ? 'Boltz-2' : (pdb || 'none')],
+      ['Resolution', hasBoltz ? 'predicted' : (res != null ? res + ' Å' : 'n/a')],
+      ['Chains', hasBoltz ? 'H + β₂m + pep' : (year || 'n/a')]
     ];
     $('readouts').innerHTML = cells.map(function (c) {
       return '<div><dt>' + c[0] + '</dt><dd>' + esc(c[1]) + '</dd></div>';
     }).join('');
 
     var link = hit ? hit.link : (tpl ? tpl.link : null);
-    $('provenance').innerHTML =
-      'Alleles, peptides and half-lives are measured. The groove is placeholder geometry pending ' +
-      'real coordinates — swap them in with <code>Structure3D.load(atoms)</code>.' +
-      (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
-              esc(pdb) + ' on RCSB →</a>' : '');
+    $('provenance').innerHTML = hasBoltz
+      ? 'Boltz-2 ectodomain fold (3-chain: HLA α + β₂m + peptide). Cα backbone trace, centred on the peptide groove.' +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Compare with ' +
+                esc(pdb) + ' on RCSB →</a>' : '')
+      : 'Alleles, peptides and half-lives are measured. ' +
+        (Object.keys(structures).length
+          ? 'Boltz-2 structures available for ' + Object.keys(structures).length + ' pairs.'
+          : 'Run <code>fetch_structures.py</code> then <code>build_payload.py</code> to load Boltz-2 folds.') +
+        (link ? ' <a href="' + esc(link) + '" target="_blank" rel="noopener">Open ' +
+                esc(pdb) + ' on RCSB →</a>' : '');
   }
 
   /* ---- selection ---- */
