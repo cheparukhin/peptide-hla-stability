@@ -1,0 +1,43 @@
+{
+  "bank_info": [
+    {
+      "layer": "mid",
+      "d_in": 64,
+      "n_unique_peptides": 5633,
+      "n_unique_hla": 75,
+      "peptide_variance_retained": 0.825022,
+      "hla_variance_retained": 0.914954,
+      "hla_variance_under_shared_peptide_basis": 0.593929,
+      "bank_mb": 13.6,
+      "fanned_out_mb_avoided": 171.6
+    },
+    {
+      "layer": "final",
+      "d_in": 64,
+      "n_unique_peptides": 5633,
+      "n_unique_hla": 75,
+      "peptide_variance_retained": 0.919167,
+      "hla_variance_retained": 0.914532,
+      "hla_variance_under_shared_peptide_basis": 0.674914,
+      "bank_mb": 13.6,
+      "fanned_out_mb_avoided": 171.6
+    }
+  ],
+  "n_networks": 60,
+  "wall_minutes": 13.6,
+  "total_fit_seconds": 808.8000000000001,
+  "median_fit_seconds": 11.3,
+  "median_infer_seconds_per_1k": 0.005,
+  "n_parameters": {
+    "meanpool": 94913,
+    "xattn": 94913
+  },
+  "selected_l2": {
+    "xattn": 0.001,
+    "meanpool": 0.001
+  },
+  "median_best_epoch": {
+    "meanpool": 46.0,
+    "xattn": 43.0
+  }
+}

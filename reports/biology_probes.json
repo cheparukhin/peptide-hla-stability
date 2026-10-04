@@ -1,0 +1,85 @@
+{
+  "n_rows": 28166,
+  "n_alleles": 75,
+  "n_pairs_scored": 457,
+  "concordance_by_hamming_bin": {
+    "0": {
+      "pairs": 1,
+      "median_rho": 0.6433
+    },
+    "1-4": {
+      "pairs": 79,
+      "median_rho": 0.565
+    },
+    "5-9": {
+      "pairs": 146,
+      "median_rho": 0.1452
+    },
+    "10-14": {
+      "pairs": 164,
+      "median_rho": 0.0148
+    },
+    "15-19": {
+      "pairs": 64,
+      "median_rho": 0.0407
+    },
+    "20+": {
+      "pairs": 3,
+      "median_rho": 0.068
+    }
+  },
+  "noise_ceiling": {
+    "hamming_0": {
+      "n_pairs": 1,
+      "max_rho": 0.6433,
+      "median_rho": 0.6433,
+      "min_rho": 0.6433,
+      "best_pair": "HLA-B*14:01(C67S) / HLA-B*14:02(C67S)",
+      "best_pair_n_shared": 368
+    },
+    "hamming_le_1": {
+      "n_pairs": 13,
+      "max_rho": 0.9205,
+      "median_rho": 0.8215,
+      "min_rho": 0.6433,
+      "best_pair": "HLA-A*02:01 / HLA-A*02:16",
+      "best_pair_n_shared": 369
+    },
+    "rho_vs_censoring_spearman": -0.4605
+  },
+  "position_eta2_adj_median": {
+    "1": 0.0844,
+    "2": 0.0735,
+    "3": 0.0502,
+    "4": 0.0097,
+    "5": 0.0124,
+    "6": 0.0227,
+    "7": 0.0207,
+    "8": 0.0247,
+    "9": 0.0813
+  },
+  "position_entropy_bits_median": {
+    "1": 3.686,
+    "2": 2.228,
+    "3": 3.761,
+    "4": 4.069,
+    "5": 4.108,
+    "6": 4.039,
+    "7": 3.969,
+    "8": 3.916,
+    "9": 2.056
+  },
+  "identity_oracle": {
+    "median_per_allele_rho": 0.3107,
+    "n_alleles": 68,
+    "r2_out_of_fold": 0.3656,
+    "r2_allele_main_effect_in_sample": 0.2732
+  },
+  "most_censored_alleles": {
+    "HLA-B*39:06(C67S)": 0.9208,
+    "HLA-B*14:01(C67S)": 0.8904,
+    "HLA-B*14:02(C67S)": 0.7487,
+    "HLA-B*45:01": 0.6712,
+    "HLA-B*41:01": 0.5978
+  }
+}

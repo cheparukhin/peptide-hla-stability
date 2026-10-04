@@ -1,0 +1,6 @@
+model,n_rows,n_alleles,n_scored,n_unranked,median_per_allele_spearman,iqr_low,iqr_high,mae_log1p,median_precision_at_10,pooled_spearman,pooled_pearson_log1p,n_members,n_features
+cross_alone,2802,68,68,0,0.4121,0.2278,0.5782,0.6155,0.5,0.6562,0.6769,30,306.0
+cross_stacked,2802,68,68,0,0.6099,0.4829,0.7205,0.5076,0.65,0.7674,0.7777,30,1166.0
+seq_ensemble_pep_pseudo,2802,68,68,0,0.6931,0.5736,0.7526,0.4734,0.7,0.8015,0.8098,30,
+esm_ensemble,2802,68,68,0,0.683,0.5585,0.7678,0.4793,0.7,0.8003,0.8064,30,
+esm_plus_seq_ensemble,2802,68,68,0,0.6761,0.5597,0.7697,0.4875,0.7,0.7934,0.7965,30,
