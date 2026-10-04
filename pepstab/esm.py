@@ -147,11 +147,18 @@ class ExtractionResult:
 
 
 def pick_device(requested: str = "auto") -> str:
-    """Pick a torch device. ``auto`` prefers MPS, which is what this Mac has."""
+    """Pick a torch device.
+
+    ``auto`` prefers CUDA when present -- the 650M checkpoint is extracted on a
+    rented GPU rather than this laptop -- then MPS, which is what this Mac has,
+    then CPU.
+    """
     import torch
 
     if requested != "auto":
         return requested
+    if torch.cuda.is_available():
+        return "cuda"
     if torch.backends.mps.is_available():
         return "mps"
     return "cpu"
