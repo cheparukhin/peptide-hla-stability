@@ -425,14 +425,34 @@ cannot discriminate. The mean per-allele Spearman separates the same two arms
 inconclusive — two independent statistics agreeing. Full detail at SUBMISSION
 §4.0.
 
-**The one exception, which must travel with the headline:** against the
-full-domain sequence ensemble on matching input, ESM-2 scores **+0.0301
-[−0.0084, +0.0757]** — the only interval in the stage whose upper bound exceeds
-the bar, so the only one that does *not* rule a worthwhile gain out. A
-pretrained representation of the domain beats one-hot encoding the same domain.
-It does not overturn the headline because the baseline's best configuration does
-not use the full domain; it uses the 34-residue contact pseudosequence. Quote
-both halves or neither.
+**The one positive result, which must travel with all three of its
+constraints.** Against the full-domain sequence ensemble on matching input,
+ESM-2 is conclusively ahead on **two of three statistics**: median per-allele ρ
++0.0301 [−0.0084, +0.0757] (inconclusive), mean per-allele ρ +0.0312
+**[+0.0082, +0.0540]** (conclusive), differential concordance +0.0152
+**[+0.0046, +0.0241]** (conclusive). The additive arm agrees: +0.0111 [+0.0012,
++0.0207] on the differential.
+
+The bounded claim: *given the same 182 HLA residues, ESM-2 extracts more usable
+signal from them than a one-hot or BLOSUM encoding does.* It is a **designed**
+comparison — the full-domain arm was added at stage 1, before any model existed,
+so that "more input" could never be mistaken for "benefit of pretraining".
+
+Three constraints, none of which may be dropped:
+
+1. **It is not a claim that ESM-2 beats the best sequence arm.** The
+   pseudosequence ensemble beats the full-domain arm by a *comparable* margin on
+   the same two statistics (+0.0348 mean, +0.0124 concordance), and ESM-2 does
+   not beat the pseudosequence ensemble (−0.0036 mean, +0.0028 concordance, both
+   inconclusive). **Hand-picking the 34 contact residues recovers what
+   pretraining buys here** — that is the honest summary of the whole project.
+2. **It does not establish the 0.05 bar.** The mean interval runs to +0.0540, so
+   it admits values below the bar as well as above it. "Conclusively better than
+   the full-domain arm" and "worth 0.05" are different statements.
+3. **Both conclusive verdicts come from secondary statistics.** The contract's
+   median — the only statistic the predeclared verdict rule governs — stays
+   inconclusive. **This caveat travels with the claim wherever it appears**,
+   including every summary table.
 
 **Bounded to:** *frozen* embeddings of peptide and HLA taken **separately**, at
 35M and 150M, with ridge and a small MLP head, under the frozen splits, on
@@ -754,7 +774,16 @@ signal has been checked on more than one failing complex.
 
 ---
 
-### 7.3 Two of our own measurements cannot do the job we gave them
+### 7.3 Three of our own measurements cannot do the job we gave them
+
+**Including the contract's primary metric.** Across the whole ESM run — 8 paired
+comparisons, 12 stratum intervals, 1 nested row — the median per-allele Spearman
+returned **0 conclusive verdicts**, while the mean returned 4 and the
+differential concordance 5. A median over a 68-allele panel is robust, and
+robustness costs power. **We predeclared it and we keep it**, because changing
+the primary metric after seeing which one resolves things is the post-hoc
+selection this contract exists to prevent — but a future version of this study
+should predeclare the differential as primary. Detail at SUBMISSION §6.8.
 
 Recorded because both are failures of *our* design choices, not of the models,
 and because a reader who only sees the arms graded would miss that the
@@ -847,8 +876,10 @@ represent the 0.04 differences the primary metric reports. Only the lift and
 ceiling-share columns carry information, and at this resolution even those are
 within noise.
 
-It separated the single network from the ensemble at stage 2, so it is not
-useless in general — it is useless at this resolution. **It stays in the report
+Its only informative columns, lift and ceiling share, span just **0.277–0.294
+across arms that differ by 0.04 on the primary metric**, so even they are within
+noise here. It separated the single network from the ensemble at stage 2, so it
+is not useless in general — it is useless at this resolution. **It stays in the report
 because it was predeclared**, and dropping a metric after seeing it is
 unflattering to the process is the post-hoc selection the contract exists to
 prevent. **No claim in this submission rests on it.**

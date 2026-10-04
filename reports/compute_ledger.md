@@ -213,6 +213,17 @@ second core was billing an idle one — and throughput moved by only ~8% (326 s 
 Spend so far on this workstream — two smokes and two 1,000-fold passes — is
 **under $0.15**.
 
+### Stage 6 evaluation machinery — measured, CPU, $0
+
+The full ESM stage 6 validation run — 8 paired comparisons, 12 stratum
+intervals, the differential over 10,365 allele-pair comparisons, precision@10
+and the nested mutant evaluation — took **~75 minutes on one core, $0**. Budget
+similarly per arm for the test pass.
+
+Worth noting against that number: the analysis that resolved the most
+comparisons, the differential target, is a **re-aggregation of predictions
+already made** and costs no new model fitting at all (SUBMISSION §6.8).
+
 ### Stages 7a and 7b — measured, CPU, $0
 
 Both ran to completion on the laptop while the GPU budget sat untouched.
@@ -252,7 +263,7 @@ what the harness actually did is what fixed it.
 |---|---|---|---|
 | 3 | ESM-2 **regression head** fit and inference | `esm-arm` | Head fit seconds, ensemble member count, inference seconds per 1,000 rows (hole **E1b**) |
 | 5 | Structural feature **heads** (the extraction forecast is above) | blocked on 4c production | Head fit time, extraction failures, realised extraction spend |
-| 6 | Final test scoring and paired bootstraps | `eval-harness` | CPU-minutes for the single test pass and the bootstrap |
+| 6 | Final **test** scoring and paired bootstraps | `eval-harness` | CPU-minutes for the single test pass. **Budget from the measured validation run: ~75 minutes on one core per arm set.** |
 | 7a | *(filled — see below)* | — | — |
 
 ---

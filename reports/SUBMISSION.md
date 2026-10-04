@@ -1046,7 +1046,7 @@ do not answer.
 | Censored (Tobit) likelihood | same features, censored loss | 0.6518 | **−0.0414 [−0.0780, −0.0062]** | **worse, conclusively** | $9.6 × 10⁻⁷ |
 | **ESM-2 only** (30-net) | pretrained sequence embeddings | **0.6830** | **−0.0101 [−0.0382, +0.0352]** | **inconclusive, rules out 0.05** | **$4.7 × 10⁻⁴** |
 | **sequence + ESM-2** (30-net) | both | **0.6761** | **−0.0170 [−0.0468, +0.0320]** | **inconclusive, rules out 0.05** | $4.7 × 10⁻⁴ |
-| *ESM-2 only vs the **full-domain** ensemble* | *matching input* | *0.6830* | ***+0.0301 [−0.0084, +0.0757]*** | ***inconclusive — the only upper bound above the bar*** | *$4.7 × 10⁻⁴* |
+| **ESM-2 only vs the full-domain ensemble** | matching input — the project's one positive | 0.6830 | median **+0.0301 [−0.0084, +0.0757]**; mean **+0.0312 [+0.0082, +0.0540]**; concordance **+0.0152 [+0.0046, +0.0241]** | **conclusive on both secondaries, inconclusive on the contract's primary** — and the pseudosequence arm beats full-domain by as much (§4.0) | $4.7 × 10⁻⁴ |
 | ESM-2 150M only | larger checkpoint | 0.6737 | −0.0194 [−0.0599, +0.0195] | inconclusive, rules out 0.05 | 2.6× the 35M extraction |
 | **Boltz-2, structural features** | **predicted 3D complex + confidence** | **‹HOLE B2›** | **‹HOLE B2›** | **‹HOLE B2›** | **$6.90** |
 
@@ -1353,13 +1353,47 @@ just the results it produced.
 
 The honest answer, and it has two halves.
 
-**One of the five analyses paid for itself, and we can say exactly which.** Of
-everything in the ESM run, **exactly one family of comparisons returns a
-conclusive verdict**: the differential target, which places the 150M checkpoint
-and the full-domain ensemble conclusively below the baseline on cross-allele
-ranking while showing 35M and the additive arm equivalent to within one point of
-concordance (§4.0). The primary metric, the distance strata, precision@10 and
-nested mutant ranking are **inconclusive on every arm**.
+**Counted properly, across every comparison in the ESM run** — 8 paired
+comparisons, 12 stratum intervals and the nested paired row, each checked
+against the committed CSVs:
+
+| Analysis | Comparisons | Conclusive |
+|---|---:|---:|
+| median per-allele ρ — **the contract's primary metric** | 8 | **0** |
+| mean per-allele ρ | 8 | 4 |
+| **differential concordance** | 8 | **5** |
+| distance strata (gap + within) | 12 | 0 |
+| precision@10 median | 4 | 0 |
+| nested mutant ranking | 1 | 0 |
+
+> **The differential target resolves more comparisons than every other analysis
+> combined.**
+
+That is the one-line answer to "what did the stage 6 machinery buy". It also
+vindicates a specific design decision: the differential was built to separate
+within-allele ranking from cross-allele effects, and subtracting the peptide's
+own contribution is precisely what bought the precision — its intervals are four
+to six times tighter than the primary metric's on the same rows.
+
+#### The uncomfortable half of that table
+
+**The contract's own primary metric resolved nothing, while two secondaries
+resolved nine comparisons between them.** That is a finding about the evaluation
+contract, not just about the arms, and it would be easy to leave out.
+
+The mechanism is not mysterious: a **median over a 68-allele panel is a robust
+statistic, and robustness costs power**. It is insensitive to a few badly-ranked
+alleles, which is exactly why it was chosen — and the same insensitivity is why
+it moves less than the mean when an arm is uniformly slightly better.
+
+**We predeclared it and we keep it as primary.** Changing the primary metric
+after seeing which one resolves things is precisely the post-hoc selection this
+contract exists to prevent, and every verdict in this submission is still read
+off the median under the predeclared rule. But a reader deserves to know, and
+the recommendation that follows is for the next study rather than this one:
+**a future version should predeclare the differential concordance as primary.**
+It answers the same scientific question, it is a re-aggregation of the same
+predictions, and it resolves five times as much.
 
 > **The differential target was the only analysis with enough power to resolve
 > anything on this split.**
@@ -1376,8 +1410,15 @@ the same as returning nothing.** Each carries a stated minimum detectable
 effect: the distance question was asked three ways and answered none (§6.1),
 with the arithmetic showing why — a half-width near 0.09 on a quantity whose
 largest observed value is 0.069. Precision@10 cannot express a difference at
-all, and we can show that from the lattice structure of its own intervals
+all, and we can show that from the lattice structure of its own intervals, and
+from the fact that its only informative columns — lift and ceiling share — span
+just **0.277–0.294 across arms that differ by 0.04 on the primary metric**
 (§6.7). The allele hold-out publishes its MDE per stratum (§6.6).
+
+The bootstrap itself was checked rather than trusted: the resampling-unit ratios
+reproduce on a different arm pair (**0.888 / 0.841 against 0.898 / 0.832**), so
+the uncertainty machinery behaves consistently across arms and is not tuned to
+one comparison.
 
 **That distinction is what the whole submission rests on.** Every negative here
 is of the form "ruled out at 0.05" or "equivalent to within one point", never
