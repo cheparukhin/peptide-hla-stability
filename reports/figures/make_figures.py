@@ -60,20 +60,25 @@ ARMS = [
     ("MLP, peptide only", "mlp_onehot_pep", 2.6e-9, "derived"),
     ("MLP, peptide+pseudoseq (single)", "seq_baseline", 6.6e-9, "derived"),
     ("MLP, peptide+domain (single)", "mlp_onehot_pep_domain", 2.6e-8, "derived"),
-    ("sequence ensemble, 30 nets", "seq_ensemble_pep_pseudo", 2.0e-7, "derived"),
-    ("sequence ensemble, full domain", "seq_ensemble_pep_domain", 7.9e-7, "derived"),
-    # --- in flight: drawn automatically once the prediction file exists ---
-    # ESM-2's cost stays NaN until hole E1b lands: extraction is measured
-    # (reports/stage3_embedding_cost.csv) but the head's forward pass is not,
-    # so a total would be a guess. The band below shows the measured half.
+    # Measured end to end by the stage 3 harness at 0.073 s / 1,000 rows, which
+    # supersedes the earlier 30 x 0.0005 derivation (that understated it ~4x).
+    # See reports/compute_ledger.md, "Stage 3".
+    ("sequence ensemble, 30 nets", "seq_ensemble_pep_pseudo", 9.6e-7, "measured"),
+    ("sequence ensemble, full domain", "seq_ensemble_pep_domain", 3.8e-6, "derived"),
+    # ESM-2 cost is now measured end to end: 1.14 s / 1,000 new predictions
+    # (stage3_headline.json), priced at the A10G rate as a generous upper bound
+    # because the embedding step ran on a laptop GPU with no published rate. At
+    # the CPU rate it is $1.5e-5 and the picture is unchanged.
     # Two ESM-2 arms, because they answer different questions and the contrast
     # between them is itself a result. "ESM-only" asks whether frozen ESM-2 can
     # *replace* sequence features; "sequence+ESM-2" asks whether it *adds* to
     # them, which is the question the challenge brief actually poses. Drawing
     # only the first would understate the foundation-model case; drawing only
     # the second would hide that it cannot stand alone.
-    ("ESM-2 ensemble (ESM only)", "esm_ensemble", np.nan, "pending"),
-    ("sequence + ESM-2 ensemble", "esm_plus_seq_ensemble", np.nan, "pending"),
+    ("ESM-2 ensemble (ESM only)", "esm_ensemble", 4.7e-4, "measured"),
+    ("sequence + ESM-2 ensemble", "esm_plus_seq_ensemble", 4.7e-4, "measured"),
+    ("ESM-2 150M (ESM only)", "esm_ensemble_150m", 1.2e-3, "measured"),
+    # --- in flight: drawn automatically once the prediction file exists ---
     ("Boltz-2 structural ensemble", "boltz_structural", 6.90, "measured"),
 ]
 
@@ -81,7 +86,6 @@ ARMS = [
 #: fig. 2 as a vertical band so the reader sees the open question rather than a
 #: guess. Remove an entry here once its prediction file exists.
 PENDING_COST_ONLY = [
-    ("ESM-2", 4.4e-4, "extraction only, 35M\n($4.4e-4 / 1,000 measured;\nhead cost = hole E1b)"),
     ("Boltz-2 structural", 6.90, "$6.90 / 1,000 measured\n(stage 4c pilot, arm B)"),
 ]
 
@@ -163,14 +167,43 @@ def fig_cost_vs_accuracy(table: pd.DataFrame, split: str) -> Path:
     fig, ax = plt.subplots(figsize=(9.0, 5.6))
     known = table[table.usd_per_1k.notna()]
 
+    # Draw points first so the axes limits settle, then place labels with a
+    # greedy anti-collision pass. Several arms (the three ESM-2 ones) sit within
+    # a few thousandths of each other in rho and share an x decade, so fixed
+    # offsets overprint them into an unreadable stack.
+    known = known.sort_values("median_per_allele_spearman")
     for _, r in known.iterrows():
         marker = "o" if r.cost_status in {"measured", "derived"} else "s"
         ax.plot(r.usd_per_1k, r.median_per_allele_spearman, marker, ms=9,
                 color="#2c6fbb", mec="white", mew=1.2, zorder=4)
-        ax.annotate(f"{r.model}\n({r.median_per_allele_spearman:.3f})",
+
+    ax.set_xscale("log")
+    fig.canvas.draw()
+    placed: list[tuple[float, float]] = []      # occupied label anchors, display px
+    for _, r in known.iterrows():
+        px, py = ax.transData.transform((np.log10(r.usd_per_1k),
+                                         r.median_per_allele_spearman))
+        right = px < 0.6 * fig.get_size_inches()[0] * fig.dpi
+        dx = 11 if right else -11
+        # Step the label DOWNWARD until it clears every earlier one. Downward,
+        # not upward: the interesting arms all cluster near the top of the y
+        # range, so the free space is below them and stacking up would run the
+        # labels out of the axes and into the title.
+        dy = -4.0
+        for _ in range(40):
+            if all(abs((py + dy) - qy) > 19 or abs((px + dx) - qx) > 170
+                   for qx, qy in placed):
+                break
+            dy -= 21.0
+        placed.append((px + dx, py + dy))
+        ax.annotate(f"{r.model} ({r.median_per_allele_spearman:.3f})",
                     (r.usd_per_1k, r.median_per_allele_spearman),
-                    textcoords="offset points", xytext=(9, -4),
-                    fontsize=8, va="center")
+                    textcoords="offset points", xytext=(dx, dy),
+                    fontsize=8, va="center",
+                    ha="left" if right else "right",
+                    arrowprops=dict(arrowstyle="-", lw=0.6, color="#9aa6b2",
+                                    shrinkA=0, shrinkB=5)
+                    if abs(dy) > 8 else None)
 
     for label, cost, note in PENDING_COST_ONLY:
         if label.split()[0].lower() in " ".join(known.model).lower():
@@ -191,7 +224,8 @@ def fig_cost_vs_accuracy(table: pd.DataFrame, split: str) -> Path:
             transform=ax.get_yaxis_transform(), fontsize=8, color="#555",
             va="bottom")
 
-    ax.set_xscale("log")
+    lo, hi = ax.get_ylim()
+    ax.set_ylim(lo - 0.04 * (hi - lo), hi + 0.02 * (hi - lo))
     ax.set_xlabel("US$ of compute per 1,000 new predictions (log scale) "
                   "— see reports/compute_ledger.md")
     ax.set_ylabel("median per-allele Spearman rho")

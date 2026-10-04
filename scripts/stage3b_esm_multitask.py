@@ -433,6 +433,79 @@ def audit_expansion(df: pd.DataFrame, train: pd.DataFrame) -> tuple[pd.DataFrame
 
 # --------------------------------------------------------------------------
 
+def probe_l2_interiority(arm: str, train: pd.DataFrame, val: pd.DataFrame,
+                         alleles: list[str], lambdas=(0.0, 3.0),
+                         checkpoint: str = ESM_CHECKPOINT) -> pd.DataFrame:
+    """Re-select L2 **with the auxiliary head present**, and check it is interior.
+
+    ``check_interior()`` runs before any fit, on the L2 that stage 3 selected for
+    a *single-headed* network. Adding a second head changes the effective
+    regularisation, so a value that was interior single-task is not guaranteed to
+    stay interior multi-task -- and `esm-arm` measured the ESM arm as roughly
+    50x more sensitive to the regularisation range than the baseline (0.109
+    against +0.002). The additive ladder has only three points with the middle
+    one selected, so there is no headroom to absorb a shift.
+
+    Protocol: the stage 2/3 *selection* protocol (one permanent inner fit/dev
+    cut, 3 seeds), not the 30-network ensemble -- selection is what is being
+    re-checked, and this must stay cheap enough to run as a gate.
+
+    Returns one row per (lambda, group, l2). A selected value at an edge means
+    the ladder was truncated once the head was added, and the arm's deltas
+    should not be trusted until it is extended.
+    """
+    fold = inner_folds(train)
+    is_fit = (fold == "fit").to_numpy()
+    y = train.y_log1p.to_numpy()
+    aff = dual_labelled(train).to_numpy()
+    y_val = val.y_log1p.to_numpy()
+
+    rows = []
+    for key, (hidden, _sel, ladder) in ARM_CONFIGS[arm].items():
+        if arm == "seq":
+            Xt, Xv = (build_features(train, "pep_pseudo", key),
+                      build_features(val, "pep_pseudo", key))
+        elif arm == "additive":
+            Xt, (Xv,), _ = assemble(train, [val], checkpoint, ESM_LAYER,
+                                    ESM_PEP_REP, ESM_HLA_REP, raw=key)
+        else:
+            Xt, (Xv,), _ = assemble(train, [val], checkpoint, key,
+                                    ESM_PEP_REP, ESM_HLA_REP, raw=None)
+        for lam in lambdas:
+            for l2 in ladder:
+                rhos = []
+                for seed in SEEDS:
+                    cfg = MultiTaskMLPConfig(hidden=hidden, l2=l2, seed=seed,
+                                             max_epochs=MAX_EPOCHS,
+                                             patience=PATIENCE, lambda_aff=lam)
+                    m = MultiTaskMLPRegressor(cfg).fit(
+                        Xt[is_fit], y[is_fit], aff[is_fit],
+                        Xt[~is_fit], y[~is_fit])
+                    rhos.append(score(f"p_{key}_{l2}_{seed}", val.allele, y_val,
+                                      m.predict(Xv), alleles).median_spearman)
+                rows.append({"arm": arm, "group": key, "lambda_aff": lam,
+                             "l2": l2, "ladder_min": min(ladder),
+                             "ladder_max": max(ladder),
+                             "rho_mean": round(float(np.mean(rhos)), 4),
+                             "rho_spread": round(float(max(rhos) - min(rhos)), 4)})
+        del Xt, Xv
+        gc.collect()
+
+    frame = pd.DataFrame(rows)
+    verdicts = []
+    for (grp, lam), g in frame.groupby(["group", "lambda_aff"]):
+        best = g.loc[g.rho_mean.idxmax()]
+        interior = bool(best.ladder_min < best.l2 < best.ladder_max)
+        verdicts.append({"arm": arm, "group": grp, "lambda_aff": lam,
+                         "selected_l2": best.l2, "rho_mean": best.rho_mean,
+                         "interior_with_head": interior})
+        flag = "interior" if interior else "AT BOUNDARY -- extend the ladder"
+        print(f"    {grp:8s} lambda={lam:<4g} -> l2={best.l2:g} "
+              f"(rho {best.rho_mean:+.4f})  {flag}")
+    return frame.merge(pd.DataFrame(verdicts),
+                       on=["arm", "group", "lambda_aff"], how="left")
+
+
 def load_arm_predictions(arm: str, lambdas, val: pd.DataFrame
                          ) -> dict[float, np.ndarray]:
     """Re-load an arm's per-lambda ensemble predictions from ``preds/``.
@@ -478,6 +551,9 @@ def main() -> int:
                     help="resamples per MDE level (reduced; the curve needs "
                          "many intervals, the headline comparisons use --n-boot)")
     ap.add_argument("--audit-expansion", action="store_true")
+    ap.add_argument("--probe-l2", action="store_true",
+                    help="re-select L2 with the auxiliary head present and "
+                         "check it is still interior, before fitting anything")
     ap.add_argument("--reuse-arms", nargs="*", default=[],
                     help="arms whose per-lambda predictions are loaded from "
                          "preds/ instead of refitted. Used to carry the "
@@ -529,6 +605,23 @@ def main() -> int:
         print(json.dumps(summary, indent=2))
         REPORT_DIR.mkdir(exist_ok=True)
         table.to_csv(REPORT_DIR / "stage3b_expansion_audit.csv", index=False)
+
+    if args.probe_l2:
+        print("\nre-selecting L2 with the auxiliary head present "
+              "(adding a head changes the effective regularisation):")
+        probes = []
+        for arm in args.arms:
+            probes.append(probe_l2_interiority(arm, train, val, alleles,
+                                               checkpoint=args.checkpoint))
+        probe = pd.concat(probes, ignore_index=True)
+        probe.to_csv(REPORT_DIR / f"stage3b_l2_probe{suffix}.csv", index=False)
+        bad = probe[~probe.interior_with_head.astype(bool)]
+        if len(bad):
+            raise SystemExit(
+                "L2 is no longer interior once the auxiliary head is added for "
+                f"{sorted(set(zip(bad.arm, bad.group)))}. Extend the ladder "
+                "before trusting this arm's deltas.")
+        print("  all groups interior with the head present\n")
 
     all_runs, all_rows, preds = [], [], {}
 

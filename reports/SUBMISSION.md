@@ -25,7 +25,7 @@ problem"*:
 | Engineering & compute requirements | §7 and [`compute_ledger.md`](compute_ledger.md) — every dollar, GPU-hour and forecast, with the decisions they drove |
 | Biological background | §1, §3 (why within-allele ranking is the decision), §4.1 (anchor chemistry), §4.3 (why β2m matters), §4.4 (external transfer to a different assay) |
 | Negative results, well supported | §4, and [`limitations.md`](limitations.md) §0 and §5 — what each null does and does not establish |
-| **All three model classes the brief names** | structure prediction §4.3 (Boltz-2), protein language models §5 (ESM-2), **inverse folding §4.5 (ProteinMPNN)** |
+| **All three model classes the brief names** | protein language models **§4.0 (ESM-2)**, structure prediction §4.3 (Boltz-2), inverse folding §4.5 (ProteinMPNN) |
 
 ---
 
@@ -52,8 +52,8 @@ by enough to be worth what it costs?
 
 | Source | Model class | What it adds | Price per 1,000 new predictions |
 |---|---|---|---:|
-| Labelled sequences (the baseline) | — | nothing; this is the reference point | $2.0 × 10⁻⁷ |
-| **ESM-2** | protein language model | learned representations of peptide and HLA | **$4.4 × 10⁻⁴** extraction (measured); head ‹HOLE E1b› |
+| Labelled sequences (the baseline) | — | nothing; this is the reference point | $9.6 × 10⁻⁷ |
+| **ESM-2** | protein language model | learned representations of peptide and HLA | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** end to end (measured) |
 | **Boltz-2** | structure prediction | a predicted 3D complex, plus the model's own confidence | **$6.90** |
 | **ProteinMPNN** | inverse folding | sequence–backbone compatibility (§4.5) | $0.52 / 1,000, QC sample only |
 
@@ -328,8 +328,155 @@ family, not a reproduction of it.**
 
 ## 4. What we tested, and what we ruled out
 
-Three cheap hypotheses were tested before any GPU was booked. All three came
-back negative, **and the intervals are tight enough to say what kind of negative**.
+The headline arm first, then three cheap hypotheses tested before any GPU was
+booked, then the structural engine comparison. Every one came back negative, and
+**the intervals are tight enough to say what kind of negative**.
+
+### 4.0 ESM-2: parity standing alone, and nothing on top
+
+This is the submission's central question, and it is now answered for the
+protein-language-model class ([`stage3_esm.md`](stage3_esm.md)). Validation,
+2,817 rows, 68 eligible alleles, **30 ensemble members in every arm**, paired
+cluster bootstrap at 2,000 resamples.
+
+| Arm | median per-allele ρ | Δ vs baseline | 95% CI |
+|---|---:|---:|---|
+| **sequence baseline** (30-net, pep + pseudoseq) | **0.6931** | — | — |
+| ESM-2 only | 0.6830 | −0.0101 | [−0.0382, +0.0352] |
+| sequence + ESM-2 (additive) | 0.6761 | −0.0170 | [−0.0468, +0.0320] |
+
+**Both are inconclusive at zero, and both rule out a +0.05 gain.** That phrasing
+is exact and the distinction matters: **this is not a demonstration that ESM-2
+is worse.** Both intervals contain zero, so we cannot say the pretrained
+representation hurts. What we *can* say is that **every upper bound sits below
+the predeclared worthwhile gain** — which is the strongest negative this
+evaluation supports, and the one the brief asks for.
+
+The two arms answer different questions and agree:
+
+- **ESM-2 alone reaches parity with the baseline** — from a representation that
+  has never seen a stability label, against a model trained on 19,716 of them.
+  That is a genuinely interesting positive about what pretraining encodes, and
+  it is not a win on this benchmark.
+- **ESM-2 adds nothing on top.** Given features the baseline already extracts
+  from those labels, the pretrained representation contributes no further signal
+  worth the predeclared bar.
+
+#### Three controls, which are what stop this being an artifact
+
+A negative result about a foundation model is only worth reporting if the
+obvious ways of manufacturing one have been closed off. Three were, and the
+first is the one that nearly produced a confidently wrong answer.
+
+**1. Tuning parity means equal *budget*, not equal *values* — and getting this
+wrong costs 0.109 SCC.** The tempting move is to hold the baseline's
+hyperparameters fixed "for fairness" and vary only the features. Stage 2's L2
+ladder was `{1e-5, 1e-3}`, chosen for sparse one-hot features over 860
+dimensions; ESM features are dense standardised components. Transplanted, that
+ladder is a handicap wearing the costume of fairness:
+
+| Arm | ρ at stage 2's L2 | seed spread | ρ at its own boundary-checked L2 | seed spread | cost of the transplant |
+|---|---:|---:|---:|---:|---:|
+| ESM-2, middle layer | 0.4994 | **0.110** | **0.6081** | 0.013 | **−0.109** |
+| baseline, one-hot | 0.6096 | 0.032 | 0.6116 | 0.044 | −0.002 |
+
+**The ESM arm is roughly 50× more sensitive to the regularisation range than the
+baseline.** Reported at stage 2's setting, frozen ESM-2 would have come in 0.11
+behind and we would have shipped a confident negative that was purely an
+artifact of the ladder. The tell arrived before any comparison was made: at
+L2=1e-5 the ESM arm's three seeds ranged over **0.110**, far outside stage 2's
+observed 0.010–0.051. *An effect smaller than seed noise is not an effect; an
+instability larger than seed noise is usually under-regularisation* — and here
+it was. The check was applied **symmetrically**: every arm's ladder was extended
+until its selection was interior, the baseline included, because fixing one
+handicap by installing its mirror image is not a fix.
+
+**2. The compression we adopted for memory reasons helped, by +0.033.** PCA on
+the embeddings was a resource decision, not a modelling one — so it is exactly
+the kind of choice that could be blamed for the negative. Measured, it goes the
+other way: the compressed arm *outscores* the uncompressed control. The negative
+cannot be attributed to it.
+
+**3. The scaling curve is flat, which is the strongest available answer to "you
+just needed a bigger model".** ESM-2 150M lands at **0.6737** — marginally
+*below* 35M, at 2.6× the extraction cost. At 35M there is no gap for a larger
+checkpoint to close. That weakens the scaling argument without closing it; see
+§8 for what it does not establish.
+
+#### The one comparison that is not a null — do not skip it
+
+Against the **full-domain** sequence ensemble (0.6529), on matching input,
+ESM-2 scores **+0.0301 [−0.0084, +0.0757]**. Still inconclusive — the interval
+crosses zero — but it is **the only interval in this stage whose upper bound
+exceeds the 0.05 bar**, so unlike every other comparison here it does not rule
+a worthwhile gain out.
+
+Read plainly: **a pretrained representation of the HLA domain beats one-hot
+encoding the same domain.** That is a real and unsurprising thing for a protein
+language model to do, and it is the strongest result ESM-2 produces here.
+
+It does **not** overturn the headline, and the reason is specific: the
+baseline's best configuration **does not use the full domain**. It uses the
+34-residue contact pseudosequence — a piece of domain knowledge about which
+positions touch the peptide — and that hand-built feature is what ESM-2 has to
+beat, not the naive full-domain encoding. **Both halves of that sentence are
+load-bearing** and neither should be quoted without the other.
+
+#### Where you read the embedding matters more than which model produced it
+
+The mean-pooled HLA arm scores 0.177–0.270 against the 34-contact arm's
+0.469–0.499. The natural explanation — pooling over 182 residues discards
+information — is **wrong**, and this dataset can prove it. There are only **75
+distinct HLA domain sequences**, so any HLA representation has rank ≤ 74. Both
+representations measure rank 74, both are **losslessly** representable in 74
+components, and both separate all 75 alleles exactly. **They carry identical
+information**; an unconstrained model could not tell them apart.
+
+The entire 0.3 gap is **similarity geometry** — contact-position embeddings
+place alleles with similar binding pockets near each other, mean-pooled
+embeddings place alleles with similar overall sequence near each other, and only
+the first is the right notion of "similar" for this task. For a practitioner
+this is the most transferable finding in the stage: **where you read a
+foundation model's embedding from matters more than which foundation model
+produced it.**
+
+#### Verification, and one measured engineering constraint
+
+The comparison machinery is **verified, not assumed**: the stage 2 ensemble was
+rebuilt from scratch through the new harness and the regenerated file is
+**byte-identical to stage 2's published artifact** (same md5), giving
+Δ = +0.0000. Stage 2's prediction files were never regenerated in place — the
+boundary-extension runs wrote to new stems — so every downstream fingerprint
+stays valid.
+
+**ESM-2 650M is cached but excluded**: its 5.06 GB peak RSS would not fit
+alongside the concurrent production fold on a 16 GB machine. That is a
+**measured engineering constraint**, recorded as one rather than dressed up as a
+modelling choice — and engineering and compute requirements within the timeframe
+are something the brief explicitly grades.
+
+#### Cost
+
+Head inference is **0.0150 s per 1,000 rows** for the 30-network ESM ensemble,
+against **0.0656 s** for the sequence ensemble — the ESM head is *cheaper* at
+inference, because 330 PCA components is a narrower input than 860 one-hot
+columns. End to end, including embedding 1,000 genuinely new peptides, it is
+**1.14 s against the baseline's 0.073 s: about 16×, and both negligible in
+absolute terms.** The selected configuration is 35M, middle layer, peptide
+per-position (PCA 256), HLA 34-contact (PCA 74, lossless), MLP (256, 64),
+L2 = 1e-2. **Total cloud spend for stage 3: $0.**
+
+A 16× cost ratio for parity is a very different proposition from the structural
+arm's seven orders of magnitude (§7.2). **ESM-2's problem on this task is not
+that it is expensive. It is that the thing it would have to beat is a 34-residue
+hand-built feature that already works.**
+
+---
+
+### The three cheap hypotheses
+
+All three came back negative, **and the intervals are tight enough to say what
+kind of negative**.
 
 ### 4.1 Weak-binder augmentation does not help, and we know why
 
@@ -398,6 +545,14 @@ stability; it predicts it through the same groove chemistry the stability labels
 already teach. The 64,226-row leakage-filtered expansion is **declined on
 evidence, not blocked** — the audit was completed and it is available.
 ([`stage2c_affinity.md`](stage2c_affinity.md))
+
+**This null survives the stage 3 ladder correction**, which matters because §4.0
+showed that a transplanted regularisation range can manufacture a 0.109 swing.
+Re-run on the corrected ladder, λ=0 gives 0.6876 and λ = 0.1 / 0.3 / 1 / 3 give
+−0.0031 / −0.0043 / −0.0054 / −0.0174 — every CI crossing zero, every upper
+bound below 0.05. The measured minimum detectable effect is bracketed in
+**(0.018, 0.037]**, so this design *can* resolve the 0.05 bar: the verdicts are
+earned, not a formality of an underpowered test.
 
 ### 4.3 The engine comparison was settled by a $1.49 experiment
 
@@ -783,11 +938,14 @@ do not answer.
 | Ridge, pep + pseudoseq | linear only | 0.278 | — | — | not measured |
 | MLP, pep + pseudoseq (single) | + 34 contact residues | 0.610 | −0.083 [−0.124, −0.029] | worse than its own ensemble | $6.6 × 10⁻⁹ |
 | 30-net ensemble, pep + domain | + 182 domain residues | 0.653 | −0.040 [−0.073, +0.001] | tied | $7.9 × 10⁻⁷ |
-| **30-net ensemble, pep + pseudoseq** | **the baseline to beat** | **0.693** | — | — | **$2.0 × 10⁻⁷** |
-| Weak-binder augmentation (best arm) | 2,910–4,407 assumed-zero rows | 0.618 | +0.024 [−0.026, +0.048] | **inconclusive, rules out 0.05** | $2.0 × 10⁻⁷ |
-| Auxiliary affinity head (best λ) | 5,135 affinity labels | 0.701 | +0.008 [−0.017, +0.030] | **inconclusive, rules out 0.05** | $2.0 × 10⁻⁷ |
-| Censored (Tobit) likelihood | same features, censored loss | 0.6518 | **−0.0414 [−0.0780, −0.0062]** | **worse, conclusively** | $2.0 × 10⁻⁷ |
-| **ESM-2, frozen representations** | **pretrained sequence embeddings** | **‹HOLE E2›** | **‹HOLE E2›** | **‹HOLE E2›** | **$4.4 × 10⁻⁴** + ‹HOLE E1b› |
+| **30-net ensemble, pep + pseudoseq** | **the baseline to beat** | **0.693** | — | — | **$9.6 × 10⁻⁷** |
+| Weak-binder augmentation (best arm) | 2,910–4,407 assumed-zero rows | 0.618 | +0.024 [−0.026, +0.048] | **inconclusive, rules out 0.05** | $9.6 × 10⁻⁷ |
+| Auxiliary affinity head (best λ) | 5,135 affinity labels | 0.701 | +0.008 [−0.017, +0.030] | **inconclusive, rules out 0.05** | $9.6 × 10⁻⁷ |
+| Censored (Tobit) likelihood | same features, censored loss | 0.6518 | **−0.0414 [−0.0780, −0.0062]** | **worse, conclusively** | $9.6 × 10⁻⁷ |
+| **ESM-2 only** (30-net) | pretrained sequence embeddings | **0.6830** | **−0.0101 [−0.0382, +0.0352]** | **inconclusive, rules out 0.05** | **$4.7 × 10⁻⁴** |
+| **sequence + ESM-2** (30-net) | both | **0.6761** | **−0.0170 [−0.0468, +0.0320]** | **inconclusive, rules out 0.05** | $4.7 × 10⁻⁴ |
+| *ESM-2 only vs the **full-domain** ensemble* | *matching input* | *0.6830* | ***+0.0301 [−0.0084, +0.0757]*** | ***inconclusive — the only upper bound above the bar*** | *$4.7 × 10⁻⁴* |
+| ESM-2 150M only | larger checkpoint | 0.6737 | −0.0194 [−0.0599, +0.0195] | inconclusive, rules out 0.05 | 2.6× the 35M extraction |
 | **Boltz-2, structural features** | **predicted 3D complex + confidence** | **‹HOLE B2›** | **‹HOLE B2›** | **‹HOLE B2›** | **$6.90** |
 
 **Notes on reading this table**, because two rows mix aggregations and saying so
@@ -844,12 +1002,12 @@ dash-dot line is the entire result.
 | Hole | What it is | Owner | What fills it |
 |---|---|---|---|
 | **E1** | ESM-2 cost per 1,000 new predictions | `esm-arm` | Embedding extraction time and hardware, cache size per unique sequence, head inference seconds per 1,000 rows, ensemble member count |
-| **E2** | ESM-2 validation accuracy and its paired CI | `esm-arm` | Median per-allele ρ under `cv_folds()` with matched ensemble size, and the paired cluster-bootstrap Δ against `preds/seq_ensemble_pep_pseudo.csv`. Must also be compared against the **full-domain** ensemble (0.653) if the HLA input is the domain |
+| ~~E2~~ | ~~ESM-2 validation accuracy and its paired CI~~ | — | **Filled**: §4.0. Compared against both the pseudosequence ensemble (−0.0101) and the full-domain ensemble (+0.0301), as required |
 | **B2** | Boltz-2 structural accuracy and its paired CI | stage 4c production → stage 5 | Same, on identical train/val/test rows with matched head architecture, ensemble size and tuning budget. Plus coverage and the declared sequence fallback for structural failures |
 | **B3** | Realised production spend | Modal production session | Metered before/after snapshots per workspace, realised GPU-hours and wall clock, failure count, actual concurrency granted. `production_<profile>.jsonl` exist for both profiles and are currently **empty** |
 | **A1** | Per-stratum leave-allele-out for the ESM-2 and structural arms (§6.6) | `esm-arm` / stage 5 | A **feature matrix plus its `pair_id` index**, refit across all 68 folds at the fixed 6 networks per fold — **not** a `preds/*.csv`, which the runner rejects. A stratum may come back inconclusive and must be reported as such |
 | **B4** | Structural coverage and failure rate (§6.5) | stage 5 | Pairs with a valid structure, pairs falling back to the sequence model, and the primary result reported on the **frozen cohort**, not on whatever folded |
-| **E1b** | ESM-2 **head** inference cost | `esm-arm` | The extraction half is already measured (`stage3_embedding_cost.csv`: 1.07–8.50 s per 1,000 new peptides across three checkpoints). Still needed: head inference seconds per 1,000 rows, member count, and which checkpoint/layer/representation was selected |
+| ~~E1b~~ | ~~ESM-2 head inference cost~~ | — | **Filled**: 0.0150 s / 1,000 rows for the 30-network ensemble; 1.14 s end to end including embedding. §4.0 |
 | ~~S3C~~ | ~~Elution external validation~~ | — | **Filled**: [`stage3c_elution_validation.md`](stage3c_elution_validation.md), §4.4 above. Still open as a *follow-on*: the same pass on the ESM-2 and structural arms |
 | ~~S7a~~ | ~~Censored (Tobit) likelihood result~~ | — | **Filled**: [`stage7_censored.md`](stage7_censored.md), §4.6 above. Negative on ranking, with the sensitivity sweep and the undertraining control |
 | **S6** | Stage 6 test results, distance strata, differential target, nested near-neighbour CV | `eval-harness` | §6 below |
@@ -1021,17 +1179,26 @@ wrong price list.
 
 | Arm | $ / 1,000 | GPU-h / 1,000 | Basis |
 |---|---:|---:|---|
-| Sequence ensemble, 30 networks | $2.0 × 10⁻⁷ | 0 | 30 × measured 0.0005 s per 1,000 rows, at Modal's published $0.04730/CPU-core-hour |
-| **ESM-2, extraction only** | **$4.4 × 10⁻⁴ (35M) – $3.5 × 10⁻³ (650M)** | 0 (laptop `mps`) | measured 1.07–8.50 s per 1,000 new peptides, priced at the A10G rate as a generous upper bound |
-| ESM-2, head forward pass | ‹HOLE E1b› | ‹HOLE E1b› | pending |
+| Sequence ensemble, 30 networks | **$9.6 × 10⁻⁷** | 0 | **measured** 0.073 s per 1,000 rows end to end, at Modal's published $0.04730/CPU-core-hour |
+| **ESM-2, 35M, end to end** | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** | 0 (laptop `mps`) | measured 1.14 s per 1,000 new predictions. The range is the rate, not the time: the low end prices it at the CPU rate, the high end at the A10G rate, because the embedding step ran on a laptop GPU for which no hourly rate exists |
 | **Boltz-2 structural** | **$6.90** | **4.66** | measured 16.76 s fold × measured $1.4812/h A10G |
 | ProteinMPNN inverse folding | $0.52 | 0 (CPU) | measured 14.70 s/fold at 16 decoding orders × metered CPU + memory rates; **forecast**, QC sample only |
 | *ESMFold2 (rejected)* | *$31.40* | *11.8* | *measured 42.63 s × $2.6512/h L40S; forecast only* |
 
-**The structural arm costs about 3.5 × 10⁷ times more per prediction than the
-sequence ensemble it has to beat.** In wall clock rather than dollars: scoring
-the entire dataset takes the sequence ensemble **under half a second of one CPU
-core**; Boltz-2 takes **131 GPU-hours**.
+**The structural arm costs about 7 × 10⁶ times more per prediction than the
+sequence ensemble it has to beat; ESM-2 costs about 16×.** In wall clock rather
+than dollars: scoring the entire dataset takes the sequence ensemble **about two
+seconds of one CPU core**, ESM-2 about half a minute, and Boltz-2 **131
+GPU-hours**.
+
+*A correction to an earlier figure in this document's history:* the sequence
+ensemble's inference cost was previously **derived** as 30 × stage 2's
+single-network 0.0005 s per 1,000 rows, giving $2.0 × 10⁻⁷. Stage 3's harness
+**measured** it at 0.0656 s per 1,000 rows (0.073 s end to end), so the
+derivation understated it by about 4×, and the Boltz-2 ratio falls from
+3.5 × 10⁷ to 7 × 10⁶ accordingly. The measured figure supersedes the derived
+one. The conclusion does not move — it was never close — but a ledger that
+quietly keeps the tidier number is not one worth reading.
 
 Two honest caveats. The dollar ratio compares a laptop CPU figure priced at a
 cloud CPU rate against a cloud GPU bill — dollars are the only axis that puts
@@ -1101,12 +1268,22 @@ reader's interpretation most:
    best arm is +0.024 [−0.026, +0.048]: the data are consistent with a real
    +0.04. What is excluded is +0.05. A larger benchmark would move that bar down
    and some of what we call ruled out would become detectable.
-5. **If ESM-2 does not help, that will be bounded to the representation actually
-   tested** — peptide and HLA embedded *separately*, so the head must learn the
-   interaction itself from two unconditioned vectors. It would not be a result
-   about foundation models in general. The sharpest untested version is a
-   chimeric peptide-linker-groove input, listed as out of scope **specifically
-   so that a null is reported as bounded**.
+5. **The ESM-2 null is bounded to the representation actually tested**, and the
+   bounds are not a formality. It is about *frozen* embeddings of the peptide
+   and HLA domain taken **separately**, at 35M and 150M, with a small MLP head.
+   It does **not** establish that fine-tuning would not help (nothing was
+   fine-tuned); that a model shown the *complex* would not help (the head must
+   learn the peptide–HLA interaction itself from 19,716 rows, and the plan
+   predicted this would be the binding constraint — the ESM-only arm reaching
+   parity while adding nothing on top is consistent with exactly that); that
+   log-likelihood or perplexity features would not help (embeddings are one of
+   three ways the brief names); that a larger checkpoint would not help (flat
+   across the two sizes tested, which weakens but does not close the argument,
+   and 650M was excluded for memory); or that another protein-language-model
+   family would behave the same way. **One family is a thin basis for a general
+   claim.** The chimeric peptide-linker-groove input remains the sharpest
+   untested version and is listed as out of scope **specifically so that this
+   null is reported as bounded**.
 6. **ESMFold2's rejection is operational, not scientific.** Pose accuracy is not
    feature utility, and a five-complex gate is a decision rule for spending $200,
    not a benchmark of ESMFold2 on peptide–MHC.
@@ -1141,11 +1318,15 @@ Ordered by expected value per hour, not by appeal.
    obvious next experiment — and it must be predeclared, because selecting it
    now on the strength of the control would be the post-hoc selection the stage
    avoided. A heteroscedastic scale and a per-allele floor are also untested.
-3. **Test the chimeric ESM-2 input.** If the separate-embedding arm is flat, the
-   obvious objection is that we never let the language model see the interaction.
-   A peptide-linker-groove construct is the sharpest version of the question and
-   the biggest risk to a negative result — which is precisely why it is worth
-   running rather than avoiding.
+3. **Test the chimeric ESM-2 input.** The separate-embedding arm *is* flat
+   (§4.0), so the obvious objection now lands: we never let the language model
+   see the interaction. A peptide-linker-groove construct is the sharpest
+   version of the question and the biggest risk to this negative result — which
+   is precisely why it is worth running rather than avoiding. Two cheaper
+   follow-ups sit alongside it: **likelihood and perplexity features**, which are
+   one of the three uses the brief names and which we did not test at all, and a
+   **second pLM family**, since one family is a thin basis for a class-level
+   claim.
 4. **Re-run the auxiliary-affinity probe on the ESM-2 arm.** The machinery is
    protocol-agnostic and the leakage audit is already done (64,226 admissible
    rows). Affinity is redundant with what a *sequence* model extracts; that says

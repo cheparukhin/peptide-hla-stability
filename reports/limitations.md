@@ -403,21 +403,69 @@ any affinity data.
 already extracts from stability labels*, which does not establish redundancy
 with ESM-2 features. This is the hypothesis's strongest remaining form.
 
-### 5.3 "ESM-2 didn't help" — what that would and would not mean ‹HOLE E3›
+### 5.3 ESM-2 reaches parity and adds nothing — and what that does not mean
 
-*Stage 3 is in flight. If it returns a null, the following bounds apply and must
-be stated with it.*
+**Established** (`stage3_esm.md`, SUBMISSION §4.0): ESM-2 only, −0.0101
+[−0.0382, +0.0352]; sequence + ESM-2, −0.0170 [−0.0468, +0.0320]. Both
+**inconclusive at zero, both ruling out +0.05**. Read that precisely — it is
+*not* a demonstration that ESM-2 is worse. Both intervals contain zero. What is
+established is that every upper bound sits below the predeclared worthwhile
+gain.
 
-A null here would be bounded to **the separate-embedding representation actually
-tested**: peptide and HLA embedded independently, so the regression head has to
-learn the peptide–HLA interaction itself from two unconditioned vectors. It
-would **not** be a result about foundation models in general, nor about ESM-2 in
-general. The sharpest untested version is a chimeric peptide-linker-groove
-input, where ESM-2 sees the interaction directly — explicitly listed as out of
-scope *so that a negative result is reported as bounded*, because a linkered
-9-mer construct sits far outside ESM-2's training distribution
-(`HACKATHON_PLAN.md`, out-of-scope register). Also bounded to the checkpoint and
-layer selected, the head architectures tried, and the tuning budget given.
+**The one exception, which must travel with the headline:** against the
+full-domain sequence ensemble on matching input, ESM-2 scores **+0.0301
+[−0.0084, +0.0757]** — the only interval in the stage whose upper bound exceeds
+the bar, so the only one that does *not* rule a worthwhile gain out. A
+pretrained representation of the domain beats one-hot encoding the same domain.
+It does not overturn the headline because the baseline's best configuration does
+not use the full domain; it uses the 34-residue contact pseudosequence. Quote
+both halves or neither.
+
+**Bounded to:** *frozen* embeddings of peptide and HLA taken **separately**, at
+35M and 150M, with ridge and a small MLP head, under the frozen splits, on
+validation. It does **not** establish:
+
+- that **fine-tuned** ESM-2 would not help — nothing here was fine-tuned;
+- that a model shown the **complex** would not help. Peptide and HLA are
+  embedded independently, so the head must learn the peptide–HLA interaction
+  itself from 19,716 rows. The plan predicted this would be the binding
+  constraint, and ESM-only reaching parity while adding nothing on top is
+  consistent with it. The chimeric peptide-linker-groove input remains the
+  sharpest untested version, and is out of scope **specifically so this null is
+  reported as bounded**;
+- that **likelihood or perplexity** features would not help — embeddings are one
+  of the three uses the brief names, and the other two were not tested;
+- that a **larger checkpoint** would not help. 150M lands at 0.6737, marginally
+  below 35M at 2.6× the cost, so the curve is flat across the two sizes tested —
+  which **weakens but does not close** the scaling argument. 650M was excluded
+  on a measured memory constraint (5.06 GB peak RSS alongside the production
+  fold on a 16 GB machine), not on evidence;
+- that **another pLM family** would behave the same way. One family is a thin
+  basis for a class-level claim.
+
+**Three controls make this reportable rather than an artifact**, and the first
+is a general methodological warning:
+
+1. **Transplanting the baseline's regularisation ladder would have cost 0.109
+   SCC** and inflated seed spread from 0.013 to 0.110. At that setting ESM-2
+   comes in 0.11 behind and the write-up says so with a straight face. **Tuning
+   parity means equal budget, not equal values.** The check was applied
+   symmetrically: the baseline on its own extended ladder moves +0.002, so the
+   ESM arm is ~50× more sensitive to the range. Anyone comparing a dense
+   pretrained representation against a sparse hand-built one should expect this.
+2. **The memory-driven PCA helped by +0.033**, so the negative cannot be blamed
+   on a compression adopted for resource reasons.
+3. **The comparison machinery is verified**: the stage 2 ensemble was rebuilt
+   from scratch through the new harness byte-identically (same md5,
+   Δ = +0.0000), and stage 2's published prediction files were never regenerated
+   in place.
+
+**A separate finding worth carrying:** with only 75 distinct HLA sequences, the
+mean-pooled and 34-contact representations are **both rank 74, both lossless at
+74 components, and both separate all 75 alleles exactly** — identical
+information. So the 0.177-vs-0.499 gap between them is **geometry, not
+information**: where you read the embedding from matters more than which model
+produced it.
 
 The honest framing the brief asks for: *"Are they useful for this problem"* —
 for this representation, on this split, at this budget. Not *"are they useful"*.
@@ -697,7 +745,7 @@ signal has been checked on more than one failing complex.
 
 | Tag | What is missing | Who fills it |
 |---|---|---|
-| **E3** | Stage 3's actual outcome, and the bounds in §5.3 restated against what was tested (checkpoint, layer, head, budget) | `esm-arm` |
+| ~~E3~~ | ~~Stage 3's outcome and its bounds~~ | **Filled**: §5.3 |
 | **B4** | Stage 5 structural feature coverage and failure rate; what the declared sequence fallback covers | blocked on 4c production |
 | **S7** | Whether d=4 and d≥5 test strata separate (§3.1), and the nested near-neighbour result (§3.2) | `eval-harness` |
 | **S8** | Any allele where the test panel disagrees sharply with validation — hard alleles vs overfitting to the validation panel | `eval-harness` |

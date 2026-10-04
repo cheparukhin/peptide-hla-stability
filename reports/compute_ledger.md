@@ -275,7 +275,7 @@ of **$0.04730 per core-hour** (`reports/ectodomain_rates.json`):
 | MLP, peptide only | 1 | 0.0002 | measured | $2.6 × 10⁻⁹ |
 | MLP, peptide + pseudosequence | 1 | 0.0005 | measured | $6.6 × 10⁻⁹ |
 | MLP, peptide + full domain | 1 | 0.0020 | measured | $2.6 × 10⁻⁸ |
-| **Sequence ensemble, pep + pseudoseq** | 30 | 0.015 | 30 × 0.0005 | **$2.0 × 10⁻⁷** |
+| **Sequence ensemble, pep + pseudoseq** | 30 | ~~0.015~~ **0.0656** | superseded by stage 3's direct measurement (below) | **$8.6 × 10⁻⁷** |
 | Sequence ensemble, pep + domain | 30 | 0.060 | 30 × 0.0020 | $7.9 × 10⁻⁷ |
 
 The ×30 is a derivation, not a measurement: the ensemble is 30 independent
@@ -329,9 +329,9 @@ production:
 | Training allele mean | not measured (a table lookup) | 0 | — | 0.000 |
 | MLP, peptide only | $2.6 × 10⁻⁹ | 0 | derived | 0.202 |
 | MLP, peptide + pseudoseq (single) | $6.6 × 10⁻⁹ | 0 | derived | 0.610 |
-| **Sequence ensemble, 30 networks** | **$2.0 × 10⁻⁷** | 0 | derived | **0.693** |
+| **Sequence ensemble, 30 networks** | **$9.6 × 10⁻⁷** end to end | 0 | **measured** (stage 3 harness) | **0.693** |
 | Sequence ensemble, full domain | $7.9 × 10⁻⁷ | 0 | derived | 0.653 |
-| **ESM-2 (frozen representations)** | **$4.4 × 10⁻⁴ – $3.5 × 10⁻³** extraction only, upper bound; **+ ‹HOLE E1b›** for the head | 0 (laptop `mps`) | measured extraction, head pending | **‹HOLE E2›** |
+| **ESM-2 (frozen representations)** | **$1.5 × 10⁻⁵ – $4.7 × 10⁻⁴** end to end | 0 (laptop `mps`) | **measured** | **0.683** (−0.0101 vs baseline; rules out 0.05) |
 | **Boltz-2 structural (arm B)** | **$6.90** measured / $8.91 with margin | 4.66 | measured unit cost | **‹HOLE B2›** |
 | ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.5 of SUBMISSION) |
 | *ESMFold2 structural (rejected)* | *$31.40* | *11.8* | *forecast only* | *not run* |
@@ -341,11 +341,12 @@ column is filled once at stage 6.
 
 ### What the ratio says
 
-The structural arm costs about **3.5 × 10⁷ times** more per prediction than the
-sequence ensemble it has to beat ($6.90 against $2.0 × 10⁻⁷). Put in wall-clock
-rather than dollars: scoring the whole 28,166-pair dataset takes the sequence
-ensemble **under half a second of one CPU core**, and Boltz-2 **131 GPU-hours**
-(6.8 hours only because the work is spread over 20 parallel workers).
+The structural arm costs about **7 × 10⁶ times** more per prediction than the
+sequence ensemble it has to beat ($6.90 against $9.6 × 10⁻⁷); **ESM-2 costs
+about 16×**. Put in wall-clock rather than dollars: scoring the whole
+28,166-pair dataset takes the sequence ensemble **about two seconds of one CPU
+core**, ESM-2 about half a minute, and Boltz-2 **131 GPU-hours** (6.8 hours only
+because the work is spread over 20 parallel workers).
 
 Two honest caveats on that ratio:
 
