@@ -40,10 +40,24 @@ quietly fixed. All three were confirmed against
    and censored-NLL columns for the first two rows are the **30-network**
    values. Only the dev-MSE row is internally consistent. So the claim that the
    dev-MSE stopping rule "roughly halv[es] the calibration error" compares a
-   10-network arm against a 30-network arm, and ensembling is worth roughly
-   +0.07–0.09 median Spearman in this project — larger than most effects being
-   looked for. The direction of the calibration difference may well survive; the
-   magnitude as published does not follow from a matched comparison.
+   10-network arm against a 30-network arm. The direction of the calibration
+   difference may well survive; the magnitude as published does not follow from
+   a matched comparison.
+
+   > **Correction, 4 October 2026, after fitting.** This paragraph originally
+   > justified the concern with "ensembling is worth roughly +0.07–0.09 median
+   > Spearman in this project". **That figure is wrong here**: it is the *single
+   > network versus ensemble* comparison, not the arity comparison the argument
+   > needs. Measured on Phase B's own members, 10 → 30 members is worth
+   > **+0.0159 (B0), +0.0075 (B1), +0.0008 (B2), mean +0.0081**
+   > ([phase_b_arity_effect.csv](phase_b_arity_effect.csv)), and Phase A
+   > independently measures +0.0156 for 12 → 30 on its own screen. So the arity
+   > effect is real, five to ten times smaller than stated, **smaller than the
+   > seed spread in all three arms**, and more variable across arms than across
+   > budgets. Left visible rather than rewritten: the overstated figure is part
+   > of why a budget mismatch looked more alarming than it was. The stage 7a
+   > §6.4 defect is unaffected — a comparison between arms of different size is
+   > not a comparison whatever the size effect turns out to be.
 2. **`reports/stage7_censored_calibration.csv` is stale.** It lacks the
    `p_floor_brier` and `p_floor_ece` columns that the current
    `scripts/stage7_censored.py` writes, so the report's headline calibration

@@ -73,6 +73,15 @@ So the published claim that dev-MSE stopping "gives back almost all of the
 ranking ... while roughly halving the calibration error" compares a 10-network
 arm against a 30-network arm on the calibration side.
 
+How much does arity actually move things? Measured on these same members,
+10 → 30 is worth **+0.0159 (B0), +0.0075 (B1), +0.0008 (B2)**, mean +0.0081
+([phase_b_arity_effect.csv](phase_b_arity_effect.csv)), and Phase A
+independently measures +0.0156 for 12 → 30 on its own screen. That is **smaller
+than the seed spread in every arm**, so the budget mismatch is not large in
+itself. It is still a defect: a comparison between arms of different size is not
+a comparison, and §2.3 shows it moved the headline ranking estimate by a factor
+of 2.4.
+
 Two smaller ones: `stage7_censored_calibration.csv` is stale (it lacks the
 `p_floor_brier`/`p_floor_ece` columns the current script writes, so the report's
 calibration headline is not reproducible from the shipped artifact), and the two
@@ -332,6 +341,13 @@ ranking effect" than the point estimate alone. Source:
 (B1) and −0.0091 (B2), against −0.0515 and −0.0107 at ≥20. Unchanged.
 [phase_b_eligibility_sensitivity.csv](phase_b_eligibility_sensitivity.csv).
 
+These are **pooled** figures, where ≥50 barely bites — a pooled allele averages
+286 rows, so the panel only drops from 69 alleles to 68. Applied *per fold* the
+same bar keeps a median of about 48 alleles at roughly 75% coverage and widens
+the fold span substantially, so at fold scope ≥50 is a **noisier instrument, not
+a stricter one**. A panel disagreement at fold scope should be read as ≥50's
+variance before it is read as a finding.
+
 ### 5.2 Floor-probability calibration
 
 Against **every** comparator, Δ Brier (improvement-signed), with the
@@ -534,6 +550,19 @@ declaration requires. Nothing in Phase B supports a ranking claim of any size.
    magnitude only becomes visible at a matched budget. B1 and B2 share an
    objective, differ only in early stopping, and differ by **+0.0407 median ρ**
    and **+0.0081 Brier**. Stage 7a located this correctly and could not size it.
+
+   **This is not a quirk of the censored loss.** Phase A's A3 screen, on
+   entirely fresh data, finds rank-based early stopping winning in **all eight**
+   matched cells (mean +0.011) *including the two pure-MSE-loss cells where
+   there is no ranking gradient at all*, and decomposes the effect as stopping
+   +0.0085, loss +0.0138, interaction +0.0030. A loss-only comparison would
+   have credited the objective with roughly a third of what the stopping
+   surface did. Two independent arms, two different objectives, the same
+   confound — so the finding is better stated as a property of **how early
+   stopping on this task interacts with any objective whose dev curve turns
+   over at a different epoch than MSE's**, and the remedy is to make the
+   stopping rule an explicit axis rather than letting it ride along with the
+   loss.
 2. **A bolted-on Gaussian tail is the wrong functional form for a floor
    probability**, independent of how well its scale is chosen: both post-hoc
    fitted maps beat every Gaussian scale including the oracle (Platt 0.1035,
