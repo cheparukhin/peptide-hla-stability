@@ -213,6 +213,25 @@ second core was billing an idle one — and throughput moved by only ~8% (326 s 
 Spend so far on this workstream — two smokes and two 1,000-fold passes — is
 **under $0.15**.
 
+### Stages 7a and 7b — measured, CPU, $0
+
+Both ran to completion on the laptop while the GPU budget sat untouched.
+
+| Stage | Work | Networks | Time | $ |
+|---|---|---:|---:|---:|
+| 7a | Censored likelihood: 2 full 30-net ensembles, a 5-point threshold sweep and the stopping-rule control | **130** | 29.6 min | 0 |
+| 7b | Leave-allele-out: 68 folds × 6 networks, a second evaluation contract end to end | **408** | 36.2 min on 2 workers | 0 |
+
+**538 networks and two complete experiments for about an hour of laptop CPU**,
+against $200.8 forecast for one structural fold. That ratio is the submission's
+argument in miniature: the cheap arms are not cheap *because they are small* —
+they are cheap because inference on a one-hot MLP is a matrix multiply, and
+nothing about running 538 of them changes the order of magnitude.
+
+Stage 7b in particular is a **second evaluation contract** — its own split, its
+own eligibility rule, its own bootstrap unit (the allele, not the peptide
+cluster) — which the plan listed as a reason *not* to run it. It cost 36 minutes.
+
 ### A note on published versus metered rates
 
 Both forecasts above are built from the repo's **metered** rates
@@ -234,7 +253,7 @@ what the harness actually did is what fixed it.
 | 3 | ESM-2 **regression head** fit and inference | `esm-arm` | Head fit seconds, ensemble member count, inference seconds per 1,000 rows (hole **E1b**) |
 | 5 | Structural feature **heads** (the extraction forecast is above) | blocked on 4c production | Head fit time, extraction failures, realised extraction spend |
 | 6 | Final test scoring and paired bootstraps | `eval-harness` | CPU-minutes for the single test pass and the bootstrap |
-| 7a | Censored (Tobit) likelihood | stage 7a | 60 networks (2 arms × 30), CPU; protocol predeclared in `stage7_censored.md`, results pending |
+| 7a | *(filled — see below)* | — | — |
 
 ---
 

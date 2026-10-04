@@ -72,8 +72,23 @@ limit", and `log1p` records "t½ = 0". Two consequences:
 
 **The principled alternative is a censored (Tobit-style) likelihood**, which
 models P(t½ < floor) directly. It was recorded as out of scope for a 16-hour
-build, not as unnecessary (`HACKATHON_PLAN.md`, out-of-scope register), and is
-**now in flight as stage 7a** — `reports/stage7_censored.md` predeclares the
+build, not as unnecessary (`HACKATHON_PLAN.md`, out-of-scope register). **It has
+now been built and tested, and it is worse** — Δ median per-allele Spearman
+**−0.0414, 95% CI [−0.0780, −0.0062]**, an interval entirely below zero, and it
+also loses on its own held-out objective (censored NLL 1.0765 vs 1.0452). It
+does deliver the calibration it promised (predictive mass below the limit
+7.0% → 16.8% against an observed 19.6%; ECE 0.0561 → 0.0422) and does **not**
+improve floor discrimination at all (AUROC 0.8862 vs 0.8853), exactly as
+predeclared, because ranking inside the tied floor block is unidentifiable under
+either objective. The result is flat across detection limits 0.05–0.30 h (median
+ρ spans 0.0095), so the free parameter is not driving it. **So the `log1p`
+compromise is not merely a 16-hour substitute that was never checked — it was
+checked, and it won on the primary metric.** The likely cause of the loss is the
+stopping rule rather than the loss itself (the censored arm's dev objective
+turns over at epoch ~10 against the MSE arm's ~27, so it is undertrained); that
+is reported as a **control without an interval**, not as a result. Full detail
+in `stage7_censored.md`; summary at SUBMISSION §4.6. This was previously tracked
+as stage 7a — `reports/stage7_censored.md` predeclares the
 loss, the detection threshold `c = log1p(0.1)` (justified from the 0.1 h
 reporting grid and the single row between 0 and 0.1 h, never from a validation
 score), a five-point `c_hours` sensitivity sweep including a deliberate
@@ -127,14 +142,37 @@ it has three consequences the submission cannot design away:
    early. That left `HLA-B*42:01`, `HLA-B*51:01` and `HLA-B*81:01` (~350 pairs
    each) with **zero test rows**. Ranking by deficit relative to target fixed it
    at no cost to the 70/10/20 totals (`audit_summary.md` §5).
-2. **It is why the allele-held-out evaluation is not the headline.** Holding out
-   an allele simultaneously holds out its peptide panel, so an apparent
-   allele-distance effect is inseparable from a peptide-panel effect. **This
-   confound does not disappear by being measured** — if that evaluation is run,
-   it must be reported alongside. This reason is specific to this dataset and is
-   the one that matters; the other three (different question, second split
-   needed, skewed allele coverage) are weaker
-   (`HACKATHON_PLAN.md`, "Why the allele-axis hold-out is not the headline").
+2. **It is why the allele-held-out evaluation is not the headline — but the
+   mechanism we originally wrote down was wrong, and has been corrected.**
+   `HACKATHON_PLAN.md` claimed that holding out an allele simultaneously holds
+   out its peptide panel, making an allele-distance effect inseparable from a
+   panel effect. **Measured, that is not what happens** (`stage7_allele_holdout.md`
+   §4): the median peptide is assayed on **4 alleles**, allele-exclusive
+   peptides are **6.0% of rows**, and for the median eligible allele **100%** of
+   its rows carry a peptide also seen on another allele (minimum 0.565). Peptide
+   overlap is uncorrelated with distance (−0.067, p = 0.59) and with per-allele
+   performance (+0.034, p = 0.79). So leave-allele-out here is largely *seen
+   peptide, unseen allotype* — **easier** than the frozen split in that respect,
+   which is exactly why its absolute numbers must never be quoted beside a
+   frozen-split number.
+
+   **What the confound actually is: panel composition.** Each allele's panel was
+   partly selected by predicted binding affinity for *that* allele, and distant
+   alleles carry weaker-binding, more heavily censored panels —
+   Spearman(distance, per-allele zero share) = **+0.251, p = 0.039**. Partialling
+   the two apart leaves distance at **−0.604** (p = 4.9 × 10⁻⁸) against −0.636
+   raw, and zero share at −0.336 (p = 5.1 × 10⁻³). **Both carry independent
+   signal: the confound is attenuated, not eliminated**, and zero share is only
+   one proxy — anchor-motif composition, peptide diversity and the
+   affinity-prediction step that chose each panel are unmeasured. The single
+   worst fold makes it concrete: `HLA-B*39:06(C67S)` sits at **d = 3** with a
+   **91.8% floor panel**, so it scores badly because of its panel, not its
+   distance.
+
+   The plan's other three reasons stand unchanged, except that reason 4
+   (skewed allele coverage) describes test-split counts and **does not bind on
+   this axis** — in-scope rows per allele jump 30 → 177 with nothing between, so
+   68 alleles stratify comfortably into 25/23/20.
 3. **Per-allele medians are over an unbalanced panel.** 8 of 75 alleles hold
    fewer than 50 test rows and are excluded from the test panel; 7 of those hold
    ≤ 32 pairs in the entire dataset. Only `HLA-B*40:02` (19 pairs) is missing
@@ -517,10 +555,10 @@ Recorded so that absence is not mistaken for a result. Full rationale in
 
 | Not run | Why | Status |
 |---|---|---|
-| Allele-held-out evaluation | Confounded by allele-specific peptide panels (§2.1); different question from the headline claim | Deferred; the stratum where pretraining has the strongest prior of winning |
+| ~~Allele-held-out evaluation~~ | Different question from the headline; confounded by **panel composition**, not panel hold-out (§2.1) | **Run for the sequence arm**: near 0.741 vs distant 0.339, +0.403 [+0.223, +0.478]. Extreme contrast solid, monotone trend not. ESM-2 and structural arms still to run, and **must be refit, not scored from a `preds/*.csv`** |
 | ~~ProteinMPNN inverse-folding scores~~ | Was blocked on needing structures; the stage 4c pilot's 90 folds unblocked it | **Run** — pilot complete, §7.2. Kept as a ~$1 QC triage sample; **declined as a regression feature** on a measured n=5 label correlation of −0.100 |
 | Chimeric peptide-linker-groove ESM-2 input | Far outside ESM-2's distribution | **Listed specifically so a stage 3 null is reported as bounded** (§5.3) |
-| ~~Tobit / censored likelihood~~ | Was the 16-hour substitute's known gap | **Now in flight as stage 7a**, protocol predeclared, results pending (§1.1, hole S7a) |
+| ~~Tobit / censored likelihood~~ | Was the 16-hour substitute's known gap | **Run, and negative**: −0.0414 [−0.0780, −0.0062] on ranking, gains calibration only (§1.1) |
 | FoldX / Rosetta / empirical ΔG | Equilibrium ΔG vs a kinetic label (§1.3), **and both are licence-gated behind registration** | Declined for two independent reasons — §7.0 |
 | Elution data as training augmentation | 5.4× scale mismatch, unknowable threshold τ, confounded with abundance/cleavage/TAP/ionisation, and it changes the question | Rejected **as training data**; used as external validation instead, which has now run — §7.1 |
 | ESMFold2 production folds | Failed its gate; $884 forecast | §5.4 |
@@ -663,7 +701,8 @@ signal has been checked on more than one failing complex.
 | **B4** | Stage 5 structural feature coverage and failure rate; what the declared sequence fallback covers | blocked on 4c production |
 | **S7** | Whether d=4 and d≥5 test strata separate (§3.1), and the nested near-neighbour result (§3.2) | `eval-harness` |
 | **S8** | Any allele where the test panel disagrees sharply with validation — hard alleles vs overfitting to the validation panel | `eval-harness` |
-| **S7a** | The censored-likelihood result and its `c_hours` sensitivity sweep (§1.1) | stage 7a |
+| ~~S7a~~ | ~~Censored-likelihood result~~ — **filled**, §1.1 | — |
+| **A1** | Per-stratum leave-allele-out comparison for the ESM-2 and structural arms (§2.1). Measured MDE is 0.025–0.030 when per-allele deltas are tight and 0.075–0.115 when loose, so **a stratum may come back inconclusive and must be reported as such, not as a null** | `esm-arm` / stage 5 |
 | ~~S3C~~ | ~~Elution external-validation write-up~~ | **Filled**: `stage3c_elution_validation.md`, §7.1. Open as a follow-on: the same pass on the ESM-2 and structural arms |
 | **P1** | Whether the ProteinMPNN pose-triage signal survives a second failing complex (§7.2) | blocked on 4c production + the QC sample |
 | **A3** | Whether the six partly-inferred ectodomain constructs (§6.6) behave differently at stage 5 | stage 5 |

@@ -24,7 +24,8 @@ stage,item,hardware,cpu_minutes,gpu_type,gpu_hours,wall_clock,usd,status,source
 3,"ESM-2 embedding extraction, 3 checkpoints, cached per unique sequence",laptop mps,,laptop mps,,7.5 s (35M) to 59.5 s (650M) embed time,0,measured,reports/stage3_embedding_cost.csv
 3,ESM-2 regression head fit and inference,TBD,,,,,,PLACEHOLDER_in_flight_E1b,owner: esm-arm
 3c,"Elution external validation: 2 arms x 3 control sets, 897600 rows each, 51 alleles",laptop CPU,16.4,,,16.4 min,0,measured,reports/stage3c_elution_validation.md
-7a,Censored (Tobit) likelihood: 60 networks (2 arms x 30),laptop CPU,,,,,0,PLACEHOLDER_in_flight_S7a,reports/stage7_censored.md (protocol predeclared; results pending)
+7a,"Censored (Tobit) likelihood: 130 networks (2x30-net ensembles, 5-point threshold sweep, stopping-rule control)",laptop CPU,29.6,,,29.6 min,0,measured,reports/stage7_censored.md
+7b,"Leave-allele-out evaluation: 68 folds x 6 networks, second evaluation contract",laptop CPU,72.4,,,36.2 min on 2 workers,0,measured,reports/stage7_allele_holdout.md
 5,"ProteinMPNN inverse-folding pilot: 90 folds + circularity matrix + wrong-backbone control",laptop CPU,28.3,,,481 s + 1107 s + 107 s,0,measured,reports/stage5_inverse_folding.md
 5,"ProteinMPNN aborted cross-peptide sweep (killed under memory pressure, output discarded)",laptop CPU,13,,,~780 s,0,measured_wasted,reports/stage5_inverse_folding.md
 5,"ProteinMPNN ::forecast + --dry-run checks (assumed free; --dry-run started a container and would have failed against a missing production root)",Modal CPU,,,,minutes,,measured_not_separately_metered,reports/stage5_inverse_folding.md

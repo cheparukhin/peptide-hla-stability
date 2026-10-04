@@ -700,6 +700,67 @@ fine backbone detail, not in the coarse pose descriptors. Nothing material turns
 on it, since production is Boltz-2 only; it governs how ESMFold2 is *described*,
 not what runs.
 
+### 4.6 A censored likelihood fixes the floor and loses the ranking
+
+Stage 1 recorded that treating a detection floor as an exact zero is the
+project's biggest modelling compromise, and that a **left-censored (Tobit-style)
+likelihood** is the principled fix: for a floor row the honest statement is not
+"t<sub>1/2</sub> = 0" but "the latent value is at or below the detection limit".
+That has now been built and tested
+([`stage7_censored.md`](stage7_censored.md)).
+
+Everything was predeclared before a single censored model was fitted — the loss,
+the detection limit **c = log1p(0.1 h)** justified from the 0.1 h reporting grid
+rather than from any score, a five-point sensitivity sweep, the prediction
+heads, and the expectation that a censored loss should improve *calibration near
+the floor* rather than *ranking*. Two 30-network ensembles, identical in
+everything but the objective.
+
+| | median per-allele ρ | MAE log1p | mass below the limit | ECE | floor AUROC |
+|---|---:|---:|---:|---:|---:|
+| `log1p`-MSE (the baseline) | **0.6931** | **0.4734** | 0.070 | 0.0561 | 0.8862 |
+| censored @ 0.1 h | 0.6518 | 0.5763 | **0.168** | **0.0422** | 0.8853 |
+| *observed* | — | — | *0.196* | — | — |
+
+**Δ median per-allele Spearman = −0.0414, 95% CI [−0.0780, −0.0062].** The
+interval lies **entirely below zero**, so under the predeclared reading this is
+the one verdict this project has not otherwise produced: **worse, conclusively** —
+not inconclusive, and not merely "fails to clear the bar".
+
+Three things make that a real negative rather than a metric mismatch:
+
+- **It loses on its own objective.** Held-out censored NLL is **1.0765** for the
+  censored arm against **1.0452** for the MSE arm. We did not optimise one thing
+  and measure another.
+- **The threshold is not load-bearing.** Across a six-fold range of the
+  detection limit, 0.05–0.30 h, median ρ spans **0.0095** — far below the seed
+  spread, let alone the 0.05 bar. The declared 0.1 h is neither the best nor the
+  worst point in that sweep, which is what a threshold fixed before training
+  should look like.
+- **It delivered exactly the calibration it promised, and that was not enough.**
+  Predictive mass below the limit moves 7.0% → **16.8%** against an observed
+  19.6%, and expected calibration error improves 0.0561 → **0.0422**. But floor
+  *discrimination* does not move at all (AUROC 0.8862 vs 0.8853) — which is what
+  §5 of that report predicted, because **ranking within the tied floor block is
+  unidentifiable under either objective**. The censored arm places floor rows
+  better on the scale; it does not order them better.
+
+**The mechanism, reported as a control and not as a result.** The censored arm's
+own dev objective bottoms out at epoch ~10 against the MSE arm's ~27, so it is
+systematically **undertrained**. A control changing only the stopping rule — same
+loss, same gradients — recovers almost all of the ranking (−0.0065 against its
+reference, versus −0.0318) while roughly halving the calibration error. That
+control was predeclared as a control, ran at a reduced budget, and **has no
+confidence interval**. It localises a likely fix; it does not establish one.
+Promoting it to a result would be precisely the post-hoc selection this stage
+exists to avoid, so it stays a control.
+
+**What stands:** the frozen `log1p`-MSE baseline. Nothing downstream switches
+loss on this evidence. What the censored arm uniquely offers is a *probability
+that a pair sits below the assay floor*, produced by its own fit rather than by
+a scale bolted on afterwards — useful if a downstream application needs that
+number, which this benchmark does not.
+
 ---
 
 ## 5. Results
@@ -725,6 +786,7 @@ do not answer.
 | **30-net ensemble, pep + pseudoseq** | **the baseline to beat** | **0.693** | — | — | **$2.0 × 10⁻⁷** |
 | Weak-binder augmentation (best arm) | 2,910–4,407 assumed-zero rows | 0.618 | +0.024 [−0.026, +0.048] | **inconclusive, rules out 0.05** | $2.0 × 10⁻⁷ |
 | Auxiliary affinity head (best λ) | 5,135 affinity labels | 0.701 | +0.008 [−0.017, +0.030] | **inconclusive, rules out 0.05** | $2.0 × 10⁻⁷ |
+| Censored (Tobit) likelihood | same features, censored loss | 0.6518 | **−0.0414 [−0.0780, −0.0062]** | **worse, conclusively** | $2.0 × 10⁻⁷ |
 | **ESM-2, frozen representations** | **pretrained sequence embeddings** | **‹HOLE E2›** | **‹HOLE E2›** | **‹HOLE E2›** | **$4.4 × 10⁻⁴** + ‹HOLE E1b› |
 | **Boltz-2, structural features** | **predicted 3D complex + confidence** | **‹HOLE B2›** | **‹HOLE B2›** | **‹HOLE B2›** | **$6.90** |
 
@@ -785,10 +847,11 @@ dash-dot line is the entire result.
 | **E2** | ESM-2 validation accuracy and its paired CI | `esm-arm` | Median per-allele ρ under `cv_folds()` with matched ensemble size, and the paired cluster-bootstrap Δ against `preds/seq_ensemble_pep_pseudo.csv`. Must also be compared against the **full-domain** ensemble (0.653) if the HLA input is the domain |
 | **B2** | Boltz-2 structural accuracy and its paired CI | stage 4c production → stage 5 | Same, on identical train/val/test rows with matched head architecture, ensemble size and tuning budget. Plus coverage and the declared sequence fallback for structural failures |
 | **B3** | Realised production spend | Modal production session | Metered before/after snapshots per workspace, realised GPU-hours and wall clock, failure count, actual concurrency granted. `production_<profile>.jsonl` exist for both profiles and are currently **empty** |
+| **A1** | Per-stratum leave-allele-out for the ESM-2 and structural arms (§6.6) | `esm-arm` / stage 5 | A **feature matrix plus its `pair_id` index**, refit across all 68 folds at the fixed 6 networks per fold — **not** a `preds/*.csv`, which the runner rejects. A stratum may come back inconclusive and must be reported as such |
 | **B4** | Structural coverage and failure rate (§6.5) | stage 5 | Pairs with a valid structure, pairs falling back to the sequence model, and the primary result reported on the **frozen cohort**, not on whatever folded |
 | **E1b** | ESM-2 **head** inference cost | `esm-arm` | The extraction half is already measured (`stage3_embedding_cost.csv`: 1.07–8.50 s per 1,000 new peptides across three checkpoints). Still needed: head inference seconds per 1,000 rows, member count, and which checkpoint/layer/representation was selected |
 | ~~S3C~~ | ~~Elution external validation~~ | — | **Filled**: [`stage3c_elution_validation.md`](stage3c_elution_validation.md), §4.4 above. Still open as a *follow-on*: the same pass on the ESM-2 and structural arms |
-| **S7a** | Censored (Tobit) likelihood result | stage 7a | `stage7_censored.md` §1–5 are predeclared and committed; §6 is "pending". Needed: the paired Δ against the identical-protocol MSE ensemble, plus the `c_hours` sensitivity sweep |
+| ~~S7a~~ | ~~Censored (Tobit) likelihood result~~ | — | **Filled**: [`stage7_censored.md`](stage7_censored.md), §4.6 above. Negative on ranking, with the sensitivity sweep and the undertraining control |
 | **S6** | Stage 6 test results, distance strata, differential target, nested near-neighbour CV | `eval-harness` | §6 below |
 
 ---
@@ -800,8 +863,9 @@ evaluations were specified in the frozen contract, each answering a question the
 headline cannot. **They run at stage 6 and cost no new compute** — all are
 re-aggregations of predictions already made.
 
-A sixth — transfer to an entirely different assay — has already been delivered
-and is reported in §4.4, with its three specificity controls.
+Two more have already been delivered: transfer to an entirely different assay
+(§4.4, with its three specificity controls) and the leave-allele-out evaluation
+(§6.6), which needed a second contract of its own.
 
 ### 6.1 Distance stratification — is the model generalising or remembering?
 
@@ -853,6 +917,72 @@ a declared sequence-model fallback** as the primary result, and common successfu
 rows only as a diagnostic. **Scoring only the pairs that happened to fold would
 be a retrospectively chosen cohort**, which is exactly the kind of quiet
 selection a watertight evaluation has to rule out. Result: **‹HOLE B4›**.
+
+### 6.6 Leave-allele-out — a second contract, and the headroom it exposes
+
+This is the one evaluation that asks a *different* question from the headline:
+not "unseen peptides on alleles we trained on" but **"unseen allotype"**. It
+needs its own split, its own contract and every number reported twice, which is
+why the plan put it at "if time remains". It has now been run for the sequence
+arm ([`stage7_allele_holdout.md`](stage7_allele_holdout.md)): 68 folds, one per
+eligible allele, each fitting on every *other* allele's rows, 6 networks per
+fold, no tuning, `split in {train, val}` only. **The frozen test split was not
+read, and `data/splits.csv` is unmodified.**
+
+| Stratum (pseudosequence Hamming to nearest training allele) | Alleles | Median ρ | 95% CI |
+|---|---:|---:|---|
+| near, d ≤ 1 | 25 | **0.741** | [0.642, 0.803] |
+| intermediate, d = 2–3 | 23 | 0.576 | [0.458, 0.726] |
+| distant, d ≥ 4 | 20 | **0.339** | [0.298, 0.491] |
+
+**near − distant = +0.403 [+0.223, +0.478].** The sequence baseline degrades
+sharply on allotypes unlike anything it trained on.
+
+**The extreme contrast is solid; the monotone three-bin trend is not.** The
+adjacent contrasts do not hold up — near − intermediate is **+0.166 [−0.010,
++0.327]**, which crosses zero — and the strata overlap heavily: the distant
+bin's *best* allele (0.753) beats the near bin's *worst* (0.419). The medians
+separate; the distributions do not. Reporting a monotone trend would overstate
+what this design resolves.
+
+**This is where a pretrained model has its strongest prior of winning** —
+pan-allele generalisation is exactly what large-scale pretraining should
+supply — so a 0.403 deficit in that stratum is a large, measurable headroom.
+**Nothing here says ESM-2 will capture it.** A measured deficit is a
+precondition for the claim, not evidence for it.
+
+**Two constraints that travel with every number above.**
+
+*The confound is real, but not the one the plan described.* The plan asserted
+that holding out an allele also holds out its peptide panel. Measured, that is
+**not what happens**: the median peptide is assayed on **4 alleles**,
+allele-exclusive peptides are only **6.0% of rows**, and for the median eligible
+allele **100%** of its rows carry a peptide seen on some other allele. Peptide
+overlap is uncorrelated with distance (−0.067) and with per-allele performance
+(+0.034). So this evaluation is largely *seen peptide, unseen allotype* — easier
+than the frozen split in one respect, harder in another, and its absolute
+numbers **must never be quoted beside a frozen-split number**. What does survive
+is **panel composition**: distant alleles carry weaker-binding, more heavily
+censored panels (Spearman(distance, zero share) = +0.251, p = 0.039). Partialling
+that out leaves distance at **−0.604** (p = 4.9 × 10⁻⁸) against −0.636 raw — so
+the confound is **attenuated, not eliminated**, and zero share is only one proxy
+for panel composition. The clearest illustration is the single worst fold:
+`HLA-B*39:06(C67S)` at **d = 3**, with a 91.8% floor panel — it scores badly
+because of its panel, not its distance.
+
+*A prediction file cannot be scored through this contract.* Everything in
+`preds/*.csv` is the output of a model fitted on **every** allele. Scoring one
+here would score a model on alleles it trained on and **report the leak as
+pan-allele generalisation — a number that would look like a win.**
+Leave-allele-out refits 68 times, so **each arm must supply features and be
+refit**, not hand over predictions. The runner rejects a `preds/*.csv` with that
+message and a test guards it. Ensemble size is fixed at 6 networks per fold for
+every arm, so no arm can win on ensembling budget.
+
+Per-stratum ESM-2 and structural comparisons are therefore worth running and are
+**not guaranteed to conclude**: the measured minimum detectable effect is 0.025–0.030
+when per-allele deltas are tight, rising to 0.075–0.115 when they are loose, so
+an inconclusive stratum must be reported as inconclusive rather than as a null.
 
 ---
 
@@ -952,12 +1082,17 @@ reader's interpretation most:
    censored (Tobit) likelihood is the principled fix; it was recorded as out of
    scope and is now in flight as stage 7a, with its protocol predeclared and
    its results pending (hole **S7a**).
-2. **The peptide panels are allele-confounded by design.** Each allele was
-   assayed on its own panel; the grid is 6.7% full. This broke the first split,
-   and it is the reason leave-allele-out evaluation is not the headline —
-   holding out an allele also holds out its peptide panel, so an allele-distance
-   effect is inseparable from a panel effect. **That confound does not disappear
-   by being measured.**
+2. **The peptide panels are allele-confounded by design — though not in the way
+   we first wrote down.** Each allele was assayed on its own panel; the grid is
+   6.7% full, and this broke the first split. The plan then claimed that holding
+   out an allele also holds out its peptide panel. **Measured, that is false**:
+   the median peptide sits on 4 alleles, allele-exclusive peptides are 6.0% of
+   rows, and for the median eligible allele 100% of its rows carry a peptide
+   seen elsewhere (§6.6). The confound survives through **panel composition**,
+   not panel hold-out — distant alleles carry more heavily censored panels
+   (+0.251, p = 0.039) — and partialling that out leaves the distance effect at
+   −0.604 against −0.636 raw. **Attenuated, not eliminated**, and zero share is
+   only one proxy for panel composition.
 3. **The assay panel was pre-selected by predicted affinity**, so peptide
    diversity is narrow by construction. The benchmark measures ranking *within
    the set of peptides that bind*. Broader biological or clinical claims need
@@ -996,17 +1131,16 @@ Ordered by expected value per hour, not by appeal.
 1. **Finish the in-flight arms and score the test set once** (holes E1b, E2,
    B2–B4, S3C, S6, S7a). Everything else is downstream of knowing whether the
    expensive arms clear 0.05.
-2. **Finish the censored (Tobit) likelihood — now in flight as stage 7a.** This
-   is the highest-value single change to the modelling. 20.2% of labels are a
-   detection limit treated as exact zeros, and the same problem independently
-   wrecked the stage 2b affinity predictor's recall (0.263 at 0.823 precision,
-   because 26.8% of its labels sit exactly on the threshold). One fix addresses
-   both. [`stage7_censored.md`](stage7_censored.md) predeclares the loss, the
-   detection threshold `c = log1p(0.1)`, a five-point sensitivity sweep and the
-   prediction heads **before any censored model was fitted** — and predeclares
-   the expectation that it should improve calibration near the floor rather than
-   ranking, since order inside the tied floor block is unidentifiable under
-   either objective. Hole **S7a**.
+2. **Re-run the censored likelihood with the MSE stopping rule.** §4.6 settled
+   the headline question — as predeclared, the censored loss is **worse on
+   ranking**, conclusively. But it localised a likely cause: the censored arm's
+   own dev objective turns over at epoch ~10, so it is undertrained, and a
+   control changing only the stopping rule recovers almost all of the ranking
+   *and* halves the calibration error. That control has no interval and was run
+   at reduced budget. Running it properly, predeclared, at full budget is the
+   obvious next experiment — and it must be predeclared, because selecting it
+   now on the strength of the control would be the post-hoc selection the stage
+   avoided. A heteroscedastic scale and a per-allele floor are also untested.
 3. **Test the chimeric ESM-2 input.** If the separate-embedding arm is flat, the
    obvious objection is that we never let the language model see the interaction.
    A peptide-linker-groove construct is the sharpest version of the question and
@@ -1017,11 +1151,13 @@ Ordered by expected value per hour, not by appeal.
    rows). Affinity is redundant with what a *sequence* model extracts; that says
    nothing about ESM-2 features. "Cheap labels substitute for expensive
    pretraining" would be a genuinely useful finding.
-5. **Run the allele-held-out evaluation, with its confound reported alongside.**
-   This is the stratum where pretraining has the strongest prior of winning —
-   pan-allele generalisation is exactly what large-scale pretraining should
-   provide — so a gain confined to distant alleles would be real and reportable
-   even if the pooled comparison came out flat.
+5. **Run the ESM-2 and structural arms through the leave-allele-out contract.**
+   §6.6 has already run it for the sequence arm and found a **0.403 deficit** on
+   distant allotypes — the stratum where pretraining has the strongest prior of
+   winning. A gain confined there would be real and reportable even if the
+   pooled comparison came out flat. **Each arm must supply features and be refit
+   across all 68 folds**; handing over a `preds/*.csv` would score a model on
+   alleles it trained on and report the leak as generalisation.
 6. **Check the ProteinMPNN pose-triage signal on more than one failing
    complex.** §4.5 is a promising observation resting on n=1, and it will stay
    that way until production structures exist and the QC sample runs. Until then

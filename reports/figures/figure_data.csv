@@ -5,4 +5,5 @@ training allele mean,2802,68,68,68,0.0,0.0,0.0,0.7342,0.3592,0.554,0.523,allele_
 "MLP, peptide+domain (single)",2802,68,68,0,0.5937,0.4215,0.7004,0.5225,0.7,0.7432,0.761,mlp_onehot_pep_domain,2.6e-08,derived
 "MLP, peptide+pseudoseq (single)",2802,68,68,0,0.6098,0.4826,0.7091,0.5325,0.7,0.7451,0.7585,seq_baseline,6.6e-09,derived
 "sequence ensemble, full domain",2802,68,68,0,0.6529,0.5028,0.7497,0.4948,0.7,0.7856,0.7948,seq_ensemble_pep_domain,7.9e-07,derived
+sequence + ESM-2 ensemble,2802,68,68,0,0.6761,0.5597,0.7697,0.4875,0.7,0.7934,0.7965,esm_plus_seq_ensemble,,pending
 "sequence ensemble, 30 nets",2802,68,68,0,0.6931,0.5736,0.7526,0.4734,0.7,0.8015,0.8098,seq_ensemble_pep_pseudo,2e-07,derived
