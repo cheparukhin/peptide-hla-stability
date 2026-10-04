@@ -647,7 +647,16 @@ Bounded to: 0.16 augmented rows per measured row against Rasmussen's ~2.7.
 **Volume is untested**; the anchor analysis predicts it would not help, but that
 is a prediction. ([`stage2b_augmentation.md`](stage2b_augmentation.md))
 
-### 4.3 Auxiliary affinity training does not help, and we know the ceiling
+### 4.3 Auxiliary affinity training: a clean null, and an unresolved measurement
+
+One hypothesis, two arms, **two different kinds of answer** — and the contrast
+between them is the finding, which is why they are reported together rather than
+apart. On the **sequence** arm the result is a clean null with *demonstrated*
+sensitivity: the design was shown able to resolve the 0.05 bar, and nothing was
+there. On the **ESM-2** arm the design could **not** resolve the question, and
+its power at the bar is unestablished. Same hypothesis, same machinery,
+different epistemic status — read either half without the other and you will
+draw the wrong conclusion about what this stage established.
 
 All numbers in this section are **validation**. **7,281 pairs across 58
 allotypes** carry both an affinity measurement (how
@@ -666,20 +675,19 @@ The single-task arm is not a near-replica of the baseline; it *is* the baseline.
 Two diagnostics turn this from an ambiguous null into a clean one:
 
 - **The auxiliary task was genuinely learned.** The affinity head reaches
-  ρ 0.55–0.62 against held-out affinity labels, against ≈ 0 at λ = 0. The shared
+  ρ 0.55–0.62 on held-out affinity labels against ≈ 0 at λ = 0, so the shared
   trunk learns affinity about as well as it learns stability — and the stability
-  predictions still do not move. Mean ensemble-member quality is flat at every λ,
-  so affinity is not acting as a diversity source either.
+  predictions still do not move. Member quality is flat at every λ, so affinity
+  is not acting as a diversity source either.
 - **The label's ceiling is below the baseline.** *Measured* affinity — perfect
   knowledge, no model error — used directly as a stability predictor ranks at
   median per-allele ρ **0.580**, under the **0.610** a single network already
-  reaches from stability labels alone and far under the ensemble's 0.693.
+  reaches from stability labels alone.
 
-So the auxiliary signal is **redundant, not absent**. Affinity genuinely predicts
-stability; it predicts it through the same groove chemistry the stability labels
-already teach. The 64,226-row leakage-filtered expansion is **declined on
-evidence, not blocked** — the audit was completed and it is available.
-([`stage2c_affinity.md`](stage2c_affinity.md))
+So the signal is **redundant, not absent**: affinity genuinely predicts
+stability, through the same groove chemistry the stability labels already teach.
+The 64,226-row leakage-filtered expansion is **declined on evidence, not
+blocked**. ([`stage2c_affinity.md`](stage2c_affinity.md))
 
 **This null survives the stage 3 ladder correction**, which matters because §4.0
 showed that a transplanted regularisation range can manufacture a 0.109 swing.
@@ -691,17 +699,17 @@ earned, not a formality of an underpowered test.
 
 #### The ESM-2 half: an unresolved measurement, not a null
 
-The interesting version of this hypothesis was always the ESM one — affinity is
-redundant with what a *sequence* model extracts, which says nothing about
-whether it is redundant with pretrained features. That has now been run, and
-**the honest verdict is that the design could not resolve it.**
+The interesting version was always the ESM one — affinity being redundant with
+what a *sequence* model extracts says nothing about whether it is redundant with
+pretrained features. It has now been run, and **the honest verdict is that the
+design could not resolve it.**
 
 The quantity is a **difference in differences**: does the auxiliary head help
-the ESM arm *more than* it helps the sequence arm? Against the additive arm, at
-λ = 0.1 / 0.3 / 1 / 3, the DiD is **+0.0120, +0.0122, +0.0143, +0.0281** — every
-interval crossing zero. The ESM-only arm's DiD is smaller at every λ, and the
-movement is almost entirely **the sequence arm degrading rather than ESM
-improving**: the ESM-only arm's own Δ never leaves ±0.0041.
+the ESM arm *more than* the sequence arm? At λ = 0.1 / 0.3 / 1 / 3 the DiD is
+**+0.0120, +0.0122, +0.0143, +0.0281**, every interval crossing zero. Read those
+before the power analysis, because the movement is almost entirely **the
+sequence arm degrading rather than ESM improving** — the ESM-only arm's own Δ
+never leaves ±0.0041.
 
 **The power floor was measured on the DiD statistic itself**, not borrowed from
 the single-delta floor, because a difference of two deltas is noisier — confirmed
@@ -1552,13 +1560,19 @@ that returns four inconclusive results *and can prove they are inconclusive
 rather than null* is doing its job. One that returns four inconclusive results
 and cannot tell you which is which has told you nothing at all.
 
-#### Not all four nulls are equal — the positive-control asymmetry
+#### Not all nulls are equal — the positive-control asymmetry
 
 > **A null is only informative next to a positive control on the same
 > measurement.**
 
-This is the principle the rest of the evaluation leans on, and applying it
-honestly **splits our four inconclusive analyses into two unequal pairs**:
+This is the principle the rest of the evaluation leans on, and the reason it
+matters is worth stating before the table rather than after: **a weak null left
+unqualified beside strong ones quietly borrows their credibility.** A reader who
+sees six analyses reported in one voice will grade them in one voice. The audit
+below exists to stop that — and it costs us, since it demotes three of our own
+results.
+
+Applying it honestly **splits our analyses into three groups, not one**:
 
 | Analysis | Positive control on the same measurement? | What its null is worth |
 |---|---|---|

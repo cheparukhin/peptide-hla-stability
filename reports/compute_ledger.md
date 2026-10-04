@@ -216,13 +216,28 @@ Spend so far on this workstream — two smokes and two 1,000-fold passes — is
 ### Stage 3b, the ESM auxiliary-affinity arms — measured, CPU, $0
 
 **300 networks, 47.8 min of fitting, 68 min wall on one core, $0.** The gap
-between fitting time and wall time is the paired bootstraps, which is the same
-pattern stages 2b and 2c showed: on the sequence side of this project, measuring
-the uncertainty reliably costs more than fitting the models.
+between fitting and wall time is the paired bootstraps.
 
 That is doubly true here, because the run's most important output is **not** a
 delta but a **power floor** — the measured DiD minimum detectable effect, and
 the injected-effect check that established it. Neither is a model fit.
+
+**Three for three, with receipts.** This is now the pattern across every
+sequence-side stage that measured it:
+
+| Stage | Fitting | Uncertainty / power |
+|---|---:|---:|
+| 2b | 1.3 min (21 networks) | ~11 min (8 paired bootstraps) |
+| 2c | 92 s probe, 12.1 min ensemble sweep | the bootstrap dominates wall time |
+| 3b | 47.8 min (300 networks) | the remaining ~20 min, plus the injected-effect power floor |
+
+> **On the sequence side of this project, measuring uncertainty reliably costs
+> more than fitting the models.**
+
+That is an unusual thing to be able to say in a compute ledger, and it is the
+counterweight to the headline cost story: the arms that look free on the
+accuracy-versus-dollars figure are free *to fit*. Knowing whether their
+differences are real is what actually costs.
 
 ### Stage 6 evaluation machinery — measured, CPU, $0
 
