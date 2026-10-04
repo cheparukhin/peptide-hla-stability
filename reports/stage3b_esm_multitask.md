@@ -100,6 +100,41 @@ Verified interior before any fit (`reports/stage3b_tuning_parity.csv`):
 | esm | mid | 256×64 | 0.01 | 1e-05 … 10 (6 pts) | yes |
 | esm | final | 256×64 | 0.01 | 1e-05 … 10 (6 pts) | yes |
 
+### 3.1 A two-point ladder cannot satisfy the gate — budget parity needs ≥ 3 values
+
+`check_interior()` requires `min(ladder) < selected < max(ladder)`. With two
+values that condition is **unsatisfiable**: whichever one is selected is also an
+endpoint. So a two-point ladder is not merely weak evidence of an interior
+selection — it is structurally incapable of producing any.
+
+This is not hypothetical. Two of the ladders a stage-3b arm would naturally
+inherit are two-point:
+
+| Source | Ladder | Points | Can pass the gate? |
+|---|---|---:|---|
+| `scripts/baseline_sequence.L2_GRID` | 1e-05, 1e-03 | 2 | **no** |
+| `scripts/esm_arm.ESM_L2_GRID` | 1e-03, 1e-01 | 2 | **no** |
+| this report's `additive` | 1e-03, 1e-02, 1e-01 | 3 | yes |
+| this report's `seq` | 1e-07 … 1e-01 | 5 | yes |
+| this report's `esm` | 1e-05 … 10 | 6 | yes |
+
+Any arm that adopts "the same ladder as the comparator" therefore inherits an
+un-checkable one, and the parity claim quietly becomes unverifiable at exactly
+the point it is being asserted. `struct-features` hit the same wall building
+the stage 5 ablation.
+
+The generalisable rule, which is worth more than this one comparison:
+
+> **Tuning-budget parity must be spent on at least three values per axis.**
+> Equal *counts* at two points per arm look like parity and satisfy a
+> grid-size audit, but no boundary check can pass, so a truncated ladder — the
+> failure that cost 0.109 median ρ on the ESM arm tonight — remains invisible.
+
+The three stage 3b ladders above were sized accordingly, and
+`tests/test_stage3b.py::test_every_ladder_has_at_least_three_points` enforces
+it so a later arm cannot reintroduce a two-point ladder and still appear to
+pass the gate.
+
 Note the `seq` arm is **re-run**, not reused from stage 2c: stage 2c fitted it
 on stage 2's truncated ladder, where one-hot selected 1e-05. On the extended
 ladder it selects 0.01. Reusing the old numbers would make the

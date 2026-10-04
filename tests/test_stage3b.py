@@ -373,3 +373,27 @@ def test_reuse_aligns_by_pair_id_not_by_row_order(data, tmp_path, monkeypatch):
         tmp_path / "stage3b_seq_lam0.csv", index=False)
     got = s3b.load_arm_predictions("seq", (0.0,), val)
     assert np.allclose(got[0.0], y)
+
+
+def test_every_ladder_has_at_least_three_points():
+    """`min < selected < max` is unsatisfiable with two values.
+
+    A two-point ladder is not weak evidence of an interior selection, it is
+    structurally incapable of producing one -- so equal grid *counts* at two
+    points per arm would look like parity while making the boundary check
+    impossible to pass. Both `baseline_sequence.L2_GRID` and
+    `esm_arm.ESM_L2_GRID` are two-point, so an arm that inherited "the same
+    ladder as the comparator" would be un-checkable.
+    """
+    for arm, cfgs in s3b.ARM_CONFIGS.items():
+        for key, (_hidden, _l2, ladder) in cfgs.items():
+            assert len(ladder) >= 3, (
+                f"{arm}/{key}: a {len(ladder)}-point ladder can never satisfy "
+                "check_interior(); budget parity needs >= 3 values per axis")
+
+
+def test_a_two_point_ladder_is_demonstrably_unsatisfiable():
+    """Stated as an executable fact, not a claim in prose."""
+    for selected in (1e-5, 1e-3):
+        with pytest.raises(SystemExit, match="edge of"):
+            s3b.check_interior("demo", {"g": ((64,), selected, (1e-5, 1e-3))})

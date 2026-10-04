@@ -22,7 +22,7 @@ Reproduce:
     --pep-rep pos --hla-rep contact --axis layer --layers mid final --name esm_ensemble
 ```
 
-Artifacts: `reports/stage3_runs.csv` (every run, 180 rows),
+Artifacts: `reports/stage3_runs.csv` (every run: 355 rows, 324 networks fitted, 86 CPU-minutes total),
 `reports/stage3_comparisons.csv` (the matched table),
 `reports/stage3_tuning_sensitivity.csv`, `reports/stage3_embedding_cost.csv`,
 `reports/stage3_contact_index.json`, `reports/stage3_headline.json`,
@@ -132,6 +132,16 @@ opposite one.
 | additive, one-hot + ESM | 1e-3, 1e-2, 1e-1 | 3 | 1e-2 | yes |
 | additive, BLOSUM + ESM | 1e-3, 1e-2, 1e-1 | 3 | 1e-2 | yes |
 | ridge (all ESM arms) | 10 … 1e5 | 5 | 1e4 | yes |
+
+**An interior check needs at least three ladder points**, since with two the
+selection is always the min or the max and "interior" is unsatisfiable by
+construction. Every row above is a *union* over all the ladders that arm was
+run on, every union has >= 3 points, and the selection is strictly inside each
+one (`reports/stage3_tuning_sensitivity.csv`, which asserts this). Two
+mechanical caveats for anyone re-running: the per-run message printed by
+`grid` only sees that invocation's own ladder, so a deliberate single-point
+extension run always prints "AT BOUNDARY" — read the union table, not that
+line; and the `ESM_L2_GRID` default is 3 points for the same reason.
 
 Stage 2's own selection (`stage2_headline.json`: L2=1e-5, grid `[1e-5, 1e-3]`)
 sat at the **bottom edge** of its ladder, so it was edge-selected by exactly
@@ -418,8 +428,18 @@ so an un-ensembled ESM arm against it would have manufactured exactly the
 negative result reported here. Both arms are ensembled identically — same
 folds (imported, not reimplemented), same seeds, same member count, same head
 class — and the harness was validated by reproducing
-`preds/seq_ensemble_pep_pseudo.csv` through it: **Δ = +0.0000 [+0.0000,
-+0.0000]**, median ρ 0.6931, bit-identical to stage 2's published artifact.
+`preds/seq_ensemble_pep_pseudo.csv` through it from scratch: the regenerated
+file is **byte-identical to stage 2's published artifact** (same md5,
+`aaf563ab9c63dc10499e08f4fa3a45bb`), giving Δ = +0.0000 [+0.0000, +0.0000] and
+median ρ 0.6931. Whatever else is wrong with this arm, it is not the
+comparison machinery.
+
+**The stage 2 baseline prediction files were not regenerated.**
+`preds/seq_ensemble_pep_pseudo.csv` and `preds/seq_ensemble_pep_domain.csv`
+are untouched (mtime 2026-10-03 19:26 and 19:36, before this stage began).
+The boundary-extension and reproduction runs wrote to *new* stems —
+`preds/seq_ensemble_repro.csv` and `preds/seq_ensemble_tuned.csv` — so any
+downstream fingerprint of the stage 2 baselines remains valid.
 
 Standard caveats from EVALUATION.md apply unchanged: the 20.2% floor is
 left-censored, there are no replicates so no noise ceiling, and the assay panel

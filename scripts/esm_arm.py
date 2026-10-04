@@ -141,8 +141,17 @@ SWEEP_CONFIG = ((256, 64), 1e-2)
 #: Both ladders are checked for **boundary hits**: if the selected value is the
 #: largest or smallest tried, the grid was truncated and the run says so, so a
 #: reader can see the selection was interior.
+#: Note on the interior check: it needs **at least three** values to mean
+#: anything, since with two the selected value is always min or max. Both
+#: default ladders below have >= 3 points, and the authoritative check is over
+#: the *union* of every ladder an arm was run on (``--l2-grid`` can extend one
+#: in a later invocation), which is what
+#: ``reports/stage3_tuning_sensitivity.csv`` tabulates. The per-run message
+#: printed by ``grid`` only sees that run's own ladder, so a deliberately
+#: single-point extension run will always print "AT BOUNDARY"; read the union
+#: table, not that line.
 ESM_ALPHA_GRID = (10.0, 100.0, 1000.0, 10000.0, 100000.0)
-ESM_L2_GRID = (1e-3, 1e-1)
+ESM_L2_GRID = (1e-3, 1e-2, 1e-1)
 
 #: Representation combinations compared on validation.
 #: ``(peptide rep, HLA rep)``; each is run at both layers.
