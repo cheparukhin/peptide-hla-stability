@@ -77,6 +77,9 @@ def main() -> int:
     ap.add_argument("--pep-components", type=int, default=256)
     ap.add_argument("--folds", type=int, default=5)
     ap.add_argument("--tag", default="esm2_35M")
+    ap.add_argument("--all-arms", action="store_true",
+                    help="also run random_alone and shuffled_stacked; the default "
+                         "set is the three arms that decide something")
     args = ap.parse_args()
 
     df = load_with_splits()
@@ -144,13 +147,23 @@ def main() -> int:
             np.hstack([pep[[shuffled_pos[p] for p in val.peptide]],
                        hla[[al_pos[a] for a in val.allele]]])))
 
+    # The decisive three: the positive control (is the pipeline lossy?), shuffled
+    # ESM alone (does the embedding carry information at all?), and the random
+    # block stacked (what do N uninformative columns cost the baseline?).
+    # random_alone measures a block with nothing in it, and shuffled_stacked
+    # repeats what shuffled_alone already answers; both are opt-in.
+    DEFAULT_ARMS = {"onehot_pca_alone", "shuffled_alone", "random_stacked"}
+
     arms: dict[str, list[tuple[np.ndarray, np.ndarray]]] = {}
     for name, blocks in variants.items():
-        arms[f"{name}_alone"] = blocks
+        candidates = {f"{name}_alone": blocks}
         if name != "onehot_pca":  # stacking the baseline on itself is not a control
-            arms[f"{name}_stacked"] = [
+            candidates[f"{name}_stacked"] = [
                 (np.hstack([base_t["onehot"], bt]), np.hstack([base_v["onehot"], bv]))
                 for bt, bv in blocks]
+        for arm_name, blks in candidates.items():
+            if args.all_arms or arm_name in DEFAULT_ARMS:
+                arms[arm_name] = blks
 
     hidden, l2 = SELECTED[("pep_pseudo", "onehot")]
     members, rows = {}, []

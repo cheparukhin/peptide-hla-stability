@@ -266,26 +266,7 @@ wall time, not the fitting.
 
 **Why:** this is the cheapest direct test of the foundation-model question and needs no structures. Embedding peptide and HLA separately means the prediction head has to learn peptide-HLA interactions on its own, so useful performance is a hypothesis, not a guarantee.
 
-<<<<<<< HEAD
 ### 3b. Test auxiliary affinity training (optional, pre-structural)
-=======
-**Status: 3a done, 3b and 3c running.** `reports/stage3_esm.md` (results and reasoning), `scripts/esm_features.py` + `scripts/stage3_esm.py`, `pepstab/attn.py` + `scripts/stage3_coupling.py` (coupling ablation), `scripts/stage3_blosum_cross.py` (cross-feature control). Predictions in `preds/`; `preds/seq_ensemble_pep_pseudo.csv` is gitignored and must be rebuilt with `scripts/baseline_ensemble.py` before any delta is computed — doing so reproduced stage 2 at median per-allele rho **0.6904** (reported 0.693).
-
-ESM-2 35M, peptide and HLA embedded separately, matched to stage 2 on splits, folds, seeds, architecture and ensemble size:
-
-| arm | median per-allele rho | delta vs baseline | 95% CI | verdict |
-|---|---:|---:|---|---|
-| ESM alone, 30 nets | 0.3866 | −0.3038 | [−0.359, −0.220] | worse |
-| ESM stacked on baseline, 30 nets | 0.5387 | −0.1517 | [−0.205, −0.089] | worse |
-
-Three constraints on what follows. **The layer sweep is flat** — middle and final layers are indistinguishable (member rho 0.244 vs 0.266), so a layer argument cannot rescue the arm. **Stacking costs 0.15 rather than adding nothing**, and the ESM arms stop after ~5 epochs against the baseline's ~27, which points at capacity displacement rather than contradictory information; a narrowed-block run would separate the two and is not yet done. **A larger checkpoint is not the obvious next step** — the failure mode is displacement under a fixed budget, so a 1,280-dimensional embedding built the same way displaces more. Go bigger only if 3b or 3c shows representation quality is the binding constraint.
-
-Residue indexing was tested rather than assumed: the published NetMHCpan pseudosequence positions sit at index p−1 of the supplied 182-residue domain, exact across all 75 alleles and all 34 columns.
-
-Two bounds on the conclusion, from `reports/BIOLOGY_NOTES.md` (companion branch `analysis/biology-probes`): the benchmark is **not** saturated (one-substitution allele pairs agree at rho 0.90–0.92, so ~0.2 of headroom sits above the baseline), and every number here describes new peptides on **familiar** grooves, since all 75 alleles are in training.
-
-### 4. Pilot structure prediction and choose scale
->>>>>>> 1a02a84 (Stage 3: frozen ESM-2 features, separate-embedding arms)
 
 **Work**
 
