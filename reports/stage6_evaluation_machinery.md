@@ -238,7 +238,33 @@ quotes ensembling gains as *mean* SCC, and a stage 6 median delta cannot be
 checked against a stage 2 mean delta. Emitting both removes a comparison that
 otherwise looks like a contradiction.
 
-<!--PARITY-->
+**Worked example: the ensemble parity comparison, validation, 2,000 resamples**
+(`reports/stage6_val_ensemble_parity.csv`, which keeps the confounded row rather
+than deleting it):
+
+| Baseline | Model | Statistic | Delta | 95% CI | Pairing |
+|---|---|---|---:|---|---|
+| `seq_baseline` | `seq_ensemble_pep_pseudo` | median | **+0.0833** | [+0.0288, +0.1235] | matched |
+| `seq_baseline` | `seq_ensemble_pep_pseudo` | mean | **+0.0740** | [+0.0470, +0.1036] | matched |
+| `mlp_onehot_pep_domain` | `seq_ensemble_pep_domain` | median | +0.0593 | [+0.0185, +0.1183] | matched |
+| `mlp_onehot_pep_domain` | `seq_ensemble_pep_domain` | mean | +0.0643 | [+0.0387, +0.0878] | matched |
+| `seq_baseline` | `seq_ensemble_pep_domain` | median | +0.0432 | [−0.0106, +0.0911] | **confounded** |
+| `seq_baseline` | `seq_ensemble_pep_domain` | mean | +0.0392 | [+0.0096, +0.0697] | **confounded** |
+
+**Neither interval establishes that the gain clears the 0.05 bar.** Both point
+estimates sit above it, the median CI runs from +0.029 and the mean CI from
++0.047 — that lower bound is *below* 0.05, by 0.003. The predeclared verdict is
+"real improvement, but whether it clears the 0.05 bar is unresolved". Writing
+"clears the bar" here would be the same error we reject on every other arm, and
+it does not become acceptable because the number is flattering.
+
+The confounded row is kept deliberately. It is the comparison this workstream
+got wrong at first — `preds/seq_baseline.csv` is the pseudosequence single
+network, so pairing it against the *domain* ensemble changes the input arm and
+the ensembling together. Note that the error did not flatter the result: the
+confounded median delta is +0.0432 with an interval that crosses zero, against
++0.0833 excluding zero for the matched pair. Mixing the two changes understated
+the effect and turned a conclusive result into an inconclusive one.
 
 Two cautions this surfaced, both recorded for the orchestrator rather than
 edited into files this workstream does not own:

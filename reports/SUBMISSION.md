@@ -25,6 +25,7 @@ problem"*:
 | Engineering & compute requirements | §7 and [`compute_ledger.md`](compute_ledger.md) — every dollar, GPU-hour and forecast, with the decisions they drove |
 | Biological background | §1, §3 (why within-allele ranking is the decision), §4.1 (anchor chemistry), §4.3 (why β2m matters), §4.4 (external transfer to a different assay) |
 | Negative results, well supported | §4, and [`limitations.md`](limitations.md) §0 and §5 — what each null does and does not establish |
+| **All three model classes the brief names** | structure prediction §4.3 (Boltz-2), protein language models §5 (ESM-2), **inverse folding §4.5 (ProteinMPNN)** |
 
 ---
 
@@ -49,13 +50,15 @@ leaderboard entry. Every additional information source is tested against a
 trained sequence baseline, and asked the same question: does it improve ranking
 by enough to be worth what it costs?
 
-| Source | What it adds | Price per 1,000 new predictions |
-|---|---|---:|
-| Labelled sequences (the baseline) | nothing — this is the reference point | $2.0 × 10⁻⁷ |
-| **ESM-2** (a protein language model) | learned representations of peptide and HLA | **$4.4 × 10⁻⁴** extraction (measured); head cost ‹HOLE E1b› |
-| **Boltz-2** (a structure predictor) | a predicted 3D complex, plus the model's own confidence | **$6.90** |
+| Source | Model class | What it adds | Price per 1,000 new predictions |
+|---|---|---|---:|
+| Labelled sequences (the baseline) | — | nothing; this is the reference point | $2.0 × 10⁻⁷ |
+| **ESM-2** | protein language model | learned representations of peptide and HLA | **$4.4 × 10⁻⁴** extraction (measured); head ‹HOLE E1b› |
+| **Boltz-2** | structure prediction | a predicted 3D complex, plus the model's own confidence | **$6.90** |
+| **ProteinMPNN** | inverse folding | sequence–backbone compatibility (§4.5) | $0.52 / 1,000, QC sample only |
 
-The spread in that right-hand column is roughly **seven orders of magnitude**.
+That covers **all three model classes the brief names**. The spread in the
+right-hand column is roughly **seven orders of magnitude**.
 That is the entire study in one line: a structural arm does not need to be
 *better* than the sequence baseline, it needs to be better by enough that
 someone would pay seven orders of magnitude for the difference.
@@ -466,16 +469,177 @@ reserved as an **external validation pass**: score atlas ligands against
 allele-matched decoys with no retraining.
 ([`elution_stability_finding.md`](../elution_stability_finding.md))
 
-**That pass has now run for the sequence baseline** and its artifacts are on
-disk — `reports/stage3c_summary.csv`, three per-allele tables (headline plus a
-swapped-decoy and a wrong-allele control) and `stage3c_provenance.json`, which
-records 51 alleles, 81,600 ligands against a 10× proteome decoy pool, a
-`verification` block confirming the scored predictions match
-`preds/seq_baseline.csv`, and 48.1 s of CPU. **A narrative report does not exist
-yet, so the result is a hole here rather than a claim: ‹HOLE S3C›.** What fills
-it: per-allele AUROC/AUPRC with the two controls interpreted, and the same pass
-run on whichever arms stage 6 scores — a transfer result for the sequence
-baseline alone does not speak to the foundation-model question.
+**That pass has now run.** 51 alleles, 81,600 eluted ligands against 816,000
+length- and allele-matched human-proteome decoys at a 10:1 ratio fixed in
+advance. No retraining: the atlas enters as a scoring target and nothing else.
+([`stage3c_elution_validation.md`](stage3c_elution_validation.md))
+
+| Arm | AUROC median [IQR] | AUPRC median | Precision top 1% | Enrichment top 1% |
+|---|---|---:|---:|---:|
+| **`seq_ensemble` (30 nets)** | **0.9656** [0.9435, 0.9779] | **0.7804** | 0.939 | **10.33×** (of a possible 11.0) |
+| `seq_baseline` (single net) | 0.9502 [0.9182, 0.9648] | 0.6676 | 0.877 | 9.65× |
+| *random scores, same harness* | *0.4974* | *0.0911* | *0.089* | *0.98×* |
+
+Chance AUPRC is 1/11 = 0.0909 by construction of the ratio. **The random-score
+null returns chance on every metric**, which is what establishes that the number
+comes from the model and not from the scoring code. And the arm ordering
+reproduces the validation ordering (0.693 vs 0.610) — independent corroboration
+of the ensembling effect, on a different assay.
+
+#### The three controls, which are what the number means
+
+A headline AUROC against proteome decoys is the least informative part of this
+result, because a random proteome 9-mer is a negative on *every* axis at once —
+not cleaved, not transported, not presented, not ionised, **and** not stable.
+The controls are what separate those.
+
+**1. Allele-swapped decoys — 0.9157 (−0.050).** Replace each allele's decoys
+with *other alleles' real eluted ligands*, same ratio, same seed, never
+including a peptide the target allele itself presents. The negatives are now
+genuinely presented peptides, so abundance, cleavage, transport and ionisation
+are held roughly constant on both sides and what remains is allele specificity.
+**The 0.050 of AUROC the swap costs is the share of the primary result
+attributable to generic presentability rather than allele-specific
+discrimination.** That is a bound on this decoy design, not a decomposition of
+the biology. AUPRC falls further, 0.780 → 0.557, because precision is more
+sensitive to hard negatives than a rank statistic is.
+
+**2. The donor-distance gradient — 0.8906 near vs 0.9562 far.** Each swapped
+decoy carries the pseudosequence Hamming distance from the target allele to the
+nearest allele known to present it. Split at the pooled median (14 of 34
+positions): a ligand of a groove that *resembles* the target is a much harder
+negative than a ligand of a distant groove. The model is reading groove
+chemistry, not just peptide chemistry, and discrimination degrades as the
+grooves converge without collapsing to chance. **Only two bins were measured, so
+the direction and size of that decline are established and its shape is not.**
+
+**3. Wrong-allele pseudosequence — 0.6965, and top-1% enrichment collapses to
+exactly 1.00×.** Score every row against a different allele's groove under a
+fixed-point-free permutation; the peptides are unchanged. Handing the model the
+wrong groove costs **0.27 AUROC and all of the top-of-list precision**. So it is
+not simply flagging "peptide-shaped sequences". The ~0.70 that survives is the
+generic presentability signal control 1 already identified, plus whatever any
+two class I grooves share.
+
+#### What this is not
+
+- **Not a measurement of stability-prediction accuracy.** Elution has at least
+  four filters besides stability — source-protein abundance, proteasomal
+  cleavage, TAP transport, mass-spec ionisation. A peptide in the atlas passed
+  all of them, and nothing here separates stability's contribution from the
+  others. Control 1 *bounds* it at 0.050; it does not decompose it.
+- **Not a ranking of stability within presented peptides.** This is ligand
+  versus non-ligand, a binary discrimination. The per-allele Spearman against
+  measured half-life asks a harder question, and this pass says nothing about
+  it. **0.610 / 0.693 remain the numbers to quote for accuracy.**
+- **Not comparable to a trained presentation predictor.** NetMHCpan-4.x and
+  friends train on elution data; this model has never seen any. The right
+  reading of 0.966 is "a stability model transfers", not "a stability model
+  competes with a presentation model". We did not run that comparison.
+- **The positive class carries roughly a 2% error rate** (§7.1 of
+  [`limitations.md`](limitations.md)), putting a soft ceiling just under 1.0 on
+  any AUROC here.
+- **Decoys are assumed negatives.** Mass spectrometry is positives-only, so a
+  proteome 9-mer absent from the atlas may simply never have been sampled. That
+  contaminates the negative class slightly, which **depresses** the reported
+  AUROC rather than inflating it — in that one respect these numbers are
+  conservative.
+
+**The honest summary:** elution is not a stability assay and this is not a
+validation of stability prediction. It is evidence that what the model learned
+from half-lives is real biophysics about the peptide–groove interaction rather
+than an artifact of the assay panel or the splits — because that knowledge
+transfers, allele-specifically, to a measurement nobody trained it on.
+
+Still open: the same pass on the ESM-2 and structural arms. The harness takes an
+arbitrary score file (`--emit-scoring-set` then `--scores`), so it is cheap, and
+a transfer result for the sequence arm alone does not speak to the
+foundation-model question.
+
+### 4.5 Inverse folding — the third model class, and a reframe
+
+The brief names **three classes** of protein foundation model: structure
+prediction, protein language models, and **inverse folding**. This project tests
+all three — Boltz-2 (stage 4c), ESM-2 (stage 3), and ProteinMPNN here. Inverse
+folding was originally out of scope because it "requires structures first"; the
+stage 4c pilot left 90 folds on disk, which unblocked it.
+
+Inverse folding runs structure prediction backwards: *given this 3D backbone,
+how probable is this amino-acid sequence?* We mask only the 9-residue peptide,
+leave the HLA and β2m visible, and read
+`log P(peptide | backbone, HLA sequence)` averaged over 16 decoding orders.
+([`stage5_inverse_folding.md`](stage5_inverse_folding.md))
+
+**The finding is a reframe, not a feature.** ProteinMPNN's peptide
+log-likelihood is **not** a half-life predictor — Spearman(`pep_ll_total`, t½) =
+**−0.100, p = 0.87, n = 5**, which is zero and carries no inferential weight
+whatsoever. But it is an **unsupervised, crystal-free detector of Boltz-2
+peptide-pose failure**, which is something the project otherwise lacks entirely.
+
+Three things travel with that claim and none of them is optional.
+
+**1. n is ONE complex, not six folds.** Across all 45 Boltz-2 folds, six have
+peptide heavy-atom RMSD above 2.0 Å — and **all six are the same complex**,
+`HLA-B*07:02`/IPRRNVATL, in arms A and C at three seeds each. The effective
+sample is one failing complex out of five. Any phrasing like "the six lowest of
+45" would read as six independent failures and overstate this.
+
+**2. The within-complex control is the argument.** Hold the allele and the
+peptide fixed and vary only the construct:
+
+| `HLA-B*07:02` IPRRNVATL | mean heavy RMSD | `pep_ll_mean` |
+|---|---:|---:|
+| Arm A | 2.272 Å | −3.061 |
+| Arm C | 2.251 Å | −3.076 |
+| **Arm B** | **0.299 Å** | **−2.388** |
+| *(the other four complexes, all 36 folds)* | — | *−2.513 to −1.881* |
+
+**When the same complex folds correctly in arm B, its score moves inside the
+good range.** Same allele, same peptide, same model, same seeds; the pose varies
+and the score follows the pose. Pair that with the wrong-backbone control: score
+all five pilot peptides on each backbone and the native sequence's advantage is
+**+13.15 nats** on the correct arm-B backbone but **collapses to roughly zero**
+(−0.45, −0.17, +0.08 per seed) on the arm-A backbone known to be wrong —
+*despite Boltz-2 having been handed that very sequence in both arms*. That is
+what rules out the obvious objection that this is a tautological readback of the
+folder's own input: ProteinMPNN recovers the sequence only when the backbone is
+actually correct.
+
+**3. The claim is specificity, not separation.** The tempting claim — "the bad
+folds separate cleanly" — would be unsound. Repeating that separation test on
+the A+C folds of *every* complex yields **7, 9, 2, 13 and 2** "fully separating"
+structural features respectively, with the genuinely failing complex scoring the
+**fewest**. Searching ~100 features for one that splits a six-fold group always
+succeeds, so clean separation measures **complex identity, not pose quality**,
+and **none of the 109 structural features isolates the failure**. What makes
+`pep_ll_mean` different is that it was a *single predeclared quantity*, fixed in
+the module docstring before any score existed, and it flags the one complex that
+actually folded badly **with zero false positives among the 36 folds of the
+other four complexes**. It is the only readout tested that does. For contrast,
+Boltz-2's own confidence does not separate them at all: bad-fold PAE 1.376–1.552
+sits inside good 1.136–2.196.
+
+**Units, since three columns are one quantity:** `mpnn_score` = −`pep_ll_mean`,
+and `pep_ll_total` = `pep_ll_mean` × 9. The gap quoted as 4.238 is
+`pep_ll_total`; as 0.471 it is per residue.
+
+**Decision: no regression feature, buy the ~$1 QC sample.** Spending $14.68 to
+add a feature with no label correlation would be buying a number to put in a
+table. The QC sample is bought because stage 4c established that no PAE or pLDDT
+threshold catches pose failure without flagging accurate predictions, and the
+project currently has **no cohort-wide way to estimate the pose-failure rate at
+all**. Its protocol is predeclared: 2,000 folds, seeded draw from a *complete*
+half, 16 decoding orders, two reference points from the single known-bad
+complex. What will be reported is **a distribution and a triage list, never a
+failure count or a failure rate**, the reference points **must not filter the
+production cohort**, and the single-complex provenance travels with the number
+wherever it is quoted.
+
+One further result worth keeping: ProteinMPNN's seed control **independently
+corroborates the stage 4c rejection of ESMFold2 without using a crystal
+structure at all** — between-complex over within-complex seed spread is ~8× for
+Boltz-2 and 1.1–2.4× for ESMFold2, i.e. at the noise floor. Two unrelated routes
+to one rejection is worth more than either alone.
 
 ---
 
@@ -483,6 +647,12 @@ baseline alone does not speak to the foundation-model question.
 
 All figures below are **validation**. The test set is scored **once**, at stage
 6, with every model together.
+
+Two results above do not appear in the table below because they are not on the
+per-allele-Spearman axis: the elution transfer (§4.4) is a binary
+ligand-versus-decoy discrimination, and inverse folding (§4.5) is structural QC.
+Both are reported in full where they sit rather than forced onto a metric they
+do not answer.
 
 ### 5.1 The table
 
@@ -558,7 +728,7 @@ dash-dot line is the entire result.
 | **B3** | Realised production spend | Modal production session | Metered before/after snapshots per workspace, realised GPU-hours and wall clock, failure count, actual concurrency granted. `production_<profile>.jsonl` exist for both profiles and are currently **empty** |
 | **B4** | Structural coverage and failure rate (§6.5) | stage 5 | Pairs with a valid structure, pairs falling back to the sequence model, and the primary result reported on the **frozen cohort**, not on whatever folded |
 | **E1b** | ESM-2 **head** inference cost | `esm-arm` | The extraction half is already measured (`stage3_embedding_cost.csv`: 1.07–8.50 s per 1,000 new peptides across three checkpoints). Still needed: head inference seconds per 1,000 rows, member count, and which checkpoint/layer/representation was selected |
-| **S3C** | Elution external-validation write-up | stage 3c | Artifacts exist (`stage3c_summary.csv` + three per-allele tables + provenance). Needed: the narrative interpretation of the two controls, and the same pass run on the arms stage 6 scores |
+| ~~S3C~~ | ~~Elution external validation~~ | — | **Filled**: [`stage3c_elution_validation.md`](stage3c_elution_validation.md), §4.4 above. Still open as a *follow-on*: the same pass on the ESM-2 and structural arms |
 | **S7a** | Censored (Tobit) likelihood result | stage 7a | `stage7_censored.md` §1–5 are predeclared and committed; §6 is "pending". Needed: the paired Δ against the identical-protocol MSE ensemble, plus the `c_hours` sensitivity sweep |
 | **S6** | Stage 6 test results, distance strata, differential target, nested near-neighbour CV | `eval-harness` | §6 below |
 
@@ -570,6 +740,9 @@ A median per-allele Spearman is one number on one panel. Five further
 evaluations were specified in the frozen contract, each answering a question the
 headline cannot. **They run at stage 6 and cost no new compute** — all are
 re-aggregations of predictions already made.
+
+A sixth — transfer to an entirely different assay — has already been delivered
+and is reported in §4.4, with its three specificity controls.
 
 ### 6.1 Distance stratification — is the model generalising or remembering?
 
@@ -640,6 +813,21 @@ Production folding of all 28,166 pairs is forecast at **$200.8 (135.6 A10G
 hours), $251 with the required 25% margin**, split across two Modal workspaces
 in parallel at ~6.8 hours wall clock. **It has not been launched.**
 
+Two further spends are **approved and not yet made**, both forecast from
+measured unit costs:
+
+| Item | Cost | Basis |
+|---|---:|---|
+| Stage 4c.5 structural feature extraction, both halves | **~$0.78** | CPU-rate × measured container time. Extraction is **Volume-read-bound, not CPU-bound**: 1.57 s of wall per fold against 0.096 s of CPU, about 6% core utilisation — so the container was dropped from 2 cores to 1, since reserving the second was billing an idle one |
+| ProteinMPNN QC sample, 2,000 folds | **$1.04** | measured 14.70 s/fold at 16 decoding orders, at the repo's metered rates |
+
+**Both are rounding error against the $200.8 fold.** Worth one line on method:
+for these two the *published list rates* agreed with the metered rates to
+**0.3%** (CPU 1.0030×, memory 1.0010×). Set against the 4.6× discrepancy this
+project hit earlier, the lesson is **"check it", not "never trust published
+rates"** — the earlier error was a broken harness measuring model reloads, not a
+wrong price list.
+
 ### 7.2 Cost per 1,000 new predictions — the decision number
 
 | Arm | $ / 1,000 | GPU-h / 1,000 | Basis |
@@ -648,6 +836,7 @@ in parallel at ~6.8 hours wall clock. **It has not been launched.**
 | **ESM-2, extraction only** | **$4.4 × 10⁻⁴ (35M) – $3.5 × 10⁻³ (650M)** | 0 (laptop `mps`) | measured 1.07–8.50 s per 1,000 new peptides, priced at the A10G rate as a generous upper bound |
 | ESM-2, head forward pass | ‹HOLE E1b› | ‹HOLE E1b› | pending |
 | **Boltz-2 structural** | **$6.90** | **4.66** | measured 16.76 s fold × measured $1.4812/h A10G |
+| ProteinMPNN inverse folding | $0.52 | 0 (CPU) | measured 14.70 s/fold at 16 decoding orders × metered CPU + memory rates; **forecast**, QC sample only |
 | *ESMFold2 (rejected)* | *$31.40* | *11.8* | *measured 42.63 s × $2.6512/h L40S; forecast only* |
 
 **The structural arm costs about 3.5 × 10⁷ times more per prediction than the
@@ -727,6 +916,17 @@ reader's interpretation most:
 6. **ESMFold2's rejection is operational, not scientific.** Pose accuracy is not
    feature utility, and a five-complex gate is a decision rule for spending $200,
    not a benchmark of ESMFold2 on peptide–MHC.
+7. **The two newest results carry the tightest bounds of anything here.** The
+   elution transfer is not a measurement of stability-prediction accuracy —
+   elution has at least four non-stability filters, and the allele-swapped
+   control bounds the generic-presentability share at 0.050 AUROC without
+   decomposing the biology ([`limitations.md`](limitations.md) §7.1). The
+   ProteinMPNN pose-triage signal rests on **n = 1 failing complex**, is not a
+   half-life predictor (ρ = −0.100, p = 0.87, n = 5), and its reference points
+   must never filter the production cohort (§7.2). **FoldX and Rosetta are
+   declined on the thermodynamic/kinetic mismatch** — and separately because
+   both are licence-gated behind registration, which makes them a
+   reproducibility cost for anyone extending this work (§7.0).
 
 ---
 
@@ -763,11 +963,13 @@ Ordered by expected value per hour, not by appeal.
    pan-allele generalisation is exactly what large-scale pretraining should
    provide — so a gain confined to distant alleles would be real and reportable
    even if the pooled comparison came out flat.
-6. **ProteinMPNN on the stored structures.** Inverse folding asks "given this
-   backbone, how probable is this peptide sequence?" — a different question from
-   geometry or confidence, needing no refolding, and the 22 GB of structures will
-   already exist. `pepstab/inverse_folding.py` and `scripts/proteinmpnn_score.py`
-   exist; the structures do not yet.
+6. **Check the ProteinMPNN pose-triage signal on more than one failing
+   complex.** §4.5 is a promising observation resting on n=1, and it will stay
+   that way until production structures exist and the QC sample runs. Until then
+   it must not be called a failure detector and must not filter anything.
+   **ESM-IF**, the brief's second inverse-folding model, was not attempted —
+   machine contention, with the ESM-2 arm holding priority on the shared
+   environment — and ProteinMPNN alone covers the class.
 7. **Find post-2016 stability measurements.** The only honest route to a
    comparison against NetMHCstabpan is data it could not have trained on. Until
    then, no method-parity claim is available from this dataset at any stage.

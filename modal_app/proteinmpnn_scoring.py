@@ -288,16 +288,30 @@ def _write(rows: list[dict], profile: str, label: str) -> Path:
 
 
 @app.local_entrypoint()
-def forecast(n_orders: int = N_ORDERS):
-    """Print the cost forecast. Spawns nothing and touches no workspace."""
+def forecast(profile: str = PROFILES[0], n_orders: int = N_ORDERS):
+    """Print the cost forecast, and prove the app can deploy to this profile.
+
+    Spawns no container. Deploying does *create* the functions in the target
+    workspace, which is the point: a workspace that cannot declare a function
+    fails here, cheaply, rather than at the start of the real run. Takes
+    ``--profile`` so the MODAL_PROFILE invariant is asserted on the way.
+    """
+    check_profile(profile)
     half = forecast_usd(PAIRS_PER_PROFILE, n_orders)
     both = forecast_usd(COHORT_PAIRS, n_orders)
-    print(json.dumps({"per_profile": half, "both_profiles": both,
+    print(json.dumps({"profile": profile, "per_profile": half, "both_profiles": both,
                       "basis": f"pilot-measured {STEADY_S_PER_FOLD}s/fold at "
                                f"n_orders={N_ORDERS}, cpu={WORKER_CPU}",
-                      "warning": "USD rates are Modal's published list prices "
-                                 "and are NOT measured by this repo; confirm "
-                                 "them before launching."}, indent=2))
+                      "rates": {
+                          "cpu_usd_per_core_hour": USD_PER_CORE_HOUR,
+                          "mem_usd_per_gib_hour": USD_PER_GIB_HOUR,
+                          "source": "reports/ectodomain_rates.json, metered "
+                                    "from this workspace -- not a pricing page",
+                      },
+                      "measured": "seconds per fold, and therefore core-hours",
+                      "derived": "USD = measured seconds x metered rates",
+                      "qc_sample": forecast_usd(QC_SAMPLE_N, QC_SAMPLE_ORDERS),
+                      }, indent=2))
 
 
 @app.local_entrypoint()

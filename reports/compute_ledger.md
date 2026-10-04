@@ -74,7 +74,10 @@ not record that quantity.
 | 3c | Elution external-validation check | — | — | 0 | `elution_stability_finding.md` |
 
 **Total recorded sequence-side compute: about 36 CPU-minutes of fitting and
-bootstrapping, and $0.** In both 2b and 2c the *uncertainty estimate* costs more
+bootstrapping, and $0.** The external-validation and inverse-folding pilots add
+a further 16.4 and 28.3 CPU-minutes respectively, also at $0 — so **every
+non-GPU result in this project cost about 95 CPU-minutes on one laptop**. In
+both 2b and 2c the *uncertainty estimate* costs more
 than the models: 11 of 2b's ~13 minutes are the paired cluster bootstrap. That
 is the right way round for a submission judged on evaluation quality, and it is
 worth saying out loud — the expensive part of this project's sequence arm is
@@ -126,11 +129,94 @@ peak RSS is the only hardware constraint in sight, and it fits a laptop.
 
 ### Still to be ledgered
 
+### Stage 3c: elution external validation — measured, CPU, $0
+
+`stage3c_elution_validation.md`. 51 alleles, 897,600 rows scored three times
+(proteome decoys, allele-swapped decoys, wrong-allele pseudosequence), plus a
+random-score null through the same harness.
+
+| Step | Time |
+|---|---|
+| Atlas download (8.0 MB) | ~3 s |
+| Build scoring set: parse atlas, tile 10.4M proteome 9-mers, draw 816,000 decoys | 80 s |
+| Refit `seq_baseline` (1 network) / `seq_ensemble` (30 networks) | 30 s / 394 s |
+| Score the ensemble over 897,600 rows, once per decoy set | ~110 s each |
+| **Total, three arms and all controls** | **16.4 min** |
+
+Peak memory stays near 350 MB: the 897,600 × 860 feature matrix would be 3.1 GB
+in one block, so prediction runs in 100,000-row chunks. Measured with three
+other agents on the same 8-core laptop at `OMP_NUM_THREADS=3`; an uncontended
+earlier run did the two model arms in 20.1 min including a separate set build,
+so the figure is stable to a few minutes either way.
+
+### Stage 5 inverse folding (ProteinMPNN) — pilot measured $0, QC sample forecast
+
+`stage5_inverse_folding.md`. Everything executed so far ran on laptop CPU with
+**$0 of cloud spend**.
+
+| Run | Folds | Workers | Wall |
+|---|---:|---:|---:|
+| Pilot, native scores, all 90 stage 4c folds | 90 | 2 | 481 s |
+| Cross-peptide circularity matrix, Boltz-2 arm B | 15 | 1 | 1,107 s |
+| Wrong-backbone control, `B*07:02` arm A | 3 | 1 | 107 s |
+| *Aborted cross-peptide sweep (killed under memory pressure, output discarded)* | *7 of 45* | *2* | *~780 s* |
+
+The aborted sweep is recorded rather than quietly dropped — it is 780 s of
+compute that produced nothing, and a ledger that only lists successful runs is
+not a ledger.
+
+**Forecast** from the measured 14.70 s mean per arm-B fold at 16 decoding
+orders, priced at the repo's metered rates:
+
+| | folds | core-hours | wall | cost |
+|---|---:|---:|---:|---:|
+| **QC sample, 16 orders — the approved buy** | **2,000** | **16.5** | **0.8 h** | **$1.04** |
+| QC sample, 8 orders | 2,000 | 8.3 | 0.4 h | $0.53 |
+| Both profiles, 16 orders — **declined** | 28,166 | 232.0 | 2.9 h parallel | $14.68 |
+
+Cost is linear in decoding orders. The QC sample buys 16 rather than 8 so its
+scores are directly comparable to the pilot's reference points, which were
+measured at 16; the extra $0.51 buys that comparability. **The full cohort is
+declined on evidence, not on price** — the n=5 label correlation is −0.100 at
+p=0.87, so $14.68 would buy a feature with no demonstrated relationship to the
+target.
+
+### Stage 4c.5 structural feature extraction — forecast, approved, not spent
+
+`stage4c5_features.md` §7.6. **Extraction is Volume-read-bound, not CPU-bound**:
+1.57 s of wall per fold against 0.096 s of CPU, about 6% core utilisation. The
+container was therefore dropped from `cpu=2.0` to `cpu=1.0` — reserving the
+second core was billing an idle one — and throughput moved by only ~8% (326 s vs
+352 s per 1,000 folds), confirming the diagnosis.
+
+| Quantity | Per half (14,083 folds) | Both halves |
+|---|---:|---:|
+| Wall at 30 containers | ~12.3 min | ~12.3 min (parallel) |
+| CPU + memory | $0.39 | **$0.78** |
+
+Spend so far on this workstream — two smokes and two 1,000-fold passes — is
+**under $0.15**.
+
+### A note on published versus metered rates
+
+Both forecasts above are built from the repo's **metered** rates
+(`ectodomain_rates.json`), not from a pricing page, because this project was
+once bitten by a cost figure that was 4.6× wrong. For the record, on CPU and
+memory the published list rates agreed with the metered ones here to **0.3%**
+(CPU 1.0030×, memory 1.0010×).
+
+**The right lesson from the 4.6× error is "check it", not "never trust published
+rates".** That error was never a wrong price list — it was a harness that
+reloaded 6.2 GB of weights inside every timed fold, so the *seconds* were wrong
+and the rate was fine. Distrusting the rate would have fixed nothing; measuring
+what the harness actually did is what fixed it.
+
+### Still to be ledgered
+
 | Stage | Item | Owner | What will fill it |
 |---|---|---|---|
 | 3 | ESM-2 **regression head** fit and inference | `esm-arm` | Head fit seconds, ensemble member count, inference seconds per 1,000 rows (hole **E1b**) |
-| 3c | Elution external-validation pass | `esm-arm` / stage 3c | `stage3c_provenance.json` records `build_seconds` 14.5 and `runtime_seconds` 48.1 on CPU; a narrative report does not exist yet |
-| 5 | Structural feature extraction + heads | blocked on 4c production | Modal CPU-hours with the Volume mounted, extraction failures, head fit time |
+| 5 | Structural feature **heads** (the extraction forecast is above) | blocked on 4c production | Head fit time, extraction failures, realised extraction spend |
 | 6 | Final test scoring and paired bootstraps | `eval-harness` | CPU-minutes for the single test pass and the bootstrap |
 | 7a | Censored (Tobit) likelihood | stage 7a | 60 networks (2 arms × 30), CPU; protocol predeclared in `stage7_censored.md`, results pending |
 
@@ -212,6 +298,7 @@ production:
 | Sequence ensemble, full domain | $7.9 × 10⁻⁷ | 0 | derived | 0.653 |
 | **ESM-2 (frozen representations)** | **$4.4 × 10⁻⁴ – $3.5 × 10⁻³** extraction only, upper bound; **+ ‹HOLE E1b›** for the head | 0 (laptop `mps`) | measured extraction, head pending | **‹HOLE E2›** |
 | **Boltz-2 structural (arm B)** | **$6.90** measured / $8.91 with margin | 4.66 | measured unit cost | **‹HOLE B2›** |
+| ProteinMPNN inverse folding | $0.52 | 0 (CPU) | forecast, QC sample only | not a half-life predictor (§4.5 of SUBMISSION) |
 | *ESMFold2 structural (rejected)* | *$31.40* | *11.8* | *forecast only* | *not run* |
 
 Accuracy figures are **validation** medians from `stage2_baselines.md`; the test
@@ -257,6 +344,8 @@ Cost measurement is not bookkeeping here; it changed what was run.
 | `--max_msa_seqs` **not** trimmed for cost | Measured parse cost ~$0.25 across 2,000 complexes — under 0.2% of the fold bill. The plan's concern was overturned by measurement | `stage4b1_msa_cache.md` |
 | ESMFold2 dropped from production | 4.55× the cost per fold *and* a failed pose gate; its $884 full-cohort forecast never fitted the combined balance | `stage4c_ectodomain_pilot.md` |
 | Production scope set to the full cohort, not the 2,000-pair panel | The measured 16.76 s fold put all 28,166 pairs inside the ceiling for Boltz-2 alone | `stage4c_ectodomain_pilot.md` |
+| Feature-extraction container cut from 2 cores to 1 | Extraction is Volume-read-bound: 1.57 s wall against 0.096 s CPU per fold, ~6% core utilisation. The second core was billing idle; dropping it moved throughput by ~8% | `stage4c5_features.md` §7.6 |
+| ProteinMPNN bought as a ~$1 QC sample, **not** as a $14.68 regression feature | Spearman against half-life is −0.100 at p=0.87, n=5. The QC sample is bought for a different reason: no PAE or pLDDT threshold catches pose failure, so the project has no cohort-wide way to estimate the pose-failure rate | `stage5_inverse_folding.md` |
 
 The 4.6× correction is worth dwelling on. The original harness was copied from
 Modal's own published Boltz example, which runs one input per function call — a

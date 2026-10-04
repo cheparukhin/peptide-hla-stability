@@ -134,18 +134,29 @@ appears:
 | Aggregation (all on `pep_ll_total`, = `mpnn_score` — see below) | Boltz-2 | ESMFold2 |
 |---|---:|---:|
 | **Per arm, `ddof=1` (quoted throughout this report)** | **10.0 / 8.0 / 6.8** | **1.1 / 2.4 / 1.2** |
-| Pooled over arms, (complex, arm) as unit, `ddof=1` | 7.81 | 1.56 |
-| Pooled over arms, (complex, arm) as unit, `ddof=0` | 9.24 | 1.84 |
+| Pooled, (complex, arm) as unit, mean of SDs, `ddof=1` | 7.81 | 1.56 |
+| Pooled, (complex, arm) as unit, mean of SDs, `ddof=0` | 9.24 | 1.84 |
+| Pooled, (complex, arm) as unit, RMS of SDs, `ddof=1` | 6.73 | 1.23 |
+| Pooled, between-SD over all rows, `ddof=1` | 7.69 | 1.85 |
 | Pooled ignoring arm entirely, `ddof=1` | 3.13 | 1.33 |
 
-`mpnn_score` and `pep_ll_total` give **numerically identical ratios**, because
-`mpnn_score = -pep_ll_total / 9` is an affine transform and a ratio of standard
-deviations is invariant under it. So the column never matters here; only the
-aggregation does, and every aggregation tells the same story. The stage 4c.5
-workstream quotes 8.10 / 1.83 for this control from the `mpnn_score` column
-pooled; the ESMFold2 figure reconciles with the `ddof=0` pooled row above
-(1.84) to two decimal places. Nothing disagrees — the numbers are the same
-measurement under different conventions.
+**The column provably cannot matter.** `mpnn_score = -pep_ll_total / 9` is an
+affine transform, and a ratio of two standard deviations is invariant under
+affine rescaling, so the two columns give identical ratios *to every digit*.
+This is not a reconciliation of two conventions — it is a proof that one axis
+of apparent disagreement cannot exist. Confirmed numerically as well as
+analytically.
+
+**The aggregation does matter, and I report the envelope rather than a single
+number.** Across the defensible choices above, ESMFold2 lands between **1.2 and
+1.9** and Boltz-2 between **3.1 and 9.3**. The stage 4c.5 workstream quotes
+**8.10 / 1.83** (`ddof=1`, pooled). That sits inside this envelope, but I was
+**not** able to reproduce it exactly under any of the six aggregations I tried,
+so some further detail of its pipeline differs and I have not chased it: every
+aggregation returns the same verdict, so the difference has no bearing on any
+conclusion. An earlier draft of this report claimed its 1.83 reconciled with
+the `ddof=0` row (1.84); **that was a coincidence and the claim was wrong** —
+its figure is `ddof=1`, and `ddof=0` on its side gives 2.00.
 
 Per arm, `ddof=1`:
 
@@ -440,11 +451,17 @@ folds. Peak RSS 1.2 GiB at `batch_rows=5`. Chunks of 200 folds, `cpu=2.0`,
 
 **Rates are the repo's metered figures**, read at runtime from
 `reports/ectodomain_rates.json` — the same source the stage 4c forecast used —
-not from a pricing page: **$0.04730/core-hour** and **$0.00800/GiB-hour**. This
-project has already been bitten by a published-rate estimate that was off by
-4.6x, so published numbers are not trusted here. For the record, on CPU and
-memory the published list rates happened to agree this time, to within **0.3%**
-(CPU 1.0030x, memory 1.0010x); the figures below are the metered ones anyway.
+not from a pricing page: **$0.04730/core-hour** and **$0.00800/GiB-hour**.
+
+**On checking rates rather than assuming them.** My first forecast used Modal's
+published list prices. Checking them against the workspace's metered figures
+found they agreed to **0.3%** (CPU 1.0030x, memory 1.0010x) — the check
+confirmed the estimate and changed nothing. That is the point worth recording,
+because earlier in this project the same check caught an estimate that was off
+by **4.6x**. The takeaway a reader should draw is **"check it"**, not "never
+trust published rates": the check is nearly free, it usually confirms, and the
+one time it did not it caught a 4.6x error. The figures below are the metered
+ones regardless, because the cost of using them is zero.
 
 What is measured and what is derived: the **14.70 s/fold and the core-hours are
 measured**; the **dollar figures are derived** from measured seconds times
@@ -462,12 +479,42 @@ Cost is linear in `n_orders`. The QC sample uses **16** rather than 8 so that
 its scores are directly comparable to the pilot thresholds, which were measured
 at 16; the extra $0.51 buys that comparability.
 
-**The `modal` package is not installed in this `.venv`**, so this entrypoint has
-not been dry-run, let alone smoke-tested, and installing it was deliberately
-deferred rather than risk perturbing the shared environment while the ESM-2 arm
-holds it. Per the project invariant the sequence before any batch job is:
-install `modal`, `::forecast`, `--dry-run`, then `::smoke` on 5 real folds **in
-each workspace**.
+**Verified so far.** `modal 1.6.1` installed (torch 2.14.1 and biotite 1.7.1
+unaffected — the ESM-2 arm shares this `.venv`).
+
+| Check | Workspace | Result |
+|---|---|---|
+| `::forecast` | a-cheparukhin | app deploys, image builds, 5 files uploaded inc. the 6.7 MB checkpoint, both functions created (`ap-H7756iQvG0uxpjoLC1tyBM`) |
+| `::score --dry-run --profile a-cheparukhin` | a-cheparukhin | frozen 14,083 and $7.34 confirmed, nothing spawned (`ap-EP5FawBKhdYD3IZhRgS6Ov`) |
+| `::forecast --profile colleague` | **sofyaleyn** | **both `list_folds` and `score_chunk` created** (`ap-GUceVVHdiPHrNHQlCz3fFY`) |
+| `MODAL_PROFILE`/`--profile` mismatch | — | refuses with `AssertionError`, as designed |
+
+The `sofyaleyn` deploy was the one worth doing early. Stage 4c found that Modal
+validates every function at creation time and that a workspace without a
+verified payment method cannot declare one at all. That had been ruled out
+there for GPU functions but never for this app, and it would otherwise have
+surfaced at fold completion with everyone waiting. It passes.
+
+### The `--dry-run` check was assumed free, and was not
+
+Worth stating as a finding rather than describing the fixed behaviour, because
+the assumption is the interesting part. `--dry-run` was written, reviewed and
+scheduled as a zero-cost check, and both I and the orchestrator referred to it
+that way. It was not: it called `list_folds.remote()`, which **starts a
+container**, and against a production root that does not yet exist it would
+have raised `FileNotFoundError` instead of printing a plan. The "free check we
+can run any time" would have failed at exactly the moment it was needed.
+
+Nobody had run it. It was fixed only because it was finally executed, hours
+before the window rather than inside it. This is the project's own standing
+lesson — *verify a harness measures what it claims* — applied to a harness
+written in this report, and it is the second time that discipline has paid out
+here (the first being the rate check below). `--dry-run` is now purely local:
+it forecasts against the frozen cohort size and never lists the Volume.
+
+**Still outstanding before any batch job**, per the project invariant:
+`::smoke` on 5 real folds **in each workspace**. Deliberately not run yet — it
+touches a workspace and belongs adjacent to the real pass, not hours before it.
 
 `--profile` must match `MODAL_PROFILE`; the runner asserts it, because the two
 halves are disjoint. Each half is scored separately and concatenated locally
@@ -511,6 +558,13 @@ thresholds**, and the report will not call them thresholds.
 ordered by allele, so ten committed shards is five of seventy-five alleles and
 any mid-run sample is allele-biased. `qc_sample()` is called only after the
 fold count for that profile is checked against 14,083.
+
+**There is no early-diagnostic window.** The two profiles run in parallel at
+the same shard count (141 each) and finish within minutes of each other, so one
+complete half is not meaningfully earlier than both. The plan is therefore a
+single window after completion, sequenced: `::smoke` in each workspace, then
+the QC sample, then this report. `::forecast` and `--dry-run` are free and have
+already been run (below).
 
 **What will be reported: a distribution and a triage list — never a failure
 count or a failure rate.** The deliverable is the distribution of

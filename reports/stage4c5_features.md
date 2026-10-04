@@ -516,23 +516,55 @@ on the 90 pilot folds:
 |---|---:|---:|
 | My structural features, median between/seed ratio | 5.29 | **5.87** |
 | …features where seed noise dominates (ratio < 1) | **0 of 109** | **0 of 94** |
-| ProteinMPNN `mpnn_score`, pooled over arms | 8.10 | **1.83** |
-| ProteinMPNN seed sd | 0.043 | **0.157** |
+| ProteinMPNN, across six aggregations (envelope) | 3.1 – 8.1 | **1.2 – 1.9** |
+| …my own aggregation, not independently reproduced | 8.10 | 1.83 |
+| ProteinMPNN seed sd (`mpnn_score`) | 0.043 | **0.157** |
 
-**Definitions, so two numbers for "the ProteinMPNN seed control" cannot be
-confused.** My row uses `mpnn_score`, seed spread as the mean over
-`(complex_id, arm)` groups of the within-group s.d., between-complex spread as
-the mean over `(arm, seed)` groups of the within-group s.d., **pooled across
-all three arms, `ddof=1`** (the pandas default). The `inverse-folding`
-workstream reports **per arm**: 10.0 / 8.0 / 6.8 for Boltz-2 and
-1.1 / 2.4 / 1.2 for ESMFold2.
+The ProteinMPNN row is an **envelope**, not a point estimate: two
+implementations get different numbers from the same CSV depending on the
+aggregation, and every one of them returns the same verdict. Details and the
+source of the spread are below.
 
-Only the aggregation ever mattered. An s.d. ratio is invariant under affine
-transform, and `mpnn_score = −pep_ll_mean` and `pep_ll_total = pep_ll_mean × 9`
-are affine transforms of one quantity, so all three columns give **identical**
-ratios — verified: 8.10 / 1.83 for both `mpnn_score` and `pep_ll_total` at
-`ddof=1`. For completeness, pooled at `ddof=0` gives 8.88 / 2.00. (A note in
-circulation attributes my 1.83 to `ddof=0`; it is `ddof=1`.)
+**Definitions, and the state of agreement between the two implementations.**
+My row uses `mpnn_score`, `ddof=1` (the pandas default), pooled across all
+three arms, with
+
+- *seed spread* = mean over the 15 `(complex_id, arm)` groups of the
+  within-group s.d. (3 seeds each);
+- *between-complex spread* = mean over the 9 `(arm, seed)` groups of the s.d.
+  across the 5 complexes — **each fold is a unit; seeds are not averaged
+  first**.
+
+That gives **8.10 / 1.83** (Boltz-2 / ESMFold2).
+
+**This figure has not been independently reproduced.** The `inverse-folding`
+workstream could not recover it under any of six defensible aggregations, all
+`ddof=1`, which span Boltz-2 **3.13–7.81** and ESMFold2 **1.23–1.85**. My
+numbers sit inside that envelope but are not confirmed by it, and **no
+agreement between the two implementations should be claimed.** (An earlier
+note here said my 1.83 reconciles to someone else's `ddof=0`; that was a
+coincidence of two conventions landing nearby, and it is withdrawn.)
+
+Most of the gap is attributable to one choice: **whether the three seeds are
+averaged before between-complex spread is measured.** Averaging first removes
+seed noise from the numerator. Recomputing my ratio with that single change —
+`(complex, arm)` group means as the unit — gives **8.07 / 1.54**, against
+their 7.81 / 1.56. So the bulk of the difference is that one definitional
+choice, which lowers the ratio for the noisier model and barely moves the
+quieter one, exactly as expected. A small residual remains unexplained.
+
+**Neither implementation is wrong and the residual is not worth chasing**:
+every aggregation either side has tried returns the same verdict — ESMFold2's
+ProteinMPNN signal-to-seed-noise is marginal, Boltz-2's is comfortable — so
+the difference bears on no conclusion. Quote the envelope, not a point
+estimate.
+
+One part is a *proof* rather than an observation: `mpnn_score`, `pep_ll_mean`
+and `pep_ll_total` are affine transforms of one quantity
+(`mpnn_score = −pep_ll_total / 9`), and a ratio of standard deviations is
+invariant under affine rescaling, so all three columns give identical ratios
+**necessarily** — verified to every digit. A column axis of disagreement
+cannot exist; only the aggregation axis can.
 
 **These two controls do not agree, and they should not be presented as
 independent confirmations of each other.** They agree for Boltz-2 — both

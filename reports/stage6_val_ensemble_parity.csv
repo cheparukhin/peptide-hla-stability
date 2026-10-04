@@ -1,0 +1,7 @@
+baseline,model,statistic,delta,ci_low,ci_high,verdict,n_boot,note
+seq_baseline,seq_ensemble_pep_pseudo,median_per_allele_spearman,0.0833,0.0288,0.1235,"real improvement, but whether it clears the 0.05 bar is unresolved (CI straddles 0.05)",2000,matched: pep_pseudo single network -> pep_pseudo 30-net ensemble
+seq_baseline,seq_ensemble_pep_pseudo,mean_per_allele_spearman,0.074,0.047,0.1036,(mean panel statistic; the predeclared verdict rule applies to the median),2000,matched: pep_pseudo single network -> pep_pseudo 30-net ensemble
+mlp_onehot_pep_domain,seq_ensemble_pep_domain,median_per_allele_spearman,0.0593,0.0185,0.1183,"real improvement, but whether it clears the 0.05 bar is unresolved (CI straddles 0.05)",2000,matched: pep_domain single network -> pep_domain 30-net ensemble
+mlp_onehot_pep_domain,seq_ensemble_pep_domain,mean_per_allele_spearman,0.0643,0.0387,0.0878,(mean panel statistic; the predeclared verdict rule applies to the median),2000,matched: pep_domain single network -> pep_domain 30-net ensemble
+seq_baseline,seq_ensemble_pep_domain,median_per_allele_spearman,0.0432,-0.0106,0.0911,inconclusive (CI crosses 0) -- not a negative result,2000,CONFOUNDED: changes the input arm and the ensembling together
+seq_baseline,seq_ensemble_pep_domain,mean_per_allele_spearman,0.0392,0.0096,0.0697,(mean panel statistic; the predeclared verdict rule applies to the median),2000,CONFOUNDED: changes the input arm and the ensembling together

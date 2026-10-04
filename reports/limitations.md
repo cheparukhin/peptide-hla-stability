@@ -518,14 +518,42 @@ Recorded so that absence is not mistaken for a result. Full rationale in
 | Not run | Why | Status |
 |---|---|---|
 | Allele-held-out evaluation | Confounded by allele-specific peptide panels (§2.1); different question from the headline claim | Deferred; the stratum where pretraining has the strongest prior of winning |
-| ProteinMPNN inverse-folding scores | Needs the structures first | Deferred, not rejected |
+| ~~ProteinMPNN inverse-folding scores~~ | Was blocked on needing structures; the stage 4c pilot's 90 folds unblocked it | **Run** — pilot complete, §7.2. Kept as a ~$1 QC triage sample; **declined as a regression feature** on a measured n=5 label correlation of −0.100 |
 | Chimeric peptide-linker-groove ESM-2 input | Far outside ESM-2's distribution | **Listed specifically so a stage 3 null is reported as bounded** (§5.3) |
 | ~~Tobit / censored likelihood~~ | Was the 16-hour substitute's known gap | **Now in flight as stage 7a**, protocol predeclared, results pending (§1.1, hole S7a) |
-| FoldX / Rosetta / empirical ΔG | Equilibrium ΔG vs a kinetic label (§1.3) | Rejected on principle, not time |
-| Elution data as training augmentation | 5.4× scale mismatch, unknowable threshold τ, confounded with abundance/cleavage/TAP/ionisation, and it changes the question | Rejected; used as **external validation** instead |
+| FoldX / Rosetta / empirical ΔG | Equilibrium ΔG vs a kinetic label (§1.3), **and both are licence-gated behind registration** | Declined for two independent reasons — §7.0 |
+| Elution data as training augmentation | 5.4× scale mismatch, unknowable threshold τ, confounded with abundance/cleavage/TAP/ionisation, and it changes the question | Rejected **as training data**; used as external validation instead, which has now run — §7.1 |
 | ESMFold2 production folds | Failed its gate; $884 forecast | §5.4 |
-| Chai-1, Protenix, SaProt, ESM-IF | Integration cost beyond the agreed comparison | Not evaluated |
+| Chai-1, Protenix, SaProt | Integration cost beyond the agreed comparison | Not evaluated |
+| **ESM-IF** (the brief's second inverse-folding model) | Machine contention — the ESM-2 arm held priority on the shared environment | Not attempted. **ProteinMPNN alone covers the inverse-folding class**, so the class is tested; this specific model is not |
 | Separate α3 / β2m ablations | Deferred until the full pipeline's predictive value is established | §6.5 |
+
+### 7.0 FoldX and Rosetta — declined for two independent reasons
+
+Both were requested as stretch goals and both are declined. **Two reasons, and
+the second is a constraint on anyone extending this work, not just on us:**
+
+1. **The scientific objection, which was always the real one.** Both estimate an
+   **equilibrium** free energy, ΔG — how favourable the bound state is. Our
+   label is **kinetic**: a dissociation half-life, governed by ΔG‡, the height
+   of the barrier to unbinding. Two complexes can sit at the same ΔG and come
+   apart at completely different rates. This is a known mismatch with the label,
+   not a matter of setup time, and it does not go away with more compute. It is
+   the same objection recorded against per-pocket energy decomposition (which
+   was premised on FoldX `AnalyseComplex` and falls with it) and against OpenMM
+   minimisation energy. The softer form of the same mismatch applies to
+   ProteinMPNN (§7.2) and is recorded there rather than hidden.
+2. **Both are licence-gated behind registration.** Neither can be installed from
+   a public package index without an account and an accepted licence. So even if
+   reason 1 did not hold, **including them would make this work less
+   reproducible**: a reader who wants to re-run the pipeline would hit a
+   registration wall that nothing else in this repository has. Every other model
+   used here — Boltz-2, ESMFold2, ESM-2, ProteinMPNN — is openly downloadable,
+   and the ProteinMPNN checkpoint is pinned by SHA-256 so a reader can verify
+   they have the same weights.
+
+Reason 1 alone is sufficient. Reason 2 is recorded because it is the one a
+reader is more likely to hit in practice.
 
 ### 7.1 The elution external validation has its own error rate
 
@@ -540,6 +568,71 @@ eluted ligands have measured half-life < 0.5 h, three at exactly zero, and
 with motif-deconvolution error than with biology. That puts the atlas error rate
 at roughly 2% for stability purposes (`elution_stability_finding.md`).
 
+**The transfer pass itself has now run** (`stage3c_elution_validation.md`, 51
+alleles, 81,600 ligands). Five limits attach to its headline AUROC of 0.9656 and
+none may be dropped when the number is quoted:
+
+1. **It is not a measurement of stability-prediction accuracy.** Elution is a
+   selection effect with **at least four filters besides stability**:
+   source-protein abundance, proteasomal cleavage specificity, TAP transport,
+   and mass-spec ionisation efficiency. A peptide in the atlas passed all of
+   them. A model that had learned only "this peptide is abundant and ionises
+   well" would also score well against proteome decoys. The allele-swapped
+   control **bounds** this contribution at **0.050 of AUROC** — that is a bound
+   on this decoy design, not a decomposition of the biology.
+2. **It is not a ranking of stability within presented peptides.** Ligand versus
+   non-ligand is a binary discrimination; per-allele Spearman against measured
+   half-life is a harder question this pass says nothing about. **0.610 / 0.693
+   remain the numbers to quote for accuracy.**
+3. **It is not comparable to a trained presentation predictor.** NetMHCpan-4.x
+   and friends train on elution data; this model never has. The reading is "a
+   stability model transfers", not "competes with a presentation model". That
+   comparison was not run and is not claimed.
+4. **The positive class carries roughly the 2% error rate above**, which puts a
+   soft ceiling just under 1.0 on any AUROC here, and means the weakest alleles
+   may be partly measuring motif-deconvolution quality rather than model
+   quality.
+5. **Decoys are assumed negatives**, since mass spectrometry is positives-only
+   and absence carries no information. This contaminates the negative class
+   slightly, which **depresses the reported AUROC rather than inflating it** —
+   so in that one respect the numbers are conservative. One release, one decoy
+   draw, seed sensitivity not swept.
+
+The donor-distance gradient (0.8906 near vs 0.9562 far) is real in direction and
+size but **only two bins were measured**, so the shape of that decline is not
+established.
+
+### 7.2 ProteinMPNN pose triage rests on n = 1 complex
+
+`stage5_inverse_folding.md`. Four limits, all load-bearing:
+
+- **The sample is one failing complex, not six folds.** All six Boltz-2 folds
+  above 2.0 Å peptide heavy RMSD are `HLA-B*07:02`/IPRRNVATL, arms A and C at
+  three seeds. "Six of 45" would read as six independent failures and overstate
+  it by a factor the evidence cannot carry. **One failing complex is not a
+  general property of the method.**
+- **It is not a half-life predictor and was not shown to be one.**
+  Spearman(`pep_ll_total`, t½) = −0.100 at p = 0.87, n = 5, all training rows.
+  That is zero and carries no inferential weight. Its value as a kinetic feature
+  is **untested**, and this pilot cannot test it. The full-cohort regression
+  scoring is declined on that evidence.
+- **The claim is specificity, not separation.** Repeating the separation test on
+  every complex yields 7, 9, 2, 13 and 2 "fully separating" structural features,
+  with the genuinely failing complex scoring the **fewest** — so clean
+  separation of a six-fold group measures *complex identity*, and **none of the
+  109 structural features isolates the failure**. `pep_ll_mean` escapes that
+  artifact only because it was a single predeclared quantity and because the
+  within-complex control shows the score moving when the *same* complex's pose
+  is fixed.
+- **Thermodynamic-flavoured, kinetic label.** Sequence–backbone compatibility is
+  the softer form of the §7.0 mismatch. Nothing in this pilot overturns it.
+
+**Operational consequence:** the QC sample's reference points are descriptive,
+drawn from a single complex. They **must not filter the production cohort**,
+nothing downstream may condition on them, and the deliverable is a distribution
+and a triage list — **never a failure count or a failure rate** — until the
+signal has been checked on more than one failing complex.
+
 ---
 
 ## 8. Open holes in this register
@@ -551,5 +644,6 @@ at roughly 2% for stability purposes (`elution_stability_finding.md`).
 | **S7** | Whether d=4 and d≥5 test strata separate (§3.1), and the nested near-neighbour result (§3.2) | `eval-harness` |
 | **S8** | Any allele where the test panel disagrees sharply with validation — hard alleles vs overfitting to the validation panel | `eval-harness` |
 | **S7a** | The censored-likelihood result and its `c_hours` sensitivity sweep (§1.1) | stage 7a |
-| **S3C** | The elution external-validation write-up: its artifacts are on disk (`stage3c_summary.csv`, three per-allele tables, `stage3c_provenance.json`), its interpretation of the swapped-decoy and wrong-allele controls is not. §7.1's ~2% atlas error rate applies to it | stage 3c |
+| ~~S3C~~ | ~~Elution external-validation write-up~~ | **Filled**: `stage3c_elution_validation.md`, §7.1. Open as a follow-on: the same pass on the ESM-2 and structural arms |
+| **P1** | Whether the ProteinMPNN pose-triage signal survives a second failing complex (§7.2) | blocked on 4c production + the QC sample |
 | **A3** | Whether the six partly-inferred ectodomain constructs (§6.6) behave differently at stage 5 | stage 5 |
