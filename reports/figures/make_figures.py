@@ -66,7 +66,14 @@ ARMS = [
     # ESM-2's cost stays NaN until hole E1b lands: extraction is measured
     # (reports/stage3_embedding_cost.csv) but the head's forward pass is not,
     # so a total would be a guess. The band below shows the measured half.
-    ("ESM-2 ensemble", "esm_ensemble", np.nan, "pending"),
+    # Two ESM-2 arms, because they answer different questions and the contrast
+    # between them is itself a result. "ESM-only" asks whether frozen ESM-2 can
+    # *replace* sequence features; "sequence+ESM-2" asks whether it *adds* to
+    # them, which is the question the challenge brief actually poses. Drawing
+    # only the first would understate the foundation-model case; drawing only
+    # the second would hide that it cannot stand alone.
+    ("ESM-2 ensemble (ESM only)", "esm_ensemble", np.nan, "pending"),
+    ("sequence + ESM-2 ensemble", "esm_plus_seq_ensemble", np.nan, "pending"),
     ("Boltz-2 structural ensemble", "boltz_structural", 6.90, "measured"),
 ]
 
