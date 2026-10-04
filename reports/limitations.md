@@ -412,6 +412,19 @@ with ESM-2 features. This is the hypothesis's strongest remaining form.
 established is that every upper bound sits below the predeclared worthwhile
 gain.
 
+**The differential target sharpens this from a shrug into an equivalence.** On
+cross-allele ranking, where the peptide's own contribution cancels exactly,
+ESM-2 is **+0.0028 [−0.0052, +0.0102]** against the baseline and sequence+ESM-2
+is **−0.0013 [−0.0091, +0.0058]** — equivalent to within one point of
+concordance, on 10,365 allele-pair comparisons. **The same measurement, same
+comparisons, same bootstrap, conclusively separates the 150M checkpoint
+(−0.0088 [−0.0149, −0.0025]) and the full-domain ensemble (−0.0124 [−0.0186,
+−0.0061])**, so the null is measured rather than an artifact of a metric that
+cannot discriminate. The mean per-allele Spearman separates the same two arms
+(−0.0199 and −0.0348, both excluding zero) while the median calls them
+inconclusive — two independent statistics agreeing. Full detail at SUBMISSION
+§4.0.
+
 **The one exception, which must travel with the headline:** against the
 full-domain sequence ensemble on matching input, ESM-2 scores **+0.0301
 [−0.0084, +0.0757]** — the only interval in the stage whose upper bound exceeds
@@ -738,6 +751,60 @@ drawn from a single complex. They **must not filter the production cohort**,
 nothing downstream may condition on them, and the deliverable is a distribution
 and a triage list — **never a failure count or a failure rate** — until the
 signal has been checked on more than one failing complex.
+
+---
+
+### 7.3 Two of our own measurements cannot do the job we gave them
+
+Recorded because both are failures of *our* design choices, not of the models,
+and because a reader who only sees the arms graded would miss that the
+instruments were graded too.
+
+### The distance-stratification contrast is underpowered by construction
+
+Stage 1 predicted that if a model exploits residual similarity at the split
+boundary, d=4 would score higher than d≥5, and that an arm with a *flatter*
+profile would be evidence of better generalisation. On validation, **all four
+stratum-gap intervals cross zero** — ESM-2 35M −0.0197 [−0.0973, +0.0800],
+sequence+ESM-2 +0.0046 [−0.0803, +0.1235], 150M −0.0685 [−0.1188, +0.0625],
+full-domain −0.0091 [−0.0888, +0.0847].
+
+**This is a statement about the split's size, not about the arms.** The stratum
+gap is a difference of differences of medians — two medians per arm, differenced,
+then differenced again against the baseline — and each step compounds noise. The
+half-width lands near **0.09** on a quantity whose largest observed value across
+all five arms is **0.069**. The measurement cannot resolve the effect it exists
+to detect, whatever that effect's true size, so "pretraining buys generalisation
+at the split boundary" is **not supported and also not refuted** here. Settling
+it needs a better-powered split, not a re-analysis of this one.
+
+A related trap is recorded in the source report and worth repeating: the 150M
+arm is the flattest across distance *and* uniformly the weakest on every other
+metric. "Nothing to lose" and "genuinely distance-robust" make identical
+predictions for every quantity this split can measure, so they are not
+separable here.
+
+### Precision@10 is quantised past the point of usefulness
+
+**This is a criticism of a metric we predeclared.** Against the sequence
+baseline, all four ESM comparisons returned a delta of **exactly 0.0000**, with
+interval bounds that are themselves lattice points of the statistic — [−0.100,
++0.100] three times, [−0.100, +0.050] once.
+
+It is not that the metric is underpowered; **it cannot express a difference**.
+The statistic moves in steps of 0.1 because it is ten slots, and a median over
+68 alleles of a 0.1-quantised quantity sits on a lattice point and stays there
+under resampling. An underpowered metric gives a wide interval around a non-zero
+estimate; this gives an estimate pinned to zero by construction, unable to
+represent the 0.04 differences the primary metric reports. Only the lift and
+ceiling-share columns carry information, and at this resolution even those are
+within noise.
+
+It separated the single network from the ensemble at stage 2, so it is not
+useless in general — it is useless at this resolution. **It stays in the report
+because it was predeclared**, and dropping a metric after seeing it is
+unflattering to the process is the post-hoc selection the contract exists to
+prevent. **No claim in this submission rests on it.**
 
 ---
 

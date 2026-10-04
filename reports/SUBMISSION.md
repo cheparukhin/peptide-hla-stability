@@ -158,7 +158,9 @@ correlation would flatter every model.
 - **Precision@10 at 2 hours** — of each allele's 10 top-ranked predictions, how
   many actually exceed 2 hours? This is the metric that matches how a shortlist
   is really used. Ties are credited by expectation, so a constant predictor
-  scores its base rate rather than being flattered by row order.
+  scores its base rate rather than being flattered by row order. **In practice
+  it turned out to be too coarse to separate close arms — it moves in steps of
+  0.1 — and we report that failure rather than dropping it. See §6.7.**
 - **Pooled Spearman and Pearson** — secondary, for the reason above.
 
 **Degenerate cases were ruled on in advance**, because ruling on them afterwards
@@ -361,6 +363,69 @@ The two arms answer different questions and agree:
 - **ESM-2 adds nothing on top.** Given features the baseline already extracts
   from those labels, the pretrained representation contributes no further signal
   worth the predeclared bar.
+
+#### The sharpest version: a measured equivalence, not a wide shrug
+
+"Inconclusive at zero" is a weak claim when the interval is wide, and on the
+primary metric it is: ±0.035 on a quantity whose whole interesting range is
+about 0.1. **The differential target makes the same comparison far more
+sharply** — and it is the metric this project built specifically to separate
+within-allele ranking from cross-allele effects.
+
+For a peptide measured on two or more alleles, evaluate **Δ log half-life
+between the alleles**. The peptide's own contribution cancels *exactly*, so what
+remains is groove chemistry. 394 validation peptides sit on two or more eligible
+alleles, giving **10,365 allele-pair comparisons**; 500 cluster resamples,
+paired against the sequence baseline.
+
+| Arm | Δ concordance | 95% CI | Verdict |
+|---|---:|---|---|
+| ESM-2 35M | **+0.0028** | [−0.0052, +0.0102] | inconclusive at 0 |
+| sequence + ESM-2 | **−0.0013** | [−0.0091, +0.0058] | inconclusive at 0 |
+| ESM-2 150M | −0.0088 | [−0.0149, −0.0025] | **conclusively worse** |
+| full-domain ensemble | −0.0124 | [−0.0186, −0.0061] | **conclusively worse** |
+
+> **On cross-allele ranking — where the peptide's own contribution cancels
+> exactly — ESM-2 and the sequence baseline are equivalent to within one point
+> of concordance: +0.003 [−0.005, +0.010] for ESM-2 alone and −0.001 [−0.009,
+> +0.006] for sequence plus ESM-2. The same measurement conclusively separates
+> the 150M checkpoint (−0.009 [−0.015, −0.002]) and the full-domain ensemble
+> (−0.012 [−0.019, −0.006]) from the baseline, so the equivalence is a measured
+> null and not a metric that cannot tell arms apart.**
+
+That last clause is the whole point. A tight interval around zero invites
+exactly one objection — *the metric is degenerate, it cannot resolve anything* —
+and **two conclusive separations, on the same 10,365 comparisons under the same
+bootstrap, answer it directly.** The differential resolves differences of about
+0.009; both ESM arms sit well inside that. Its intervals are four to six times
+tighter than the primary metric's on the same rows.
+
+So the headline upgrades from *"inconclusive at zero, rules out +0.05"* to
+**"equivalent, to within one point of concordance"** — a far more useful claim
+for anyone deciding whether to deploy a language model here, because it says
+what the answer *is* rather than only what it is not.
+
+**The mean per-allele Spearman agrees**, which matters because it is an
+independent statistic on the same panel:
+
+| Arm | Δ mean per-allele ρ | 95% CI |
+|---|---:|---|
+| ESM-2 35M | −0.0036 | [−0.0248, +0.0165] |
+| sequence + ESM-2 | −0.0112 | [−0.0332, +0.0111] |
+| ESM-2 150M | **−0.0199** | **[−0.0392, −0.0017]** |
+| full-domain ensemble | **−0.0348** | **[−0.0502, −0.0197]** |
+
+The mean separates **the same two arms** the differential does, while the
+median — the contract's metric, to which the predeclared verdict rule applies
+alone — calls both inconclusive. Two independent statistics agreeing is more
+robust than either on its own, and two panel statistics disagreeing about
+*conclusiveness* is itself worth showing rather than hiding.
+
+**This is the differential target earning its place.** It was specified in the
+frozen contract to separate within-allele ranking from cross-allele effects, it
+costs no new compute — it re-aggregates predictions already made — and it is
+**the only metric in the project that resolved what the primary metric could
+not.**
 
 #### Three controls, which are what stop this being an artifact
 
@@ -1036,7 +1101,33 @@ than distance. A d≥6 stratum is not viable: 12 test rows reach it.
 
 **If the model is exploiting residual similarity at the split boundary, d=4 will
 score visibly higher than d≥5. If it does not, that is a strong positive signal
-that the model genuinely generalises.** Result: **‹HOLE S6a›**.
+that the model genuinely generalises.** Test result: **‹HOLE S6a›**.
+
+**On validation, the hypothesis that pretraining buys generalisation at the
+split boundary is dead.** Every arm loses something between the strata, and the
+point estimates tease — the 150M arm barely degrades (gap 0.014 against the
+baseline's 0.082) and posts the highest d≥5 score of any arm. **The intervals do
+not support it.** Paired bootstrap on the stratum gap itself, against the
+baseline:
+
+| Arm | Δ gap | 95% CI |
+|---|---:|---|
+| ESM-2 35M | −0.0197 | [−0.0973, +0.0800] |
+| sequence + ESM-2 | +0.0046 | [−0.0803, +0.1235] |
+| ESM-2 150M | −0.0685 | [−0.1188, +0.0625] |
+| full-domain ensemble | −0.0091 | [−0.0888, +0.0847] |
+
+**All four cross zero.** Two point estimates ordered the way a size effect would
+order them, with intervals that each admit the opposite ordering, is not a
+trend — it is two draws from a noisy statistic.
+
+**And this is a statement about the split's size, not about the arms.** The
+stratum gap is a *difference of differences of medians*: two medians per arm,
+differenced, then differenced again against the baseline. Each step compounds
+the noise, and the resulting half-width is near **0.09** on a quantity whose
+largest observed value across all five arms is **0.069**. The measurement cannot
+resolve the effect it was built to detect, whatever the effect's true size. A
+better-powered split, not a re-analysis, is what would settle it.
 
 ### 6.2 The differential target — groove chemistry, isolated
 
@@ -1045,7 +1136,16 @@ alleles**. This subtracts out whatever is intrinsic to the peptide and tests
 groove chemistry directly — the sharpest available version of "distinguish
 within-allele ranking from cross-allele effects". It is abundant: **3,941
 peptides sit on ≥ 2 alleles, covering 26,474 rows (94% of the dataset), up to 36
-alleles for a single peptide.** Result: **‹HOLE S6b›**.
+alleles for a single peptide.**
+
+**On validation this delivered the project's sharpest result**, and because it
+bears directly on the headline question it is reported in full at
+**§4.0**: ESM-2 and the sequence baseline are **equivalent to within one point
+of concordance**, while the same measurement conclusively separates two other
+arms — so the equivalence is a measured null rather than a blind metric. This is
+the only metric in the project that returned a conclusive verdict where the
+primary metric could not, which is the clearest possible demonstration that it
+earned its place in the contract. Test result: **‹HOLE S6b›**.
 
 ### 6.3 Nested near-neighbour evaluation — the question the split cannot ask
 
@@ -1141,6 +1241,36 @@ Per-stratum ESM-2 and structural comparisons are therefore worth running and are
 **not guaranteed to conclude**: the measured minimum detectable effect is 0.025–0.030
 when per-allele deltas are tight, rising to 0.075–0.115 when they are loose, so
 an inconclusive stratum must be reported as inconclusive rather than as a null.
+
+### 6.7 One of our own predeclared metrics does not work, and we are saying so
+
+**Precision@10 at 2 hours cannot express a difference between these arms, and
+that is a criticism of a metric we chose in advance.**
+
+Against the sequence baseline, all four comparisons returned a delta of
+**exactly 0.0000**, with interval bounds that are themselves lattice points of
+the statistic: [−0.100, +0.100] three times and [−0.100, +0.050] once. Every arm
+shares a median precision of 0.700 and a median ceiling share of 0.900.
+
+This is not ordinary low power. **The statistic moves in steps of 0.1 because it
+is ten slots**, and a median over 68 alleles of a 0.1-quantised quantity lands
+on a lattice point and stays there under resampling. An underpowered metric
+gives you a wide interval around a non-zero point estimate; this one gives a
+point estimate that is *pinned* to zero by construction. It cannot represent the
+0.04 differences the primary metric reports.
+
+What that leaves: only the **lift** and **ceiling-share** columns carry
+information, and here even they are within noise (lift spans 0.277–0.294 across
+arms that differ by 0.04 on the primary metric). It did separate the single
+network from the ensemble at stage 2, so it is not useless in general — it is
+useless at this resolution.
+
+**It stays in the report**, because it was predeclared and removing a metric
+after seeing that it is unflattering to the process would be exactly the
+post-hoc selection this contract exists to prevent. But **no claim in this
+submission rests on it.** Reporting a weakness in a metric we chose ourselves is
+worth more than quietly dropping it; a reader can then judge the contract, not
+just the results it produced.
 
 ---
 

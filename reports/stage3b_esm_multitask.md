@@ -178,6 +178,81 @@ a point the arm was tuned on, and
 `1e-05` is reintroduced. Neither is vacuous: the first matches 9–15 stage 3 grid
 rows per group.
 
+### 3.3 The selection was re-checked **with the auxiliary head present**
+
+`check_interior()` runs **pre-fit**, on the L2 that stage 3 selected for a
+*single-headed* network. Adding a second head changes the effective
+regularisation, so a value that was interior single-task is not guaranteed to
+stay interior multi-task — and the ESM arm is roughly **50x more sensitive to
+the regularisation range than the baseline** (0.109 against +0.002). The
+additive ladder as inherited was three points with the middle one selected, so
+it had no headroom to absorb a shift. Two independent probes were run.
+
+**Probe 1, in-harness** (`--probe-l2`, `reports/stage3b_l2_probe.csv`): the
+stage 2/3 *selection* protocol — one permanent `inner_folds` fit/dev cut, 3
+seeds — over the inherited three-point ladder, at λ=0 and λ=3.
+
+| group | λ | 1e-03 | **1e-02** | 1e-01 | selected | interior |
+|---|---:|---:|---:|---:|---|---|
+| onehot | 0 | 0.5551 | **0.6113** | 0.5791 | 1e-02 | yes |
+| onehot | 3 | 0.4772 | **0.6212** | 0.5855 | 1e-02 | yes |
+| blosum | 0 | 0.5650 | **0.5959** | 0.5651 | 1e-02 | yes |
+| blosum | 3 | 0.5018 | **0.6158** | 0.5767 | 1e-02 | yes |
+
+The sensitivity is real and large — 0.477 at 1e-03 against 0.621 at 1e-02 —
+which **corroborates the 0.109 transplanted-ladder cost rather than the interim
+0.093**. The λ=0 column also reproduces stage 3's own grid medians for this arm
+to four decimals at all six points (§3.4), so this is the same feature matrix.
+
+Carried verbatim, because it is precise and should not be rounded off:
+
+> **Interiority with the head present was verified only over the inner three
+> values** (1e-3, 1e-2, 1e-1), since that was the ladder at the time. The curve
+> is clearly unimodal and peaked at 1e-2 with both neighbours far worse, so
+> extending to 1e-4 and 1.0 is very unlikely to change the selection — but
+> those two points have **not** been measured with the head present, and the
+> report must not imply they have.
+
+**Probe 2 closes that gap at λ=3, and only at λ=3.** An independent probe on a
+different protocol — `cv_folds` fold 0 as the stopping fold (one real ensemble
+member's setup), 2 seeds — measured the two outer points with the head present:
+
+| group | 1e-04 | 1e-03 | **1e-02** | 1e-01 | 1.0 | 10 |
+|---|---:|---:|---:|---:|---:|---:|
+| additive onehot | 0.4345 | 0.4388 | **0.5875** | 0.5896 | 0.3589 | — |
+| additive blosum | 0.4872 | 0.4607 | **0.5996** | 0.5817 | 0.3755 | — |
+| esm mid | 0.3747 | 0.5036 | **0.5986** | 0.5935 | 0.3924 | 0.1347 |
+| esm final | 0.3463 | 0.4417 | **0.5730** | 0.5767 | 0.3582 | 0.0949 |
+
+So at λ=3 the optimum is now **bracketed**, not merely not-at-an-edge: 1e-04 and
+1.0 cost 0.10–0.24 median ρ against the selection. What remains unmeasured with
+the head present is **λ=0 at those two outer points**; no probe has covered
+that cell.
+
+The two protocols agree to within seed noise and disagree on nothing that
+matters. The one difference worth recording: on probe 2, additive/onehot at λ=3
+marginally preferred 1e-01 (0.5896) over 1e-02 (0.5875). That is **+0.0021**, an
+order of magnitude inside that cell's own seed spread (0.0222 at 1e-02), and
+probe 1 on 3 seeds puts 1e-02 ahead by 0.0357. L2 is held fixed across λ by
+design — re-tuning per λ would break the controlled comparison exactly as stage
+2c's did not — so the λ=3 additive point is at most ~0.002 below its own λ=3
+optimum under one of the two protocols. That is **conservative in the direction
+that matters**: it can only understate Δ_esm, never inflate it, and 0.002 is two
+orders of magnitude below the 0.109 handicap that motivated the concern.
+
+### 3.4 The λ=0 comparator is the stage 3 model, verified at two levels
+
+| Level | Check | Result |
+|---|---|---|
+| network | `test_lambda_zero_is_bit_identical_on_the_real_esm_feature_grid` | bit-identical to `MLPRegressor` on the 1,190-column additive grid |
+| grid point | probe 1's λ=0 column vs `reports/stage3_runs.csv` | all 6 points match to 4 dp (0.5551 / 0.6113 / 0.5791, 0.5650 / 0.5959 / 0.5651) |
+| ensemble | additive λ=0, 30 networks | **0.6761**, matching the declared stage 3 additive headline to 4 dp |
+
+The ensemble-level match is the one that was missing. Bit-identity at the
+network level does not by itself prove the 30-member ensemble reassembles the
+same way; reproducing 0.6761 does. The difference-in-differences therefore
+differences against the stage 3 arm itself, not a near-replica of it.
+
 Note the `seq` arm is **re-run**, not reused from stage 2c: stage 2c fitted it
 on stage 2's truncated ladder, where one-hot selected 1e-05. On the extended
 ladder it selects 0.01. Reusing the old numbers would make the
