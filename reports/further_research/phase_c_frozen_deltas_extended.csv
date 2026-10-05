@@ -1,0 +1,4 @@
+baseline,comparison,isolates,delta,ci95_low,ci95_high,verdict,n_boot,seed,n_resamples_with_dropped_alleles,n_degenerate_resamples,panel_size_full
+separate,joint,cross-chain context at inference (weights fixed),0.0333,0.0114,0.0897,"real improvement, but whether it clears the 0.05 bar is unresolved (CI straddles 0.05)",2000,20261003,0,0,69
+esm2,separate,STRING PPI pretraining (chain treatment fixed),-0.0764,-0.1062,-0.0304,worse: CI entirely below 0,2000,20261003,0,0,69
+esm2,joint,headline -- CONFOUNDED by both,-0.0431,-0.0567,0.0221,"inconclusive at 0, and rules out a 0.05 gain -- not a negative result",2000,20261003,0,0,69

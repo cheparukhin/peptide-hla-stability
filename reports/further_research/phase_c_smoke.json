@@ -1,0 +1,111 @@
+{
+  "gpu": "L4",
+  "torch": "2.5.1+cu124",
+  "cases": 5,
+  "cuda": {
+    "device": "NVIDIA L4",
+    "total_gib": 22.03
+  },
+  "load": {
+    "source": "mint_state_dict.pt",
+    "seconds": 26.7,
+    "params_millions": 813.4,
+    "weights_gib": 3.03,
+    "peak_gib": 3.09
+  },
+  "extraction": {
+    "pep_domain": {
+      "pairs": 5,
+      "tokens": 195,
+      "seconds_per_pair_median": 0.0614,
+      "seconds_per_pair_max": 0.0627,
+      "feature_dim": 12800,
+      "peak_gib": 3.14
+    },
+    "pep_ectodomain_b2m": {
+      "pairs": 5,
+      "tokens": 389,
+      "seconds_per_pair_median": 0.1196,
+      "seconds_per_pair_max": 0.1293,
+      "feature_dim": 12800,
+      "peak_gib": 3.22
+    }
+  },
+  "head_training": {
+    "contract": "pep_domain",
+    "params_millions": 0.819,
+    "steps": 50,
+    "seconds_total": 0.414,
+    "seconds_per_step": 0.00829,
+    "peak_gib": 3.13,
+    "loss_first": 0.04287,
+    "loss_last": 1.6e-05
+  },
+  "limited_adaptation": {
+    "contract": "pep_domain",
+    "unfrozen_top_layers": 4,
+    "trainable_params_millions": 98.4,
+    "batch_pairs": 5,
+    "steps": 10,
+    "oom": null,
+    "seconds_total": 4.862,
+    "seconds_per_step": 0.4862,
+    "seconds_per_pair_step": 0.0972,
+    "peak_gib": 4.86
+  },
+  "host_peak_gib": null,
+  "wall_clock_seconds": 51.1,
+  "profile": "a-cheparukhin",
+  "forecast": {
+    "items": {
+      "probe (0.25 cpu, 2 GiB)": 0.0014,
+      "setup (4 cpu, 16 GiB, 3.3 GB pull + CPU load)": 0.0529,
+      "smoke (L4, 4.0 cpu, 16 GiB)": 0.0717,
+      "volume storage, one month": 0.594
+    },
+    "gpu_hourly_usd": 1.1172,
+    "cpu_hourly_usd": 0.3172,
+    "gpu_seconds": 231,
+    "subtotal_usd": 0.72,
+    "with_margin_usd": 0.9
+  },
+  "checkpoint": {
+    "hf_repo": "varunullanat2012/mint",
+    "hf_revision": "75b1602c34e9df1a89089a1245f000a51ee3c746",
+    "github": "06694b7606e2d00b76ec58daf5c7aecdaf7cd283"
+  },
+  "panel": [
+    {
+      "allele": "HLA-A*01:01",
+      "peptide": "AADSFATSY",
+      "cluster_id": 3,
+      "split": "train"
+    },
+    {
+      "allele": "HLA-A*02:01",
+      "peptide": "AEFGPWQTV",
+      "cluster_id": 24,
+      "split": "train"
+    },
+    {
+      "allele": "HLA-A*02:03",
+      "peptide": "AIIDYIAYM",
+      "cluster_id": 84,
+      "split": "train"
+    },
+    {
+      "allele": "HLA-A*02:05",
+      "peptide": "FIFFFLFNI",
+      "cluster_id": 811,
+      "split": "train"
+    },
+    {
+      "allele": "HLA-A*02:10",
+      "peptide": "AIIDYIAYM",
+      "cluster_id": 84,
+      "split": "train"
+    }
+  ],
+  "realised_gpu_seconds_measured": 32.9,
+  "realised_gpu_usd_lower_bound": 0.0102
+}

@@ -39,3 +39,16 @@ demo/structures.json
 
 # Artifact staging — the published copy of site/ lives in site/
 .site_build/
+
+# CatBoost writes training logs beside the process that fits
+catboost_info/
+
+# Phase A/B screen intermediates. Per-unit prediction arrays, ~500 MB each: the
+# journal and its CSV twin hold every member's predictions for every unit, which
+# the assembled and scored outputs supersede. Regenerate with
+# modal_app/phase_a_experiments.py::run --resume; the small derived tables
+# (scores, selection, comparisons) are the committed record.
+reports/further_research/*_runs*.partial.jsonl
+reports/further_research/phase_a_runs.csv
+reports/further_research/phase_a_screen_assembled.csv
+reports/further_research/*_members.npz

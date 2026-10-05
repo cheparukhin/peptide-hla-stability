@@ -1,0 +1,36 @@
+{
+  "profile": "colleague",
+  "n": 5,
+  "ok": 5,
+  "failed": 0,
+  "arms": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "keys": [
+    "A1|depth=4,l2_leaf_reg=3,learning_rate=0.03|enc=onehot|seed=0|of=0|if=0|screen",
+    "A2|k=1|enc=onehot|seed=0|of=0|if=0|screen",
+    "A3|cell=A3-a,lam=,loss=mse,sampling=natural,stopping=mse|enc=onehot|seed=0|of=0|if=0|screen",
+    "A4|depth=4,l2_leaf_reg=3,learning_rate=0.03,objective=YetiRank|enc=onehot|seed=0|of=0|if=0|screen",
+    "A4|depth=4,l2_leaf_reg=3,learning_rate=0.03,objective=PairLogit|enc=onehot|seed=0|of=0|if=0|screen"
+  ],
+  "units_schema_version": "phase_a.1",
+  "payload_digest": "6dba6fa6a61ff06e4c1908208f4c274fee061a52ee1986102f352ea7a4b0b6ac",
+  "seconds_per_unit": 520.886,
+  "seconds_per_unit_median": 6.511,
+  "chunk_wall_s": 552.4,
+  "client_wall_s": 565.0,
+  "peak_gib": 0.9949264526367188,
+  "worker_memory_mib": 4096,
+  "threads": 2,
+  "shape": {
+    "cpu": 2.0,
+    "memory_gib": 4.0,
+    "containers": 1
+  },
+  "all_ok": true,
+  "rows_omitted": "Per-unit prediction payloads were dropped from this summary: they duplicate reports/further_research/phase_a_runs_<profile>.partial.jsonl, which is gitignored and regenerable via modal_app/phase_a_experiments.py::run --resume. Every measured field this file is cited for (seconds_per_unit, chunk_wall_s, peak_gib, threads, payload_digest, all_ok) is retained.",
+  "rows_omitted_count": 5
+}

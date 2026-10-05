@@ -1,0 +1,157 @@
+{
+  "torch_version": "2.5.1+cu124",
+  "mint_version": "0.1.0",
+  "mint_path": "/usr/local/lib/python3.11/site-packages/mint/__init__.py",
+  "sig::MINTWrapper": "(cfg, checkpoint_path, freeze_percent=1.0, use_multimer=True, sep_chains=False, device='cuda:0')",
+  "sig::MINTWrapper.forward": "(self, chains, chain_ids)",
+  "sig::ESM2": "(num_layers: int = 33, embed_dim: int = 1280, attention_heads: int = 20, alphabet: Union[mint.data.Alphabet, str] = 'ESM-1b', token_dropout: bool = True, use_multimer: bool = False)",
+  "sig::ESM2.forward": "(self, tokens, chain_ids=None, repr_layers=[], need_head_weights=False, return_contacts=False)",
+  "esm2_accepts_repr_layers": true,
+  "sig::CollateFn.__call__": "(self, batches)",
+  "config_in_package": [],
+  "config_from_raw_url": {
+    "encoder_layers": 33,
+    "encoder_embed_dim": 1280,
+    "encoder_attention_heads": 20
+  },
+  "alphabet": {
+    "size": 33,
+    "cls_idx": 0,
+    "eos_idx": 2,
+    "padding_idx": 1
+  },
+  "hf": {
+    "varunullanat2012/mint": {
+      "revision_requested": "75b1602c34e9df1a89089a1245f000a51ee3c746",
+      "sha": "75b1602c34e9df1a89089a1245f000a51ee3c746",
+      "revision_matches": true,
+      "license": "mit",
+      "gated": false,
+      "private": false,
+      "total_gb": 3.28,
+      "files": [
+        [
+          ".gitattributes",
+          0.0
+        ],
+        [
+          "README.md",
+          0.0
+        ],
+        [
+          "bernett_mlp.pth",
+          0.026
+        ],
+        [
+          "mint.ckpt",
+          3.254
+        ]
+      ]
+    },
+    "dkarthikeyan1/mint-stage1-affinity": {
+      "revision_requested": "8bf8e51906cf63336706d6cfc4f85e95a8109c86",
+      "sha": "8bf8e51906cf63336706d6cfc4f85e95a8109c86",
+      "revision_matches": true,
+      "license": "mit",
+      "gated": false,
+      "private": false,
+      "total_gb": 3.256,
+      "files": [
+        [
+          ".gitattributes",
+          0.0
+        ],
+        [
+          "README.md",
+          0.0
+        ],
+        [
+          "config.json",
+          0.0
+        ],
+        [
+          "configuration_mint_stability.py",
+          0.0
+        ],
+        [
+          "model.safetensors",
+          3.256
+        ],
+        [
+          "modeling_mint_stability.py",
+          0.0
+        ]
+      ]
+    },
+    "dkarthikeyan1/mint-stage2-stability": {
+      "revision_requested": "d3bad29b1e2e9f4313b2187dfa215a748565a58e",
+      "sha": "d3bad29b1e2e9f4313b2187dfa215a748565a58e",
+      "revision_matches": true,
+      "license": "mit",
+      "gated": false,
+      "private": false,
+      "total_gb": 3.256,
+      "files": [
+        [
+          ".gitattributes",
+          0.0
+        ],
+        [
+          "README.md",
+          0.0
+        ],
+        [
+          "config.json",
+          0.0
+        ],
+        [
+          "configuration_mint_stability.py",
+          0.0
+        ],
+        [
+          "model.safetensors",
+          3.256
+        ],
+        [
+          "modeling_mint_stability.py",
+          0.0
+        ]
+      ]
+    },
+    "dkarthikeyan1/spearmint": {
+      "revision_requested": "93e8e3e640e49e5a373f0dc432b122df19e4b969",
+      "sha": "93e8e3e640e49e5a373f0dc432b122df19e4b969",
+      "revision_matches": true,
+      "license": "mit",
+      "gated": false,
+      "private": false,
+      "total_gb": 3.259,
+      "files": [
+        [
+          ".gitattributes",
+          0.0
+        ],
+        [
+          "README.md",
+          0.0
+        ],
+        [
+          "config.json",
+          0.0
+        ],
+        [
+          "configuration_spearmint.py",
+          0.0
+        ],
+        [
+          "model.safetensors",
+          3.259
+        ],
+        [
+          "modeling_spearmint.py",
+          0.0
+        ]
+      ]
+    }
+  }
+}

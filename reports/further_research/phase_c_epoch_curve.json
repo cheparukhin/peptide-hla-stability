@@ -1,0 +1,124 @@
+{
+  "gpu": "L4",
+  "load_seconds": 9.7,
+  "config": {
+    "epoch_cap": 12,
+    "batch": 8,
+    "unfrozen_top_layers": 4,
+    "lr": 1e-05,
+    "dtype": "bf16 autocast"
+  },
+  "fit_rows": 15656,
+  "inner_val_rows": 4060,
+  "history": [
+    {
+      "epoch": 0,
+      "mse": 2.20548,
+      "median_per_allele_spearman": 0.0045,
+      "eligible_alleles": 68,
+      "train_seconds": 0.0
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.97991,
+      "train_seconds": 399.2,
+      "mse": 0.90065,
+      "median_per_allele_spearman": 0.215,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.7359,
+      "train_seconds": 399.3,
+      "mse": 0.7932,
+      "median_per_allele_spearman": 0.2559,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.58976,
+      "train_seconds": 398.6,
+      "mse": 0.75194,
+      "median_per_allele_spearman": 0.3189,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.49659,
+      "train_seconds": 398.9,
+      "mse": 0.72378,
+      "median_per_allele_spearman": 0.3619,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.43201,
+      "train_seconds": 399.7,
+      "mse": 0.69723,
+      "median_per_allele_spearman": 0.4393,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.37251,
+      "train_seconds": 399.7,
+      "mse": 0.68727,
+      "median_per_allele_spearman": 0.4286,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.32322,
+      "train_seconds": 399.5,
+      "mse": 0.67829,
+      "median_per_allele_spearman": 0.4249,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.28045,
+      "train_seconds": 399.6,
+      "mse": 0.67066,
+      "median_per_allele_spearman": 0.4798,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.24115,
+      "train_seconds": 399.7,
+      "mse": 0.66737,
+      "median_per_allele_spearman": 0.4676,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.20715,
+      "train_seconds": 399.8,
+      "mse": 0.68753,
+      "median_per_allele_spearman": 0.4629,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.17851,
+      "train_seconds": 399.8,
+      "mse": 0.6705,
+      "median_per_allele_spearman": 0.4917,
+      "eligible_alleles": 68
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.15324,
+      "train_seconds": 400.4,
+      "mse": 0.65843,
+      "median_per_allele_spearman": 0.489,
+      "eligible_alleles": 68
+    }
+  ],
+  "best_epoch_by_mse": 12,
+  "still_improving_at_cap": true,
+  "seconds_per_epoch_median": 399.6,
+  "peak_gib": 4.83,
+  "profile": "a-cheparukhin",
+  "forecast_usd_with_margin": 2.23
+}

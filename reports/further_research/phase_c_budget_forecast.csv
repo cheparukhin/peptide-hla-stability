@@ -1,0 +1,8 @@
+phase,item,gpu_seconds,gpu_hours,usd,usd_with_margin,note
+6.2,"frozen joint-chain extraction, pep_domain, train+val",1410,0.39,0.44,0.55,"22,533 pairs x 0.0614 s + 27 s load"
+6.2,frozen separate-chain control extraction (matched),1410,0.39,0.44,0.55,charged at the joint-pass rate; two shorter passes is an over-estimate
+6.2,"downstream head fits (all configs, seeds, folds, bagging)",0,0.0,0.0,0.0,"0.82M params on cached features: laptop CPU, as stage 2/3 already are"
+6.3,"one adaptation fit (20 epochs over 19,716 train rows)",38355,10.65,11.9,14.88,"0.0972 s/pair-step at BATCH 1, fp32 -- a conservative upper bound"
+6.3,bounded screen: 6 fits (3 unfreeze depths x 2 seeds),230128,63.92,71.42,89.27,reduced from §3.3's 12-config default; adaptation cannot afford 12
+6.3,finalist outer assessment: 10 fits (5 outer folds x 2 seeds),383546,106.54,119.03,148.78,one finalist only; no bagging budget matched to the 30-net reference
+sens,extraction on the 3-chain ectodomain contract instead of pep_domain,2722,0.76,0.84,1.06,1.9x the 2-chain pass at 389 vs 195 tokens

@@ -1,0 +1,52 @@
+{
+  "run": "mint_base",
+  "checkpoint": "varunullanat2012/mint @ 75b1602c34e9df1a89089a1245f000a51ee3c746",
+  "layer": 33,
+  "compute_dtype": "float32",
+  "store_dtype": "float16",
+  "batch": 8,
+  "load_seconds": 15.8,
+  "timings": {
+    "separate_peptide_s": 0.0,
+    "separate_hla_s": 0.0,
+    "joint_s": 1351.4
+  },
+  "shapes": {
+    "sep_peptide": [
+      4509,
+      9,
+      1280
+    ],
+    "sep_hla": [
+      75,
+      1280
+    ],
+    "joint": [
+      22533,
+      10,
+      1280
+    ]
+  },
+  "peak_gib": 3.42,
+  "seconds_per_joint_pair": 0.05997,
+  "files": [
+    "_joint_chunks",
+    "joint.index.json",
+    "joint_L33.npz",
+    "manifest.json",
+    "sep_hla.index.json",
+    "sep_hla_L33.npz",
+    "sep_peptide.index.json",
+    "sep_peptide_L33.npz"
+  ],
+  "total_mb": 629.3,
+  "wall_clock_seconds": 1425.7,
+  "forecast": {
+    "gpu_seconds": 1457,
+    "gpu_minutes": 24.3,
+    "egress_gib": 0.63,
+    "usd": 0.477,
+    "with_margin_usd": 0.597
+  },
+  "profile": "a-cheparukhin"
+}

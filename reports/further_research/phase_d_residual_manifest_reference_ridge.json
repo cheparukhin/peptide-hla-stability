@@ -1,0 +1,53 @@
+{
+  "tag": "reference_ridge",
+  "sequence_arm": "ridge",
+  "n_train_rows": 19716,
+  "outer_fingerprint": "50fdca745c9e8e99",
+  "alpha_ladder": [
+    10.0,
+    100.0,
+    1000.0,
+    10000.0,
+    100000.0,
+    1000000.0,
+    "inf"
+  ],
+  "min_rows": 20,
+  "min_rows_strict": 50,
+  "n_alleles_panel": 69,
+  "n_alleles_strict": 68,
+  "n_boot": 200,
+  "bootstrap_seed": 20261003,
+  "shuffle_seed": 20261004,
+  "fitting_role": "inner_oof",
+  "residual_sd_by_role": {
+    "outer_held": 0.905718841684901,
+    "inner_oof": 0.9081245702775235
+  },
+  "residual_sd_ratio_fitted_over_applied": 1.0026561538547074,
+  "oof_contract": {
+    "n_outer_held": 19716,
+    "roles": [
+      "inner_oof",
+      "outer_held"
+    ],
+    "inner_roles": [
+      "inner_oof"
+    ],
+    "fitting_role": "inner_oof",
+    "n_rows_per_inner_role": {
+      "inner_oof": 78864
+    }
+  },
+  "arm_feature_counts": {
+    "D0_none": 0,
+    "D1_geometry": 36,
+    "D2_confidence": 73,
+    "D3_anchor_geometry": 15,
+    "D3b_anchor_geometry_p1p2p9": 18,
+    "D4_geometry+confidence": 109,
+    "D3c_central_geometry": 27,
+    "DX_geometry_shuffled": 36
+  },
+  "wall_seconds": 175.7
+}
