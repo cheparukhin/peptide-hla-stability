@@ -1,3 +1,5 @@
+> **Historical plan — 4 October 2026.** Restored from commit `00bd6e9` for the completed follow-up study's references. This is not the current work queue. See [the canonical forward plan](../../NEXT_RESEARCH_PLAN.md). The dated phase prespecifications govern the historical experiments. Original prose below is preserved; relative links have been rebased.
+
 # Further research plan: improving peptide–HLA half-life prediction
 
 Date: 4 October 2026. Status: proposed follow-up protocol; no experiments launched.
@@ -33,7 +35,7 @@ Three interpretation corrections apply throughout:
 - **Zero initialisation preserves baseline predictions only initially.** A fitted residual can still damage generalisation. Include zero correction as an explicit model choice and evaluate on held-out clusters.
 - **Do not budget around an assumed 0.2 of recoverable headroom.** Concordance between distinct alleles is not replicate reliability, and subtracting our median score from the best cross-allele correlation does not establish attainable improvement. Replicates are needed.
 
-Evidence: [main report](REPORT.md), [censored control §6.4](stage7_censored.md#64-where-the-ranking-loss-actually-comes-from--the-stopping-rule-not-the-gradient), [structural feature provenance](stage4c5_features.md), [attention comparison](stage3e_comparisons.csv), [limitations](limitations.md), [feature implementation](../pepstab/structural_features.py), [structural predictor](../scripts/stage5_structural_arm.py).
+Evidence: [main report](../../REPORT.md), [censored control §6.4](../../stage7_censored.md#64-where-the-ranking-loss-actually-comes-from--the-stopping-rule-not-the-gradient), [structural feature provenance](../../stage4c5_features.md), [attention comparison](../../stage3e_comparisons.csv), [limitations](../../limitations.md), [feature implementation](../../../pepstab/structural_features.py), [structural predictor](../../../scripts/stage5_structural_arm.py).
 
 ## 3. Evaluation protocol for all phases
 

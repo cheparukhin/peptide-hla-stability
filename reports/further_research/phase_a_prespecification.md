@@ -1,8 +1,10 @@
+> **Historical study record.** The protocols, results and future-tense instructions below describe the completed October study. The [current project review and research plan](../NEXT_RESEARCH_PLAN.md) is the sole forward work queue; its [dated correction register](../NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026) supersedes conflicting interpretation, selection and blend-gate claims here. No old protocol should be relaunched as a new study without the current evaluation gates.
+
 # Phase A prespecification
 
 Date: 4 October 2026. Status: **search spaces and decision rules recorded before
 any Phase A fit.** This file exists to satisfy
-[FURTHER_RESEARCH_PLAN.md](../FURTHER_RESEARCH_PLAN.md) §3.3 — "Record the
+[FURTHER_RESEARCH_PLAN.md](../archive/plans/further-research-2026-10-04.md) §3.3 — "Record the
 search spaces before execution; log extensions rather than silently expanding a
 disappointing arm's budget."
 
@@ -778,7 +780,7 @@ rows) is documented as the irreducible remainder, not claimed away. §A0's outpu
 contract was rewritten; no grid, metric or selection rule changed.
 
 **4 October 2026 — A4 deferred; first batch is A1–A3 only.** Not a change to the
-plan, but an application of it: [FURTHER_RESEARCH_PLAN.md](../FURTHER_RESEARCH_PLAN.md)
+plan, but an application of it: [FURTHER_RESEARCH_PLAN.md](../archive/plans/further-research-2026-10-04.md)
 §9 says "First batch: A0–A3, **then** A4/A5 for promising candidates". Measured
 per-unit times make that ordering decisive rather than merely tidy.
 A4/PairLogit costs **380 s per unit** against 2.6–11.2 s for every other arm,

@@ -1,3 +1,5 @@
+> **Historical limitations register.** Read alongside the [current review and correction register](NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026). Later reviews supersede claims below about an assay ceiling, universal detectability, and the scope of negative results. Future work is governed only by the [current research plan](NEXT_RESEARCH_PLAN.md).
+
 # Limitations register
 
 Everything a reader should discount this submission by, collected in one place

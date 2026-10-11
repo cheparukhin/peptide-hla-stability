@@ -1,3 +1,5 @@
+> **Historical study record.** The protocols, results and future-tense instructions below describe the completed October study. The [current project review and research plan](../NEXT_RESEARCH_PLAN.md) is the sole forward work queue; its [dated correction register](../NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026) supersedes conflicting interpretation, selection and blend-gate claims here. No old protocol should be relaunched as a new study without the current evaluation gates.
+
 # Phase B — assay-floor modelling and calibration
 
 Date: 4 October 2026. Status: **complete.** Protocol, arms and decision rules

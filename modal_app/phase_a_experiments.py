@@ -30,7 +30,7 @@ for, so dropping an encoding would halve the bill and change what is being
 measured.
 
 **56 configurations is not a breach of the plan's ceiling.** Sec. 3.3 of
-``reports/FURTHER_RESEARCH_PLAN.md`` caps "at most 12 prespecified
+``reports/archive/plans/further-research-2026-10-04.md`` caps "at most 12 prespecified
 configurations per new learner/objective family", and the cap is per family,
 not per arm. The decomposition, pinned against
 ``pepstab.phase_a.arm_configs`` by ``tests/test_phase_a_modal.py``:

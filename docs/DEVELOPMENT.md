@@ -46,6 +46,12 @@ bar; test keeps the frozen 20.
 
 ## Rules
 
+The selection and test-scoring commands below describe reproduction of the
+completed benchmark. New research follows the
+[current training-only development and confirmation plan](../reports/NEXT_RESEARCH_PLAN.md);
+do not reuse the original validation/test split for new model selection or
+confirmation, and do not regenerate its frozen splits.
+
 - `data/rasmussen_et_al_dataset.csv` is read-only;
   `(cd data && shasum -a 256 -c SHA256SUMS)` must pass. Derived data goes to a
   new file.
@@ -88,7 +94,7 @@ bar; test keeps the frozen 20.
 .venv/bin/python scripts/stage7_censored.py            # stage 7a, 130 networks, ~30 CPU-minutes
 .venv/bin/python scripts/stage7_allele_holdout.py      # stage 7b, 68 folds × 6 networks
 .venv/bin/python reports/figures/make_figures.py       # figures, CPU, no network
-.venv/bin/python -m pytest tests/ -q                   # 540 guards collected
+.venv/bin/python -m pytest tests/ -q                   # regression suite (current count reported by pytest)
 ```
 
 Several stages have more flags than fit here; each report gives the exact

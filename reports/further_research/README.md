@@ -1,7 +1,9 @@
+> **Historical study record.** The protocols, results and future-tense instructions below describe the completed October study. The [current project review and research plan](../NEXT_RESEARCH_PLAN.md) is the sole forward work queue; its [dated correction register](../NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026) supersedes conflicting interpretation, selection and blend-gate claims here. No old protocol should be relaunched as a new study without the current evaluation gates.
+
 # Further research: namespace index and decision log
 
 Follow-up study to the frozen benchmark, executing
-[FURTHER_RESEARCH_PLAN.md](../FURTHER_RESEARCH_PLAN.md). Opened 4 October 2026.
+[FURTHER_RESEARCH_PLAN.md](../archive/plans/further-research-2026-10-04.md). Opened 4 October 2026.
 
 **This study does not change the frozen benchmark, its splits, or its published
 conclusions.** It scores neither the test split nor the validation split. All

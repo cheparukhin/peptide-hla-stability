@@ -1,9 +1,11 @@
+> **Historical study record.** The protocols, results and future-tense instructions below describe the completed October study. The [current project review and research plan](../NEXT_RESEARCH_PLAN.md) is the sole forward work queue; its [dated correction register](../NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026) supersedes conflicting interpretation, selection and blend-gate claims here. No old protocol should be relaunched as a new study without the current evaluation gates.
+
 # Further research: findings
 
 Date: 5 October 2026. Status: **synthesis of a completed four-phase study**, for
 handoff and external review. It reports what the study found; it is not a plan or
 a protocol. The plan it executed is
-[FURTHER_RESEARCH_PLAN.md](../FURTHER_RESEARCH_PLAN.md); the dated decision log and
+[FURTHER_RESEARCH_PLAN.md](../archive/plans/further-research-2026-10-04.md); the dated decision log and
 every retraction live in [README.md](README.md); the binding protocol is
 [phase_a_prespecification.md](phase_a_prespecification.md). Verdict vocabulary and
 the 0.05 worthwhile bar are from [EVALUATION.md](../../EVALUATION.md).
@@ -438,47 +440,11 @@ that does not exist on the `pepstab.censored.censored_mask` path).
 
 ## 6. What to do next
 
-Ordered by value. These are the next steps the phases themselves identified; this
-section does not introduce new directions.
-
-1. **Acquire independent measurements, with a replicate subset
-   ([FURTHER_RESEARCH_PLAN.md](../FURTHER_RESEARCH_PLAN.md) §8).** This outranks any
-   further modelling. The study's convergent result is that the effects on offer are
-   real but ~0.02, against a fold spread of ~0.05 and a run-to-run floor of 0.0043
-   the intervals cannot see — so the binding constraint is measurement precision, not
-   model choice. A replicate subset is the only thing that would establish the
-   assay's own noise ceiling; the study has none, so "recoverable headroom" cannot be
-   estimated from this data (concordance between distinct alleles is not replicate
-   reliability).
-
-2. **Replicate A4 and A1 on CatBoost (~$2).** The run-to-run reproducibility
-   floor of 0.0043 was measured on the MLP arms and is **unmeasured for CatBoost**,
-   which does not share their BLAS paths. A4's +0.0118 margin over the tree alone
-   sits close enough to that figure to matter, and the whole study now rests partly
-   on a tree arm whose own reproducibility has never been checked. Two replicates of
-   the same config are the cheapest thing on this list and the only one that tests a
-   number the study depends on. *(This reverses an earlier judgement in this study
-   that replication bought nothing — which held only while every effect was
-   indistinguishable from zero. It no longer is.)*
-
-3. **Finish the one bounded CPU item still authorised and not run.** The **λ ladder
-   extension** fired its declared trigger (A3 selected at the top of
-   `λ ∈ {0.1, 0.3, 1.0}`) and was authorised to extend once to
-   `{0.1, 0.3, 1.0, 3.0}`; it was not run. Now more interesting than when it was
-   declared: λ is monotone across the existing ladder in all four cell × stopping
-   combinations, and A4 has shown the ranking objective composes with the tree, so
-   whether the ranking weight is still climbing at the top of its range is a live
-   question rather than a formality. A4 itself has now been run (§2.1).
-
-3. **Resolve the A3-c BCa interval.** A3-c's largest stopping-axis effect (+0.0288)
-   falls outside its own percentile CI upper bound (+0.0279), signalling bootstrap
-   bias. The screen flagged that it should not be quoted without a BCa check, which
-   was not performed.
-
-Still open and explicitly *not* recommended on current evidence: Phase C's §6.3
-(limited adaptation, cost unresolved ≥$39.72, frozen null and blend null make it
-unmotivated) and §6.4 (its own leakage-clean affinity pretraining, a separate
-sub-project). More structural folding is closed in the negative by Phase D.
+The recommendations formerly listed here are **superseded**. Use the
+[current research plan](../NEXT_RESEARCH_PLAN.md) for the reviewed evidence,
+prioritised work queue, stopping rules and deferred proposals. The original
+recommendations are preserved in the
+[proposal archive](../archive/plans/proposals-retired-2026-10-12.md).
 
 ## 7. Cost
 

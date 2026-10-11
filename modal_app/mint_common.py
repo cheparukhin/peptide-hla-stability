@@ -3,7 +3,7 @@
 MINT (Ullanat & Zitnik, *Nat Commun* 2025) is ESM-2 650M with a per-layer
 cross-chain attention module, pretrained on 96M STRING protein-protein
 interactions. It is the interaction-pretrained, chain-aware backbone that
-`reports/FURTHER_RESEARCH_PLAN.md` §6 names as the principal GPU direction.
+`reports/archive/plans/further-research-2026-10-04.md` §6 names as the principal GPU direction.
 
 Only the **base** checkpoint is audited clean for us. SPEARMINT's stage-2 and
 final checkpoints were fine-tuned on the NetMHCstabpan corpus, which is our

@@ -1,10 +1,14 @@
 # reports
 
-Results for the peptide–HLA stability project. [REPORT.md](REPORT.md) is the
-authoritative write-up; the stage reports below hold the supporting evidence,
+Results for the peptide–HLA stability project.
+**[Current project review and research plan](NEXT_RESEARCH_PLAN.md)** is the
+single source of truth for current status, interpretation corrections and future
+priorities. [REPORT.md](REPORT.md) is the original benchmark write-up; the stage reports below hold the supporting evidence,
 and the scored `.csv` / `.json` tables beside them hold the numbers each report
-cites. [../HACKATHON_PLAN.md](../HACKATHON_PLAN.md) is the source of truth for
-scope and stage order; [../docs/README.md](../docs/README.md) documents the data.
+cites. [../HACKATHON_PLAN.md](../HACKATHON_PLAN.md) records the original hackathon
+scope and stage order. [NEXT_RESEARCH_PLAN.md](NEXT_RESEARCH_PLAN.md) is the
+authoritative plan for future work; [../docs/README.md](../docs/README.md) documents
+the data.
 
 | document | covers |
 | --- | --- |
@@ -12,6 +16,8 @@ scope and stage order; [../docs/README.md](../docs/README.md) documents the data
 | [limitations.md](limitations.md) | the limitations register: everything to discount the result by |
 | [compute_ledger.md](compute_ledger.md) | every dollar, CPU-minute and GPU-hour, plus cost per 1,000 new predictions |
 | [TEST_SCORING_RUNBOOK.md](TEST_SCORING_RUNBOOK.md) | the single-pass test procedure, fixed before the test set was scored |
+| [Plan archive](archive/plans/README.md) | original follow-up protocol and superseded strategy snapshots |
+| [NEXT_RESEARCH_PLAN.md](NEXT_RESEARCH_PLAN.md) | current project review, correction register and sole prioritised research queue |
 
 ## Stage index
 

@@ -1,9 +1,10 @@
 # docs
 
 Reference material for the peptide–HLA stability project.
-[HACKATHON_PLAN.md](../HACKATHON_PLAN.md) is the source of truth for scope and
-stage order; [reports/REPORT.md](../reports/REPORT.md) holds the results. These
-documents describe the data behind them.
+[The current research plan](../reports/NEXT_RESEARCH_PLAN.md) governs future
+work. [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) records historical scope and
+stage order; [reports/REPORT.md](../reports/REPORT.md) holds the original results.
+These documents describe the data behind them.
 
 [DEVELOPMENT.md](DEVELOPMENT.md) has setup, the prediction/evaluation loop, the
 repo rules and the per-stage regeneration commands.

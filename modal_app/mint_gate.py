@@ -1,6 +1,6 @@
 """Phase C gate: checkpoint access, then an extraction/training smoke benchmark.
 
-`reports/FURTHER_RESEARCH_PLAN.md` §6 gates the whole Phase C GPU investment on
+`reports/archive/plans/further-research-2026-10-04.md` §6 gates the whole Phase C GPU investment on
 one measurement: "perform an extraction/training smoke benchmark for memory,
 time and checkpoint access before specifying a full GPU budget." This is that
 benchmark. It is not the Phase C comparison, and it reads no validation or test

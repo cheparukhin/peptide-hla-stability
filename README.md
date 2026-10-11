@@ -8,6 +8,8 @@ a supervised model trained on sequences. None of them won.
 
 ### Start here
 
+- **[Current project review and research plan →](reports/NEXT_RESEARCH_PLAN.md)** —
+  the single current source for status, evidence corrections and prioritised next work.
 - **[The one-pager →](https://cheparukhin.github.io/peptide-hla-stability/)** —
   the whole result in one scrolling page, opening with the two-minute film. The
   fastest way to see what we found.
@@ -164,13 +166,14 @@ than quietly reusing the split. The full contract is
 
 Measured half-lives from Rasmussen et al.; see [docs/DATASETS.md](docs/DATASETS.md).
 
-## Next steps
+## Current research
 
-| Proposed experiment | Explanation |
-|---|---|
-| **ESM-C with concatenated sequences** | Feed peptide–linker–MHC α1α2 into ESM-C as one sequence, so each partner is represented in the context of the other. Compare against encoding them separately. |
-| **Separate embeddings + cross-attention** | Keep peptide and MHC embeddings separate, then add a trainable cross-attention module connecting individual peptide positions with groove positions. Compare against concatenated embeddings + a small MLP, keeping the embeddings unchanged. |
-| **Inverse-folding and energy features** | Score each predicted complex with ProteinMPNN peptide likelihoods and FoldX interaction energies, and test them as half-life features. Compare against the sequence ensemble, keeping the same folds and tuning budget. |
+**[Project review and prioritised research plan →](reports/NEXT_RESEARCH_PLAN.md)**
+
+The single current source of truth for project status, evidence corrections,
+research priorities and execution gates. It reconciles the completed follow-up
+experiments with the remaining proposals. Earlier proposal lists are retained
+only in the [historical archive](reports/archive/plans/README.md).
 
 ## Where to look
 
@@ -183,15 +186,18 @@ Measured half-lives from Rasmussen et al.; see [docs/DATASETS.md](docs/DATASETS.
 | [reports/compute_ledger.md](reports/compute_ledger.md) | Every dollar and GPU-hour, and cost per 1,000 predictions. |
 | [docs/README.md](docs/README.md) | The data: dataset stats, splits, structures, augmentation. |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, reproduction commands, repo rules. |
-| [HACKATHON_PLAN.md](HACKATHON_PLAN.md) | Scope and stage order. |
+| **[Current research plan](reports/NEXT_RESEARCH_PLAN.md)** | **Forward work: evaluation repair, Boltz embeddings and transfer assessment.** |
+| [Plan archive](reports/archive/plans/README.md) | Superseded strategies and historical planning records. |
+| [HACKATHON_PLAN.md](HACKATHON_PLAN.md) | Historical hackathon scope and stage decisions; not the current work queue. |
 | [site/](site/README.md) | Source for the published one-pager and the two-minute film. |
 
 ## Status
 
-Project complete; the Boltz-2 production fold finished 28,166 folds with 0
-failures. Three items are genuinely open — provider-bill reconciliation of the
-$212.71, the elution transfer pass on the ESM-2 and structural arms, and stage
-3d ESM-2 likelihood features. Each is tracked in
-[the report's open-work section](reports/REPORT.md#provenance-and-open-work).
+The original hackathon benchmark is complete; the Boltz-2 production fold
+finished 28,166 folds with 0 failures. The subsequent Phase A–D experiments
+are also complete, with interpretation and evaluation issues identified in
+review. Current status, corrections, execution gates and the disposition of
+all remaining proposals are maintained in the
+[current research plan](reports/NEXT_RESEARCH_PLAN.md).
 
 To run any of it: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.

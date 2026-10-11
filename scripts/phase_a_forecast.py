@@ -43,7 +43,7 @@ DEFAULT_CHUNK = 8
 CONTAINER_STARTUP_S = 45.0
 COST_MARGIN = 1.25
 
-#: Paired seeds and inner cluster folds for screening, FURTHER_RESEARCH_PLAN.md
+#: Paired seeds and inner cluster folds for screening, reports/archive/plans/further-research-2026-10-04.md
 #: Sec. 3.3.
 SCREEN_SEEDS = 2
 SCREEN_INNER_FOLDS = 3

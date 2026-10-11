@@ -1,7 +1,12 @@
 # site
 
 One-page project site: the task, the two-minute film, the approaches tested,
-the held-out test results, next steps and methods.
+the held-out test results and methods, with a link to the
+[single current research plan](../reports/NEXT_RESEARCH_PLAN.md).
+The submission film is a historical October 2026 artifact; its closing proposals
+are superseded. Keep research priorities in the plan rather than duplicating
+them in this site. Local source changes do not update the published site until
+the normal deployment workflow runs.
 
 **Published to GitHub Pages at
 <https://cheparukhin.github.io/peptide-hla-stability/>** by

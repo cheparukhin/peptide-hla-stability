@@ -1,3 +1,5 @@
+> **Historical record — 3–4 October 2026 hackathon.** Retained in place for existing report and code references. Future work is governed by [NEXT_RESEARCH_PLAN.md](reports/NEXT_RESEARCH_PLAN.md); instructions and priorities below describe the original study.
+
 # Peptide-HLA stability: hackathon execution plan
 
 **Team:** 3 participants

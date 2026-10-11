@@ -610,6 +610,7 @@
         </p>
       </noscript>
       <figcaption class="note">
+        Historical hackathon submission, 3–4 October 2026. Its closing proposals are superseded by the <a href="#next">current research plan</a>.
         Plays in the browser. <a href="film/">Open it full-screen</a> &middot;
         the original 30-second interface animation also runs live at
         <a href="intro/">intro/</a>, or
@@ -740,41 +741,15 @@
     </div>
   </section>
 
-  <!-- ========== 5. NEXT STEPS ========== -->
+  <!-- ========== 5. CURRENT RESEARCH ========== -->
   <section id="next">
     <div class="shead">
-      <h2 class="title">Next steps</h2>
-    </div>
-
-    <div class="scroller">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Proposed experiment</th>
-            <th scope="col">Explanation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>ESM-C with concatenated sequences</b></td>
-            <td>Feed peptide&ndash;linker&ndash;MHC &alpha;1&alpha;2 into ESM-C as one sequence, so each
-                partner is represented in the context of the other. Compare against encoding them
-                separately.</td>
-          </tr>
-          <tr>
-            <td><b>Separate embeddings + cross-attention</b></td>
-            <td>Keep peptide and MHC embeddings separate, then add a trainable cross-attention
-                module that connects individual peptide positions with groove positions. Compare
-                against concatenated embeddings + a small MLP, keeping the embeddings unchanged.</td>
-          </tr>
-          <tr>
-            <td><b>Inverse-folding and energy features</b></td>
-            <td>Score each predicted complex with ProteinMPNN peptide likelihoods and FoldX
-                interaction energies, and test them as half-life features. Compare against the
-                sequence ensemble, keeping the same folds and tuning budget.</td>
-          </tr>
-        </tbody>
-      </table>
+      <h2 class="title">Current research</h2>
+      <p class="lede">
+        The <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/NEXT_RESEARCH_PLAN.md">project review and prioritised research plan</a>
+        is the single current source for follow-up evidence, priorities and execution gates.
+        It supersedes the proposals in the original submission film.
+      </p>
     </div>
   </section>
 

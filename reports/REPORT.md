@@ -1,3 +1,5 @@
+> **Original benchmark report.** Preserved as the record of the hackathon results. For current project status, follow-up evidence, interpretation corrections and research priorities, use the [current project review and research plan](NEXT_RESEARCH_PLAN.md).
+
 # Does pretrained protein AI improve peptide–HLA stability prediction?
 
 **London AI × Science — Protein Engineering Track, 3–4 October 2026**
@@ -243,6 +245,10 @@ identify useful implementation limits while leaving their broader predictive
 value open.
 
 ## Provenance and open work
+
+This section records the original benchmark close-out. The
+[current research plan](NEXT_RESEARCH_PLAN.md#disposition-of-remaining-proposals)
+now owns the priority and disposition of these items.
 
 This report is the authoritative write-up; the linked stage reports and scored
 tables hold the supporting evidence. Test scoring ran once, on 4 October 2026,

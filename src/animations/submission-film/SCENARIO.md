@@ -1,3 +1,5 @@
+> **Historical submission film.** Its closing research proposals record the October hackathon presentation. Current priorities are maintained only in [the research plan](../../../reports/NEXT_RESEARCH_PLAN.md).
+
 # Submission film: shot-by-shot scenario
 
 A ~2-minute film about predicting peptide-HLA dissociation half-life, made for

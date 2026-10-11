@@ -1,7 +1,9 @@
+> **Historical study record.** The protocols, results and future-tense instructions below describe the completed October study. The [current project review and research plan](../NEXT_RESEARCH_PLAN.md) is the sole forward work queue; its [dated correction register](../NEXT_RESEARCH_PLAN.md#dated-correction-register--12-october-2026) supersedes conflicting interpretation, selection and blend-gate claims here. No old protocol should be relaunched as a new study without the current evaluation gates.
+
 # Phase C gate: joint peptide–HLA interaction embeddings
 
 Date: 4 October 2026. Scope: step 1 and the gate of
-[FURTHER_RESEARCH_PLAN.md §6](../FURTHER_RESEARCH_PLAN.md). The full Phase C
+[FURTHER_RESEARCH_PLAN.md §6](../archive/plans/further-research-2026-10-04.md). The full Phase C
 comparison has **not** been started. No validation or test label was read; the
 test split remains scored once, at stage 6.
 
