@@ -1,41 +1,59 @@
 # Continuation after the 12 October process interruption
 
-**Current, 12 October 20:28 UTC:** transfer fitting and the full semantic audit
-are complete for all 30 cells / 10,830 retained fits. Results were downloaded
-and hash-verified; recovery compute and storage are closed. The original
-watchdog shutdown-race receipt is preserved with an independent successful
-terminal reconciliation. Do not rerun recovery.
+**Current, 12 October 21:00 UTC:** transfer fitting and statistical reporting
+are complete and independently audited. Both recovery and report compute/storage
+are closed. All 30 cells / 10,830 retained fits passed; the full report covers
+264 comparisons and 3,080 group-deletion rows. Read
+[the transfer readout](transfer_cloud_recovery/results/REPORT.md). Matched R5−R0
+MLP gains are +0.406234 in HLA and +0.373784 in joint holdout on the minimum-20
+panel, with positive crossed intervals. Report original and expanded sequence
+references together; the expanded selector underperforms the original in joint.
+These remain conditional development findings, not independent confirmation.
 
-Two independent Modal phases are now released, each with its own watchdog:
+The 12-fit unscored hybrid pilot and saved-model replay passed. Its App/Volume
+are closed. **One hybrid main is running**, released once at 20:51 UTC:
 
-- `transfer-report-20261012-2025`: Sandbox `sb-01M4RWTTN48RP2XCW558BD6TEF`,
-  App `ap-1QKtm1LAixAH5U5Igmzrdn`, watchdog PID 36660. Two cores / 8 GiB;
-  $5 cap; fixed work stop 13 October 04:30 UTC and provider stop 04:32 UTC.
-- `hybrid-pilot-20261012-2025`: Sandbox `sb-01M4RWTV1ZC0V93MFF0N052DZ9`,
-  App `ap-qO3FPwfYZJ4ydcOAldUHms`, watchdog PID 36664. Two cores / 8 GiB;
-  $2 cap; fixed work stop 12 October 22:30 UTC and provider stop 22:32 UTC.
+- Directory: `resources/cloud_sandboxes/hybrid-main-20261012-2050`.
+- Sandbox `sb-01M4RY4YCXH56DDWFCZGN6Y7KX`; App
+  `ap-wmOBffnJfZWFATGFardDin`; Volume `vo-NlgR5DEpQf5cc0Ta3tZRKg`.
+- Watchdog PID 40012; launcher 40066 exited 0 after release. Labels are
+  `org.pepstab.hybrid-main-{watch,launch,awake}-20261012-2050`.
+- Exactly 480 scientific fits in ten jobs, two workers / two numerical threads,
+  four physical CPU / 16 GiB. The pilot models are never reused scientifically.
+- Authorization SHA256
+  `8562ad472f4563106ba39312c730716c11d3a290e7fc9e02f8407308a807490c`.
+  Runtime-only forecast and frozen plan are committed in `85bf5df`.
+- Fixed work stop **13 October 00:55 UTC**, provider stop **00:57 UTC**;
+  $20 cap. Never extend, duplicate or retry blindly. Do not modify live sources.
 
-Exact authorizations, Volumes, leases and receipts are in the corresponding
-`resources/cloud_sandboxes/` directories. Plans are committed in `c2527cb`.
-Never change sources pinned by either live phase. Initial input verification
-precedes scientific dispatch. Use the existing transport helper after actual
-successful provider exit and verified scientific receipts.
+Verify fresh watcher leases and exact provider ownership. The main forecast
+uses only pilot runtime, memory and saved-model replay: 13,888.7 seconds rounded
+to a four-hour fit window. It is not a completion guarantee. The output root is
+`hybrids_cloud_v1`, with the unchanged scientific protocol. The primary contrast
+is R5 hybrid selector minus the matched two-member R5 standard MLP at minimum 20.
+Historical thirty-member heads are descriptive; all secondary outcomes exploratory.
 
-The user's parallel-compute request is implemented by the
-[parallel amendment](cloud/parallel_execution_amendment.json), commit `bd68083`.
-Transfer reporting may overlap the sequential hybrid pilot → main → report
-branch. Hybrid main still waits for the unscored pilot's successful replay and
-runtime-only forecast. Maximum concurrency is two containers, six cores and
-24 GiB. Every phase retains its frozen fit count, model recipe and spending cap.
-There is one shared $35 future envelope, including all four phases and overhead;
-closed conservative compute liability is $6.559382. Future downloads are capped
-at 8 GiB; retain at most two temporary Volumes and delete each after verified
-download. No extra experiment is authorized by parallelism.
+After actual provider exit 0, real successful remote exit/cleanup, complete
+artifact download and a verified phase certificate, delete this Volume and stop
+this App; remove only the exact exited launchd registrations. Run the frozen
+hybrid saved-model/ancestry/statistical report once, on Modal, with the real
+pilot and main certificates: 2 CPU / 8 GiB, two threads, $5 cap and at most eight
+hours. Provider stop must be at least 120 seconds after work stop and no later
+than 14 October 14:15:17 UTC. Check no report process/receipt before launching.
+Use canonical training-target artifacts and the existing entry in every phase.
 
-The audited scientific prediction and ancestry tables are committed in
-`2483d14`. Statistical reporting is still pending. Preserve the canonical
-training-target transport in every subsequent phase authorization and entry.
-The older running-owner paragraphs below are history, not launch instructions.
+Closed conservative compute carry is $6.809382, including $0.10 pilot and $0.15
+transfer-report carry within the shared $35 finalization envelope. Main/report
+pending caps are $20/$5 plus $3 overhead, giving current maximum commitment
+$34.809382 within the unchanged $100 additional ceiling. This is not a live
+balance or invoice. At most two containers / six cores / 24 GiB and two temporary
+Volumes are allowed by the parallel amendment; currently only main is running.
+Check bytes/disk before transfers; storage cleanup by 15 October 14:15 UTC.
+
+Finish interpretation and the final report, README, submission brief and local
+source-backed site. Do not add orchestration features. Independent assay
+confirmation stays open. Preserve interrupted attempt evidence and never rerun
+completed studies. All older running-owner paragraphs below are historical.
 
 **Historical recovery launch, 12 October 19:19 UTC:** the five unfinished transfer cells are
 released to one Modal Sandbox, `sb-01M4RRW8TNY5H1WRJN30PXVJF7`, in App

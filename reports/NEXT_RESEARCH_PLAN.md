@@ -725,3 +725,22 @@ envelope and the user's $100 additional ceiling remain unchanged. Exact
 ownership and fixed deadlines are in the [recovery operations](finalization/RECOVERY_OPERATIONS.md).
 This is an operational amendment only; finish the frozen scientific comparisons
 without expanding the experiment grid or orchestration framework.
+
+### Completed transfer controls and running hybrids — 12 October 21:00 UTC
+
+All 30 transfer cells and 10,830 retained fits, the once-only statistical report
+and independent artifact/table checks are complete. Matched R5−R0 MLP gains
+are +0.406234 [0.307286,0.473273] in HLA and +0.373784 [0.309165,0.463816] in
+joint holdout at minimum 20; minimum-50, matched ridge and group-deletion
+sensitivities stay positive. Show both original and expanded sequence references:
+the expanded selector underperforms the original in joint holdout. This remains
+conditional development evidence and does not alter the main worthwhile-gain
+criterion or provide independent confirmation.
+
+The separate 12-fit hybrid engineering pilot passed saved-model replay. Only
+its runtime and memory informed the frozen four-hour main window. The 480-fit
+scientific study launched once at 20:51 UTC, with two workers / two threads each,
+four Modal CPUs / 16 GiB and a $20 cap. Exact ownership and the fixed 13 October
+00:55 UTC work stop are in RECOVERY_OPERATIONS.md and the phase manifest.
+No hybrid result is claimed until its full saved-model/statistical audit passes.
+The completed transfer report and pilot are stopped, downloaded and storage-closed.

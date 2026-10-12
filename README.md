@@ -24,7 +24,8 @@ deployment selector retained MSE in all five R5 folds.
 - [Current research report](reports/further_research/round2/REPORT.md): complete
   main, transfer, complementarity, reproducibility and resource findings.
 - [Combined finalisation readout](reports/finalization/FINAL_REPORT.md): completed
-  portable inference and ranking follow-up, with the transfer extension pending.
+  portable inference, ranking follow-up and stronger transfer controls; hybrid
+  fitting is running.
 - [Matched ranking-loss report](reports/finalization/ranking/REPORT.md): frozen
   outcome, source tables and the completed artifact/arithmetic audit.
 - [Project page](site/index.html): locally updated evidence and a clearly dated
@@ -54,12 +55,23 @@ Spearman correlations; differences are between those medians.
 | Joint peptide/HLA holdout | 0.5067 | 0.1108 | +0.3958 [+0.2951, +0.4457] |
 
 The main comparator selects among five sequence procedures inside fitting
-partitions. The completed transfer comparison uses a narrower original/centred
-neural comparator; stronger transfer controls are a **new, unfinished follow-up**.
+partitions. The transfer rows above preserve the earlier narrower original/centred neural
+comparison. The **stronger transfer follow-up is now complete**, as summarized
+below; its distinct sequence procedures must not be conflated with these rows.
 The main interval resamples paired peptide clusters; the transfer intervals
 shown use crossed peptide/HLA-group uncertainty. Selection and stopping obey
 the corresponding held-out grouping. Reported results remain conditional on
 this examined development cohort and frozen candidate sets.
+
+The stronger transfer study covers all 30 cells and 10,830 retained fits.
+With matched MLP recipes, R5 minus R0 is **+0.4062 [+0.3073,+0.4733]** in HLA
+holdout and **+0.3738 [+0.3092,+0.4638]** in joint holdout (≥20 panel, crossed
+95% intervals). Matched ridge comparisons, the ≥50 panel and all single-HLA-group
+deletions also remain positive. Both original and expanded sequence references
+are shown: the expanded selector underperforms the original in joint holdout,
+so it must not be the only reference. These remain conditional development
+results and do not isolate a causal structural effect.
+[Completed transfer report](reports/finalization/transfer_cloud_recovery/results/REPORT.md).
 
 The separate matched follow-up compares mixed MSE + RankNet against MSE for
 both R0 sequence inputs and R5 Boltz features. R5 scores 0.7281 versus 0.7210;
@@ -123,14 +135,14 @@ cannot be certified. No new result repairs that historical provenance gap.
 
 The portable model package and **Boltz + ranking-loss follow-up are complete**.
 The uncertain ranking result does not trigger another grid or stopping rule.
-A separately frozen bounded extension adds stronger sequence transfer
-comparators and matched learners; **its results remain pending** in this
-readout. See its [specification](reports/finalization/transfer_controls/SPECIFICATION.md).
+The separately frozen stronger sequence transfer controls and matched learners
+are **complete and audited**. See its [specification](reports/finalization/transfer_controls/SPECIFICATION.md).
 The [combined report](reports/finalization/FINAL_REPORT.md) distinguishes these
-completed deliverables from pending transfer evidence and independent assays.
+completed deliverables from pending hybrid evidence and independent assays.
 The separately frozen Boltz tree/ranking, tree–MLP blend, tree-leaf, quantile
-and PCA comparisons are also authorized and unfinished; no hybrid result is
-claimed. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
+and PCA comparisons are running on Modal: 480 scientific fits, two workers
+and four CPUs, after a separate 12-fit unscored pilot passed. No hybrid result
+is claimed before its saved-model and statistical audit completes. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
 records the preserved cells, interrupted attempts and current execution gates.
 
 The completed round-two phase conservatively accounted for $76.84 of its $100

@@ -1,14 +1,15 @@
 # Finalisation readout: peptide–HLA stability
 
-12 October 2026. **Completed portable inference and matched ranking-loss follow-up;
-stronger transfer controls and hybrid comparisons remain pending.** This report combines the closed
+12 October 2026. **Portable inference, matched ranking loss and stronger transfer
+controls are complete; the 480-fit hybrid study is running.** This report combines the closed
 round-two record with completed finalisation deliverables. It does not replace
 the frozen protocols or historical reports.
 
 Boltz interface embeddings improve ranking on the examined development cohort
 against a selected sequence comparator. The additional within-allele ranking
 loss produces a small, uncertain gain and is not selected for R5 deployment.
-Two portable cached-feature prediction recipes are ready. Representative
+The transfer advantage survives stronger sequence controls and matched ridge/MLP
+recipes. Two portable cached-feature prediction recipes are ready. Representative
 independent assay confirmation remains open.
 
 ## Assessment and historical distinction
@@ -144,33 +145,78 @@ external to Git. [Usage and input contract](../../docs/ROUND2_INFERENCE.md),
 [exports and timing](inference/README.md),
 [distribution manifest](inference/distribution_manifest.json).
 
-## Pending transfer extension
+## Completed stronger transfer controls
 
-**No extension outcome is claimed in this readout.** The separately frozen
-scope adds log/centred trees, a fixed sequence ranker and R0 matched ridge/MLP
-heads to all five HLA cells and 25 joint cells. Its expanded sequence selector
-retains the original fallback; matched R0 heads remain separate controls.
-The completed prior transfer figures above are not results of this extension.
+The frozen extension adds sequence regression/centred-target trees, a fixed
+sequence ranker and matched R0 ridge/MLP heads to five HLA cells and 25 joint
+cells. Selection, stopping and scaling respect each regime's inner groups.
+All 30 cells and 10,830 retained scientific fits passed the full semantic audit;
+the once-only Modal report and an independent saved-table audit are complete.
+The experiment reuses previously nominated R4/R5 procedures; these are
+conditional development comparisons, not a new independent confirmation.
 
-The extension has its own source/ancestry, pilot, runtime and spending gates,
-with a fixed deadline and independent watchdog for paid execution. Final
-results and resource closeout must be incorporated after complete artifact
-validation. Ranking outcomes do not widen that scope.
-[Frozen specification](transfer_controls/SPECIFICATION.md) and
-[protocol](transfer_controls/protocol.json).
+| Regime / panel | Original sequence | Expanded sequence selector | R4 ridge | R5 MLP | Embedding selector |
+|---|---:|---:|---:|---:|---:|
+| HLA / ≥20 | 0.170935 | 0.192134 | 0.549781 | 0.566719 | 0.546303 |
+| HLA / ≥50 | 0.163120 | 0.191836 | 0.548667 | 0.565128 | 0.543417 |
+| Joint / ≥20 | 0.134985 | 0.108454 | 0.512678 | 0.497998 | 0.506675 |
+| Joint / ≥50 | 0.130702 | 0.107051 | 0.510709 | 0.492374 | 0.504977 |
 
-All 30 extension cells have completed and passed the full semantic audit,
-covering 10,830 retained fits. The final 2,000 fits ran on Modal, preserving
-8,830 earlier fits byte-for-byte. All outputs were downloaded and hash-verified.
-The statistical report is running; no new extension outcome is claimed yet.
-Known discarded completed fits remain 2,579, with twelve original remote
-attempts and any unrecorded interrupted local fit counted separately as
-uncertain. [Recovery operations](RECOVERY_OPERATIONS.md).
+Both original and expanded sequence procedures are reported. The expanded
+selector's ≥20 difference from the original is +0.021199 [−0.064630,+0.073387]
+in HLA and −0.026531 [−0.088797,+0.018463] in joint holdout, using crossed
+95% intervals. Its joint point estimate is worse, and every single-group
+removal leaves that difference negative, although the crossed interval spans
+zero. The outer results do not authorize choosing a different selector.
+
+The matched heads address the earlier training-recipe concern directly:
+
+| Regime / panel | Matched contrast | Difference [crossed 95% interval] |
+|---|---|---:|
+| HLA / ≥20 | R4 − R0 ridge | +0.465509 [+0.395953, +0.553410] |
+| HLA / ≥50 | R4 − R0 ridge | +0.467516 [+0.395092, +0.553011] |
+| Joint / ≥20 | R4 − R0 ridge | +0.463260 [+0.380234, +0.524616] |
+| Joint / ≥50 | R4 − R0 ridge | +0.461998 [+0.378981, +0.524035] |
+| HLA / ≥20 | R5 − R0 MLP | +0.406234 [+0.307286, +0.473273] |
+| HLA / ≥50 | R5 − R0 MLP | +0.405422 [+0.304430, +0.473766] |
+| Joint / ≥20 | R5 − R0 MLP | +0.373784 [+0.309165, +0.463816] |
+| Joint / ≥50 | R5 − R0 MLP | +0.386285 [+0.307505, +0.463886] |
+
+Every matched contrast also has positive peptide-only and HLA-only intervals,
+and remains positive after removing any one of the 35 HLA groups. R4, R5 and
+the embedding selector also exceed both original and expanded sequence
+references in each regime/panel, with positive crossed intervals. Thus the
+advantage is not explained solely by the earlier unmatched head recipes or a
+single influential HLA group. Different feature dimensions, pretraining and
+representation construction still prevent causal attribution to structure.
+The transfer findings do not retrospectively satisfy the main study's separate
+worthwhile-gain criterion.
+
+The report contains 264 comparisons (22 contrasts × two regimes × two panels
+× three uncertainty modes), twelve 2,000-draw paired bootstrap tables and
+3,080 group-deletion rows. All output hashes, pooled cohort coverage and delta
+arithmetic passed independent lightweight checks. Intervals condition on fitted
+predictions and inner choices; they omit repeated fitting/selection and assay
+variation. Crossed resampling is a dependence sensitivity and can be conservative.
+Group deletion does not retrain models. HLA groups are a declared sequence
+convention, not validated functional distance. The fixed ranker's affine
+inner-to-final scale transport remains a procedure limitation.
+
+The final 2,000 fits ran on Modal, preserving 8,830 earlier fits byte-identically.
+Known discarded completed fits are 2,579, giving 13,409 known completed fits
+including the retained study. Twelve uncertain original remote attempts and
+any unrecorded interrupted local fits are separate; engineering fits are excluded.
+The successful recovery and report compute/storage are closed.
+[Full transfer readout](transfer_cloud_recovery/results/REPORT.md),
+[all comparisons](transfer_cloud_recovery/results/comparisons.csv),
+[coverage audit](transfer_cloud_recovery/results/coverage_audit.json),
+[frozen specification](transfer_controls/SPECIFICATION.md) and
+[recovery record](RECOVERY_OPERATIONS.md).
 
 ## Newly authorized hybrid follow-up
 
 **The user has now authorized bounded execution of the hybrid experiments; no Boltz tree result is available yet.**
-The pending transfer trees and ranker consume sequence features; they do not
+The completed transfer trees and ranker consume sequence features; they do not
 test boosted trees or tree ranking on Boltz embeddings. The small, uncertain
 MLP ranking result does not rule out a benefit from a different learner.
 
@@ -190,9 +236,12 @@ not the matched control.
 All six fitted components are evaluated even if the inner selector rejects
 them. The study has 480 scientific fits and a separate 12-fit unscored runtime
 pilot; pilot models never enter the comparison. Secondary intervals are
-exploratory, and every result remains development evidence. The separate unscored pilot has been released on Modal alongside transfer
-reporting. Main scientific fitting remains pending the pilot runtime and replay
-checks. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
+exploratory, and every result remains development evidence. The separate 12-fit unscored pilot and saved-model replay passed on Modal.
+Its runtime and memory measurements alone set a four-hour main window. The
+480 scientific fits launched once at 20:51 UTC on 12 October with two workers,
+two numerical threads each and four Modal CPUs. The fixed work stop is
+13 October 00:55 UTC; completion is not guaranteed. No main outcome is claimed
+until the saved-model, ancestry and statistical report passes. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
 and [operational continuation](cloud/CONTINUATION.md).
 
 The existing MLP already standardizes features using gradient-fitting rows
@@ -236,11 +285,13 @@ ranking audit do not repair that historical gap.
 The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
-additional ceiling. Its closed compute scopes carry $6.559382 conservatively, including uncertain
+additional ceiling. Its closed compute scopes carry $6.809382 conservatively, including uncertain
 calls, preemptions, startup diagnostics and the completed recovery. The recovery
 provider snapshot is $0.878851; $1 is retained conservatively for that run.
-The remaining reporting and hybrid envelope stays at most $35 across both
-parallel branches. The combined maximum commitment is $41.559382,
+The completed pilot and transfer report carry $0.10 and $0.15 within the shared
+$35 finalization envelope. Remaining main/report caps are $20/$5, plus $3
+reserved for storage, egress and build overhead. The combined current maximum
+commitment is $34.809382,
 within the user's $100 new-phase ceiling. This new-phase liability is separate
 from the old accounting and is not a live balance.
 [New-phase closure](resources/transfer_main/interruption_20261012/closure.json)
@@ -261,5 +312,5 @@ python3 site/round2-build.py --check
 The ranking [report exit receipt](ranking/report.exit.json) records the single
 frozen report invocation; its completion audit retains independent arithmetic
 and artifact checks. Completed expensive scopes must not be blindly relaunched.
-This readout remains provisional for the explicitly pending transfer extension,
-hybrid comparisons and independent confirmation.
+This readout remains provisional for the running hybrid comparison and
+independent confirmation. The transfer extension is complete.

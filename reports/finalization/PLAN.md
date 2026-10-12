@@ -1,13 +1,11 @@
 # Hackathon finalisation — authorized 12 October 2026
 
-**Latest execution preference:** run future compute-heavy jobs on Modal and
-reserve the Mac for orchestration and lightweight checks. The current bounded
-transfer recovery is already running; subsequent hybrid fitting and heavy
-reporting must use a separately reviewed cloud operational amendment. Preserve
-the frozen scientific scope and the existing $100 additional credit ceiling,
-with explicit resource limits, metering reconciliation and an independent
-fixed-deadline watchdog. Earlier local-first statements below are historical
-and do not authorize new heavy local jobs.
+**Current, 12 October 21:00 UTC:** transfer fitting/reporting and the separate
+unscored hybrid pilot are complete and closed. The frozen 480-fit hybrid main
+is running on Modal with two workers/four CPUs. The latest dated section below
+and RECOVERY_OPERATIONS.md record current ownership and remaining reporting.
+Future heavy work stays on Modal; earlier local-first plans are historical.
+Prioritize the scientific results and interpretation over more infrastructure.
 
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;
@@ -210,3 +208,22 @@ No phase is launched by this record. Follow [the continuation](cloud/CONTINUATIO
 after the existing transfer's successful closure, then complete the scientific
 readout and local delivery. The earlier local-first hybrid instructions are
 historical and superseded by the user's Modal preference.
+
+### Completed transfer controls and running hybrids — 12 October 21:00 UTC
+
+All 30 transfer cells and 10,830 retained fits, the once-only statistical report
+and independent artifact/table checks are complete. Matched R5−R0 MLP gains
+are +0.406234 [0.307286,0.473273] in HLA and +0.373784 [0.309165,0.463816] in
+joint holdout at minimum 20; minimum-50, matched ridge and group-deletion
+sensitivities stay positive. Show both original and expanded sequence references:
+the expanded selector underperforms the original in joint holdout. This remains
+conditional development evidence and does not alter the main worthwhile-gain
+criterion or provide independent confirmation.
+
+The separate 12-fit hybrid engineering pilot passed saved-model replay. Only
+its runtime and memory informed the frozen four-hour main window. The 480-fit
+scientific study launched once at 20:51 UTC, with two workers / two threads each,
+four Modal CPUs / 16 GiB and a $20 cap. Exact ownership and the fixed 13 October
+00:55 UTC work stop are in RECOVERY_OPERATIONS.md and the phase manifest.
+No hybrid result is claimed until its full saved-model/statistical audit passes.
+The completed transfer report and pilot are stopped, downloaded and storage-closed.

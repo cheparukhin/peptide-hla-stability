@@ -1,7 +1,7 @@
 # Peptide–HLA stability: submission brief
 
 Prepared 12 October 2026. Local draft for the completed development findings;
-the stronger transfer extension and hybrid comparisons remain unfinished.
+the stronger transfer extension is complete; hybrid comparisons are running.
 Not submitted externally.
 
 ## Project in one paragraph
@@ -36,10 +36,14 @@ Boltz MLP yields +0.0071 [−0.0051, +0.0098], and the inner deployment selector
 retains MSE in every R5 fold. This is an uncertain gain, not evidence of
 no possible ranking benefit.
 
-The completed HLA/joint studies use narrower sequence comparators. Their
-large differences must not be presented as wins over the full sequence family.
-The frozen stronger-comparator extension is pending and must be incorporated
-only after all cells and reporting pass their audits.
+The stronger transfer extension is complete: 30 cells and 10,830 retained fits.
+Matched R5−R0 MLP gains are +0.4062 [+0.3073,+0.4733] in HLA and
++0.3738 [+0.3092,+0.4638] in joint holdout (≥20 panel, crossed 95% intervals).
+Matched ridge, ≥50-panel and single-HLA-group removal checks also stay positive.
+Both original and expanded sequence references remain visible because the
+expanded selector underperforms the original in joint holdout. This supports
+useful pretrained representations under matched learners, not causal attribution
+to structure or independent confirmation.
 
 ## Three-minute demonstration
 
@@ -51,7 +55,8 @@ only after all cells and reporting pass their audits.
    demonstration rows. State that these are training-cache examples, with no
    accuracy claim attached to the demonstration.
 4. Show the evidence boundaries: original test preserved, stronger transfer
-   controls pending, and an independent assay cohort still needed.
+   controls completed, hybrid comparisons running, and an independent assay
+   cohort still needed.
 
 The measured warm cached-head median is 1.56 ms for ridge and 2.40 ms for the
 MLP per row on the recorded host. This excludes cache loading, MSA generation,
@@ -71,9 +76,10 @@ mechanism or establish an advantage for the designated contact map.
 was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
-**What is next?** Finish the existing transfer extension, then freeze candidates
-before independent assay outcomes. The user has authorized bounded Boltz tree ranking, tree/MLP blends and
-preprocessing comparisons; these remain unexecuted and have no results yet.
+**What is next?** Finish the running 480-fit Boltz tree/ranking, tree–MLP blend
+and preprocessing comparison, then freeze candidates before independent assay
+outcomes. The separate 12-fit engineering pilot passed; its fits never enter
+scientific assessment. No hybrid outcome is claimed yet.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance

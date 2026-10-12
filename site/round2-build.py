@@ -90,6 +90,24 @@ def build():
     residual = compare(comp, "sequence_selector", "R4_residual")
     transfer_rows = [compare(transfer, "bounded_MLP_sequence_selector", "embedding_selector", regime=regime, mode="crossed") for regime in ("hla", "joint")]
     original_transfer = [compare(transfer, "original", "embedding_selector", regime=regime, mode="crossed") for regime in ("hla", "joint")]
+    extension_base = "reports/finalization/transfer_cloud_recovery/results/"
+    extension = read_path(extension_base + "comparisons.csv", "csv")
+    extension_manifest = read_path(extension_base + "manifest.json")
+    read_path(extension_base + "REPORT.md", "text")
+    extension_audit = read_path(extension_base + "coverage_audit.json")
+    extension_matched = [
+        (f"{regime.upper()} · {candidate} − {baseline}",
+         compare(extension, baseline, candidate, regime=regime, mode="crossed"))
+        for regime in ("hla", "joint")
+        for baseline, candidate in (("R0_ridge", "R4_ridge"), ("R0_mlp", "R5_mlp"))
+    ]
+    extension_references = [
+        compare(extension, baseline, "embedding_selector", regime=regime, mode="crossed")
+        for regime in ("hla", "joint") for baseline in ("original", "expanded_sequence_selector")
+    ]
+    extension_sequence = [compare(extension, "original", "expanded_sequence_selector", regime=regime, mode="crossed") for regime in ("hla", "joint")]
+    extension_matched_html = "\n".join(f'<tr><th scope="row">{label}</th><td class="num">{interval(row)}</td></tr>' for label, row in extension_matched)
+    extension_reference_html = "\n".join(f'<tr><th scope="row">{row["regime"].upper()} · {row["baseline"].replace("_", " ")}</th><td class="num">{fmt(row["baseline_score"])}</td><td class="num">{fmt(row["candidate_score"])}</td><td class="num">{interval(row)}</td></tr>' for row in extension_references)
     ranking_base = "reports/finalization/ranking/"
     ranking_comparisons = read_path(ranking_base + "comparisons.csv", "csv")
     ranking_scores = read_path(ranking_base + "scores.csv", "csv")
@@ -199,12 +217,16 @@ def build():
   </section>
 
   <section id="round2-transfer" aria-labelledby="round2-transfer-title">
-    <div class="shead"><p class="eyebrow">Completed bounded transfer assessment</p><h2 class="title" id="round2-transfer-title">Transfer gains against narrow sequence comparators.</h2><p class="lede">Five HLA folds and all 25 joint intersections passed the complete transfer audit. Each regime retains the full cohort.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="Transfer comparison results"><table><caption>≥20-row panel · crossed peptide-cluster × HLA-group paired 95% intervals</caption><thead><tr><th scope="col">Regime</th><th scope="col">Embedding selector</th><th scope="col">Bounded MLP selector</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody>{transfer_html}</tbody></table></div>
-    <p class="note">Crossed lower bounds exceed 0.05 for these complete procedures and narrow comparators. Gains also remain positive against the original reference: HLA {interval(original_transfer[0])}; joint {interval(original_transfer[1])}. Representation and training-recipe effects are combined. These results do not isolate a causal structural effect or establish independent generalisation.</p>
-    <details class="evidence-detail"><summary>Transfer scope and uncertainty</summary><p>The bounded sequence selector excludes the main-screen trees and PairLogit. R4 ridge and R5 MLP were nominated before transfer outcomes. HLA Hamming groups are a declared sequence convention, not a validated functional distance. Crossed draws independently resample peptide clusters and HLA groups, with HLA multiplicities replicating alleles in the median; they are dependence sensitivities, not refitting.</p><p>Saved inner choices and scaler ancestry were audited; raw inner prediction vectors and numerical scaler statistics were not independently reconstructed. Main execution repeats do not measure transfer execution variation.</p></details>
-    <p class="note"><b>Stronger transfer controls remain pending.</b> A separately frozen extension adds stronger sequence procedures and matched representation heads. The figures above are the completed prior study; no result from that extension is claimed here.</p>
-    <p class="source-line">{link("transfer/results/README.md", "Complete prior transfer report")} · {link("transfer/results/comparisons.csv", "Prior transfer intervals")} · {path_link("reports/finalization/transfer_controls/SPECIFICATION.md", "Pending extension specification")}</p>
+    <div class="shead"><p class="eyebrow">Completed stronger transfer controls · 30 cells · 10,830 retained fits</p><h2 class="title" id="round2-transfer-title">Transfer gains survive matched head recipes.</h2><p class="lede">Boltz representations outperform their sequence counterparts under matched ridge and MLP recipes. Five HLA folds and all 25 joint intersections passed the full audit.</p></div>
+    <div class="scroller" tabindex="0" role="region" aria-label="Matched transfer results"><table><caption>≥20 rows per allele · crossed peptide-cluster × HLA-group paired 95% intervals</caption><thead><tr><th scope="col">Matched contrast</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody>{extension_matched_html}</tbody></table></div>
+    <p class="note">All matched contrasts remain positive on the ≥50-row panel, under peptide-only and HLA-only uncertainty, and after deleting any one of the 35 HLA groups. Different feature dimensions, pretraining and representation construction still prevent causal attribution specifically to structure. These are conditional development results.</p>
+    <details class="evidence-detail"><summary>Both sequence references, including the stronger original joint baseline</summary>
+      <div class="scroller" tabindex="0" role="region" aria-label="Original and expanded sequence references"><table><caption>≥20 rows per allele · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Regime / sequence reference</th><th scope="col">Sequence</th><th scope="col">Embedding selector</th><th scope="col">Difference [crossed 95% interval]</th></tr></thead><tbody>{extension_reference_html}</tbody></table></div>
+      <p>The expanded sequence selector changes the original by {interval(extension_sequence[0])} in HLA and {interval(extension_sequence[1])} in joint holdout. It underperforms the original in joint holdout, so presenting only the expanded comparator would exaggerate the advantage. Outer outcomes do not select a replacement procedure.</p>
+    </details>
+    <details class="evidence-detail"><summary>Scope and uncertainty</summary><p>The extension adds sequence regression/centred trees, a fixed ranker and matched R0 ridge/MLP heads. Inner selection, stopping and scaling obey each holdout regime. Its 264 comparison rows cover both panels and three uncertainty modes; all 12 bootstrap tables have 2,000 draws, and 3,080 rows cover every group-deletion contrast.</p><p>Intervals condition on fitted predictions and selections; group deletion does not retrain. Crossed resampling is a dependence sensitivity, not independent confirmation. HLA sequence groups are not validated functional distance. The ranker retains an inner-to-final scale-transport limitation. These transfer findings do not retrospectively change the main worthwhile-gain criterion.</p></details>
+    <p class="note"><b>Hybrid fitting is running.</b> The separate Boltz tree/ranking, tree–MLP blend and preprocessing study contains 480 scientific fits on four Modal CPUs after a 12-fit unscored pilot passed. Its primary comparison is the R5 hybrid selector minus the matched two-member R5 standard MLP. No hybrid outcome is claimed yet.</p>
+    <p class="source-line">{path_link(extension_base + "REPORT.md", "Complete stronger-transfer report")} · {path_link(extension_base + "comparisons.csv", "All comparisons")} · {path_link(extension_base + "coverage_audit.json", "Independent coverage audit")} · {link("transfer/results/README.md", "Historical narrower assessment")}</p>
   </section>
 
   <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
@@ -240,7 +262,10 @@ def build():
                                     "selections": ranking_selections, "audit_status": ranking_audit["status"]},
                "portable_inference": {"recipes": [ridge, neural], "actual_fits": 31,
                                       "latency_scope": inference["latency_scope"]},
-               "transfer_extension_status": "pending; no extension outcomes claimed",
+               "transfer_extension_status": "complete; independently audited; development only",
+               "transfer_extension": {"matched_heads": [{"label": label, "comparison": row} for label, row in extension_matched],
+                                      "both_sequence_references": extension_references, "expanded_minus_original": extension_sequence},
+               "hybrid_status": "480-fit scientific assessment running on Modal; pilot complete; no outcome claimed",
                "cost_accounting": {k: v for k, v in costs.items() if k != "interpretation"},
                "source_sha256": dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
