@@ -1,0 +1,51 @@
+{
+  "schema": "final_hybrid_stopping_mse_replay_amendment.1",
+  "approved": true,
+  "recorded_at_utc": "2026-10-12T23:15:42.679989+00:00",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "max_float32_ulp": 1,
+  "held_predictions_remain_exact": true,
+  "persisted_best_mse_and_curve_must_match_exactly": true,
+  "training_sources_and_artifacts_unchanged": true,
+  "new_fits": 0,
+  "original_audit_module_sha256": "d80909dd4b5c54d877be1117c709f99e6325d5dc0ad35f90f36b8deca2d4282a",
+  "original_audit_function_sha256": "a5ef093357e23d364a48aab73c1972dc73d072dfd43f53b1c1da1d9d2e843a84",
+  "operational_source_replacements": {
+    "scripts/final_cloud_scientific_entry.py": {
+      "original": {
+        "path": "reports/finalization/cloud/report_replay_original/scripts/final_cloud_scientific_entry.py",
+        "sha256": "3990879d1c281482372ad1cf1bc8263993054a7859d95212ee640ac3c8ba4930"
+      },
+      "current_sha256": "d168a4465aee9533d4d1cb861f97a8035b18ce910327a8e94a5b39ef7db22e7c"
+    }
+  },
+  "adapter": {
+    "path": "pepstab/final_hybrid_replay.py",
+    "sha256": "e4d1199bd7d30a7191bd06a14aabf1da04f6fa707ff4797e51fe0c3fc5d1d367"
+  },
+  "tests": {
+    "path": "tests/test_final_hybrid_replay.py",
+    "sha256": "cec720e80c67a07b9dea65e8f1c7b239b9a79fc046686e455d8638e5a03e2d16"
+  },
+  "failure_closeout": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2240/failure_closeout.json",
+    "sha256": "7cb78cc60bb210e979ad6a76d352c247be78be81d96a85c20dbde909a0606279"
+  },
+  "observed_failure": {
+    "stored_mse": 0.8145772814750671,
+    "recomputed_mse": 0.8145773410797119,
+    "absolute_difference": 5.960464477539063e-08,
+    "float32_ulp_difference": 1
+  },
+  "scientific_review": "Independent Astra review approved a report-only one-ULP scalar allowance; every other audit and held-prediction check stays exact. No outcome/statistic had been computed.",
+  "interpretation": "Float32 matmul/reduction may vary with CPU/BLAS/layout; the exact historical cause is unproven because stopping prediction vectors were not saved. This is bounded numerical replay, not changed fit/selection/statistical output.",
+  "failure_policy": "Reject more than one ULP or any changed held prediction; no automatic tolerance widening or refit.",
+  "recovery_limits": {
+    "report_cap_usd": 5,
+    "failed_attempt_conservative_carry_usd": 0.1,
+    "work_deadline_utc": "2026-10-13T06:45:00+00:00",
+    "provider_stop_deadline_utc": "2026-10-13T06:47:00+00:00",
+    "additional_scientific_fits": 0
+  },
+  "scope_note": "Only the existing cloud entry gains a report-only compatibility hook. Contract/launcher/supervisor and all35transfer+23hybrid frozen scientific sources remain unchanged."
+}

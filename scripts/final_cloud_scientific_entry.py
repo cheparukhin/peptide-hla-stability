@@ -36,7 +36,15 @@ def main():
     if (manifest.get(targets.META)!=reference['sha256'] or manifest.get(targets.ARRAYS)!=metadata['arrays']['sha256']):
         raise ValueError('canonical target inputs absent from immutable source manifest')
     targets.install(metadata_path)
+    finalize_replay = None
+    if 'report_replay_amendment' in auth:
+        if relative != 'scripts/final_hybrids_cloud_report.py' or auth.get('phase') != 'hybrid_report':
+            raise ValueError('stopping-MSE compatibility cannot enter fitting')
+        from pepstab.final_hybrid_replay import install
+        finalize_replay = install(auth)
     sys.argv=[str(script),*arguments]
     runpy.run_path(str(script),run_name='__main__')
+    if finalize_replay is not None:
+        finalize_replay(ROOT/contract.SCOPE)
 
 if __name__=='__main__':main()
