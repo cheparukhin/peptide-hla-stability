@@ -1,0 +1,13 @@
+{
+  "schema": "round2_modal_app_inventory.1",
+  "recorded_at_utc": "2026-10-12T09:06:14.838966+00:00",
+  "command": [
+    ".venv/bin/modal",
+    "app",
+    "list",
+    "--json"
+  ],
+  "exit_code": 0,
+  "observed_stdout": [],
+  "interpretation": "Read-only provider inventory returned no listed apps immediately before this receipt. Previously stopped apps can age out; normal termination and settled reservations are separately evidenced in cloud_closeout.json and sequence_cost_closeout.json. No cloud work was launched or retried. This is not a final invoice or credit balance."
+}

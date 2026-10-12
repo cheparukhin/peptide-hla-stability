@@ -10,9 +10,9 @@
   "engineering_pilot_cap_usd": 2,
   "full_cache_requires": "one passed and settled 256-case production shard; unchanged complete 19716-row cohort/source/feature/code hashes; max(frozen cost forecast, measured full-cohort projection plus 10 percent) <=80; total allocations <=100",
   "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
-  "independent_confirmation": "not yet available; external labels reserved",
+  "independent_confirmation": "open: no adequate independently reserved cohort or assay arrangement; external candidate outcomes remain reserved",
   "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
-  "updated_at_utc": "2026-10-12T08:08:32.026568+00:00",
+  "updated_at_utc": "2026-10-12T09:18:38.334808+00:00",
   "branch": "codex/round2-research",
   "allocations_usd": {
     "cache": 80,
@@ -70,7 +70,7 @@
     "interpretation": "Conditional development evidence; no demonstrated improvement of sequence selector over original reference. Completed main evidence now supports the separately amended frozen transfer scope."
   },
   "transfer_preparation": {
-    "status": "scope_frozen_after_main_audit",
+    "status": "frozen_scope_completed",
     "readiness": "transfer/implementation_readiness.md",
     "draft": "transfer/assessment_protocol_draft.json",
     "nominations": [
@@ -82,7 +82,7 @@
     "additional_fits_per_neural_nominee": 2340,
     "max_nominees": 2,
     "real_transfer_fits_launched": true,
-    "remaining_gate": "All30 completed cells and successful remaining exit receipt, followed by frozen transfer report and full source/ancestry/uncertainty audit.",
+    "remaining_gate": "None for the frozen development scope; independent confirmation remains a separate open gate.",
     "validation": "32 focused tests before integrity fix; four focused agent regressions and five independently rerun freeze/nomination tests after fix; all 30 real split preflight cells passed."
   },
   "cache_completion": {
@@ -102,7 +102,8 @@
     "receipt": "resources/cloud_closeout.json",
     "conservative_total_including_full_engineering_allowance_usd": 76.83880887462121,
     "watchdog_shutdown": "resources/runtime_guard/shutdown.json",
-    "new_cloud_work_queued": false
+    "new_cloud_work_queued": false,
+    "final_app_inventory": "resources/modal_final_app_inventory.json"
   },
   "local_assessment": {
     "status_at_recording": "complete_all_stages",
@@ -145,7 +146,7 @@
     "scope": "Locked per-fold selector decisions only; no reselection, transfer-regime or assay variation claim."
   },
   "transfer_execution": {
-    "status_at_recording": "remaining_running",
+    "status_at_recording": "complete_audited",
     "protocol": "transfer/assessment_protocol.json",
     "protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
     "nomination_decision": "transfer/nomination_decision.json",
@@ -196,7 +197,39 @@
     "constraint": "No cell retry, duplication, source/grid change or held-outcome-dependent scheduling.",
     "timing_forecast": "transfer/timing_forecast.json",
     "timing_phase_complete": true,
-    "remaining_fits": 12808
+    "remaining_fits": 12808,
+    "completed_cells": 30,
+    "completed_fits": 13530,
+    "completed_at_utc": "2026-10-12T09:06:05.310416+00:00",
+    "report_completed_at_utc": "2026-10-12T09:10:42.388616+00:00",
+    "processes_stopped": true,
+    "remaining_exit_receipt": "transfer/controller/remaining_exit_receipt.json",
+    "report_exit_receipt": "transfer/controller/report_exit_receipt.json",
+    "report_completion": "transfer/results/completed.json",
+    "report_invocations": 1,
+    "completion_audit": "resources/transfer_completion_audit.json",
+    "runtime_closeout": "resources/transfer_runtime_closeout.json",
+    "primary_results": {
+      "hla": {
+        "delta": 0.372342,
+        "crossed_ci": [
+          0.290338,
+          0.453269
+        ]
+      },
+      "joint": {
+        "delta": 0.395844,
+        "crossed_ci": [
+          0.295075,
+          0.445743
+        ]
+      },
+      "panel_min_rows": 20,
+      "comparator": "bounded_MLP_sequence_selector",
+      "interpretation": "Conditional development comparison of complete procedures; not superiority over full main sequence selector or independent confirmation. Transfer lower bounds exceed0.05; main peptide lower bound still does not."
+    },
+    "audit_evidence_hashes": 236,
+    "runtime_evidence_hashes": 206
   },
   "complementarity_completion": {
     "status": "complete_audited",
@@ -220,5 +253,8 @@
     },
     "interpretation": "R4 complements improve specified conditional development comparisons; R2 does not establish improvement over sequence. No declared comparison with main R5/embedding selector and no transfer shortlist changes."
   },
-  "runtime_cost_summary": "resources/runtime_cost_summary.json"
+  "runtime_cost_summary": "resources/runtime_cost_summary.json",
+  "execution_status": "bounded_development_complete_audited",
+  "consolidated_report": "REPORT.md",
+  "completion_closeout": "resources/development_closeout.json"
 }

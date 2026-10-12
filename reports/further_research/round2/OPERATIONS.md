@@ -70,6 +70,7 @@ captures its case log until the shard returns.
 | Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` completed all 19,716 rows/78 shards and stopped at 06:46:25 UTC. Settled runtime accounting $66.8431 against $80; zero unresolved reservations and no preemptions. See `resources/cache_completion_audit.json`. |
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | Complete: five primary folds and both fixed-setting repeats passed audits (19,716 rows; 2,100 primary + 420 repeat members). App `ap-vgwn2eHeZngfofbxH6SMsf` stopped normally at 03:14 UTC; all 900 calls settled, no reservations. [Validated report](results/sequence/REPORT.md) and [cost closeout](resources/sequence_cost_closeout.json): $7.9957 conservative estimate including preemptions, against $18. |
 | Main local pipeline | `pipeline/status.json` | All five embedding folds and the main report completed by 07:19 UTC and passed the completion audit. All five complementarity folds and their report also completed by 07:54 UTC and passed the separate completion audit. Controller 13236 and its helper have exited; see resources/local_pipeline_closeout.json. No cloud spend. |
+| Transfer and final reporting | `transfer/controller/remaining_exit_receipt.json`, `transfer/controller/report_exit_receipt.json` | All 30 frozen cells / 13,530 members completed at 09:06 UTC; the single report invocation completed at 09:10 UTC. All workers/controllers/report processes and helpers exited. Completion/resource audits and the consolidated REPORT.md close the bounded development work; independent confirmation remains open. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
 | Independent spending watchdog | `resources/runtime_guard/status.json` | Stopped deliberately at 06:56 UTC after both cloud scopes were terminal and settled. `resources/runtime_guard/shutdown.json` preserves exact identity and shutdown evidence; no deadline or study-ledger change. |
 
@@ -281,3 +282,30 @@ sources and distinguishes shared cache cost, recorded member work, parallel
 wall intervals, cache reuse and unmeasured serving latency. It is a completed
 scopes plus timing-phase snapshot; do not rewrite it as the final actual transfer
 runtime. Record transfer completion timing separately after the remaining phase.
+
+
+## Final bounded development closeout, 12 October 2026
+
+All authorized fitting and reporting are complete. Transfer retained exactly the
+frozen five HLA and 25 joint cells, with no retries or outcome-based changes.
+The successful remaining receipt binds every completed marker; the report
+launch intent binds the complete-cell gate and frozen source. The report ran
+once at 09:08 UTC and exited successfully at 09:10 UTC. All 19 generated output
+hashes and the completion marker were verified. Process checks after completion
+found controller/helper 30808/30809, last worker 48153 and report wrapper/helper/
+child 49262/49263/49264 absent. No completed scope should be relaunched.
+
+The [completion audit](resources/transfer_completion_audit.json) and
+[resource closeout](resources/transfer_runtime_closeout.json) state what was
+independently checked and what was not. The transfer report adds no Modal
+spend. The [final app inventory](resources/modal_final_app_inventory.json)
+returned an empty provider listing; historical normal-stop receipts and zero
+reservations still establish closure of aged-out cloud apps. The independent
+watchdog remains deliberately stopped, and its original deadlines are intact.
+
+The finished [development report](REPORT.md) is ready before the requested
+11 AM London check. Independent confirmation and any assay noise estimate
+remain unavailable; no new measurements, quotes or confirmation results have
+been invented. Optional calibration/adaptation and broader comparison grids
+remain separately gated. The heartbeat can be paused after validated artifacts
+are committed; a later recovery must reconcile saved state before any action.

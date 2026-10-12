@@ -1,0 +1,5242 @@
+{
+  "schema": "round2_transfer_completion_audit.1",
+  "status": "passed_with_inherited_cache_controller_provenance_limitation",
+  "completed_at_utc": "2026-10-12T09:17:01.453126+00:00",
+  "scope": "frozen original-training HLA/joint transfer assessment and completed report; conditional development evidence",
+  "protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
+  "nominations": [
+    "R4_ridge",
+    "R5_mlp"
+  ],
+  "population": {
+    "n_rows_per_regime": 19716,
+    "n_clusters": 3587,
+    "n_alleles": 75,
+    "n_hla_groups": 35,
+    "original_training_only": true
+  },
+  "validation": {
+    "existing_read_only_validator": "scripts.round2_transfer_report.load_predictions with validate_evidence/TransferAncestry.audit",
+    "all30cells_complete": true,
+    "exact_fit_graph": {
+      "regimes": {
+        "hla": {
+          "outer_cells": 5,
+          "inner_cells": 3,
+          "sequence_mlp_fits": 168,
+          "embedding_mlp_fits": 48,
+          "deterministic_ridge_fits": 10,
+          "fits_per_cell": 226,
+          "total_fits": 1130
+        },
+        "joint": {
+          "outer_cells": 25,
+          "inner_cells": 9,
+          "sequence_mlp_fits": 384,
+          "embedding_mlp_fits": 84,
+          "deterministic_ridge_fits": 28,
+          "fits_per_cell": 496,
+          "total_fits": 12400
+        }
+      },
+      "total_fits": 13530,
+      "sequence_mlp_fits": 10440,
+      "embedding_mlp_fits": 2340,
+      "deterministic_ridge_fits": 750,
+      "selector_extra_fits": 0,
+      "cloud_spend_usd": 0,
+      "repeats": "excluded; locked execution repeats separate"
+    },
+    "observed_member_counts": {
+      "sequence_mlp": 10440,
+      "ridge": 750,
+      "feature_mlp": 2340
+    },
+    "members_total": 13530,
+    "all_member_identity_configuration_fit_stopping_prediction_scaler_rowsets_checked": true,
+    "all_centering_statistics_recomputed_from_gradient_training_labels": true,
+    "centred_members_checked": 6660,
+    "feature_scaler_members_checked": 3090,
+    "scaler_dimensions_finite_and_positive_checked": true,
+    "scaler_numeric_statistics_recomputed": false,
+    "all_inner_candidate_grids_pooled_choice_ties_replayed": true,
+    "selectors_exactly_match_their_chosen_components": true,
+    "all_frozen_source_grouping_main_and_feature_hashes_match": true,
+    "all_cell_and_report_artifact_hashes_match": true,
+    "report_output_hash_count": 19,
+    "both_regimes_exact_full_cohort_coverage": true,
+    "all108paired_comparison_rows_checked": true,
+    "all1260groupdeletion_rows_checked": true,
+    "all35actual_HLAgroups_deleted_in_every_regime_panel_contrast": true,
+    "all_perallele_and_percell_scores_checked": true,
+    "all_empty_cell_panels_preserved_undefined": true,
+    "both20and50panels_checked": true,
+    "all2000paired_score_table_arithmetic_checked": true,
+    "deterministic_probe_indices": [
+      0,
+      999,
+      1999
+    ],
+    "all_six_arms_three_modes_two_regimes_two_panels_probes_match": true,
+    "max_point_abs_error": 9.71445146547012e-17,
+    "max_interval_abs_error": 1.6653345369377348e-16,
+    "max_group_deletion_abs_error": 9.71445146547012e-17,
+    "max_probe_abs_error": 9.71445146547012e-17,
+    "max_cell_abs_error": 9.71445146547012e-17,
+    "evidence_unchanged_at_close": true,
+    "all12full_bootstrap_label_eligibility_dropout_metadata_independently_recomputed": true
+  },
+  "cells": [
+    {
+      "regime": "hla",
+      "cell": "h0",
+      "n_fit": 15757,
+      "n_held": 3959,
+      "excluded_outer_cross_quadrant_rows": 0,
+      "n_members": 226,
+      "categories": {
+        "sequence_mlp": 168,
+        "ridge": 10,
+        "feature_mlp": 48
+      },
+      "completion_sha256": "5b87becf41bd15f49f1217019472f328a98d012cfde3be058b9ecb2f5ff42810",
+      "audit": {
+        "regime": "hla",
+        "records": 259,
+        "rowsets": 48,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": false
+      }
+    },
+    {
+      "regime": "hla",
+      "cell": "h1",
+      "n_fit": 15682,
+      "n_held": 4034,
+      "excluded_outer_cross_quadrant_rows": 0,
+      "n_members": 226,
+      "categories": {
+        "sequence_mlp": 168,
+        "ridge": 10,
+        "feature_mlp": 48
+      },
+      "completion_sha256": "9d4e4a3bbd641744fd40da43b77e48ea5b415bf9ccf07594b2d10c1554894199",
+      "audit": {
+        "regime": "hla",
+        "records": 259,
+        "rowsets": 47,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": false
+      }
+    },
+    {
+      "regime": "hla",
+      "cell": "h2",
+      "n_fit": 15720,
+      "n_held": 3996,
+      "excluded_outer_cross_quadrant_rows": 0,
+      "n_members": 226,
+      "categories": {
+        "sequence_mlp": 168,
+        "ridge": 10,
+        "feature_mlp": 48
+      },
+      "completion_sha256": "61e40712d27b81eb8066172b3b4ce6a74637ad9d6390bac429c5141a410c6fa6",
+      "audit": {
+        "regime": "hla",
+        "records": 259,
+        "rowsets": 47,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": false
+      }
+    },
+    {
+      "regime": "hla",
+      "cell": "h3",
+      "n_fit": 15886,
+      "n_held": 3830,
+      "excluded_outer_cross_quadrant_rows": 0,
+      "n_members": 226,
+      "categories": {
+        "sequence_mlp": 168,
+        "ridge": 10,
+        "feature_mlp": 48
+      },
+      "completion_sha256": "9ff97fbb06060a74eb21bcb80404ed1afa230dbca76340e573d6f3ed9ae17129",
+      "audit": {
+        "regime": "hla",
+        "records": 259,
+        "rowsets": 47,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": false
+      }
+    },
+    {
+      "regime": "hla",
+      "cell": "h4",
+      "n_fit": 15819,
+      "n_held": 3897,
+      "excluded_outer_cross_quadrant_rows": 0,
+      "n_members": 226,
+      "categories": {
+        "sequence_mlp": 168,
+        "ridge": 10,
+        "feature_mlp": 48
+      },
+      "completion_sha256": "a7dfdcf4bb84f9abf0af4fee58b99761d58a4a520c1588c34c34d22b11819e86",
+      "audit": {
+        "regime": "hla",
+        "records": 259,
+        "rowsets": 47,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": false
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p0",
+      "n_fit": 12651,
+      "n_held": 838,
+      "excluded_outer_cross_quadrant_rows": 6227,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "81364cb75ec9951223c925c07b62548cbc66c8397644afc877d499303d58b726",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p1",
+      "n_fit": 12549,
+      "n_held": 735,
+      "excluded_outer_cross_quadrant_rows": 6432,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "5ff599f615222086179ba02d67f271cbc3e1a200fc0e439d63ff40aa5cc58f79",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p2",
+      "n_fit": 12613,
+      "n_held": 799,
+      "excluded_outer_cross_quadrant_rows": 6304,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "1f8f5ee6e9d5a0ff822a6a7c9cae3623448de23ae8eecbe3c9d802e908203eb3",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p3",
+      "n_fit": 12572,
+      "n_held": 758,
+      "excluded_outer_cross_quadrant_rows": 6386,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "b51699e7a277eb9898f0fcd5181cc3c8a997e2c5e6185ef25066b1a2ee7a4732",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p4",
+      "n_fit": 12643,
+      "n_held": 829,
+      "excluded_outer_cross_quadrant_rows": 6244,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "cabcdd988dcc1c3fd80d5e301408e033d9962a10662f60138b857782ae02e33a",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p0",
+      "n_fit": 12529,
+      "n_held": 791,
+      "excluded_outer_cross_quadrant_rows": 6396,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "7196a2694f858d5dc06f4fad149739608d8ef3f9ad59ae42a246c8fd178c6803",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p1",
+      "n_fit": 12563,
+      "n_held": 824,
+      "excluded_outer_cross_quadrant_rows": 6329,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "6bf357caa92452627b96738b97235aa00cdf420de026c27bfa1a8a1b24dc304b",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p2",
+      "n_fit": 12525,
+      "n_held": 786,
+      "excluded_outer_cross_quadrant_rows": 6405,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "e97cdc5df105972ae7eab02b25197c095703c8418db54e23485bb7a13cba2b15",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p3",
+      "n_fit": 12569,
+      "n_held": 830,
+      "excluded_outer_cross_quadrant_rows": 6317,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "98bb7b9c6e9aead6ffbbd4b45b63794b34bf45256001b7a033b641635233b6ac",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p4",
+      "n_fit": 12542,
+      "n_held": 803,
+      "excluded_outer_cross_quadrant_rows": 6371,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "ea9335fa0f9b6fc302f4a85ef24765e7fe68dcaaf250ff74cc5a8b5e38f105c3",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p0",
+      "n_fit": 12591,
+      "n_held": 815,
+      "excluded_outer_cross_quadrant_rows": 6310,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "f3927db5e52408f499052f502ff0114354d3069cd243e43eac8e3fc71a41248f",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p1",
+      "n_fit": 12578,
+      "n_held": 801,
+      "excluded_outer_cross_quadrant_rows": 6337,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "53f35757bda5dafc894db6f8be38c0a4cd95ad79e377eae65fe958f20f111a84",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p2",
+      "n_fit": 12571,
+      "n_held": 794,
+      "excluded_outer_cross_quadrant_rows": 6351,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "0371f8131930409b0aa0c24a60a202b8943adbf7e941f91c92c28ca6f7d23d09",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p3",
+      "n_fit": 12566,
+      "n_held": 789,
+      "excluded_outer_cross_quadrant_rows": 6361,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "57d47a6711a36aaf3db45944002a9fda4f4242098daeb1171f263fbe6055cda0",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p4",
+      "n_fit": 12574,
+      "n_held": 797,
+      "excluded_outer_cross_quadrant_rows": 6345,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "df6d60d8495e5c9e1374d109e9f29a40fef1e9b1e9cfc6a6d5aa3c9b009d37c0",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p0",
+      "n_fit": 12691,
+      "n_held": 749,
+      "excluded_outer_cross_quadrant_rows": 6276,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "c2995ce30e87b9b0db32ef47503ced81effb1c99804c7fb4a530b4cb83d2b54d",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p1",
+      "n_fit": 12697,
+      "n_held": 754,
+      "excluded_outer_cross_quadrant_rows": 6265,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "841f2be35f92fdf75d6832bf16c183a92148fdc5344c966595485e7aa794e80c",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p2",
+      "n_fit": 12754,
+      "n_held": 811,
+      "excluded_outer_cross_quadrant_rows": 6151,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "1a94e956bd23d5cc6081bca7e20df1c0668ef1c62ae023c4e19f7b1c1631baf5",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p3",
+      "n_fit": 12724,
+      "n_held": 781,
+      "excluded_outer_cross_quadrant_rows": 6211,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "c7bc554c1e66e2b6826add3c1b673d7bf28f0157901357d315fe71785cbca17c",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p4",
+      "n_fit": 12678,
+      "n_held": 735,
+      "excluded_outer_cross_quadrant_rows": 6303,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "b691f48479d140720cd447669fc412abdc419a56640834ab6aadd28e0d505f19",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p0",
+      "n_fit": 12626,
+      "n_held": 751,
+      "excluded_outer_cross_quadrant_rows": 6339,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "ae4a59209763b68476c368de456c60db4f9efe2831dff451f9badb1cd9e4241f",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p1",
+      "n_fit": 12705,
+      "n_held": 829,
+      "excluded_outer_cross_quadrant_rows": 6182,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "6d6466038b4f86f85c999b031d959d3c7d0121c62352f734a0b9b0ca9baffedc",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p2",
+      "n_fit": 12629,
+      "n_held": 753,
+      "excluded_outer_cross_quadrant_rows": 6334,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "b5e7c2b05fbba9ab5ba85d795bce7f1fe8b8a821f2fa21505fced8003a337bac",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p3",
+      "n_fit": 12661,
+      "n_held": 785,
+      "excluded_outer_cross_quadrant_rows": 6270,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "b45bc0f9bbb694c2aebc15db75bb719b2c2d078d6c51f6d3f3d554562416cc49",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p4",
+      "n_fit": 12655,
+      "n_held": 779,
+      "excluded_outer_cross_quadrant_rows": 6282,
+      "n_members": 496,
+      "categories": {
+        "sequence_mlp": 384,
+        "ridge": 28,
+        "feature_mlp": 84
+      },
+      "completion_sha256": "15bce5c8c46a4e9f977180d04f37fb632b6994443ec9e539d91d288ab647812e",
+      "audit": {
+        "regime": "joint",
+        "records": 583,
+        "rowsets": 120,
+        "outer_exclusion": true,
+        "predicted_group_exclusion": true,
+        "cross_quadrant_exclusion": true
+      }
+    }
+  ],
+  "inner_selections": [
+    {
+      "regime": "hla",
+      "cell": "h0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.1444799395262589
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.16049218903551501
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.18918597380953042
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5023805697839266
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5527947849235164
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.47635898201058163
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.5052165168219689
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.5440265535693817
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.5200996729035369
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "hla",
+      "cell": "h1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.15938953582909213
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.1786003828990183
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.16414959273777413
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5553218184381712
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.571780318797919
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.5001001154966312
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.48634379250337906
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.5371141456129759
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4987805639488249
+        }
+      ],
+      "inner_panel_alleles": 53
+    },
+    {
+      "regime": "hla",
+      "cell": "h2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.10374166348903938
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.08718946472040501
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.09876866620218211
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5160251982007573
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5452157959275636
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.4663803763668313
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4877213845182754
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.524974548226463
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4989552631320119
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "hla",
+      "cell": "h3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.1314049264669179
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.1623899368200618
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.1208971233990613
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5351179901876708
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5403719374798656
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.4428460259558583
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.48716247330354356
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.47843802555416126
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4665332003855273
+        }
+      ],
+      "inner_panel_alleles": 57
+    },
+    {
+      "regime": "hla",
+      "cell": "h4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R5_mlp_0.01"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.15316208666182818
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.11726088078515869
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.11474615608970049
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4960450972778995
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4910800089787452
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.44237283696721974
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4553878857010069
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.5033357665812349
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4827419812665708
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.060871489406954526
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.049087928396404815
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.054013569612880515
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5065002286660854
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4800091405344495
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.36907359093609904
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4446553626044445
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4422987781321186
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.43449734223349745
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.04045344482029557
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.0474373986380986
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.042207654314713336
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4589895665653292
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4710029420088133
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.34830930558123574
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.43366783876179077
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4365858730581376
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4187014505113472
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.05606738510242035
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.07470863904974392
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.07258678838477493
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.47909597555377736
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.47646903409591623
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3777567098220914
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.47716419648205066
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.45511416417694056
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.45216895035239624
+        }
+      ],
+      "inner_panel_alleles": 54
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.0001",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.10351913527615302
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.09009785729378246
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.11936006688426612
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4937494171075057
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5146221811096552
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.39912593468780694
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.47567760505584866
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.47744604909663974
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4943207868292938
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h0_p4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R5_mlp_1"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.09269481215326798
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.11279075018482804
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.10084201154737181
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4795432230933047
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4821650765588863
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3774682883018924
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.49628982917716263
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.46021551701026653
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4529150085097265
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.07180033457550437
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.0505632374974996
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06345590359189109
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5453240664804002
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5177662207750351
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.39615191598243826
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4841336812727048
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.45858730589462476
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.45515056588174035
+        }
+      ],
+      "inner_panel_alleles": 53
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.1226311494397051
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.17292038819854225
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.15912991766516937
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5466745319997306
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5195666042811421
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.37771512562754733
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.5063316525823441
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4879279587811755
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4675138135599704
+        }
+      ],
+      "inner_panel_alleles": 53
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.11025738114514391
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.11889706130515211
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.11009769848601901
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.543232553232261
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.48481356532000336
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3502540764512325
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.47471350099703
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.44826917033249813
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4340776170542845
+        }
+      ],
+      "inner_panel_alleles": 52
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.10310767222945628
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.09753297374901443
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.10219040347224978
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5196402375900233
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.500770431513209
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.402958861847257
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.48650973440723905
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4933798015617181
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.48183229869976474
+        }
+      ],
+      "inner_panel_alleles": 53
+    },
+    {
+      "regime": "joint",
+      "cell": "h1_p4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.08285301279191336
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.08881712606315449
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.09504251145311592
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5527266166816307
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5231433840064285
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.39174051519728226
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.48122384105707505
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.45716106991054717
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4516033627232673
+        }
+      ],
+      "inner_panel_alleles": 53
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.06992584171233683
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.06482972471500897
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06792248829020457
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.49913213263248957
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4937572380044227
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3754205658931972
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4315329670302652
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4406742734557857
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4100483454446022
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_0.01",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.03837631551320975
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.06324808347176006
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06805273551969596
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4633274129582013
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4788222576836345
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.34717362648068595
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.44963211194575103
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.45726196267893454
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4177634913611672
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.07948964170827953
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.08353274916270197
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.08061861976179788
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4864044638516132
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4963220650712502
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.37400821805870277
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4489714359715852
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.44837653447021764
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.42067091029019976
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.024837600413587
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.042581836112903775
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.03472619792171603
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.46487959770881626
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4999019612211901
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3723594923275759
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4418238943063295
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.41838064326356456
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.41752053398248756
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h2_p4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.0632273985758009
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.06787096596932758
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06367548806892008
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.47957510848603324
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5005168306391614
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3667537768538691
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4503210039361895
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4445115156362216
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.42497184573835056
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.06811899598644627
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.08711445427331618
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.08468298084977229
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5154768426426919
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5069738014036832
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3472882776180284
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4716009325235687
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4652388907150921
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.46244384278394685
+        }
+      ],
+      "inner_panel_alleles": 57
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.10938625355864334
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.0970734229637397
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.09913059885013188
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5060050870887518
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4988634689055775
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3572052876024616
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.45884771715920886
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4451858945223063
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4323246827154414
+        }
+      ],
+      "inner_panel_alleles": 57
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.05847337210129955
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.04637316633146116
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.039902804056032436
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4968825082496757
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.46883339305055555
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3410800848990181
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.46274426735090923
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4382240385600632
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.414733581600339
+        }
+      ],
+      "inner_panel_alleles": 56
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.034415206269994544
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.05348017226953369
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06040906960000805
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.508187423775786
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5099954065770126
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.38319960729339864
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4806360741669501
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4154089481632674
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4041870984477702
+        }
+      ],
+      "inner_panel_alleles": 57
+    },
+    {
+      "regime": "joint",
+      "cell": "h3_p4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.07452658455452037
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.0879793479529646
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.10011424602897782
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.50044341080203
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5039249595975216
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.36070169120650925
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.5032513668254864
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.46587253280933905
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4535448381313596
+        }
+      ],
+      "inner_panel_alleles": 57
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p0",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R5_mlp_1"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.08005871303699531
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.07971930393426492
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.07931808050629034
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4954050767607203
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.48724040253986434
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3639445241723389
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.5083947746927914
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4539692279219144
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.45697793554809035
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p1",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.1107713564457922
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.12601883853537885
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.12225659785934191
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4904867139648613
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.4984823365762677
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3704111670203783
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.4733237204937929
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4528881204137672
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.46040474667458553
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p2",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k100",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.09078267347555398
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.09170674076983593
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.08722571660759385
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4879515072672742
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.47695623557464506
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.38308260567893315
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.47154656353067925
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4675079342388172
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.43787814448751994
+        }
+      ],
+      "inner_panel_alleles": 54
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p3",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k100",
+        "R4_ridge": "R4_ridge_10000",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "original",
+        "embedding_selector": "R4_ridge_10000"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.07894648033317385
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.07594376025190104
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.06622586972196313
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.5154962047120791
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5038549034902393
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.36950613707251284
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.499342659464768
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4680262216852298
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.40072829450692005
+        }
+      ],
+      "inner_panel_alleles": 55
+    },
+    {
+      "regime": "joint",
+      "cell": "h4_p4",
+      "selected": {
+        "original": "original",
+        "mlp_centred": "mlp_centred_k20",
+        "R4_ridge": "R4_ridge_100",
+        "R5_mlp": "R5_mlp_1",
+        "bounded_MLP_sequence_selector": "mlp_centred_k20",
+        "embedding_selector": "R4_ridge_100"
+      },
+      "scores": [
+        {
+          "candidate": "original",
+          "pooled_inner_score": 0.11885702987852208
+        },
+        {
+          "candidate": "mlp_centred_k100",
+          "pooled_inner_score": 0.10123847400713526
+        },
+        {
+          "candidate": "mlp_centred_k20",
+          "pooled_inner_score": 0.11973974905125997
+        },
+        {
+          "candidate": "R4_ridge_10000",
+          "pooled_inner_score": 0.4898002759701578
+        },
+        {
+          "candidate": "R4_ridge_100",
+          "pooled_inner_score": 0.5099407497258871
+        },
+        {
+          "candidate": "R4_ridge_1",
+          "pooled_inner_score": 0.3760889543953197
+        },
+        {
+          "candidate": "R5_mlp_1",
+          "pooled_inner_score": 0.48285576561974813
+        },
+        {
+          "candidate": "R5_mlp_0.01",
+          "pooled_inner_score": 0.4691717737998251
+        },
+        {
+          "candidate": "R5_mlp_0.0001",
+          "pooled_inner_score": 0.4628307799540659
+        }
+      ],
+      "inner_panel_alleles": 55
+    }
+  ],
+  "pooled_points": [
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "original",
+      "score": 0.17093497561957716,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "mlp_centred",
+      "score": 0.18167716811224222,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "R4_ridge",
+      "score": 0.5497805885885653,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "R5_mlp",
+      "score": 0.566719252377816,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "bounded_MLP_sequence_selector",
+      "score": 0.1739612989346487,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "arm": "embedding_selector",
+      "score": 0.5463033121388678,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "original",
+      "score": 0.16311971594573293,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "mlp_centred",
+      "score": 0.17781923352344547,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "R4_ridge",
+      "score": 0.5486674512986319,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "R5_mlp",
+      "score": 0.5651276079607256,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "bounded_MLP_sequence_selector",
+      "score": 0.17175227359742734,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "arm": "embedding_selector",
+      "score": 0.5434171178303342,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "original",
+      "score": 0.13498505195503036,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "mlp_centred",
+      "score": 0.1123126116371841,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "R4_ridge",
+      "score": 0.5126783674128653,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "R5_mlp",
+      "score": 0.4979980171613391,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "bounded_MLP_sequence_selector",
+      "score": 0.11083050491399951,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "arm": "embedding_selector",
+      "score": 0.5066745248611672,
+      "eligible_alleles": 69,
+      "eligible_rows": 19647
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "original",
+      "score": 0.13070175073746093,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "mlp_centred",
+      "score": 0.11148867145359229,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "R4_ridge",
+      "score": 0.510708641787369,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "R5_mlp",
+      "score": 0.4923744449092866,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "bounded_MLP_sequence_selector",
+      "score": 0.11026549793781323,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "arm": "embedding_selector",
+      "score": 0.5049770668593043,
+      "eligible_alleles": 68,
+      "eligible_rows": 19619
+    }
+  ],
+  "all_comparisons": [
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.010742192492665,
+      "ci_low": -0.0211834752474853,
+      "ci_high": 0.0278309855935306,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0069116969933844,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3788456129689881,
+      "ci_low": 0.3377081287789856,
+      "ci_high": 0.4117708481581635,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0041279653112816,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3957842767582388,
+      "ci_low": 0.3563755291395763,
+      "ci_high": 0.4356335624401388,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0005123634498779,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1739612989346487,
+      "delta": 0.0030263233150715,
+      "ci_low": -0.0257570955174765,
+      "ci_high": 0.0162053970274447,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0066276972004937,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.335781655098102,
+      "ci_high": 0.4117578553849734,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0012849321998815,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.0077158691775935,
+      "ci_low": -0.0091641591056685,
+      "ci_high": 0.030119401870448,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0002839997928907,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3758192896539165,
+      "ci_low": 0.3410024018741649,
+      "ci_high": 0.4159731319403618,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.002499731889212,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3927579534431672,
+      "ci_low": 0.3591842018081572,
+      "ci_high": 0.4358817178714377,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0061153337506157,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.3402993570606374,
+      "ci_high": 0.4152357997207236,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0053427650006122,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.010742192492665,
+      "ci_low": -0.0209522456302295,
+      "ci_high": 0.0366361957604899,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0030372793484946,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3788456129689881,
+      "ci_low": 0.3094582730428011,
+      "ci_high": 0.4399091630043767,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 3.3204828887578586e-05,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3957842767582388,
+      "ci_low": 0.3120561712899773,
+      "ci_high": 0.4710777004501582,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0046231326694654,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1739612989346487,
+      "delta": 0.0030263233150715,
+      "ci_low": -0.0237689632788695,
+      "ci_high": 0.0157893819614955,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0024102067297294,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.3114103208911355,
+      "ci_high": 0.4497535278559381,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0021525187914342,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.0077158691775935,
+      "ci_low": -0.0084418098666103,
+      "ci_high": 0.0328087332348167,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0006270726187652,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3758192896539165,
+      "ci_low": 0.3151528283310483,
+      "ci_high": 0.4351436447378756,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0024434115586171,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3927579534431672,
+      "ci_low": 0.3160133732239125,
+      "ci_high": 0.4684612488653477,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0070333393991948,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.3231818653756884,
+      "ci_high": 0.4431867766249527,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0045627255211638,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.010742192492665,
+      "ci_low": -0.0327050933026003,
+      "ci_high": 0.0425207214965727,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0067503710814701,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3788456129689881,
+      "ci_low": 0.2854208490209178,
+      "ci_high": 0.4472688928837768,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.007476373080152,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3957842767582388,
+      "ci_low": 0.3007025514665811,
+      "ci_high": 0.4718502847519387,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0048997328208343,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.1739612989346487,
+      "delta": 0.0030263233150715,
+      "ci_low": -0.0356598647457116,
+      "ci_high": 0.025026494689713,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0067489406124671,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.2834444631942975,
+      "ci_high": 0.4550397074193563,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.003146304068589,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.1816771681122422,
+      "delta": 0.0077158691775935,
+      "ci_low": -0.0183514148843659,
+      "ci_high": 0.0424154342852149,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -1.430469002988537e-06,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5497805885885653,
+      "delta": 0.3758192896539165,
+      "ci_low": 0.2926087182331782,
+      "ci_high": 0.4483839650747255,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0007274324676848,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.566719252377816,
+      "delta": 0.3927579534431672,
+      "ci_low": 0.3062840096432853,
+      "ci_high": 0.4739773869046456,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0018492077916328,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.2903384678286439,
+      "ci_high": 0.4532691696310428,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0036026365438781,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0146995175777125,
+      "ci_low": -0.0202424779805228,
+      "ci_high": 0.026353773494239,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0108720387942223,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.385547735352899,
+      "ci_low": 0.3388917257387064,
+      "ci_high": 0.4122378814091774,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0102265289122331,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.4020078920149926,
+      "ci_low": 0.3583983121380213,
+      "ci_high": 0.435360071770785,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.006270290646055,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1717522735974273,
+      "delta": 0.0086325576516944,
+      "ci_low": -0.0241951928988818,
+      "ci_high": 0.0145089399190004,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0120415204310056,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.337464096267026,
+      "ci_high": 0.4116546139230266,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0057079877174988,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0060669599260181,
+      "ci_low": -0.0075333415886426,
+      "ci_high": 0.0269298170090328,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0011694816367833,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.3769151777012046,
+      "ci_low": 0.3415267603062631,
+      "ci_high": 0.4156455201614011,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0018149915187725,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.3933753343632982,
+      "ci_low": 0.3603502622058471,
+      "ci_high": 0.4356710094122903,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0057712297849506,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.3415392534390232,
+      "ci_high": 0.4143944682253576,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0063335327135068,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0146995175777125,
+      "ci_low": -0.0187281241279422,
+      "ci_high": 0.0366361957604899,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0056955426690081,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.385547735352899,
+      "ci_low": 0.309766185687256,
+      "ci_high": 0.441896482705183,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.005498785348253,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.4020078920149926,
+      "ci_low": 0.3131267499518629,
+      "ci_high": 0.472185787307313,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0009905114756822,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1717522735974273,
+      "delta": 0.0086325576516944,
+      "ci_low": -0.022540255326795,
+      "ci_high": 0.0163111325024459,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0072413483374838,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.3125506269098408,
+      "ci_high": 0.4508416378952706,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0018350683640385,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0060669599260181,
+      "ci_low": -0.008291964840441,
+      "ci_high": 0.0336436123146009,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0015458056684757,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.3769151777012046,
+      "ci_low": 0.3133270216478382,
+      "ci_high": 0.4350593644256756,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0017425629892308,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.3933753343632982,
+      "ci_low": 0.3160133732239125,
+      "ci_high": 0.4700165779431599,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0062508368618015,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.3231774267107209,
+      "ci_high": 0.4447457627039726,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0054062799734453,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0146995175777125,
+      "ci_low": -0.032268502040071,
+      "ci_high": 0.0440401349749661,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0103857948540274,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.385547735352899,
+      "ci_low": 0.2873859994523867,
+      "ci_high": 0.4478994494755328,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0134965190799244,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.4020078920149926,
+      "ci_low": 0.3025470644878334,
+      "ci_high": 0.4723416884671523,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0101137812621988,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.1717522735974273,
+      "delta": 0.0086325576516944,
+      "ci_low": -0.0350234566023344,
+      "ci_high": 0.0247148421839417,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0121828054694774,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.2864826840339364,
+      "ci_high": 0.4554240111747465,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0074071159420547,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.1778192335234454,
+      "delta": 0.0060669599260181,
+      "ci_low": -0.0168708184178881,
+      "ci_high": 0.0422723724929574,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0017970106154499,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5486674512986319,
+      "delta": 0.3769151777012046,
+      "ci_low": 0.2891890577909676,
+      "ci_high": 0.448590057381467,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0013137136104469,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5651276079607256,
+      "delta": 0.3933753343632982,
+      "ci_low": 0.3033220988163721,
+      "ci_high": 0.4756793656910316,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0020690242072786,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.2885641715915667,
+      "ci_high": 0.4550179096842785,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0047756895274227,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1123126116371841,
+      "delta": -0.0226724403178462,
+      "ci_low": -0.0387410435908309,
+      "ci_high": 0.0136236904434177,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.010510091214861,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.3776933154578349,
+      "ci_low": 0.3346132314080632,
+      "ci_high": 0.4130507851808324,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0026995682503022,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3630129652063087,
+      "ci_low": 0.3180311066659848,
+      "ci_high": 0.3972261358979322,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0042583632370288,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1108305049139995,
+      "delta": -0.0241545470410308,
+      "ci_low": -0.0396856027066924,
+      "ci_high": 0.0129613484620599,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0110427890114833,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.3239540908364154,
+      "ci_high": 0.4015640889149555,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0080164115003776,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.1123126116371841,
+      "delta": 0.0014821067231845,
+      "ci_low": -0.0257247497164942,
+      "ci_high": 0.0279259231294367,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0005326977966222,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.4018478624988658,
+      "ci_low": 0.3484715096017572,
+      "ci_high": 0.4267916278312195,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0137423572617855,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3871675122473396,
+      "ci_low": 0.3323936275140681,
+      "ci_high": 0.4131059554457211,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0153011522485121,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.3389357326651122,
+      "ci_high": 0.4160931901148557,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0190592005118611,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1123126116371841,
+      "delta": -0.0226724403178462,
+      "ci_low": -0.038829309722377,
+      "ci_high": 0.0051953052174632,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0080509654034523,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.3776933154578349,
+      "ci_low": 0.2935959411538615,
+      "ci_high": 0.4383178508342182,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0014397121824483,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3630129652063087,
+      "ci_low": 0.2796235086745345,
+      "ci_high": 0.4205876873577797,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.004093560845917,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1108305049139995,
+      "delta": -0.0241545470410308,
+      "ci_low": -0.0419170501797936,
+      "ci_high": 0.0018537493971735,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0074174566820697,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.2952437625555741,
+      "ci_high": 0.425664783242387,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0045267788999476,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.1123126116371841,
+      "delta": 0.0014821067231845,
+      "ci_low": -0.0250656177273889,
+      "ci_high": 0.0292493755041112,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0006335087213825,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.4018478624988658,
+      "ci_low": 0.3093167698193062,
+      "ci_high": 0.4545225415894733,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0059777444996214,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3871675122473396,
+      "ci_low": 0.2959647308747068,
+      "ci_high": 0.4350470492401734,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0115110175279868,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.3122840265414325,
+      "ci_high": 0.4438995773696951,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0119442355820174,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1123126116371841,
+      "delta": -0.0226724403178462,
+      "ci_low": -0.0497526886561623,
+      "ci_high": 0.0268328229087597,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0106628456985695,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.3776933154578349,
+      "ci_low": 0.2852067752593771,
+      "ci_high": 0.4465313371017819,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0085749400090525,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3630129652063087,
+      "ci_low": 0.2687001795979873,
+      "ci_high": 0.4349475774938561,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0075871385537603,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.1108305049139995,
+      "delta": -0.0241545470410308,
+      "ci_low": -0.0565987986299853,
+      "ci_high": 0.0233270936275441,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0095958878816372,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.2782976475612905,
+      "ci_high": 0.4366357349707334,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.012494890239552,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.1123126116371841,
+      "delta": 0.0014821067231845,
+      "ci_low": -0.0375170388755637,
+      "ci_high": 0.0449498598036076,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0010669578169322,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5126783674128653,
+      "delta": 0.4018478624988658,
+      "ci_low": 0.3013751358966308,
+      "ci_high": 0.4582752875279836,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0181708278906898,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.4979980171613391,
+      "delta": 0.3871675122473396,
+      "ci_low": 0.2854821905816419,
+      "ci_high": 0.4459823786254945,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0171830264353976,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.295075069146468,
+      "ci_high": 0.4457426277312177,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0220907781211893,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1114886714535922,
+      "delta": -0.0192130792838686,
+      "ci_low": -0.0388961554471131,
+      "ci_high": 0.0111679451089984,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0066330022534791,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.380006891049908,
+      "ci_low": 0.3350357477004757,
+      "ci_high": 0.4112630378226463,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0056708339810855,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3616726941718257,
+      "ci_low": 0.3197088144784333,
+      "ci_high": 0.3967683881861052,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0030545678249082,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1102654979378132,
+      "delta": -0.0204362527996476,
+      "ci_low": -0.0388165085177293,
+      "ci_high": 0.0129284110571123,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0079207620552566,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.3235166422493708,
+      "ci_high": 0.4010570859190701,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0111542184316225,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.1114886714535922,
+      "delta": 0.001223173515779,
+      "ci_low": -0.0260549774026373,
+      "ci_high": 0.0263929182211004,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0012877598017774,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.4004431438495557,
+      "ci_low": 0.3484175002762551,
+      "ci_high": 0.4247151457417684,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0135915960363421,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3821089469714733,
+      "ci_low": 0.332380638726548,
+      "ci_high": 0.4124220183081216,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0109753298801648,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.337746240360197,
+      "ci_high": 0.4137247110095156,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0190749804868791,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1114886714535922,
+      "delta": -0.0192130792838686,
+      "ci_low": -0.0397902358194757,
+      "ci_high": 0.0065729595212996,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0042673077892301,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.380006891049908,
+      "ci_low": 0.2918760660248302,
+      "ci_high": 0.4391162320050744,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0014558900441273,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3616726941718257,
+      "ci_low": 0.2808302631746701,
+      "ci_high": 0.4205932139051666,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0032075153513279,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1102654979378132,
+      "delta": -0.0204362527996476,
+      "ci_low": -0.0384892393465474,
+      "ci_high": 0.0024814650816382,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0038333333684824,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.2946428056659158,
+      "ci_high": 0.4265615629474963,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0075835655102757,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.1114886714535922,
+      "delta": 0.001223173515779,
+      "ci_low": -0.0260618449044442,
+      "ci_high": 0.0271294571578556,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0004339744207476,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.4004431438495557,
+      "ci_low": 0.3083434001370049,
+      "ci_high": 0.4560241918735401,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0052892234126097,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3821089469714733,
+      "ci_low": 0.2951283012467183,
+      "ci_high": 0.4339253756609872,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0070408487198104,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.3122670229972343,
+      "ci_high": 0.4450130645796173,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0114168988787582,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1114886714535922,
+      "delta": -0.0192130792838686,
+      "ci_low": -0.0500749979445585,
+      "ci_high": 0.0268556943834616,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0068175275277409,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.380006891049908,
+      "ci_low": 0.2815198545076057,
+      "ci_high": 0.446783596358622,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0115158700986288,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3616726941718257,
+      "ci_low": 0.2694537642719866,
+      "ci_high": 0.4349475774938561,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0062600289791439,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "bounded_MLP_sequence_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.1102654979378132,
+      "delta": -0.0204362527996476,
+      "ci_low": -0.0537015670354644,
+      "ci_high": 0.0233094394023184,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0065420742108969,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.2774369023359517,
+      "ci_high": 0.4345635785246265,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0157686094945254,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "mlp_centred",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.1114886714535922,
+      "delta": 0.001223173515779,
+      "ci_low": -0.0396579186465882,
+      "ci_high": 0.0461027789392027,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.000275453316844,
+      "positive_lower_bound": false,
+      "lower_bound_exceeds_0_05": false,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R4_ridge",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.510708641787369,
+      "delta": 0.4004431438495557,
+      "ci_low": 0.2972441424826424,
+      "ci_high": 0.4570855269514488,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0180579443095258,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "R5_mlp",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.4923744449092866,
+      "delta": 0.3821089469714733,
+      "ci_low": 0.2846875959684138,
+      "ci_high": 0.4448554773916804,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0128021031900408,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.2925012617822954,
+      "ci_high": 0.4449752194708438,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0223106837054223,
+      "positive_lower_bound": true,
+      "lower_bound_exceeds_0_05": true,
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000
+    }
+  ],
+  "undefined_cell_panels": [],
+  "inherited_cache_provenance": {
+    "audit_path": "reports/further_research/round2/resources/cache_completion_audit.json",
+    "audit_sha256": "fd65f1f23129e842101325e4ca6dea8281adb0b8429aa3ad24bd6863cce96860",
+    "controller_provenance": {
+      "authorization_controller_sha256": "24873b2eb95ac7c919693b0f22f589e3f8575ad37f92346b099101c6113c0592",
+      "current_controller_sha256": "a4f0685bdb9575a7448477117f1d78716463ea319edfa8bbd3cb9de7beb586fe",
+      "matched": false,
+      "current_hash_also_present_in_commit": "a66ae5dfbedb762605c83b71f675a0f2995ebefc",
+      "disposition": "Controller-only mismatch recorded as a provenance limitation. All four frozen extraction sources match; current controller validation is useful local evidence, but its source cannot be asserted equal to the launch-authorized controller."
+    }
+  },
+  "evidence_sha256": {
+    "reports/further_research/round2/transfer/assessment_protocol.json": "a5c623104553f8cf3794993633849ef035e6cc2502b7045019fde312176cbf97",
+    "reports/further_research/round2/transfer/results/completed.json": "384cc6521f50702aef6e6c4cfdf559e12cce860b34207965d2e4d080e9223928",
+    "reports/further_research/round2/transfer/hla/h0/completed.json": "5b87becf41bd15f49f1217019472f328a98d012cfde3be058b9ecb2f5ff42810",
+    "reports/further_research/round2/transfer/hla/h1/completed.json": "9d4e4a3bbd641744fd40da43b77e48ea5b415bf9ccf07594b2d10c1554894199",
+    "reports/further_research/round2/transfer/hla/h2/completed.json": "61e40712d27b81eb8066172b3b4ce6a74637ad9d6390bac429c5141a410c6fa6",
+    "reports/further_research/round2/transfer/hla/h3/completed.json": "9ff97fbb06060a74eb21bcb80404ed1afa230dbca76340e573d6f3ed9ae17129",
+    "reports/further_research/round2/transfer/hla/h4/completed.json": "a7dfdcf4bb84f9abf0af4fee58b99761d58a4a520c1588c34c34d22b11819e86",
+    "reports/further_research/round2/transfer/joint/h0_p0/completed.json": "81364cb75ec9951223c925c07b62548cbc66c8397644afc877d499303d58b726",
+    "reports/further_research/round2/transfer/joint/h0_p1/completed.json": "5ff599f615222086179ba02d67f271cbc3e1a200fc0e439d63ff40aa5cc58f79",
+    "reports/further_research/round2/transfer/joint/h0_p2/completed.json": "1f8f5ee6e9d5a0ff822a6a7c9cae3623448de23ae8eecbe3c9d802e908203eb3",
+    "reports/further_research/round2/transfer/joint/h0_p3/completed.json": "b51699e7a277eb9898f0fcd5181cc3c8a997e2c5e6185ef25066b1a2ee7a4732",
+    "reports/further_research/round2/transfer/joint/h0_p4/completed.json": "cabcdd988dcc1c3fd80d5e301408e033d9962a10662f60138b857782ae02e33a",
+    "reports/further_research/round2/transfer/joint/h1_p0/completed.json": "7196a2694f858d5dc06f4fad149739608d8ef3f9ad59ae42a246c8fd178c6803",
+    "reports/further_research/round2/transfer/joint/h1_p1/completed.json": "6bf357caa92452627b96738b97235aa00cdf420de026c27bfa1a8a1b24dc304b",
+    "reports/further_research/round2/transfer/joint/h1_p2/completed.json": "e97cdc5df105972ae7eab02b25197c095703c8418db54e23485bb7a13cba2b15",
+    "reports/further_research/round2/transfer/joint/h1_p3/completed.json": "98bb7b9c6e9aead6ffbbd4b45b63794b34bf45256001b7a033b641635233b6ac",
+    "reports/further_research/round2/transfer/joint/h1_p4/completed.json": "ea9335fa0f9b6fc302f4a85ef24765e7fe68dcaaf250ff74cc5a8b5e38f105c3",
+    "reports/further_research/round2/transfer/joint/h2_p0/completed.json": "f3927db5e52408f499052f502ff0114354d3069cd243e43eac8e3fc71a41248f",
+    "reports/further_research/round2/transfer/joint/h2_p1/completed.json": "53f35757bda5dafc894db6f8be38c0a4cd95ad79e377eae65fe958f20f111a84",
+    "reports/further_research/round2/transfer/joint/h2_p2/completed.json": "0371f8131930409b0aa0c24a60a202b8943adbf7e941f91c92c28ca6f7d23d09",
+    "reports/further_research/round2/transfer/joint/h2_p3/completed.json": "57d47a6711a36aaf3db45944002a9fda4f4242098daeb1171f263fbe6055cda0",
+    "reports/further_research/round2/transfer/joint/h2_p4/completed.json": "df6d60d8495e5c9e1374d109e9f29a40fef1e9b1e9cfc6a6d5aa3c9b009d37c0",
+    "reports/further_research/round2/transfer/joint/h3_p0/completed.json": "c2995ce30e87b9b0db32ef47503ced81effb1c99804c7fb4a530b4cb83d2b54d",
+    "reports/further_research/round2/transfer/joint/h3_p1/completed.json": "841f2be35f92fdf75d6832bf16c183a92148fdc5344c966595485e7aa794e80c",
+    "reports/further_research/round2/transfer/joint/h3_p2/completed.json": "1a94e956bd23d5cc6081bca7e20df1c0668ef1c62ae023c4e19f7b1c1631baf5",
+    "reports/further_research/round2/transfer/joint/h3_p3/completed.json": "c7bc554c1e66e2b6826add3c1b673d7bf28f0157901357d315fe71785cbca17c",
+    "reports/further_research/round2/transfer/joint/h3_p4/completed.json": "b691f48479d140720cd447669fc412abdc419a56640834ab6aadd28e0d505f19",
+    "reports/further_research/round2/transfer/joint/h4_p0/completed.json": "ae4a59209763b68476c368de456c60db4f9efe2831dff451f9badb1cd9e4241f",
+    "reports/further_research/round2/transfer/joint/h4_p1/completed.json": "6d6466038b4f86f85c999b031d959d3c7d0121c62352f734a0b9b0ca9baffedc",
+    "reports/further_research/round2/transfer/joint/h4_p2/completed.json": "b5e7c2b05fbba9ab5ba85d795bce7f1fe8b8a821f2fa21505fced8003a337bac",
+    "reports/further_research/round2/transfer/joint/h4_p3/completed.json": "b45bc0f9bbb694c2aebc15db75bb719b2c2d078d6c51f6d3f3d554562416cc49",
+    "reports/further_research/round2/transfer/joint/h4_p4/completed.json": "15bce5c8c46a4e9f977180d04f37fb632b6994443ec9e539d91d288ab647812e",
+    "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+    "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+    "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "reports/further_research/round2/transfer/protocol.json": "50224f674913cabdd10fe1d9772e151c8c31ce0e705b424fc0825157ebe6484a",
+    "reports/further_research/round2/transfer/manifest.csv": "10f72322fdf042a847a5e1d1cc32be9c7eb4b07c738cb010db829c11e18120e9",
+    "reports/further_research/round2/transfer/hla_groups.csv": "8179d2d15f0a7341e765aa29b04e7eb8a81e37598e68e2fafaae8250fed102fe",
+    "reports/further_research/round2/transfer/coverage.csv": "a4d6efe16ced3e9de8fbfb5ead876bb88f661f4c2ec976a1e379b374dd36c50d",
+    "reports/further_research/round2/sequence/protocol.json": "bf6d80e9aab50ea1737352b04035bdae524badf432584bbadebede1f0847871b",
+    "reports/further_research/round2/sequence/fold_0/completed.json": "768e2058330fcc03dbb817c246ca75b0769945141f96c83b6bf874b455e230c4",
+    "reports/further_research/round2/sequence/fold_1/completed.json": "cb8b873345aa6aff16edbe75dc46faff2e19e91181e04d9828d1655f8958786a",
+    "reports/further_research/round2/sequence/fold_2/completed.json": "7132ea87dbd994798f06615dc622dd438f7c72e95d0cfd1ad48309e96d5a2f92",
+    "reports/further_research/round2/sequence/fold_3/completed.json": "91791f2b536e7f9c9998a7b9587bd4fcc9c79be02abf7e44703c4cce1c3badd8",
+    "reports/further_research/round2/sequence/fold_4/completed.json": "a93f488500877515896db28fded2c52f093c644530a6538925777b3cfb348605",
+    "reports/further_research/round2/embedding/protocol.json": "5242a2ec7e14de249ff245949d41fa50e4474b93b90b42cb6b6428257df5e923",
+    "reports/further_research/round2/embedding/fold_0/completed.json": "6108493668d71c858f1ce245b6fa0c3c6e1419139d8711542fb06093c27bee01",
+    "reports/further_research/round2/embedding/fold_1/completed.json": "7bf0775adecd26dfcc7778de3a41d5a0d51a6b686e9f3646ace4b13f72c1ecb4",
+    "reports/further_research/round2/embedding/fold_2/completed.json": "de607b5bf6561315ceb2aaedb47bcf36d8e37ee5a039a601eb80590495865d10",
+    "reports/further_research/round2/embedding/fold_3/completed.json": "67d22bf13bf49dbc2e0ee60a330a354b8162a158a0efb663831b56dcdc4b8a2c",
+    "reports/further_research/round2/embedding/fold_4/completed.json": "b24c86b973bfd17e32cb28ae4a48752daaf470fa790718d794ba6321c709cd15",
+    "reports/further_research/round2/results/main/manifest.json": "fa635174761599d39e1a6210ea5ccd065f0971e54dfbfd199c674342f2e3327b",
+    "reports/further_research/round2/resources/cache_completion_audit.json": "fd65f1f23129e842101325e4ca6dea8281adb0b8429aa3ad24bd6863cce96860",
+    "reports/further_research/round2/resources/embedding_completion_audit.json": "a5c1802544c994838eb8376c56b0bf09a4ea9f85236f213acb08b1e2a0ce444b",
+    "reports/further_research/round2/resources/complementarity_completion_audit.json": "0395219bb44de9c3009aa63bd4016f6e0d321118cb66a58692f6a6cb11fa86ff",
+    "reports/further_research/round2/extractor/full_training/cohort.csv": "2cf4ab02a738a3af916003fbc470c07c9c6445234cc084c850148174f01effd0",
+    "reports/further_research/round2/transfer/hla/h0/predictions.csv": "9dcc6ad04d52103470d84098a1e237d28698ce9383661537cad7c775d9905458",
+    "reports/further_research/round2/transfer/hla/h0/selection.json": "d09fcf549aee846529605576718cdc9cd696d865c1fedf6397acbd10bfa4a786",
+    "reports/further_research/round2/transfer/hla/h0/ancestry.json": "8e99fba1ddaa21c66ff1f3b51a1e5a8985178e49f12beb83f9730316dd6237c8",
+    "reports/further_research/round2/transfer/hla/h0/members.json": "9252d660739eceea74113cfbfb8407eaf07df1ce9158509ff0eafcafed9120c5",
+    "reports/further_research/round2/transfer/hla/h0/runtime.json": "0df5203c7f9d421c51a7d079c007e4c020f285a16345b36cb26b45d9109f5a07",
+    "reports/further_research/round2/transfer/hla/h1/predictions.csv": "b2ece7112205ec8f7f87e42cb36696142023932ee776cdf5f7800ba6c138a7ed",
+    "reports/further_research/round2/transfer/hla/h1/selection.json": "afd8726fc94e39928e5485389bfc1e4e5936864b13596fbb57e7b57a4601579b",
+    "reports/further_research/round2/transfer/hla/h1/ancestry.json": "b62f07efce13b5a147b0a03ca9e47a0b2f320c7e52ccdc9048e8ba100c436a3b",
+    "reports/further_research/round2/transfer/hla/h1/members.json": "1cea4bc7652e39d2b87cfedaf372f30a05a98be297f31c91e2326c17833602d3",
+    "reports/further_research/round2/transfer/hla/h1/runtime.json": "8408b76fc2a621e5583e9c9647a63b3c8c78cee9e8ad061fcfe255553927e5b9",
+    "reports/further_research/round2/transfer/hla/h2/predictions.csv": "00dc83049c364bca5f13455918e923388cbee2430554d078e1016eb245a0bc1a",
+    "reports/further_research/round2/transfer/hla/h2/selection.json": "c8aa2d9c21248aff52525693187a4ec5a7a8ae6c0741647649a9442e46092152",
+    "reports/further_research/round2/transfer/hla/h2/ancestry.json": "0b4b777f3ac1dde903470f4d72db5289579d6ada3fddf4c82f480bcceb8cbc1c",
+    "reports/further_research/round2/transfer/hla/h2/members.json": "7f525ca3aab41e47c5b90496e7f4878550b5fdb2ce659e1aac26d30006cbbfe1",
+    "reports/further_research/round2/transfer/hla/h2/runtime.json": "b0150540890c5c993d82ce13b0df296651f6716403bc5395181253d51616e4c7",
+    "reports/further_research/round2/transfer/hla/h3/predictions.csv": "4ab52b852e99aab78edfdd3118616f46e949d76c2c59161a3dd72faca0034a04",
+    "reports/further_research/round2/transfer/hla/h3/selection.json": "3f590f7a988f905a9dbc58d6999eb6915b5cf1c78dbcf1cdbac835f4d870ce33",
+    "reports/further_research/round2/transfer/hla/h3/ancestry.json": "fc59d07fe5c40bfbf8f35ba93762e923248797ec28c432be6b27d49ccfb6b350",
+    "reports/further_research/round2/transfer/hla/h3/members.json": "8447b1832585f72beda6037b323ec2c0653c7019e1bcba679501bbd044707684",
+    "reports/further_research/round2/transfer/hla/h3/runtime.json": "39b3e1fd1ce58794f6fddd47fcab9b157e8130a1a3c815e91ccb496110e808f5",
+    "reports/further_research/round2/transfer/hla/h4/predictions.csv": "ab27495312925f952425bef70c8666017e2d1e55ebb4dd9d7e5c13c16f73c483",
+    "reports/further_research/round2/transfer/hla/h4/selection.json": "fb4830bf18793aac26c2272b12c5ff298959ab28c347338816b51cefba2c665a",
+    "reports/further_research/round2/transfer/hla/h4/ancestry.json": "2dec2944760b00073624e313de95c735795e3b4f4e293d79e586fd68659aea3c",
+    "reports/further_research/round2/transfer/hla/h4/members.json": "18e6e04de897cf360d852227ed603436c39b022c67bb7a536feab65a91f98e7b",
+    "reports/further_research/round2/transfer/hla/h4/runtime.json": "fa5db92d318764d746e686527cd9e1ce0cff8a1eaf14447ed3b89254154f4892",
+    "reports/further_research/round2/transfer/joint/h0_p0/predictions.csv": "c6b399248dd415ba0afeaa5c4fb7d2942927df9e374ea36221ba17c4da2e67fa",
+    "reports/further_research/round2/transfer/joint/h0_p0/selection.json": "3d8aba9e7290795461c3c2bf524863ba7c7574169383727c72fe937e9afd359d",
+    "reports/further_research/round2/transfer/joint/h0_p0/ancestry.json": "45ee7308195e1cee03895dfc8b1742eb4b0685365e7ea7696465e2819af78ce2",
+    "reports/further_research/round2/transfer/joint/h0_p0/members.json": "2ab6a7fff900e1f33187cc949ec73da4590e491623bb7bcf2a9f75828e5c9942",
+    "reports/further_research/round2/transfer/joint/h0_p0/runtime.json": "82f0f37e32427f6714700e4a1f469a770d7abe52674b05a242d1cf715780b8ce",
+    "reports/further_research/round2/transfer/joint/h0_p1/predictions.csv": "1b9572fc40d94673e44d375ab9911421bc51200d2354d2be338cc5023870fa9a",
+    "reports/further_research/round2/transfer/joint/h0_p1/selection.json": "5893d913465b6e05e99e2e318e519b12d4c62abb3b575508fbaccaafb3a53db0",
+    "reports/further_research/round2/transfer/joint/h0_p1/ancestry.json": "1f91cf7cf30f51dece4c1308a14189cafd707738d8f64a279a3eb3d08c5befef",
+    "reports/further_research/round2/transfer/joint/h0_p1/members.json": "9402e9622355a9a440a8119537b01a9a8f71d2e54e2d1fea4963de30c67976a3",
+    "reports/further_research/round2/transfer/joint/h0_p1/runtime.json": "8c25bc710fcc6964b302865114e13770d0f3930beb27971f461a49f64cbb3926",
+    "reports/further_research/round2/transfer/joint/h0_p2/predictions.csv": "d935bdb83e2cda83a0b424b244e99f4b5a9ae4da4cfa535925ff2e2fbd078d8d",
+    "reports/further_research/round2/transfer/joint/h0_p2/selection.json": "74f9d7ddb8e1efdca6c4eee20745ebb1b243c6d48e940ee442af2f1b5e837d60",
+    "reports/further_research/round2/transfer/joint/h0_p2/ancestry.json": "47960f6dda97855a0aa5613f038dc43f0ec99c278d5764e945e4fc8381d6f675",
+    "reports/further_research/round2/transfer/joint/h0_p2/members.json": "3c7ec30c6a237a14536acd198e93306b7cae14cc8dec2f9b48d27f85e82812b8",
+    "reports/further_research/round2/transfer/joint/h0_p2/runtime.json": "f298ce100a0d8d5aeb1bf2615b59672c5feffc1e208b3604ccfda2db3b478ca0",
+    "reports/further_research/round2/transfer/joint/h0_p3/predictions.csv": "7f2a0f8ff83b208c4e54d4de0839dd7507112e181c3a0889f7e48317e326c3b4",
+    "reports/further_research/round2/transfer/joint/h0_p3/selection.json": "ca9e04cdece0dc244453d7cd98c8fb9381bddc350138bb6591f612e5f7c66e5c",
+    "reports/further_research/round2/transfer/joint/h0_p3/ancestry.json": "d9a5d5f2b182fbce09fbd9c201b82463fce3b5a85f283b5bd14ecd03d5e0ae22",
+    "reports/further_research/round2/transfer/joint/h0_p3/members.json": "b6ae58eccf0c1d830917e39beeaf11ab41b76571ea4ab11d98a3a750460b9141",
+    "reports/further_research/round2/transfer/joint/h0_p3/runtime.json": "c43039882c2c85834ea48f203497ba43b7b297ab8f633acecafc638a5d5bdb08",
+    "reports/further_research/round2/transfer/joint/h0_p4/predictions.csv": "4e36172698f2d927e217f458d53f56568df34471adcdc8980d39feda06858135",
+    "reports/further_research/round2/transfer/joint/h0_p4/selection.json": "87771486cdbbbcad631c92ff66ccfceaf0cd2fef342e32455c2d50e70bb4767b",
+    "reports/further_research/round2/transfer/joint/h0_p4/ancestry.json": "41ed86e1cf2c1b4cddaff3685342d38ea2d3036ee95f95d81fefa4fa79379dfa",
+    "reports/further_research/round2/transfer/joint/h0_p4/members.json": "d53c239aa92b59a7daa1856d7c8da0fd0bcf9fb594aa4c263f722788804b7270",
+    "reports/further_research/round2/transfer/joint/h0_p4/runtime.json": "77d803aff5697263f4edd32321399bc6ef1c4130d03162ef1d18ab8b69749585",
+    "reports/further_research/round2/transfer/joint/h1_p0/predictions.csv": "52778dcca5a6241a13ab8472399239646a7585e0ea1a58ce4675b84a154b819f",
+    "reports/further_research/round2/transfer/joint/h1_p0/selection.json": "5a680b79b72ba4498cae0dbd924bb850ccd7ee7c938a2b96a0f975913691c976",
+    "reports/further_research/round2/transfer/joint/h1_p0/ancestry.json": "38a3736ec5b91326204a36f9a60275729275904c01a088c32984096c888dbb46",
+    "reports/further_research/round2/transfer/joint/h1_p0/members.json": "db2e75f8bf3877a5662fd042d89360f84c2fee5bb0a6b972f6cf9ac1ef4097ab",
+    "reports/further_research/round2/transfer/joint/h1_p0/runtime.json": "557a97a14f1fb18f7b6adf8be5faae31368fa631fc99c28118bec82516ad7623",
+    "reports/further_research/round2/transfer/joint/h1_p1/predictions.csv": "20c26d7b0f6c0510544a30276a6e265c75ef5aaf521146b6be47b6a402b9d82f",
+    "reports/further_research/round2/transfer/joint/h1_p1/selection.json": "f720674f25b21ed465a766a457affda36e3413031c1b27eb201ad6fd4462f63c",
+    "reports/further_research/round2/transfer/joint/h1_p1/ancestry.json": "5e35db50c05d0757075298cc14235a75699c3986f9bb6fc6e6b5b88a08b3467e",
+    "reports/further_research/round2/transfer/joint/h1_p1/members.json": "95d1beb8ced8fa9a3f3dd9bc5f03ee27b3acefd1c4923e7c8824c7b41fe99952",
+    "reports/further_research/round2/transfer/joint/h1_p1/runtime.json": "66acda727b55cbbf39541c96c95f64cda0e3894919e7844e1487d2992774892c",
+    "reports/further_research/round2/transfer/joint/h1_p2/predictions.csv": "227eeea38dff8c15af3fd70e05fbe097cbf1cb8f67f2d2a8af0ae27720dbd864",
+    "reports/further_research/round2/transfer/joint/h1_p2/selection.json": "8c4575107bc7d5b929853b21cf1ad3d4d9e33a5622aaab5823e27c67a5a89754",
+    "reports/further_research/round2/transfer/joint/h1_p2/ancestry.json": "3b930f10eb1919ecd9d1b1cf48ef6353776bd164cc72eebb8389bebb797b8a99",
+    "reports/further_research/round2/transfer/joint/h1_p2/members.json": "2ddda2e4bcfbaca73ce16a76dc78ef82f0c1da08fe248bb866fbfc2e8abbdd52",
+    "reports/further_research/round2/transfer/joint/h1_p2/runtime.json": "79d3d9a7f0b716083134e52042a6077633715236cd88e8ca38884fe5a0fed9c8",
+    "reports/further_research/round2/transfer/joint/h1_p3/predictions.csv": "77f0cabce4fb3df5fdec1817ee49a2893105e8ecf23491139d30f622967bfc64",
+    "reports/further_research/round2/transfer/joint/h1_p3/selection.json": "7d9ec2f8a928c6e2c2f862d5c8ab9399304d8a07ecadbc188251e89f22c77d37",
+    "reports/further_research/round2/transfer/joint/h1_p3/ancestry.json": "91bb28e4972b8669b20cb1a0d60fde4369b3dbe511f2e0f2dd0179cee72ab474",
+    "reports/further_research/round2/transfer/joint/h1_p3/members.json": "d39ac8092ddf6dd1bcd2e0177b1ef034f2273ffa91d9151037835d803016fc9e",
+    "reports/further_research/round2/transfer/joint/h1_p3/runtime.json": "4bd1b83e390d33b2a65d7e5df52aa2c1e7f8f456808b58fdad656b6339ad2003",
+    "reports/further_research/round2/transfer/joint/h1_p4/predictions.csv": "3278992ac023debe6f6206b11b98e24cc64cd026a840566cb9ea84384f701705",
+    "reports/further_research/round2/transfer/joint/h1_p4/selection.json": "41ad0f0c70cdce9b85fc228dadd51373add4c0017550e2569393412259eb138b",
+    "reports/further_research/round2/transfer/joint/h1_p4/ancestry.json": "3b0433b059a760d4148d21c115e7a2582753b428063ea1e32d55c169e28062a7",
+    "reports/further_research/round2/transfer/joint/h1_p4/members.json": "01f00b76167ef7897af676cb36f58eeb6806e9df075c50bf522ce38092322ee6",
+    "reports/further_research/round2/transfer/joint/h1_p4/runtime.json": "8640622d471c25d4cdad9555fb7c5907aecd1d166302ec0d697561b5870236c3",
+    "reports/further_research/round2/transfer/joint/h2_p0/predictions.csv": "ca5a341ddb7760f4c6617a442c95fcbf0d7037ce347e47d584e2e0b0cbf4903a",
+    "reports/further_research/round2/transfer/joint/h2_p0/selection.json": "aac902e6a2176e382d35e6971b4980bd119dff917cb093136177b233f7c4089e",
+    "reports/further_research/round2/transfer/joint/h2_p0/ancestry.json": "ebcbe09d893be448f6c445cded48b67b335506a301196232886d547d4da75d46",
+    "reports/further_research/round2/transfer/joint/h2_p0/members.json": "2386f76baa2eaabdb23386d690e3cf1c472193aacdb495c4aa60e3ecf98f745c",
+    "reports/further_research/round2/transfer/joint/h2_p0/runtime.json": "bba0b0afedfc8263c11e7d12627594a3c458baa69fa1bf5587ca86f9addc175b",
+    "reports/further_research/round2/transfer/joint/h2_p1/predictions.csv": "abb69c339900aa64ff3407e6355d5bcc8d4dc9ea43d508ecc27b4644d434d1a3",
+    "reports/further_research/round2/transfer/joint/h2_p1/selection.json": "744795b800b2bd96bcd600db2c5cce67b4b9cb2e008aee7bc2bccfbad670c466",
+    "reports/further_research/round2/transfer/joint/h2_p1/ancestry.json": "d752d842cf60d91581b9f773db06f67563c6fd86f1cd4fd89af8c3fdbe869279",
+    "reports/further_research/round2/transfer/joint/h2_p1/members.json": "7e27685d4d8a16a33441bb8dea4f5c20a2dae71297194a469a4f28e746cb483f",
+    "reports/further_research/round2/transfer/joint/h2_p1/runtime.json": "83a22393156b81f8f5123408b7164b77a1b765e99f306f7cf6b7ab6102a37a27",
+    "reports/further_research/round2/transfer/joint/h2_p2/predictions.csv": "ed44ccecc18eeb868bac5801cdac350e9c9bb8bac2a285dd4a89abf95d49c370",
+    "reports/further_research/round2/transfer/joint/h2_p2/selection.json": "3abd3017979bcf38c2b7e3fe9f55fce43d5e55d8c391452f16f6b9cb4eebe507",
+    "reports/further_research/round2/transfer/joint/h2_p2/ancestry.json": "08c8f9c9d684cd5f55712d25a50a468612f887b498084c1992d940e1ffd03250",
+    "reports/further_research/round2/transfer/joint/h2_p2/members.json": "0622f0bdbb81b332ea356482b4a9b1c122cb4320e41ef00b5ed123d8b5273cb8",
+    "reports/further_research/round2/transfer/joint/h2_p2/runtime.json": "21c61a671dcf7d02141141a7505a8aaf171d9d86634b9454f26f60c19c83f6ab",
+    "reports/further_research/round2/transfer/joint/h2_p3/predictions.csv": "88fd60e7139a52fcfdeafc1c27a287552f25c0b2eaa8940fb8cea45a602c950f",
+    "reports/further_research/round2/transfer/joint/h2_p3/selection.json": "71caece4116f29f259f36c789f4fbdbc328b68970a4327390502e14670e00cde",
+    "reports/further_research/round2/transfer/joint/h2_p3/ancestry.json": "09c77a72dff75aab1e51e913c3869da7f1d9c572cbc97f98e8597f6cc2fd0d20",
+    "reports/further_research/round2/transfer/joint/h2_p3/members.json": "2d6ec271ec7f9c269aeb91fe0e00322c31dd6a6e3be9f262b76786bb451cd2c4",
+    "reports/further_research/round2/transfer/joint/h2_p3/runtime.json": "9226502f7f3aef50bf9c2cb8ea1cd1af5d3da4e6a293204024c4a99800bebd8b",
+    "reports/further_research/round2/transfer/joint/h2_p4/predictions.csv": "4fc128e232dbe4a3e4d402a328bc547d1baeb21d27fa8242ae9d9367c1f9d549",
+    "reports/further_research/round2/transfer/joint/h2_p4/selection.json": "6e61a3d234a337d4db928b93787791ee9a8d2a1e960f165f623be56909ab82b7",
+    "reports/further_research/round2/transfer/joint/h2_p4/ancestry.json": "77d177f66aa1337381766cac08f7bcc35f146fb98b3debe47ad503e5ac7a66d5",
+    "reports/further_research/round2/transfer/joint/h2_p4/members.json": "78926a4ae702024a683cd9a61d283179831706ed1c99b66cceb66113c1f6203f",
+    "reports/further_research/round2/transfer/joint/h2_p4/runtime.json": "ec2240ee926ba39225be7a5a186f806e0c0dae8b066f9b85c243687db71706ca",
+    "reports/further_research/round2/transfer/joint/h3_p0/predictions.csv": "7eee5926101451ab21db8ef04c37b10992a856cf71dfd223defff79473a89375",
+    "reports/further_research/round2/transfer/joint/h3_p0/selection.json": "9138167094ee3dcea7deaba74f098650dacc67c7789e3cf5dbe61c4d99c9132b",
+    "reports/further_research/round2/transfer/joint/h3_p0/ancestry.json": "7aac926d663771ccde89db95264d181b4929e75999f600131231668523105db5",
+    "reports/further_research/round2/transfer/joint/h3_p0/members.json": "25fc4396496d3770f4633aedc5a4ead42c67e904d969453ba4c301e83fa50a84",
+    "reports/further_research/round2/transfer/joint/h3_p0/runtime.json": "5886544da56ba83c46271ad818b0f8cc9f9d18e22a73327cfdbb8c1fafa4a6b1",
+    "reports/further_research/round2/transfer/joint/h3_p1/predictions.csv": "1289845a854f124a007cee4409eeb40c194d5f4b4f61888b178c20f5d2512999",
+    "reports/further_research/round2/transfer/joint/h3_p1/selection.json": "b9e84f4247d7e01f138040fc5247f964d3ccbab4078a614af675434ffdfc15ec",
+    "reports/further_research/round2/transfer/joint/h3_p1/ancestry.json": "9f52f1118fcfaad6746f47b5c4d44bc77500d57b8cfd2b5e1c3c19ce3ab10b5a",
+    "reports/further_research/round2/transfer/joint/h3_p1/members.json": "0833aab26cb3cc245438f2b62e16cb2369f80d7db18e96e3141cddadb80a0f35",
+    "reports/further_research/round2/transfer/joint/h3_p1/runtime.json": "82a6106b2db7108d58030776795c000e1214900ef7aab6f66cb997bf6fb48ceb",
+    "reports/further_research/round2/transfer/joint/h3_p2/predictions.csv": "9cf7b3282e867e00108f678f4c175fd500e82a8571fe924fb5ef1e8ff7ad8e0b",
+    "reports/further_research/round2/transfer/joint/h3_p2/selection.json": "897850e08117b3d12a2c3830f98c04af59bf8c128a9f0f590fc4cf597059318c",
+    "reports/further_research/round2/transfer/joint/h3_p2/ancestry.json": "64926e56e670854cbf6e1be0656a9611ce1a6002b42d9a61d6c47f8a19acd4e2",
+    "reports/further_research/round2/transfer/joint/h3_p2/members.json": "b8e32aa99ac397aa0d127c6c0e835e0a4e56fbf68b460bd4524c9e88ddcd9f3e",
+    "reports/further_research/round2/transfer/joint/h3_p2/runtime.json": "3c6bcb35762529a656ae86d87eab219f00b13d6d50c4cbca5062bff166186e41",
+    "reports/further_research/round2/transfer/joint/h3_p3/predictions.csv": "de509aa096ecc96d062f42f4c461da880f476c4224374c6839ca9817938d4f67",
+    "reports/further_research/round2/transfer/joint/h3_p3/selection.json": "538778ab8d5345364689ce2f22d34dde0fb380022dbeb721c61af93466d5f7a7",
+    "reports/further_research/round2/transfer/joint/h3_p3/ancestry.json": "2c911590df5b78a34cdff2e4160733973e22c423247cccf75943ae3268c2ac27",
+    "reports/further_research/round2/transfer/joint/h3_p3/members.json": "2794b9cde79bd773fa13ecee704ebc0ef6d351324956b5eeb435bdfb159a00eb",
+    "reports/further_research/round2/transfer/joint/h3_p3/runtime.json": "5ee789c3258b5d6b0be3822b0b4aaf57ebc9eb5ed639c61376efe3be0f6d40ec",
+    "reports/further_research/round2/transfer/joint/h3_p4/predictions.csv": "dfb32e817a29b173777c25c43020145907f5358b2752241ea83a5bf107605434",
+    "reports/further_research/round2/transfer/joint/h3_p4/selection.json": "ccb58a78597cee4cac2ede361940c46727fd67982086974c310ed0d4e2ab7404",
+    "reports/further_research/round2/transfer/joint/h3_p4/ancestry.json": "06835d1684e36605c3ca48fb7170f859142d62f53d15a507e3580e814274699f",
+    "reports/further_research/round2/transfer/joint/h3_p4/members.json": "05d50f5af6923edf7e3ebe04f71376faecc719e38c7cf2540a090bacb631376f",
+    "reports/further_research/round2/transfer/joint/h3_p4/runtime.json": "6f1c24e9ad29eced09b349e86ceb85f7df1bc9b6c7a9d9cc51cc34bea642e06f",
+    "reports/further_research/round2/transfer/joint/h4_p0/predictions.csv": "0b2bcb49714b51357a6f236e5b4aa98ff2f0baff2f153727cb998e4e3dbd1458",
+    "reports/further_research/round2/transfer/joint/h4_p0/selection.json": "d26cac3b229f7500f4b2a2a9419ab8420311e01991b6559c24e7bbbaaee072b8",
+    "reports/further_research/round2/transfer/joint/h4_p0/ancestry.json": "046348c52d5adb7cf26f02fe50571bc4c3203517a73ba295acd6d13862e7e412",
+    "reports/further_research/round2/transfer/joint/h4_p0/members.json": "d73c7371f17afdf43508c47d1aed40f61015428fcbfb312d351dd505a2146d2a",
+    "reports/further_research/round2/transfer/joint/h4_p0/runtime.json": "e4223018fb1d6ee3dd002f87f89aa8d316a799d49f5c510a6c00203a8950ae86",
+    "reports/further_research/round2/transfer/joint/h4_p1/predictions.csv": "9973e3da61f3f17b5f4c72adfb06dd948e7e0d51075c15f69a8ac47b8a95e542",
+    "reports/further_research/round2/transfer/joint/h4_p1/selection.json": "c7ddf77c90584ee94a667e1f5acf00b8dd5bb8ce82c1726764340249f52c7baa",
+    "reports/further_research/round2/transfer/joint/h4_p1/ancestry.json": "b0134bd590c5c8fbca993746c02d6148ef0a7040dd7a206a1f62d6d0db7c9d34",
+    "reports/further_research/round2/transfer/joint/h4_p1/members.json": "743acf8fa03e0724c9c40ecb4c84d23c84a199d0ef2b133ea242a5d18d6a7a3f",
+    "reports/further_research/round2/transfer/joint/h4_p1/runtime.json": "7bac59e3eef3cebb14ba70bd4a05639183e621cf48bd3b8fc43a161a830db525",
+    "reports/further_research/round2/transfer/joint/h4_p2/predictions.csv": "362df6673ef8a1ca4fbb8f8a13b0039a6d55d945a9a179a4468733b7aab2e8aa",
+    "reports/further_research/round2/transfer/joint/h4_p2/selection.json": "6c61d515ae49b0aaaafc54e3707cac7fc24ded41398399c6633ed27044621cdc",
+    "reports/further_research/round2/transfer/joint/h4_p2/ancestry.json": "a3bc3593716825cb0ccb05f44eedc75f83afe254c212d9d732746e1cbca3910a",
+    "reports/further_research/round2/transfer/joint/h4_p2/members.json": "d0167d539148e1a087f49d4c0e41682f2ffe49c188eb2cefcf61271022417ed5",
+    "reports/further_research/round2/transfer/joint/h4_p2/runtime.json": "fa2f5ab9581fa12935636c68417a10eda58005116f0490620d72be684c28af55",
+    "reports/further_research/round2/transfer/joint/h4_p3/predictions.csv": "d3ae0d7cd393aeca8fbecfa63873c7c927637e0858c97f0c41b8f06852b81154",
+    "reports/further_research/round2/transfer/joint/h4_p3/selection.json": "f2c37735e60dd4c0f96e3ba6c305f0681fb6b91b4ac6e78d0c8869afea917ce8",
+    "reports/further_research/round2/transfer/joint/h4_p3/ancestry.json": "73781cfa40b3ec6e2c2b6890176fb54de882a9e21eb3c3d5cb57a0126ec4022e",
+    "reports/further_research/round2/transfer/joint/h4_p3/members.json": "17b4e282263694f20bcdfeb374dc5b4069cb8d8ba6cba87db36d08729591c6d8",
+    "reports/further_research/round2/transfer/joint/h4_p3/runtime.json": "0a481f6c9f1b6c312442c9fca85bf3c7e43795b7556bd42f6649d92b85b167a3",
+    "reports/further_research/round2/transfer/joint/h4_p4/predictions.csv": "cd60cd2d3fdbdfb930755bc2e09b171183b7e5c26cc28438bc2247d0b0510879",
+    "reports/further_research/round2/transfer/joint/h4_p4/selection.json": "51a24225fae08030cb146af7ba8f899bc637ea31df44d6904b12e6fc5efefc50",
+    "reports/further_research/round2/transfer/joint/h4_p4/ancestry.json": "b24f1dafdc72f44d844d24678c4286ae8980a9b001f60d89b53bb07d3700bef0",
+    "reports/further_research/round2/transfer/joint/h4_p4/members.json": "3caf31a456a855107766a9790a9ace5e463c6a8c5c5be5fdda7f117ec9b26adb",
+    "reports/further_research/round2/transfer/joint/h4_p4/runtime.json": "dfc67e664aeba76e6c63aea69876d6b877a9b8ae26b0001edc055adda66a8090",
+    "reports/further_research/round2/transfer/results/README.md": "eb4a7b30c8673923440466c760d86f5130c65bd7732ce3dae401139c827e910e",
+    "reports/further_research/round2/transfer/results/comparisons.csv": "92c6970a405ee39a202a3865865b8a79908abcda79c5114057bc4afdbd12c869",
+    "reports/further_research/round2/transfer/results/frozen_coverage.csv": "670ed45a44d29ca81b72f0196d049cd4f08f2ef1d71b5711435b30843ba674c3",
+    "reports/further_research/round2/transfer/results/hla_panel20_crossed_draws.csv": "ed91dade74c8d0c19899028443ff98d25dc206ce15af4bf9d00fb4b85e2284da",
+    "reports/further_research/round2/transfer/results/hla_panel20_hla_draws.csv": "f16934deaa46878e4f76289d361f308cb5a2eca98bc6deebb988eda4344eae87",
+    "reports/further_research/round2/transfer/results/hla_panel20_peptide_draws.csv": "e373c36db6866e87fd87ac6306b3b11f5185083b2e89b6bce8c4590926130ca5",
+    "reports/further_research/round2/transfer/results/hla_panel50_crossed_draws.csv": "67fba4ae37813233fa643d16f1e8f3113e47e5f06ce5f33e280a4740af393749",
+    "reports/further_research/round2/transfer/results/hla_panel50_hla_draws.csv": "56f17b3f8d81b216186f1f43c31d8f510132c5916ee964fb9411603f2546f959",
+    "reports/further_research/round2/transfer/results/hla_panel50_peptide_draws.csv": "59fc1515b08e6703d33a47485dbc7f8cef63d44345d591947c201ee581123667",
+    "reports/further_research/round2/transfer/results/hla_per_allele.csv": "f9a8938194571dc7193687eb713a9bc28e6bb04c11fb6d932e177cd36fa76855",
+    "reports/further_research/round2/transfer/results/joint_panel20_crossed_draws.csv": "3002e326e8716092621cf4f428a0187443c7f862b589eebf03597be53e640b1e",
+    "reports/further_research/round2/transfer/results/joint_panel20_hla_draws.csv": "5f0a42aaf5f08773cb7f3b1c1bc77a9576e5dc95322276332f7983c9e3048744",
+    "reports/further_research/round2/transfer/results/joint_panel20_peptide_draws.csv": "640daa161b077fabddb9618acb39f217ccaa9d0a47709008957b97819c4e17ad",
+    "reports/further_research/round2/transfer/results/joint_panel50_crossed_draws.csv": "2731071a68d78b88a4b4a063a2aa286950074315655f1b30a9748481d09c8e78",
+    "reports/further_research/round2/transfer/results/joint_panel50_hla_draws.csv": "28af5934b8846c928490cf26e5ce011d67e35fa02f42cf857d1938ab9a6a6c73",
+    "reports/further_research/round2/transfer/results/joint_panel50_peptide_draws.csv": "645739d223f6c0049105ecfaf86d294b65510b5d724d1f3422a9ac94025b5f01",
+    "reports/further_research/round2/transfer/results/joint_per_allele.csv": "5221891cfdb59723f0e8d304d4804f2485c0ef7d5795a7495042f724967d2f5b",
+    "reports/further_research/round2/transfer/results/leave_one_hla_group_out.csv": "fc196abec20dbaed9e535a2b65a7d654b31d116ce5c70683cd7028b8b867e5b0",
+    "reports/further_research/round2/transfer/results/per_cell.csv": "bcbf9535eace6b00272d574f305e19110a749b6e5ccc4c996dc1015eac3b2824"
+  },
+  "local_execution": {
+    "no_fits": true,
+    "no_report_rerun": true,
+    "no_full_bootstrap_recomputation": true,
+    "no_cloud_calls": true,
+    "no_original_test_outcomes_inspected": true,
+    "elapsed_seconds": 69.74103154195473,
+    "peak_rss_bytes": 753156096,
+    "metadata_arithmetic_elapsed_seconds": 1.7298317078966647
+  },
+  "limitations": [
+    "Inner OOF prediction vectors were not retained. Candidate grids, stored pooled scores and selection/tie rules were replayed with exact fitting/selection ancestry; raw inner candidate score recomputation would require new fits and was not performed.",
+    "Feature scaler rows/hashes/dimensions/finite means/positive scales were checked, while numeric scaler means/scales were not recomputed from full feature matrices.",
+    "All saved2000paired score rows and percentile/bias arithmetic were checked, with fresh deterministic draws0,999,1999 for all procedures/regimes/panels/modes. Full2000bootstrap score computations were not repeated.",
+    "The comparator is the bounded original-versus-centred MLP selector, excluding trees and PairLogit. These transfer results do not establish superiority over the full main sequence selector.",
+    "HLA-group resampling replicates allele contributions as well as rows; crossed draws are a conditional pigeonhole sensitivity and can be conservative under sparse intersections. Group deletions are sensitivity diagnostics, not independent confidence intervals.",
+    "Joint neural stopping uses five diagonal HLA/peptide intersections, excluding cross quadrants; diagonal stopping covers only a subset of fitting rows and differs from all25outer assessment cells.",
+    "These are previously examined original-training development outcomes, with unadjusted exploratory contrasts. No independent confirmation, assay noise ceiling, execution repeat uncertainty or full-channel claim follows.",
+    "The inherited cache-controller launch hash mismatch remains explicit by reference; no frozen source or authorization was edited."
+  ],
+  "summary": "All30frozen cells and13530members passed provenance/ancestry/selection checks. The embedding selector has positive conditional development differences against original and bounded MLP sequence references in HLA and joint regimes, both panels and all3uncertainty modes; every35-group deletion remains positive for these selector comparisons.",
+  "bootstrap_metadata_arithmetic": [
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 0,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "n_degenerate_resamples": 0,
+      "n_resamples_with_dropped_alleles": 2000,
+      "eligible_hla_groups": 34,
+      "scope": "Fresh2000label-eligibility/multiplicity draw arithmetic; bootstrap prediction scores not regenerated."
+    }
+  ],
+  "embedding_selector_family_counts": {
+    "hla": {
+      "R4_ridge": 4,
+      "R5_mlp": 1
+    },
+    "joint": {
+      "R4_ridge": 23,
+      "R5_mlp": 2
+    }
+  },
+  "embedding_selector_group_deletion_summaries": [
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3545046952028702,
+      "maximum_delta": 0.3944761323166765,
+      "all_positive": true
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3549674020303694,
+      "maximum_delta": 0.3802373403283593,
+      "all_positive": true
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3599440412903772,
+      "maximum_delta": 0.3933002060452238,
+      "all_positive": true
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3586622330465911,
+      "maximum_delta": 0.385210989402988,
+      "all_positive": true
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3537475932801112,
+      "maximum_delta": 0.3862599178929737,
+      "all_positive": true
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3729499329620881,
+      "maximum_delta": 0.4047385699806165,
+      "all_positive": true
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3506844644352462,
+      "maximum_delta": 0.390933740061184,
+      "all_positive": true
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "groups_checked": 35,
+      "minimum_delta": 0.3723629077967501,
+      "maximum_delta": 0.403805629049036,
+      "all_positive": true
+    }
+  ],
+  "primary_selector_comparisons": [
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.335781655098102,
+      "ci_high": 0.4117578553849734,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0012849321998815
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.3402993570606374,
+      "ci_high": 0.4152357997207236,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0053427650006122
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.3114103208911355,
+      "ci_high": 0.4497535278559381,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0021525187914342
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.3231818653756884,
+      "ci_high": 0.4431867766249527,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0045627255211638
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1709349756195771,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3753683365192907,
+      "ci_low": 0.2834444631942975,
+      "ci_high": 0.4550397074193563,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.003146304068589
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1739612989346487,
+      "candidate_score": 0.5463033121388678,
+      "delta": 0.3723420132042191,
+      "ci_low": 0.2903384678286439,
+      "ci_high": 0.4532691696310428,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0036026365438781
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.337464096267026,
+      "ci_high": 0.4116546139230266,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0057079877174988
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.3415392534390232,
+      "ci_high": 0.4143944682253576,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0063335327135068
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.3125506269098408,
+      "ci_high": 0.4508416378952706,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0018350683640385
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.3231774267107209,
+      "ci_high": 0.4447457627039726,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0054062799734453
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1631197159457329,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3802974018846012,
+      "ci_low": 0.2864826840339364,
+      "ci_high": 0.4554240111747465,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0074071159420547
+    },
+    {
+      "regime": "hla",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1717522735974273,
+      "candidate_score": 0.5434171178303342,
+      "delta": 0.3716648442329068,
+      "ci_low": 0.2885641715915667,
+      "ci_high": 0.4550179096842785,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": 0.0047756895274227
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.3239540908364154,
+      "ci_high": 0.4015640889149555,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0080164115003776
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.3389357326651122,
+      "ci_high": 0.4160931901148557,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0190592005118611
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.2952437625555741,
+      "ci_high": 0.425664783242387,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0045267788999476
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.3122840265414325,
+      "ci_high": 0.4438995773696951,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0119442355820174
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1349850519550303,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3716894729061368,
+      "ci_low": 0.2782976475612905,
+      "ci_high": 0.4366357349707334,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.012494890239552
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 20,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1108305049139995,
+      "candidate_score": 0.5066745248611672,
+      "delta": 0.3958440199471676,
+      "ci_low": 0.295075069146468,
+      "ci_high": 0.4457426277312177,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0220907781211893
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.3235166422493708,
+      "ci_high": 0.4010570859190701,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0111542184316225
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "peptide",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.337746240360197,
+      "ci_high": 0.4137247110095156,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0190749804868791
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.2946428056659158,
+      "ci_high": 0.4265615629474963,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0075835655102757
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "hla",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.3122670229972343,
+      "ci_high": 0.4450130645796173,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0114168988787582
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "original",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1307017507374609,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.3742753161218434,
+      "ci_low": 0.2774369023359517,
+      "ci_high": 0.4345635785246265,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0157686094945254
+    },
+    {
+      "regime": "joint",
+      "panel_min_rows": 50,
+      "mode": "crossed",
+      "baseline": "bounded_MLP_sequence_selector",
+      "candidate": "embedding_selector",
+      "baseline_score": 0.1102654979378132,
+      "candidate_score": 0.5049770668593043,
+      "delta": 0.394711568921491,
+      "ci_low": 0.2925012617822954,
+      "ci_high": 0.4449752194708438,
+      "point_inside_interval": true,
+      "bootstrap_mean_minus_point": -0.0223106837054223
+    }
+  ],
+  "interpretation": [
+    "Min20 embedding-selector scores are 0.546303 in HLA and 0.506675 in joint; original scores are 0.170935 and 0.134985, and bounded MLP selector scores are 0.173961 and 0.110831, respectively.",
+    "The min20selector gain versus bounded MLP is+0.372342in HLA and+0.395844in joint. Crossed intervals are[0.290338,0.453269]and[0.295075,0.445743], respectively; all modes and min50remain positive.",
+    "Embedding selector lower bounds exceed+0.05against both sequence references in both regimes/panels/all3modes. These remain unadjusted conditional development comparisons, not independent confirmation.",
+    "All35actual HLA-group deletions preserve positive embedding-selector differences against both references in both panels. Deletion values are sensitivity diagnostics, not confidence intervals.",
+    "The reference excludes tree/PairLogit arms from the full main sequence selector; no superiority claim against that full selector follows.",
+    "HLA and joint exclusion regimes use the same original-training corpus, fixed sequence grouping and diagonal joint stopping design; execution uncertainty, independent assay confirmation and richer full-channel feature use are outside this assessment."
+  ]
+}

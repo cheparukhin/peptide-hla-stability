@@ -1,10 +1,10 @@
 # Project review and prioritised research plan
 
-Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **round-two evaluation repair and extractor verification complete; sequence assessment, execution repeats and full-cohort extraction complete; main representation assessment, complementarity and locked execution repeats complete and audited; transfer in progress**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
+Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **bounded round-two development execution complete: evaluation repair, extraction, sequence/representation screens, complementarity, locked execution repeats and all 30 transfer cells with full reporting; independent confirmation remains open**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
 
 This is the **single current source of truth for project status, research priorities and execution gates**. It consolidates the original follow-up plan, completed Phase A–D findings, the [8 October Boltz strategy](archive/plans/boltz-strategy-2026-10-08.md), and the remaining hackathon proposals. Superseded proposals are in the [plan archive](archive/plans/README.md). Stage reports, saved tables and dated prespecifications remain evidence about completed work; they are not additional work queues. The frozen [original evaluation contract](../EVALUATION.md) remains unchanged. Section 11 records the reconciliation decisions.
 
-**Recommendation:** repair assessment first, establish a competitive sequence control, and make frozen Boltz representations the next new modelling investment. Begin independent half-life data feasibility immediately because confirmation is the long-lead dependency. Retain calibration as a separate optional objective. Existing evidence does not establish an assay noise ceiling or justify closing the internal-representation question.
+**Current decision after execution:** frozen Boltz procedures improve the specified development comparisons, including the bounded HLA/joint transfer comparisons below. The main peptide comparison does not establish the original 0.05 worthwhile-gain bar; transfer exceeds that bar only for its narrower, conditional comparison. Independent half-life confirmation is the outstanding evidence gate. Keep calibration/adaptation separate; no additional fitting or cloud scope is authorized automatically. No assay noise ceiling is established. The original sequencing rationale below is retained as the study design history.
 
 Maintain priorities and completion status here only. New experiment protocols may specify a milestone's implementation, but must link back here and cannot silently change its scope, comparator or gate. Record amendments and their evidence in this document; archive superseded proposals instead of keeping parallel plans.
 
@@ -50,7 +50,7 @@ The existing outer-fold results have already informed study design. Repaired ass
 
 - The original benchmark and Phase A–D runs are complete. Completed runs do not imply all their interpretations or selection procedures are sound. Round-two implementation and audit artifacts now live in [further_research/round2/](further_research/round2/); see §12 for current completion status.
 - Reusable assets include the frozen splits, original predictions, 28,166 reported production structures, their 109-feature summary table, cached MSAs and follow-up prediction tables. Remote structure availability and provider bills were not reverified in this review.
-- The original production runner persists coordinates/confidence. The new embedding-only extractor has passed pinned full-forward equivalence and technical repeat checks; full-cohort extraction remains separately gated on cost (§12).
+- The original production runner persists coordinates/confidence. The new embedding-only extractor has passed pinned full-forward equivalence and technical repeat checks; full-cohort extraction completed within its fixed cost allocation (§12).
 - This review inspected the current working tree, including pre-existing uncommitted planning edits, and checked headline values against saved tables. The source dataset checksum passes. Software test results are recorded under §10; they do not certify the statistical design.
 - The source corpus contains no supplied assay replicates. Fold spread, execution variation and correlations between different alleles cannot establish irreducible assay noise or recoverable performance headroom.
 
@@ -87,7 +87,7 @@ During implementation, run the existing suite plus these targeted tests. Existin
 
 ### Dated correction register — 12 October 2026
 
-These corrections govern interpretation now. Notices in the historical reports point here; numerical artifacts remain intact. **Documented corrections, repaired assessment code and saved-prediction reconciliation are complete; new fitted assessments remain in execution (§12).**
+These corrections govern interpretation now. Notices in the historical reports point here; numerical artifacts remain intact. **Documented corrections, repaired assessment code and saved-prediction reconciliation are complete; new bounded development assessments are complete (§12); independent confirmation remains open.**
 
 | Historical claim or issue | Current interpretation and required action | Evidence |
 |---|---|---|
@@ -311,7 +311,7 @@ The 12 October review checked source-data integrity, the current test suite, the
 
 Keep the [research index](README.md), [project README](../README.md) and site source as entry points to this plan, without separate priority lists. The submission film is a dated historical artifact; its proposals are not current instructions. Local site-source cleanup does not publish a website update.
 
-**Immediate next action:** monitor all remaining frozen transfer cells, then validate the full crossed-uncertainty report and consolidate the development findings. The timing gate has passed. The full main screen is audited; both cloud jobs have stopped and their reservations are settled. Do not reduce the cohort or change grids in response to assessment outcomes. See §12 for current gates.
+**Immediate next evidence gate:** obtain an adequate independently reserved half-life cohort and lock its one-time confirmation analysis before opening outcomes. The bounded development execution and consolidated reporting are complete; no suitable confirmation cohort or assay quote exists. Both cloud jobs are stopped and reservations settled. No new fitting, grid expansion, calibration/adaptation or paid acquisition follows automatically. See §12 and the [consolidated report](further_research/round2/REPORT.md).
 
 
 ## 11. Reconciliation decisions (8 October 2026)
@@ -359,7 +359,7 @@ The user authorized autonomous execution and reported **$213 remaining Modal cre
 | Representation screen | [Frozen protocol](further_research/round2/embedding/protocol.json) covers R0–R5, shuffled memberships and matched positional controls, with three regularization settings per learner and three inner folds. The full graph is **2,900 actual head fits**, including all refits and secondary controls, on local CPU. No real head fitting preceded the gate. The durable local controller passed the complete cache/sequence gate and started the first three folds at 06:46:38 UTC; all five folds and the [main report](further_research/round2/results/main/REPORT.md) completed by 07:19 UTC. The [completion audit](further_research/round2/resources/embedding_completion_audit.json) passed all 100 component procedures, 2,900 members, identity/ancestry/scaler/selector checks, source/output hashes and both panels' endpoint/interval arithmetic. The cache wrapper provenance limitation remains inherited. |
 | Independent data | [Identity-only provenance audit](further_research/round2/independent_data/README.md) found all 27,031 released source stability pairs in the canonical corpus. Strict donor/canonical exclusions leave only 129 potential rows across heterogeneous assay strata, insufficient for the planned confirmation endpoint. External labels were not opened. Metadata, cross-length similarity and checkpoint provenance gaps remain. |
 | Complementarity | [Frozen protocol](further_research/round2/complementarity/protocol.json) covers R2/R4 ridge blends and strongly regularized residuals against the exact original reference, with baseline-only options and fresh nested stacking ancestry. All five folds and the [report](further_research/round2/complementarity/results/REPORT.md) completed by 07:54 UTC. The [completion audit](further_research/round2/resources/complementarity_completion_audit.json) passed identities, clean ancestry, all choices, exact zero endpoints and both panels' arithmetic. The recorded graph contains 2,140 logical model fits including compatible cache reuse; this is not an independent count of equally many new hardware executions. |
-| Transfer | [Auxiliary manifest](further_research/round2/transfer/protocol.json) freezes 35 HLA sequence groups, five HLA folds and all 25 joint intersections. Coverage and nearest-sequence distances are recorded before transfer outcomes. The main completion audit has passed; the dated post-main amendment below nominates R4 ridge and R5 MLP before transfer fitting. This is not a transfer result. The reviewed [local implementation](further_research/round2/transfer/implementation_readiness.md) supports the original reference, a separately named bounded MLP sequence selector, and one or two explicitly nominated R2–R5 ridge/MLP procedures with unchanged main grids. All 30 cells require 10,440 sequence fits plus 750 per ridge or 2,340 per neural nominee. The earlier empty-nominee draft remains a preparation record. The dated amendment records the reduced comparator, exact nominees and 13,530-fit graph; both deterministic timing cells passed and the remaining 28 cells launched at 07:58 UTC with three local workers. The frozen total remains 13,530 fits. |
+| Transfer | [Auxiliary manifest](further_research/round2/transfer/protocol.json) freezes 35 HLA sequence groups, five HLA folds and all 25 joint intersections. Coverage and nearest-sequence distances are recorded before transfer outcomes. The main completion audit has passed; the dated post-main amendment below nominates R4 ridge and R5 MLP before transfer fitting. This is not a transfer result. The reviewed [local implementation](further_research/round2/transfer/implementation_readiness.md) supports the original reference, a separately named bounded MLP sequence selector, and one or two explicitly nominated R2–R5 ridge/MLP procedures with unchanged main grids. All 30 cells require 10,440 sequence fits plus 750 per ridge or 2,340 per neural nominee. The earlier empty-nominee draft remains a preparation record. The dated amendment records the reduced comparator, exact nominees and 13,530-fit graph. All 30 cells completed at 09:06 UTC; the complete report finished at 09:10 UTC. The [completion audit](further_research/round2/resources/transfer_completion_audit.json) checks all members, source/artifact hashes, ancestry, selections, endpoints, uncertainty and group deletions. Final findings and limitations are recorded below; neither the nominees nor grids changed after transfer outcomes. |
 | Confirmation | [Bounded acquisition design](further_research/round2/independent_data/design/README.md) completed 108 synthetic scenarios, 162,000 endpoint draws and 3,240 exact paired-bootstrap diagnostics. Balanced 12×200/400/800 panels and a separate 20% independent-replicate subset are options for quotes; rates are conditional planning sensitivity, not a guaranteed real-world power result. No assay quote, reserved adequately powered cohort or confirmatory result exists. Performance claims remain development-only. |
 
 ### Completed sequence development finding
@@ -460,7 +460,7 @@ rewritten. The inherited cache provenance limitation remains explicit.
 
 The cache closeout found one provenance limitation: the current fanout wrapper digest differs from its recorded authorization digest, already in the first implementation commit. Its exact launch-time bytes cannot be certified from that record. The four frozen extraction sources, cohort and feature protocol hashes match; both wrapper digests are preserved in the audit without rewriting authorization. This limits the wrapper launch-provenance claim, while direct feature/artifact validation remains the cache acceptance check.
 
-Both authorized cloud scopes have stopped; the local watchdog was deliberately shut down after terminal-state and settlement checks. The [cloud closeout](further_research/round2/resources/cloud_closeout.json) records **$76.8388 conservative accounting**, including the full $2 engineering allowance, against the unchanged $100 ceiling. The provider snapshot shows $70.2872 for named study apps and a $73.4426 account-wide increase; these different metering snapshots do not exactly reconcile and are not a final invoice or remaining-credit balance. The difference is retained as unattributed. Unused allocations are not reassigned. Local assessment continues with no new Modal compute.
+Both authorized cloud scopes have stopped; the local watchdog was deliberately shut down after terminal-state and settlement checks. The [cloud closeout](further_research/round2/resources/cloud_closeout.json) records **$76.8388 conservative accounting**, including the full $2 engineering allowance, against the unchanged $100 ceiling. The provider snapshot shows $70.2872 for named study apps and a $73.4426 account-wide increase; these different metering snapshots do not exactly reconcile and are not a final invoice or remaining-credit balance. The difference is retained as unattributed. Unused allocations are not reassigned. All bounded local assessment and reporting are now complete, with no new Modal compute. The later [app inventory](further_research/round2/resources/modal_final_app_inventory.json) lists no apps; historical shutdown receipts remain the evidence for the earlier normal stops.
 
 Budget records and environment/source hashes live under [round-two resources](further_research/round2/resources/). The provider's historical October compute records total approximately $116.65 before the new study; the older $212.71 runtime-derived estimate is not a provider invoice and must not be treated as credit consumption. New usage is tracked separately.
 
@@ -560,3 +560,77 @@ storage and downstream head prediction prevent interpreting this as a measured
 end-to-end latency or price for a new input. No isolated serving benchmark or
 live credit balance is claimed. Recorded model-training timings and logical
 cache-reused fits are explicitly separated from inference and new hardware work.
+
+
+### Completed transfer development finding and execution closeout — 12 October 2026
+
+All **five HLA-group and 25 joint peptide/HLA cells** completed without retries
+or exclusions at 09:06 UTC. All **13,530 members** and cell artifact hashes
+passed the completion gate; the frozen report ran once and finished at 09:10 UTC.
+The [transfer audit](further_research/round2/resources/transfer_completion_audit.json)
+covers every member's identity/configuration/ancestry, gradient-only centring and
+scaler ancestry, saved inner decision replay, full row coverage, all endpoints,
+108 comparison rows, 12 saved 2,000-draw tables and 1,260 group-deletion rows.
+It verifies interval arithmetic and selected fresh draw probes, not a full new
+bootstrap or refit. Raw inner prediction vectors were not retained, so saved
+selection scores cannot be independently recomputed without new fits; numerical
+scaler values were checked for dimensions/validity and exact fitting ancestry,
+not recalculated from every training matrix. These audit limits remain explicit.
+
+The primary transfer comparison is the **bounded embedding-or-MLP selector
+versus the bounded MLP sequence selector**; this is a different comparator and
+selector scope from the main screen. The primary ≥20-row panel gives:
+
+| Regime | Bounded MLP selector | Embedding selector | Difference | Conditional crossed 95% interval |
+|---|---:|---:|---:|---:|
+| HLA-group holdout | 0.173961 | 0.546303 | +0.372342 | [0.290338, 0.453269] |
+| Joint peptide/HLA holdout | 0.110831 | 0.506675 | +0.395844 | [0.295075, 0.445743] |
+
+The ≥50-row sensitivity gives HLA **+0.371665 [0.288564, 0.455018]**
+and joint **+0.394712 [0.292501, 0.444975]**. Against the original
+sequence reference, ≥20-row differences are HLA **+0.375368
+[0.283444, 0.455040]** and joint **+0.371689 [0.278298, 0.436636]**.
+All these conditional lower bounds exceed 0.05. This does **not** revise the
+main peptide result's failure to establish its own worthwhile-gain bar.
+
+Every declared component/contrast, both panels and peptide/HLA/crossed intervals
+are retained in [the transfer tables](further_research/round2/transfer/results/comparisons.csv).
+All 35 group deletions preserve positive primary differences: ≥20-row ranges
+are +0.354967 to +0.380237 for HLA and +0.372950 to +0.404739 for joint.
+All 108 point estimates lie inside their intervals; no bootstrap draw loses the
+entire eligible panel. Cell diagnostics favor the embedding selector over its
+bounded sequence comparator in all five HLA and all 25 joint cells on both
+panels. These are sensitivity diagnostics, not independent tests or a reason
+to change the pooled endpoint. Inner choices select R4 ridge in four of five
+HLA and 23 of 25 joint cells, with R5 MLP in the others. No global outer-score
+winner is substituted for the frozen selector.
+
+These large gains compare **complete procedures**. Ridge uses all permitted
+fitting rows; neural members reserve stopping rows and, for joint stopping,
+exclude cross quadrants. Representation, training recipe and training size can
+all contribute. The transfer comparator omits trees/PairLogit; this is not a
+claim of beating the full main sequence selector on unseen HLA groups. Joint
+pooled within-allele rankings combine five different models, including their
+between-fold scale behavior. The cell diagnostics argue against pooling alone
+explaining the advantage; no outcome-driven recalibration was performed.
+The grouping is a declared Hamming-distance convention, not a validated
+functional distance. The 69/68 eligible alleles cover 34 of 35 represented HLA
+groups; sparse coverage and conditional crossed resampling do not establish
+performance across arbitrary future HLA populations. Main locked repeats do
+not measure transfer-regime execution variation. Development reuse and the
+inherited cache wrapper provenance gap remain limitations.
+
+The [transfer runtime closeout](further_research/round2/resources/transfer_runtime_closeout.json)
+records 84 minutes 2 seconds of fitting operational wall span, peak concurrency
+three and 137.6 seconds for reporting, with **zero additional Modal compute**.
+The earlier resource summary remains a timing-phase snapshot; the new closeout
+adds final actuals rather than rewriting that historical record. All local
+controllers, reporting processes and keep-awake helpers have exited.
+
+The [consolidated development report](further_research/round2/REPORT.md) is the
+finished readout. All achievable bounded development work is complete;
+**independent confirmation is not complete**, because no adequate reserved
+cohort or assay arrangement exists. External candidate outcomes remain
+reserved. Optional calibration/adaptation and new acquisition are not silently
+substituted. The original labels, splits, test and historical numerical
+artifacts remain unchanged.
