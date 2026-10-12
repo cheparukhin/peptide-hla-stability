@@ -60,3 +60,8 @@ reports/further_research/round2/**/*.lock
 reports/further_research/round2/**/*.tmp
 reports/further_research/round2/**/*.partial.csv
 reports/further_research/round2/**/members.jsonl
+
+# Completed round-two analytical reports are evidence, unlike generic model
+# output directories covered by the broad results/ rule above.
+!reports/further_research/round2/**/results/
+!reports/further_research/round2/**/results/**

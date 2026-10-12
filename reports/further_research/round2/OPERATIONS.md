@@ -24,8 +24,8 @@ captures its case log until the shard returns.
 
 | Scope | Durable state | Behavior |
 |---|---|---|
-| First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Exactly 256 rows; app `ap-CTPosnxjWl1PutPuL6XHcK`; 2,700-second worker timeout and no retries. |
-| Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Waits at most 90 minutes for the first shard, verifies all hashes, features and settled reservations, and launches the existing run once at eight workers only if both measured and frozen forecasts fit $80. |
+| First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Completed 256/256 cases; app `ap-CTPosnxjWl1PutPuL6XHcK` stopped. Saved charge $0.8734; measured full-cache forecast plus 10% is $73.99. |
+| Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` is running; one continuation only, with the unchanged $80 reservation ceiling. |
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | All five outer folds plus two fixed-setting repeats; app `ap-vgwn2eHeZngfofbxH6SMsf`; $18 persistent reservation guard and 900 remote-call quota. |
 | Main local pipeline | `pipeline/status.json` | Waits up to 12 hours for the complete 19,716-row cache and all sequence markers, then runs embedding folds, main report, complementarity folds and report at three local workers. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
@@ -86,3 +86,24 @@ independent confirmation cohort or assay quote exists. External outcomes stay
 reserved. Do not turn a planning simulation, historical test or sparse external
 stratum into a confirmation result. Optional calibration and encoder adaptation
 remain behind the core gates and are not part of automatic scope expansion.
+
+Implementation readiness for the next continuation:
+
+- `reproducibility/embedding_execution_protocol_draft.md` gives the two exact
+  freeze/execute commands for locked embedding-selector repeats. Maximum 300
+  fresh local fits; selected original-reference branches reuse the already
+  budgeted sequence execution repeats. All main folds and feature/provenance
+  checks must pass first. No repeat fitting has run yet.
+- `transfer/assessment_protocol_draft.json` is a draft, not launch approval.
+  The current implementation covers the original reference and R2/R4 ridge,
+  with a baseline-inclusive inner selector. It excludes the competitive main
+  sequence selector, so the orchestrator must review that comparator limitation
+  against the completed main screen, document any scope amendment in the
+  canonical plan, and freeze before any transfer outcomes. Do not imply that
+  these reduced comparisons settle superiority over the best sequence control.
+- The draft transfer graph is 9,600 local fits (8,100 original neural members,
+  1,500 ridge fits), with no cloud charge. Split feasibility is checked, but
+  total elapsed runtime is not established by the fit count. Use timing-only
+  telemetry from the deterministic first HLA/joint cells to validate practical
+  scheduling after the scope gate. Preserve all 30 cells and never nominate or
+  discard cells using their held outcomes.
