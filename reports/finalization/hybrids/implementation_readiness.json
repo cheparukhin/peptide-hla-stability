@@ -1,0 +1,58 @@
+{
+  "schema": "final_hybrids_readiness.1",
+  "status": "passed_queued_execution_not_results",
+  "at_utc": "2026-10-12T14:15:17.567539+00:00",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "source_sha256": {
+    "pepstab/final_hybrids.py": "d80909dd4b5c54d877be1117c709f99e6325d5dc0ad35f90f36b8deca2d4282a",
+    "scripts/final_hybrids.py": "45adc884f21fbbe1c72cbb7545b292f230698b5d100e0a5a6e6c519500b18535",
+    "scripts/final_hybrids_pipeline.py": "4856812548bf64034aa5e7bab02779088a79085df96adc7d61d475c5efd52793",
+    "scripts/final_hybrids_report.py": "3b2919bbbb8245101f8396c6abbe56af909d37a45ee662608a158b27e27f46eb",
+    "pepstab/final_hybrid_reporting.py": "d6e84748677d0b949938dfbf4234f56578c25401d3ef5ed6790fc3cb58636766",
+    "tests/test_final_hybrids.py": "b803b9e19ac368676e334acf16bd032c42c3fec03450b13dd8975d96f9175fec",
+    "tests/test_final_hybrids_pipeline.py": "edb9b09efc9326860ca7a478b34878d86899ca94874e28291f3a693eadb77547",
+    "tests/test_final_hybrid_reporting.py": "ccae03d11658d647b1c30c0ae747ce986aa4765c9740e8fdb235f2a390bcdd1e",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/nested.py": "f301b7ed4f0799bc2c17f61de3fc9a4429b576f246b69a4426fe71cf2d91efd0",
+    "pepstab/splits.py": "3da9638c8d48b8a0f5d16a9f90b2f58364cec6ca4da94c8a0487c0ff0891254f",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "scripts/final_ranking.py": "dffd748c758e706d0d2712d0cdc8b6ee8e1608c0fc44b52ac74ce79ccfb05db4",
+    "pepstab/final_ranking.py": "5da325790c2902ba32dc7757db631ddcfd2033084a3667f4d7aff1110089d535",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3"
+  },
+  "protocol_file_sha256": "5e700c45b0e020953aa9401bfe38e645b7820e86f45f44123128d51f03ace86f",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_final_hybrids.py tests/test_final_hybrids_pipeline.py tests/test_final_hybrid_reporting.py",
+    "passed": 37,
+    "seconds": 19.22,
+    "reported_by": "6.1 Sol implementation agent",
+    "scope": "Synthetic actual learner/transform/CBM/NPZ replay, canonical MLP parity, held-label invariance, row ancestry, pairing/ties/leaf dictionary, guarded queue/process cleanup/deadlines, runner-to-report semantic replay, paired uncertainty"
+  },
+  "scientific_review": {
+    "reviewer": "Astra",
+    "status": "passed",
+    "corrected_before_freeze": "Replay/fitting numerical thread limits explicitly fixed at two; earlier reporting primary-panel/pilot-count/runtime gaps corrected."
+  },
+  "metadata_preflight": {
+    "status": "passed",
+    "n_original_training_rows": 19716,
+    "n_peptide_clusters": 3587,
+    "n_scientific_bundles": 80,
+    "n_scientific_fits": 480,
+    "n_engineering_bundles": 2,
+    "n_engineering_fits": 12
+  },
+  "historical_active_transfer_sources_verified_unchanged": true,
+  "original_test_reopened": false,
+  "cloud_spend_usd": 0,
+  "real_hybrid_fits_started": false,
+  "pilot_authorization_sha256": "0348033e89cbb78a3fc8a43ebf359e769f6bfd401a116cc5671c31763176cb41"
+}

@@ -77,3 +77,35 @@ Source/protocol/immutable authorization hashes read for this design:
 | `reports/finalization/resources/transfer_main/controller_authorization.json` | `72fe8656cad7770018a4d293ef03e859450ca29ca82cf01b2de7954331293b74` |
 
 The active guard status and execution manifest were used only as changing inventory snapshots. Their values are not frozen into a launch approval. Before the queue opens, root must capture and hash the final predecessor receipts, final guard status, provider reconciliation and process-absence evidence. This design added no fits, provider calls, process stops, retries or source changes.
+
+## Approved local v1 implementation contract
+
+The scientific specification and fit graph are now saved in `SPECIFICATION.md` and `fit_graph.json`. The exact new scope is **480 scientific supervised fits**: R0 and R5 × five outer peptide folds × three inner calls plus one final call × two members × six components. The components are `standard`, `tree_rmse`, `tree_rank`, `leaf_mlp`, `quantile_mlp`, `pca_mlp`. The RMSE tree is reused by the leaf branch without another tree fit. The engineering pilot is **12 separate, unscored fits**, one six-fit bundle on each representation at outer0/inner0/stop0/seed0; it is never reused scientifically. Default cloud allocation is **zero**.
+
+The approved initial resource schedule supersedes the generic maximum-three-worker suggestion above: the pilot uses **one** subprocess worker and two threads, and scientific fitting uses **two** subprocess workers and two threads each. A separate transfer report process can occupy the third local slot only if root explicitly records its two-thread limit; otherwise hybrid fitting waits for that report as well. No new hybrid fitting overlaps the existing transfer fitting process.
+
+The new entry points are `scripts/final_hybrids.py` (freeze, validate, explicit component/pilot jobs) and `scripts/final_hybrids_pipeline.py` (queue/run a single pilot or main phase). The core lives independently in `pepstab/final_hybrids.py`; reporting lives in `scripts/final_hybrids_report.py`. Existing transfer/guard/driver sources remain unchanged. Queue and phase attempts have separate persistent ownership under `controller/pilot/` and `controller/main/`. Queue checks occur every30 seconds and expire no later than48 hours after authorization. Pilot fitting has an initial **two-hour fixed cap**. Main fitting requires a separate source-bound authorization after root reviews the pilot runtime/memory forecast; a pilot authorization cannot fan out480 fits.
+
+The controller creates every worker in its own process group, persists its exact PID/group/command, and terminates only owned active worker groups on failure, fixed deadline, SIGTERM or SIGINT. It checks that the current group still equals the owned child PID before signalling. PID/group mismatches preserve uncertainty and refuse signals. Existing predecessor PIDs are checked only for absence, never signalled by the queue. Numeric PID reuse can therefore block the queue conservatively; root must reconcile that condition rather than bypass it or signal an unrelated process. Interrupt handlers are restored after cleanup. Failed attempts and launch intents survive; there is no automatic retry.
+
+### Immutable phase authorization fields
+
+Use schema `final_hybrids_controller_authorization.1`. Required fields are:
+
+| Field | Contract |
+|---|---|
+| `approved`, `phase` | Boolean true; exactly `pilot` or `main` |
+| `protocol_hash`, `source_sha256` | Exact new protocol hash and its entire frozen source mapping |
+| `controller_sha256`, `worker_sha256` | Hashes of the new pipeline and new worker script |
+| `jobs` | Pilot `fold_0/R0`, `fold_0/R5`; main ten jobs in outer-fold order, R0 before R5 |
+| `n_fits`, `max_workers`, `threads_each`, `cloud_spend_usd` | Pilot12/1/2/0; main480/2/2/0 |
+| `created_at_utc`, `queue_deadline_utc` | Explicit UTC timestamps, positive queue horizon no greater than48h |
+| `fit_wall_seconds` | Positive finite fixed phase wall limit; pilot initially7200 |
+| `launch_gate_path` | Future root-owned gate file; do not invent unknown future receipt hashes |
+| `predecessor` | Exact prior controller/guard PIDs, app ID, scientific protocol hash, prior guard authorization path/hash, and any known child fitting PIDs |
+
+The root-written gate uses schema `final_hybrids_launch_gate.1`, boolean `approved=true`, exact `phase`, exact `authorization_sha256`, and explicit UTC `created_at_utc` / `expires_at_utc`. It must be created after the phase authorization and cannot be expired or future-dated. Its `predecessor` object supplies `transfer_exit_path`/`transfer_exit_sha256`, `driver_exit_path`/`driver_exit_sha256`, `guard_status_path`/`guard_status_sha256`, and `reconciliation_path`/`reconciliation_sha256`. The gate is created only after these final receipts exist and pass review. The queue saves the gate hash, then the controller revalidates it before dispatch; missing, failed, stale, altered or unclosed predecessors refuse fitting.
+
+For `main`, add `runtime_approved=true` and a `pilot` object containing pilot phase `completed_path`/`completed_sha256`, `exit_path`/`exit_sha256`, and root-approved `runtime_forecast_path`/`runtime_forecast_sha256`. The pilot receipts must show exactly12 successful engineering fits under the same protocol and its PID must be absent. Main does not inherit pilot approval implicitly.
+
+Each representation/outer job writes exactly eight six-fit bundle receipts, raw component inner means and final means, all eight final arms, every three-fold selection score, standard-error threshold, chosen blend/selector, positive-affine rank mapping, member/transform ancestry and hashes. Final arms use R0/R5 prefixes. Successful component receipts require48 fits. Successful phase receipts require12 or480, record measured elapsed phase wall and peak concurrent workers, and root reporting replays stored member models/predictions without refitting.

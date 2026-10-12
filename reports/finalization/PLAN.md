@@ -48,7 +48,8 @@ The user's fresh reported Modal balance is **$143**; the new-phase ceiling is
 **$100 additional**, preserving at least $43 of that reported balance before
 unrelated usage and metering differences. This supersedes the tentative $15
 proposal for this new phase only. Prior round-two accounting remains closed.
-The ceiling is not a spending target. Current new cloud commitments are zero.
+The ceiling is not a spending target. Current cloud ownership and conservative
+accounting are recorded in the phase execution manifest and transfer watchdog.
 
 Reuse existing cached features. For each paid scope, obtain current rates and
 provider state, run a separately bounded pilot, reserve worst-case calls, and
@@ -114,3 +115,12 @@ Runtime-only pilots forecast about ten hours and $13.23 cumulative accounting, w
 ### Newly authorized hybrid experiments — 12 October
 
 The user explicitly asked to orchestrate all proposed experiments: Boltz tree regression/ranking, tree–MLP prediction blending, tree-leaf features into an MLP, and alternative quantile/PCA preprocessing. This is a separate follow-up protocol; the running transfer source, scope and deadline remain frozen. Astra defines a bounded fit graph and leakage-safe comparisons; Sol agents implement and audit it. Additional cloud allocation is at most $35 while the existing $65 transfer allocation is reserved, preserving the same $100 total new-phase ceiling. Prefer local execution queued after the existing three-worker transfer controller exits. Every requested family needs a representative frozen comparison, complete artifact ancestry and honest development-only reporting. No original-test access or new extraction is authorized. Detailed authorization and design are under `hybrids/`.
+
+The hybrid implementation is now frozen and validated with37 checks and an
+independent scientific review. One pilot queue launched at14:15 UTC, PID11628,
+and waits for exact transfer closure and accounting receipts. Its separately
+gated twelve unscored engineering fits precede the480-fit assessment; no hybrid
+fitting has started at this checkpoint. Both phases are local with zero cloud
+allocation. The main phase requires a separate runtime-only gate after the
+pilot. See [hybrid operations](hybrids/OPERATIONS.md) for durable ownership,
+deadlines and autonomous continuation steps.

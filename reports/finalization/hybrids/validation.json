@@ -1,0 +1,52 @@
+{
+  "status": "passed_source_and_input_freeze_no_real_fits",
+  "created_at_utc": "2026-10-12T14:18:19.717403+00:00",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "protocol_file_sha256": "5e700c45b0e020953aa9401bfe38e645b7820e86f45f44123128d51f03ace86f",
+  "frozen_source_count": 23,
+  "frozen_descriptive_reference_count": 5,
+  "task_manifest_sha256": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766",
+  "preflight_sha256": "a7b368cfbbf0aee684c975a9e9721f98b4e3e894bd6fe769a9c7034670c4e91a",
+  "preflight_member_partitions": 40,
+  "minimum_gradient_rows": 8411,
+  "minimum_stopping_rows": 2103,
+  "minimum_inner_eligible_alleles": 68,
+  "validation_frozen_passed": true,
+  "scientific_fit_graph": {
+    "jobs": 10,
+    "bundles_per_job": 8,
+    "supervised_fits_per_bundle": 6,
+    "fits_per_job": 48,
+    "scientific_fit_count": 480,
+    "scientific_mlp_fits": 320,
+    "scientific_tree_fits": 160,
+    "additional_leaf_tree_fits": 0,
+    "engineering_pilot_fit_count": 12,
+    "total_scientific_and_pilot_fits": 492
+  },
+  "tests": {
+    "combined_core_runner_report_helpers_passed": 37,
+    "runner_pipeline_tests": 14,
+    "report_helper_tests": 3,
+    "core_tests": 20,
+    "scope": "synthetic/core engineering and mocked integration only; no biological hybrid fits"
+  },
+  "coverage": [
+    "source/dependency/input identity freeze",
+    "480scientific/12pilot exact schedules and cluster exclusions",
+    "absent/stale/failed/unclosed gate refusal",
+    "owned subprocess failure/deadline/SIGTERM cleanup",
+    "PID/group mismatch refuses unrelated signals",
+    "held outer label perturbation invariance",
+    "saved runner artifacts consumed by independent report audit",
+    "re-signed corrupted raw aggregate rejected",
+    "unscored pilot artifacts consumed by independent audit",
+    "report numerical limit2threads",
+    "core saved-model replay with all fit methods disabled"
+  ],
+  "new_real_hybrid_fits": 0,
+  "cloud_launches": 0,
+  "queue_launches": 0,
+  "next_gate": "Root waiting pilot queue already launched; no fitting gate. Await verified transfer closure/reconciliation, then twelve unscored pilot fits; 480 scientific fits require a separate pilot runtime gate.",
+  "validation_action_scope": "Counts below describe only the validation agent actions, not current root orchestration. Root launched the waiting pilot queue separately; consult OPERATIONS.md and resources/hybrid_pilot/root_launch.json."
+}
