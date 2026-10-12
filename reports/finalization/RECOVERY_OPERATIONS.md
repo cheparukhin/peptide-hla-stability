@@ -1,41 +1,46 @@
 # Continuation after the 12 October process interruption
 
-**Current, 12 October 22:40 UTC:** all 480 hybrid scientific fits are complete.
-All ten jobs exited successfully at 21:56:50 UTC, after 3,132.5 seconds of fitting.
-The 1,620 output files (527,984,061 bytes) were downloaded and hash-verified.
-Independent inventory review found 80 bundles / 480 fits and all 16 arms with
-19,716 unique outer-held rows each. The unscored 12-fit pilot remains separate.
-These are fitting/inventory milestones; saved-model and statistical audit is pending.
+**Current, 12 October 23:47 UTC:** all 480 hybrid fits and their download are
+complete; the report-only recovery is active. No scored hybrid result is claimed.
+Original test remains closed. Science and concise interpretation remain the goal.
 
-The main Sandbox returned 0; its App is stopped, Volume deleted and all three
-launchd registrations removed. Exact certificate and closure are in
-`resources/cloud_sandboxes/hybrid-main-20261012-2050/`, committed with the frozen
-report plan in `802b4d6`. Metered main compute is $1.03656227; carry $1.20.
-Do not rerun the fitting or completed download.
+Two report attempts are closed, with real failed receipts and no statistics.
+The 22:40 attempt found one float32 ULP in recomputed stopping MSE. The 23:20
+attempt then found that report ensemble averaging omitted the worker's float64
+conversion. Both fixes are report-only: saved models/predictions, scientific
+sources, selection and CSV tolerances are unchanged. The scalar allowance is
+still at most one ULP; it has not widened. See [scalar explanation](cloud/STOPPING_MSE_REPLAY.md)
+and [ensemble explanation](cloud/ENSEMBLE_REPLAY.md). The second repair passed
+25 targeted checks and independent Astra review, committed `8f4b28f`.
 
-**Report-only recovery is running**, released once at 23:23 UTC on 12 October.
-The first report failed before main replay/statistics when a pilot stopping-MSE
-recomputation differed by one float32 ULP. Its App/Volume and registrations are
-closed; authentic receipts remain in `hybrid-report-20261012-2240`. Carry $0.10.
-The reviewed amendment changes only that recomputed scalar comparison; saved
-curve decisions and every held-prediction equality check remain exact. No fits,
-model choices or statistics changed. See [numerical amendment](cloud/STOPPING_MSE_REPLAY.md).
+- Active directory: `resources/cloud_sandboxes/hybrid-report-20261012-2350`.
+- Sandbox `sb-01M4S85N57N520133XCE0H6B6Y`; App `ap-uzE2ZhxzJNoxj38JzbBXMT`;
+  Volume `vo-6LW5fTKXPxWOFpJNT0ceY2`.
+- Released once at 23:46 UTC; watchdog PID10871; launcher10946 exited0.
+  Labels `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2350`.
+- Authorization SHA `d427f4af861f526a575fa96142a7f47f2356fe27e041435f62b1e1f2a399e91b`.
+- Two physical CPU / 8 GiB / two numerical threads / one process / zero new fits.
+  The original work stop **13 October06:45UTC**, provider stop **06:47UTC** and
+  **$5 cap** remain unchanged. Never duplicate, blindly retry or edit pinned sources.
+- The 3.04GB /5,048-file input verification can take roughly15minutes. Keep the
+  independent watcher's one persistent stdin lease fresh; never replace it.
+- Success requires actual provider0, successful remote exit/cleanup, verified
+  download/certificate and all frozen audit/statistical coverage. Then close
+  the exact Volume/App and remove exited registrations.
 
-- Directory: `resources/cloud_sandboxes/hybrid-report-20261012-2320`.
-- Sandbox `sb-01M4S6V5S2HAVBCCAR3MR9Z37K`; App
-  `ap-s6KYerBFivGn7WuTmBNVuM`; Volume `vo-4mrvdhw2Wb3LmEKHGib6q1`.
-- Watchdog PID 4035; launcher 4097 exited 0 after release. Labels are
-  `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2320`.
-- Two physical CPU / 8 GiB / two numerical threads, one report process, zero
-  new fits. Source/amendment commit `4774f50`; 69 lightweight checks passed.
-- Authorization SHA256
-  `8ca687d2b9c9bdd567df29283542919cd6916fe05ae337816dd9bbf2c9e32c61`.
-- Original work stop **13 October 06:45 UTC**, provider stop **06:47 UTC**;
-  $5 cap. Neither deadline was extended. Never duplicate or retry blindly.
-  Keep the watcher fresh and do not modify live pinned sources.
-- Reject any stopping-MSE difference above one float32 ULP or any changed held
-  prediction; no automatic widening. The completed report must retain all 328
-  scalar replay diagnostics and disclose the amendment.
+Both failed report Apps/Volumes and registrations are closed. The latest failure
+metered $0.12941363 and carries $0.20; preserve it as failed evidence. Closed
+conservative compute is **$8.309382**, with $5 report and $3 overhead reserved:
+maximum **$16.309382** inside the same $100 ceiling. These are not live balance
+or final invoice figures.
+
+The optional fixed-head label-budget study is implemented/reviewed in `3e1b378`,
+with five synthetic checks. It is NOT frozen or launched. Only after successful
+hybrid audit, consider the120-fit /25/50% nested-cluster comparison and exact
+reuse of20 full-budget members, within $10 inclusive and the same $100 ceiling.
+See `label_efficiency/SPECIFICATION.md`. Average subset scores, not predictions;
+count stopping labels; do not claim prospective assay savings. Keep its execution
+minimal and cloud-only, with a separately frozen runtime/budget gate.
 
 Inputs include both successful pilot/main certificates, canonical training
 labels and the existing scientific entry. The initial 3.04 GB verification may
@@ -51,13 +56,6 @@ selection/fallback and uncertainty diagnostic before final interpretation.
 Then finish FINAL_REPORT, README, submission brief and local site, regenerate
 the source snapshot and commit completed validated artifacts. Do not add more
 orchestration or reopen the original test. Independent assay confirmation stays open.
-
-Closed conservative compute is $8.109382, including $1.55 settled within the
-shared $35 finalization envelope. Only the $5 report cap and $3 overhead remain
-reserved: current maximum commitment $16.109382 inside the unchanged $100
-additional ceiling. These are conservative allocations, not a live balance.
-Storage cleanup remains due by 15 October 14:15 UTC; keep at most two temporary
-Volumes and 8 GiB per download. All earlier failed/uncertain charges remain carried.
 
 The stronger transfer study/report is complete and committed in `9f07ea9`:
 30 cells / 10,830 retained fits, 264 comparisons, 3,080 group deletions. Matched
