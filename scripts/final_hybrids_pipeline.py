@@ -19,6 +19,15 @@ GATE_SCHEMA='final_hybrids_launch_gate.1'
 RECOVERY_SCHEMA='final_hybrids_controller_authorization.2'
 RECOVERY_GATE_SCHEMA='final_hybrids_launch_gate.2'
 RECOVERY_KIND='interrupted_transfer_local_recovery'
+DURABLE_SCHEMA='final_hybrids_controller_authorization.3'
+DURABLE_GATE_SCHEMA='final_hybrids_launch_gate.3'
+DURABLE_KIND='interrupted_transfer_durable_recovery'
+DURABLE_OUT=ROOT/'reports/finalization/hybrids_recovery_v2'
+QUEUE_DEADLINE='2026-10-14T14:15:17.567539+00:00'
+TRANSFER_DEADLINE='2026-10-13T15:32:19.924192+00:00'
+DURABLE_SOURCES={'scripts/final_transfer_durable.py','tests/test_final_transfer_durable.py',
+                 'pepstab/final_transfer_checkpoint.py','scripts/final_transfer_checkpoint_worker.py',
+                 'tests/test_final_transfer_checkpoint.py'}
 TRANSFER_PROTOCOL='bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d'
 TRANSFER_CELLS=tuple(f'hla/h{i}' for i in range(5))+tuple(f'joint/h{i}_p{j}' for i in range(5) for j in range(5))
 TRANSFER_FILES={'predictions.csv','selection.json','ancestry.json','members.json','runtime.json','raw_inner_predictions.csv','raw_final_predictions.csv','member_predictions.npz'}
@@ -47,9 +56,9 @@ def read_bound(path,digest):
     if sha256_file(path)!=digest:raise ValueError('hash-bound prerequisite receipt changed')
     return json.loads(path.read_text())
 
-def check_recovery_closure(prior):
+def check_recovery_closure(prior,*,durable=False):
     """A stopped interrupted attempt is closure, never scientific success."""
-    if prior.get('kind')!=RECOVERY_KIND or prior.get('recovery_protocol_hash')!=TRANSFER_PROTOCOL:
+    if prior.get('kind')!=(DURABLE_KIND if durable else RECOVERY_KIND) or prior.get('recovery_protocol_hash')!=TRANSFER_PROTOCOL:
         raise ValueError('unknown recovery prerequisite')
     closure=read_bound(prior['closure_path'],prior['closure_sha256'])
     expected=dict(schema='final_interrupted_scope_closure.1',status='interrupted_scope_closed_not_scientifically_complete',app_stopped=True,provider_tasks=0,new_cloud_spend_authorized_usd=0)
@@ -70,7 +79,7 @@ def check_recovery_closure(prior):
         raise ValueError('closed interruption liabilities underaccounted')
     for pid in closure['processes_absent']:assert_process_absent(pid)
     approved=read_bound(prior['recovery_authorization_path'],prior['recovery_authorization_sha256'])
-    expected=dict(schema='final_transfer_recovery_authorization.1',approved=True,scope_root=str(Path(prior['recovery_root']).resolve()),protocol_hash=TRANSFER_PROTOCOL,max_workers=3,threads_each=2,deadline_utc=guard['deadline_utc'],ranker_backend='local',n_new_fits=4800,additional_cloud_spend_usd=0,no_retry=True)
+    expected=dict(schema='final_transfer_durable_authorization.1' if durable else 'final_transfer_recovery_authorization.1',approved=True,scope_root=str(Path(prior['recovery_root']).resolve()),protocol_hash=TRANSFER_PROTOCOL,max_workers=3,threads_each=2,deadline_utc=guard['deadline_utc'],ranker_backend='local',n_new_fits=4800,additional_cloud_spend_usd=0,no_retry=True)
     if any(approved.get(k)!=v for k,v in expected.items()) or approved.get('approved') is not True or approved.get('cells')!=list(TRANSFER_CELLS[18:]):
         raise ValueError('recovery authorization changes frozen scope/resources')
     if approved['closure']!={'path':str(Path(prior['closure_path']).resolve()),'sha256':prior['closure_sha256']}:
@@ -80,10 +89,10 @@ def check_recovery_closure(prior):
     original_protocol=str(ROOT/'reports/finalization/transfer_controls/protocol.json')
     if approved['protocol']['sha256']!=guard['protocol_hashes'][original_protocol] or protocol['protocol_hash']!=TRANSFER_PROTOCOL:
         raise ValueError('recovery protocol differs from original frozen transfer')
-    required=set(protocol['code_sha256'])|{'scripts/final_transfer_recovery.py','tests/test_final_transfer_recovery.py'}
+    required=set(protocol['code_sha256'])|(DURABLE_SOURCES if durable else {'scripts/final_transfer_recovery.py','tests/test_final_transfer_recovery.py'})
     if set(approved['sources'])!=required or any(approved['sources'][k]!=v for k,v in protocol['code_sha256'].items()):
         raise ValueError('recovery source binding coverage changed')
-    if preparation.get('schema')!='final_transfer_recovery_preparation.1' or preparation.get('scope_root')!=approved['scope_root'] or preparation.get('protocol_hash')!=TRANSFER_PROTOCOL:
+    if preparation.get('schema')!=('final_transfer_durable_preparation.1' if durable else 'final_transfer_recovery_preparation.1') or preparation.get('scope_root')!=approved['scope_root'] or preparation.get('protocol_hash')!=TRANSFER_PROTOCOL:
         raise ValueError('recovery preparation identity changed')
     for key in ('protocol','closure','preserved_audit','runtime_forecast','sources','reused_cell_hashes','cells'):
         if preparation.get(key)!=approved[key]:raise ValueError('recovery preparation binding changed')
@@ -97,21 +106,84 @@ def check_recovery_closure(prior):
     expected_auth={'path':str(Path(prior['recovery_authorization_path']).resolve()),'sha256':prior['recovery_authorization_sha256']}
     if any(attempt.get(k)!=v for k,v in dict(status='attempted',pid=prior['recovery_controller_pid'],scope_root=approved['scope_root'],protocol_hash=TRANSFER_PROTOCOL,authorization=expected_auth,authorization_sha256=prior['recovery_authorization_sha256'],closure=approved['closure'],deadline_utc=approved['deadline_utc']).items()):
         raise ValueError('recovery launched attempt identity changed')
+    if durable:
+        check_durable_failure(prior,approved,preparation,attempt)
     return closure,approved
 
-def check_recovery_predecessor(auth,gate):
-    prior=auth['predecessor'];closed=gate['predecessor'];closure,approved=check_recovery_closure(prior)
+def check_durable_failure(prior,approved,preparation,attempt):
+    """Verify the second closure as failed evidence, never as a successful exit."""
+    if approved['deadline_utc']!=TRANSFER_DEADLINE:raise ValueError('original transfer deadline changed')
+    accounting=dict(n_reused_fits=6030,n_new_fits=4800,n_retained_fits=10830,
+                    discarded_partial_completed_fits=1785,known_completed_including_discarded=12615,
+                    unknown_remote_fits=12,unknown_local_fits=True,additional_cloud_spend_usd=0,
+                    previous_local_exit_status='failed')
+    if any(preparation.get(k)!=v for k,v in accounting.items()):raise ValueError('durable preparation accounting changed')
+    for key in ('local_failure_closure','local_failure_exit','local_failure_state'):
+        if prior.get(key)!=approved.get(key) or preparation.get(key)!=approved.get(key):
+            raise ValueError('local failed predecessor binding changed')
+    for key in ('local_failure_closure','local_failure_exit'):
+        if attempt.get(key)!=approved[key]:raise ValueError('durable attempt failure provenance changed')
+    failure,receipt,state=[read_bound(approved[k]['path'],approved[k]['sha256']) for k in
+                           ('local_failure_closure','local_failure_exit','local_failure_state')]
+    expected=dict(schema='final_local_recovery_interruption.1',status='failed_stopped_no_new_complete_cells',
+                  cleanup_error=None,additional_discarded_recorded_completed_fits=1086,
+                  total_discarded_recorded_completed_fits=1785,known_completed_after_eventual_success_including_discarded=12615,
+                  remaining_scientific_fits=4800,retained_complete_cells=18,retained_complete_fits=6030,
+                  uncertain_remote_attempts_from_original_scope=12,additional_cloud_spend_usd=0,
+                  controller_exit_sha256=approved['local_failure_exit']['sha256'],
+                  controller_state_sha256=approved['local_failure_state']['sha256'])
+    if any(failure.get(k)!=v for k,v in expected.items()):raise ValueError('local failed closure changed')
+    if (ROOT/failure['controller_exit_path']).resolve()!=Path(approved['local_failure_exit']['path']).resolve():
+        raise ValueError('local failed exit path changed')
+    expected=dict(schema='final_transfer_recovery_exit.1',status='failed',exit_code=1,cleanup_error=None,
+                  pid=failure['controller_pid'],deadline_utc=TRANSFER_DEADLINE,protocol_hash=TRANSFER_PROTOCOL,
+                  closure=approved['closure'])
+    if any(receipt.get(k)!=v for k,v in expected.items()):raise ValueError('previous local exit must remain failed with clean shutdown')
+    if (state.get('status')!='failed' or state.get('cleanup_error') is not None or state.get('finished_cells')!=[]
+            or state.get('pid')!=failure['controller_pid'] or Path(approved['local_failure_exit']['path']).with_name('completed.json').exists()):
+        raise ValueError('previous local state must remain failed without completion')
+    if preparation.get('old_local_pids')!=approved.get('old_local_pids') or not {failure['controller_pid'],failure['hybrid_queue_pid']}<=set(approved['old_local_pids']):
+        raise ValueError('previous local ownership coverage changed')
+    if prior['recovery_controller_pid'] in approved['old_local_pids']:raise ValueError('durable owner reuses failed predecessor PID')
+    for pid in approved['old_local_pids']:assert_process_absent(pid)
+    # These immutable evidence maps were semantically checked by the source-bound controller.
+    evidence=preparation['local_failure_evidence']
+    if any(evidence.get(approved[key]['path'])!=approved[key]['sha256'] for key in ('local_failure_exit','local_failure_state')):
+        raise ValueError('local failure evidence coverage changed')
+    for path,digest in evidence.items():
+        if sha256_file(path)!=digest:raise ValueError('local failure evidence changed')
+    for key in ('amendment','local_failure_amendment'):
+        read_bound(preparation[key]['path'],preparation[key]['sha256'])
+    copies=preparation['copied_file_hashes']
+    if set(copies)!=set(TRANSFER_CELLS[:18]):raise ValueError('durable copied cell coverage changed')
+    for cell,files in copies.items():
+        if files.get('completed.json')!=approved['reused_cell_hashes'][cell]:raise ValueError('durable preserved completion changed')
+        for name,digest in files.items():
+            if sha256_file(Path(approved['scope_root'])/cell/name)!=digest:raise ValueError('durable preserved artifact changed')
+
+
+def check_recovery_predecessor(auth,gate,*,durable=False):
+    prior=auth['predecessor'];closed=gate['predecessor'];closure,approved=check_recovery_closure(prior,durable=durable)
     root=Path(prior['recovery_root']).resolve()
     for key,name in [('recovery_completed_path','completed.json'),('recovery_exit_path','exit_receipt.json')]:
         path=Path(closed[key])
         if path.is_symlink() or path.resolve()!=root/'controller'/name:raise ValueError('recovery receipt leaves authorized scope')
     completed=read_bound(closed['recovery_completed_path'],closed['recovery_completed_sha256'])
     receipt=read_bound(closed['recovery_exit_path'],closed['recovery_exit_sha256'])
-    expected=dict(schema='final_transfer_recovery_completion.1',status='complete',pid=prior['recovery_controller_pid'],protocol_hash=TRANSFER_PROTOCOL,scope_root=str(root),n_retained_fits=10830,n_new_fits=4800,known_completed_including_discarded=11529,unknown_remote_fits=12,deadline_utc=approved['deadline_utc'])
+    expected=dict(schema='final_transfer_durable_completion.1' if durable else 'final_transfer_recovery_completion.1',status='complete',pid=prior['recovery_controller_pid'],protocol_hash=TRANSFER_PROTOCOL,scope_root=str(root),n_retained_fits=10830,n_new_fits=4800,known_completed_including_discarded=12615 if durable else 11529,unknown_remote_fits=12,deadline_utc=approved['deadline_utc'])
     if any(completed.get(k)!=v for k,v in expected.items()):raise ValueError('complete exact thirty-cell recovery required')
     expected_auth={'path':str(Path(prior['recovery_authorization_path']).resolve()),'sha256':prior['recovery_authorization_sha256']}
     if completed.get('authorization')!=expected_auth or completed.get('closure')!=approved['closure'] or completed.get('preserved_audit')!=approved['preserved_audit']:
         raise ValueError('recovery certificate provenance changed')
+    if durable:
+        expected_extra=dict(previous_local_exit_status='failed',discarded_partial_completed_fits=1785,
+                            unknown_local_fits=True,authorization_sha256=prior['recovery_authorization_sha256'],
+                            closure_sha256=prior['closure_sha256'])
+        expected_extra.update({key:approved[key] for key in ('local_failure_closure','local_failure_exit','local_failure_state')})
+        if any(completed.get(k)!=v for k,v in expected_extra.items()):raise ValueError('durable completion provenance/accounting changed')
+        attempt=read_bound(prior['recovery_attempt_path'],prior['recovery_attempt_sha256'])
+        if not timestamp(attempt['started_at_utc'])<=timestamp(completed['finished_at_utc'])<=timestamp(TRANSFER_DEADLINE):
+            raise ValueError('durable completion exceeded original deadline or predates attempt')
     audit=read_bound(approved['preserved_audit']['path'],approved['preserved_audit']['sha256'])
     if audit.get('status')!='passed' or audit.get('n_preserved_cells')!=18 or audit.get('n_preserved_fits')!=6030 or audit.get('protocol_hash')!=TRANSFER_PROTOCOL:
         raise ValueError('preserved semantic audit incomplete')
@@ -127,11 +199,27 @@ def check_recovery_predecessor(auth,gate):
         if any(done.get(k)!=v for k,v in expected.items()) or set(done['sha256'])!=TRANSFER_FILES:raise ValueError('recovered cell identity/count changed')
         for filename,h in done['sha256'].items():
             if sha256_file(directory/filename)!=h:raise ValueError('recovered cell artifact changed after audit')
-    expected=dict(schema='final_transfer_recovery_exit.1',status='complete',exit_code=0,pid=completed['pid'],protocol_hash=TRANSFER_PROTOCOL,authorization_sha256=prior['recovery_authorization_sha256'],completed_sha256=closed['recovery_completed_sha256'])
+    if durable:
+        # The runtime hashes bind the inventory; recheck the actual checkpoint payloads too.
+        from scripts.final_transfer_checkpoint_worker import verify_checkpoint_cell
+        for key in TRANSFER_CELLS[18:]:
+            regime,cell=key.split('/')
+            verify_checkpoint_cell(root,regime,cell,approved)
+    expected=dict(schema='final_transfer_durable_exit.1' if durable else 'final_transfer_recovery_exit.1',status='complete',exit_code=0,pid=completed['pid'],protocol_hash=TRANSFER_PROTOCOL,authorization_sha256=prior['recovery_authorization_sha256'],completed_sha256=closed['recovery_completed_sha256'])
     if any(receipt.get(k)!=v for k,v in expected.items()):raise ValueError('successful exact recovery controller exit required')
+    if durable:
+        expected_exit=dict(scope_root=str(root),authorization=expected_auth,closure=approved['closure'],
+                           local_failure_closure=approved['local_failure_closure'],local_failure_exit=approved['local_failure_exit'],
+                           deadline_utc=TRANSFER_DEADLINE,
+                           completed_certificate={'path':str(root/'controller/completed.json'),'sha256':closed['recovery_completed_sha256']})
+        if any(receipt.get(k)!=v for k,v in expected_exit.items()):raise ValueError('durable exit provenance changed')
+        if not timestamp(completed['finished_at_utc'])<=timestamp(receipt['finished_at_utc'])<=min(timestamp(TRANSFER_DEADLINE),timestamp(gate['created_at_utc'])):
+            raise ValueError('durable successful exit exceeded original deadline')
     assert_process_absent(completed['pid'])
 
 def check_predecessor(auth,gate):
+    if auth['predecessor'].get('kind')==DURABLE_KIND:
+        return check_recovery_predecessor(auth,gate,durable=True)
     if auth['predecessor'].get('kind')==RECOVERY_KIND:
         return check_recovery_predecessor(auth,gate)
     prior=auth['predecessor'];closed=gate['predecessor'];root_guard=read_bound(prior['guard_authorization_path'],prior['guard_authorization_sha256'])
@@ -150,10 +238,11 @@ def check_predecessor(auth,gate):
 
 def check_launch_gate(path,auth,phase):
     gate=json.loads(Path(path).read_text())
-    expected_schema=RECOVERY_GATE_SCHEMA if auth.get('schema')==RECOVERY_SCHEMA else GATE_SCHEMA
+    expected_schema={SCHEMA:GATE_SCHEMA,RECOVERY_SCHEMA:RECOVERY_GATE_SCHEMA,DURABLE_SCHEMA:DURABLE_GATE_SCHEMA}.get(auth.get('schema'))
     if gate.get('schema')!=expected_schema or gate.get('approved') is not True or gate.get('authorization_sha256')!=auth['_sha256'] or gate.get('phase')!=phase:raise ValueError('launch gate does not bind approved exact phase authorization')
     created=timestamp(gate['created_at_utc']);expiry=timestamp(gate['expires_at_utc'])
     if created<timestamp(auth['created_at_utc']) or created>time.time() or expiry<=time.time() or expiry<=created:raise ValueError('launch gate is stale, expired or future-dated')
+    if auth.get('schema')==DURABLE_SCHEMA and expiry>min(timestamp(auth['queue_deadline_utc']),timestamp(QUEUE_DEADLINE)):raise ValueError('durable gate exceeds fixed queue deadline')
     check_predecessor(auth,gate)
     if phase=='main':
         pilot=gate['pilot'];completed=read_bound(pilot['completed_path'],pilot['completed_sha256']);receipt=read_bound(pilot['exit_path'],pilot['exit_sha256'])
@@ -168,8 +257,9 @@ def check_launch_gate(path,auth,phase):
 
 def check_authorization(path,protocol,phase,*,require_gate=True):
     path=Path(path);auth=json.loads(path.read_text());auth['_sha256']=sha256_file(path)
-    recovery=auth.get('predecessor',{}).get('kind')==RECOVERY_KIND
-    expected=dict(schema=RECOVERY_SCHEMA if recovery else SCHEMA,approved=True,phase=phase,protocol_hash=protocol['protocol_hash'],controller_sha256=sha256_file(Path(__file__)),worker_sha256=sha256_file(ROOT/'scripts/final_hybrids.py'),jobs=[f'fold_{fold}/{rep}' for fold,rep in phase_jobs(phase)],max_workers=1 if phase=='pilot' else 2,threads_each=2,cloud_spend_usd=0,n_fits=12 if phase=='pilot' else 480)
+    durable=auth.get('predecessor',{}).get('kind')==DURABLE_KIND
+    recovery=durable or auth.get('predecessor',{}).get('kind')==RECOVERY_KIND
+    expected=dict(schema=DURABLE_SCHEMA if durable else RECOVERY_SCHEMA if recovery else SCHEMA,approved=True,phase=phase,protocol_hash=protocol['protocol_hash'],controller_sha256=sha256_file(Path(__file__)),worker_sha256=sha256_file(ROOT/'scripts/final_hybrids.py'),jobs=[f'fold_{fold}/{rep}' for fold,rep in phase_jobs(phase)],max_workers=1 if phase=='pilot' else 2,threads_each=2,cloud_spend_usd=0,n_fits=12 if phase=='pilot' else 480)
     if auth.get('approved') is not True or any(type(auth.get(k)) is not int for k in ('max_workers','threads_each','n_fits')) or any(auth.get(k)!=v for k,v in expected.items()):raise ValueError('authorization axes/source/count/resources mismatch')
     if auth.get('source_sha256')!=protocol['source_sha256']:raise ValueError('authorization must bind every frozen source')
     start=timestamp(auth['created_at_utc']);deadline=timestamp(auth['queue_deadline_utc'])
@@ -177,7 +267,9 @@ def check_authorization(path,protocol,phase,*,require_gate=True):
     wall=auth.get('fit_wall_seconds')
     if type(wall) not in (int,float) or not 0<wall<=48*3600:raise ValueError('fixed finite fitting deadline required')
     if recovery and phase=='pilot' and wall!=7200:raise ValueError('recovery pilot retains fixed two-hour cap')
-    if recovery:check_recovery_closure(auth['predecessor'])
+    if durable and auth.get('scope_root')!=str(DURABLE_OUT.resolve()):raise ValueError('durable hybrid output scope changed')
+    if durable and deadline>timestamp(QUEUE_DEADLINE):raise ValueError('durable queue exceeds original expiry')
+    if recovery:check_recovery_closure(auth['predecessor'],durable=durable)
     if require_gate:check_launch_gate(auth['launch_gate_path'],auth,phase)
     return auth
 
@@ -215,7 +307,9 @@ def child_command(out,approved,phase,fold,rep):
 
 
 def run_phase(out,approved,phase,*,popen=subprocess.Popen,monotonic=time.monotonic,sleep=time.sleep):
-    out=Path(out);_,protocol=validate_frozen(out);auth=check_authorization(approved,protocol,phase);directory=out/'controller'/phase;directory.mkdir(parents=True,exist_ok=True)
+    out=Path(out);_,protocol=validate_frozen(out);auth=check_authorization(approved,protocol,phase);directory=out/'controller'/phase
+    if auth.get('schema')==DURABLE_SCHEMA and out.resolve()!=Path(auth['scope_root']):raise ValueError('durable hybrid out-dir differs from authorization')
+    directory.mkdir(parents=True,exist_ok=True)
     owner=(directory/'ownership.lock').open('a');fcntl.flock(owner,fcntl.LOCK_EX|fcntl.LOCK_NB)
     state=dict(status='running',phase=phase,pid=os.getpid(),protocol_hash=protocol['protocol_hash'],authorization_sha256=auth['_sha256'],started_at_utc=now(),n_fits=0,fit_wall_seconds=auth['fit_wall_seconds'],jobs=auth['jobs'],max_workers=auth['max_workers'],launch_intents=[],active_children=[],finished_children=[],peak_concurrent_children=0)
     try:write_once(directory/'attempt.json',state)
@@ -272,7 +366,9 @@ def run_phase(out,approved,phase,*,popen=subprocess.Popen,monotonic=time.monoton
 
 
 def queue_phase(out,approved,phase,*,sleep=time.sleep):
-    out=Path(out);_,protocol=validate_frozen(out);auth=check_authorization(approved,protocol,phase,require_gate=False);directory=out/'controller'/phase;directory.mkdir(parents=True,exist_ok=True)
+    out=Path(out);_,protocol=validate_frozen(out);auth=check_authorization(approved,protocol,phase,require_gate=False);directory=out/'controller'/phase
+    if auth.get('schema')==DURABLE_SCHEMA and out.resolve()!=Path(auth['scope_root']):raise ValueError('durable hybrid out-dir differs from authorization')
+    directory.mkdir(parents=True,exist_ok=True)
     write_once(directory/'queue_attempt.json',dict(pid=os.getpid(),phase=phase,authorization_sha256=auth['_sha256'],started_at_utc=now(),queue_deadline_utc=auth['queue_deadline_utc'],poll_seconds=30))
     try:
         while True:

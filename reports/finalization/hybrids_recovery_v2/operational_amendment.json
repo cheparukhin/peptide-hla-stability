@@ -1,0 +1,74 @@
+{
+  "schema": "final_hybrids_operational_amendment.3",
+  "at_utc": "2026-10-12T16:09:00.523039+00:00",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "scientific_specification_unchanged": true,
+  "unchanged_scientific_fits": 480,
+  "unchanged_unscored_pilot_fits": 12,
+  "old_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery",
+  "new_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery_v2",
+  "prior_source_archive_manifest": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids/operational_v2_archive/manifest.json",
+    "sha256": "7a1d8f787b0e1708d321773adee82ef2b22d7ca987c1b22431c00a0568eaa430"
+  },
+  "prior_protocol_sha256": "e834d4cf2e1d68e4be6fc55fdec6d3dcd728b73381441ba2c848b1fc3f44b8ae",
+  "new_protocol_sha256": "d5e5560f11e779b8967f55e252c1187cbbfb6779e570273c78ba25ea807cf5d8",
+  "changed_sources": {
+    "scripts/final_hybrids_pipeline.py": {
+      "prior_sha256": "fecd3f6888d89a19720a2c13c4ce1b7289c5771eb0c03824ac709e8f31248f4e",
+      "current_sha256": "6f20157ebb4fabe2f0157377e811d7cfb88c1546fdacfe940c551399cc8257d6"
+    },
+    "tests/test_final_hybrids_pipeline.py": {
+      "prior_sha256": "5a31bd519f11bc9e7dadb9462bc6187e5e4d43a0732d19d4478ab6a9338e6e8c",
+      "current_sha256": "998181b266a900e95fde22b74aa6711735b998a08ad857a8320d1a11b17ba9f0"
+    }
+  },
+  "copied_files_sha256": {
+    "SPECIFICATION.md": "df032a58a813689396c278eb02608ade7f16140f7682f44e80080a84442c38cf",
+    "fit_graph.json": "d3991040333705874a7ad8ebb6408a925ab64970b649deb7431ca730786abf2b",
+    "task_manifest.json": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766",
+    "preflight.json": "a7b368cfbbf0aee684c975a9e9721f98b4e3e894bd6fe769a9c7034670c4e91a"
+  },
+  "reason": "Both prior waiting hybrid queues stopped without fitting. The local transfer recovery PID37822 truthfully failed after SIGTERM; its operational-v2 success gate remains closed. This separate gate binds both interruption closures and a new exact durable transfer attempt without rewriting prior outcomes.",
+  "predecessor_contract": {
+    "kind": "interrupted_transfer_durable_recovery",
+    "authorization_schema": "final_hybrids_controller_authorization.3",
+    "launch_gate_schema": "final_hybrids_launch_gate.3",
+    "transfer_authorization_schema": "final_transfer_durable_authorization.1",
+    "transfer_completion_schema": "final_transfer_durable_completion.1",
+    "transfer_exit_schema": "final_transfer_durable_exit.1",
+    "required_proofs": [
+      "original interrupted cloud closure and accounting",
+      "local failed closure, exit and state",
+      "source-bound preparation and authorization",
+      "exact durable attempt and controller PID",
+      "all thirty scientific cell artifacts",
+      "all twelve new checkpoint caches mapped to audited cell artifacts",
+      "successful durable controller exit and process absence"
+    ],
+    "known_completed_including_discarded": 12615,
+    "discarded_partial_completed_fits": 1785,
+    "retained_scientific_fits": 10830,
+    "new_local_scientific_fits": 4800
+  },
+  "resource_limits": {
+    "pilot_fits": 12,
+    "pilot_fit_wall_seconds": 7200,
+    "pilot_workers_max": 1,
+    "main_fits": 480,
+    "main_jobs": 10,
+    "main_workers_max": 2,
+    "threads_each": 2,
+    "additional_cloud_spend_usd": 0
+  },
+  "queue_deadline_no_later_than_utc": "2026-10-14T14:15:17.567539+00:00",
+  "original_transfer_deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+  "continuation": "Root may authorize a separate pilot only after the exact durable transfer has completed and exited successfully. Main fitting requires its own runtime-only gate after the successful unscored pilot and saved-model audit.",
+  "validation": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery_v2/validation.json",
+    "sha256": "a072e3c721ea9fa97f94eafb8012e4e7746b00aadeab76e039117e754c2d0196",
+    "root_review_approved": true
+  },
+  "original_test_reopened": false,
+  "launch_authorized_by_this_record": false
+}

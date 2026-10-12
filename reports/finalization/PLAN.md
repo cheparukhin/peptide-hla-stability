@@ -174,3 +174,13 @@ checkpoints before a further run. The twelve-cell scientific scope, original
 deadline and zero new cloud allocation remain unchanged; known discarded fits
 now total1,785. Do not automatically retry the failed controller or fabricate
 its completion.
+
+The additive checkpointed recovery passed117 combined checks and independent
+scientific/provenance review, and launched once through macOS launchd at16:09 UTC
+on12 October (PID59308, keep-awake helper59464). It has no automatic restart,
+preserves the original deadline and runs exactly the remaining4,800 fits
+locally. Source and authorization are committed in301c64a. The hybrid
+operational-v3 gate passed63 checks and retains the same scientific protocol;
+no hybrid fit or waiting queue has started. Its later pilot release must bind
+this exact successful transfer attempt. Current ownership and cleanup commands
+are in [recovery operations](RECOVERY_OPERATIONS.md).

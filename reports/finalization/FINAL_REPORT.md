@@ -164,7 +164,7 @@ semantic audit. The original cloud scope is stopped. Two local process
 interruptions left1,785 recorded completed partial fits that are discarded;
 twelve original remote attempts remain uncertain and fully carried in the
 closed accounting. A one-time local recovery with complete-call checkpoints
-is being prepared for the remaining12 cells and4,800 fits under the unchanged
+is running for the remaining12 cells and4,800 fits under the unchanged
 deadline. These partial counts are operational progress, not extension results.
 [Recovery operations](RECOVERY_OPERATIONS.md).
 

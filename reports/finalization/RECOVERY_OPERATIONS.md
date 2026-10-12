@@ -1,6 +1,48 @@
 # Continuation after the 12 October process interruption
 
-**Latest status:** the local recovery PID37822 received SIGTERM at15:30:54 UTC
+**Current run:** one checkpointed local recovery launched through macOS
+launchd at16:09 UTC on12 October, controller **PID59308**, parent PID1;
+keep-awake helper **PID59464**. Inspect
+`transfer_recovery_v2/controller/state.json` and
+`resources/transfer_durable/` before any action. Never duplicate or restart it.
+The single job owns exactly the12 unfinished cells and4,800 fresh fits at
+three workers/two threads. Completed-call checkpoints are being written.
+All cloud scopes remain stopped; this run allocates no additional cloud spend.
+
+The source and authorization are committed in **301c64a** after117 combined
+checks and an independent Astra review. Authorization SHA256:
+`d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c`.
+The original deadline remains13 October15:32:19.924192 UTC. The4.507-hour
+conservative forecast is not a completion guarantee.
+
+Launchd labels in domain `gui/501` are
+`org.pepstab.transfer-recovery-v2-20261012` and
+`org.pepstab.transfer-recovery-v2-awake-20261012`. Both are one-shot jobs with
+`KeepAlive: false`. After successful exit, verify the source-bound certificate,
+all30 cells and checkpoint caches, exact successful receipt and PID absence;
+then remove both registrations with `launchctl bootout gui/501/<exact-label>`.
+For a necessary stop, inspect the current exact owner before sending SIGTERM;
+never signal a historical PID merely because it appears here. Do not extend
+the deadline or automatically retry an uncertain call.
+
+Run the unchanged `scripts/final_transfer_report.py` once against
+`reports/finalization/transfer_recovery_v2` after closure, with two numerical
+threads and durable single-launch/exit records. Check for an existing report
+process or receipt first. Retained scientific count is10,830, discarded known
+completed count1,785, and eventual total known completed count12,615, excluding
+engineering pilots and the twelve uncertain original remote attempts.
+
+Hybrid operational version3 is frozen at `hybrids_recovery_v2/`, with63 pipeline
+checks. Its scientific480+12-fit scope is unchanged. **No hybrid authorization,
+launch gate, queue or fit has started.** The actual predecessor bindings are
+saved in `resources/hybrid_durable_pilot/predecessor.json` and validated against
+both closures and the exact live transfer attempt. Launch the pilot only after
+successful transfer closure; do not restart either old queue. Use one-shot
+OS-managed execution for later phases as well.
+
+## Earlier interruptions and preparation history
+
+The local recovery PID37822 received SIGTERM at15:30:54 UTC
 and recorded a failed exit with successful worker cleanup. Its waiting hybrid
 queue PID44698 is also absent. Codex app logs record a transport stop followed
 by an app-server restart at the same time. Do not relaunch these attempts or
@@ -11,8 +53,7 @@ The second closure and dated amendment are under
 a one-time operating-system-managed local run and complete-call checkpoints
 before another attempt. The deadline and scientific recipes remain unchanged.
 The user confirmed restarting/updating Codex. The ownership details below
-describe the now-interrupted launch history; no scientific job is currently
-running at this checkpoint.
+describe the now-interrupted launch history. The current owner is recorded above.
 
 ## Durable recovery preparation — 12 October 15:55 UTC
 

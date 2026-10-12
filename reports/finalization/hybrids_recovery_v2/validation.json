@@ -1,0 +1,47 @@
+{
+  "schema": "final_hybrids_operational_validation.3",
+  "status": "passed",
+  "at_utc": "2026-10-12T16:09:19.199601+00:00",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "protocol_sha256": "d5e5560f11e779b8967f55e252c1187cbbfb6779e570273c78ba25ea807cf5d8",
+  "validate_frozen_passed": true,
+  "validated_features_passed": true,
+  "scientific_specification_identical": true,
+  "copied_files_byte_identical": {
+    "SPECIFICATION.md": "df032a58a813689396c278eb02608ade7f16140f7682f44e80080a84442c38cf",
+    "fit_graph.json": "d3991040333705874a7ad8ebb6408a925ab64970b649deb7431ca730786abf2b",
+    "task_manifest.json": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766",
+    "preflight.json": "a7b368cfbbf0aee684c975a9e9721f98b4e3e894bd6fe769a9c7034670c4e91a"
+  },
+  "changed_source_paths": [
+    "scripts/final_hybrids_pipeline.py",
+    "tests/test_final_hybrids_pipeline.py"
+  ],
+  "unchanged_frozen_reference_hashes": true,
+  "unchanged_population_feature_provenance": true,
+  "training_rows": 19716,
+  "training_clusters": 3587,
+  "feature_shapes": {
+    "R0": [
+      19716,
+      860
+    ],
+    "R5": [
+      19716,
+      1024
+    ]
+  },
+  "feature_hashes": {
+    "R0": "d84f1e8244b0a25838f1c9f12fa19f70437e7dd488388306f8fc35ffc3966828",
+    "R5": "8c02288566e92de5e0c8a2b87d0d636f25bf01d14eb8711292f78af28c4030ed"
+  },
+  "scientific_fit_count": 480,
+  "unscored_engineering_pilot_fit_count": 12,
+  "independently_run_pipeline_tests_passed": 63,
+  "root_final_combined_tests": {
+    "passed": 117,
+    "elapsed_seconds": 36.01,
+    "reported_by": "root final validation"
+  },
+  "launch_authorized_by_this_record": false
+}

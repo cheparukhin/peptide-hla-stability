@@ -372,3 +372,209 @@ def test_report_replay_holds_numerical_thread_limit(tmp_path,monkeypatch):
         return {'replayed':True}
     monkeypatch.setattr(report,'_build_report',inner)
     assert report.build_report(tmp_path)=={'replayed':True}
+
+
+def durable_gate_fixture(tmp_path,monkeypatch):
+    from scripts import final_transfer_checkpoint_worker
+    # The worker's integration tests validate real cache payloads; this fixture isolates gate bindings.
+    monkeypatch.setattr(final_transfer_checkpoint_worker,'verify_checkpoint_cell',lambda *args:None)
+    # Isolate source bindings as well as receipts; no running experiment or source build is required.
+    fixture_root=tmp_path/'repository'
+    names=pipe.DURABLE_SOURCES|{'scripts/final_transfer.py','scripts/final_transfer_report.py',
+        'scripts/final_transfer_recovery.py','tests/test_final_transfer_recovery.py','scripts/final_hybrids.py'}
+    for name in names:
+        destination=fixture_root/name;destination.parent.mkdir(parents=True,exist_ok=True)
+        source=pipe.ROOT/name
+        destination.write_bytes(source.read_bytes() if source.exists() else ('fixture source '+name).encode())
+    monkeypatch.setattr(pipe,'ROOT',fixture_root)
+    path,auth,gate,protocol,completed,receipt,closure=recovery_gate_fixture(tmp_path,monkeypatch)
+    prior=auth['predecessor'];root=Path(prior['recovery_root']);approved_path=Path(prior['recovery_authorization_path'])
+    approved=json.loads(approved_path.read_text());preparation_path=Path(approved['preparation']['path'])
+    preparation=json.loads(preparation_path.read_text())
+    def bound(path,value):return {'path':str(path),'sha256':save(path,value)}
+    old=tmp_path/'old_local';old.mkdir()
+    failed_exit=bound(old/'exit_receipt.json',dict(schema='final_transfer_recovery_exit.1',status='failed',exit_code=1,
+        cleanup_error=None,pid=2147483643,deadline_utc=pipe.TRANSFER_DEADLINE,protocol_hash=pipe.TRANSFER_PROTOCOL,closure=approved['closure']))
+    failed_state=bound(old/'state.json',dict(status='failed',cleanup_error=None,pid=2147483643,finished_cells=[]))
+    failed_closure=bound(tmp_path/'local_closure.json',dict(schema='final_local_recovery_interruption.1',
+        status='failed_stopped_no_new_complete_cells',cleanup_error=None,controller_pid=2147483643,hybrid_queue_pid=2147483642,
+        additional_discarded_recorded_completed_fits=1086,total_discarded_recorded_completed_fits=1785,
+        known_completed_after_eventual_success_including_discarded=12615,remaining_scientific_fits=4800,
+        retained_complete_cells=18,retained_complete_fits=6030,uncertain_remote_attempts_from_original_scope=12,
+        additional_cloud_spend_usd=0,controller_exit_path=failed_exit['path'],controller_exit_sha256=failed_exit['sha256'],
+        controller_state_sha256=failed_state['sha256']))
+    failure=dict(local_failure_closure=failed_closure,local_failure_exit=failed_exit,local_failure_state=failed_state)
+    approved.update(schema='final_transfer_durable_authorization.1',**failure,old_local_pids=[2147483642,2147483643])
+    original_sources=json.loads(Path(approved['protocol']['path']).read_text())['code_sha256']
+    approved['sources']={**original_sources,**{n:pipe.sha256_file(pipe.ROOT/n) for n in pipe.DURABLE_SOURCES}}
+    preparation.update(schema='final_transfer_durable_preparation.1',**failure,old_local_pids=approved['old_local_pids'],
+        sources=approved['sources'],n_reused_fits=6030,n_new_fits=4800,n_retained_fits=10830,
+        discarded_partial_completed_fits=1785,known_completed_including_discarded=12615,unknown_remote_fits=12,
+        unknown_local_fits=True,additional_cloud_spend_usd=0,previous_local_exit_status='failed',
+        local_failure_evidence={item['path']:item['sha256'] for item in (failed_exit,failed_state)},
+        amendment=bound(tmp_path/'amendment.json',{'original_protocol_hash':pipe.TRANSFER_PROTOCOL}),
+        local_failure_amendment=bound(tmp_path/'local_amendment.json',{'scientific_protocol_hash':pipe.TRANSFER_PROTOCOL}),
+        copied_file_hashes={c:{str(f.relative_to(root/c)):pipe.sha256_file(f) for f in (root/c).rglob('*') if f.is_file()}
+                           for c in pipe.TRANSFER_CELLS[:18]})
+    approved['preparation']['sha256']=save(preparation_path,preparation)
+    prior.update(kind=pipe.DURABLE_KIND,**failure,recovery_authorization_sha256=save(approved_path,approved))
+    exact_auth={'path':str(approved_path),'sha256':prior['recovery_authorization_sha256']}
+    attempt_path=Path(prior['recovery_attempt_path']);attempt=json.loads(attempt_path.read_text())
+    attempt.update(started_at_utc='2026-10-12T16:00:00+00:00',authorization=exact_auth,authorization_sha256=exact_auth['sha256'],
+                   local_failure_closure=failed_closure,local_failure_exit=failed_exit)
+    prior['recovery_attempt_sha256']=save(attempt_path,attempt)
+    completed.update(schema='final_transfer_durable_completion.1',**failure,previous_local_exit_status='failed',
+        discarded_partial_completed_fits=1785,known_completed_including_discarded=12615,unknown_local_fits=True,
+        authorization=exact_auth,authorization_sha256=exact_auth['sha256'],closure_sha256=prior['closure_sha256'],
+        finished_at_utc='2026-10-13T14:00:00+00:00')
+    closed=gate['predecessor'];closed['recovery_completed_sha256']=save(Path(closed['recovery_completed_path']),completed)
+    receipt.update(schema='final_transfer_durable_exit.1',scope_root=str(root),authorization=exact_auth,
+        authorization_sha256=exact_auth['sha256'],closure=approved['closure'],local_failure_closure=failed_closure,
+        local_failure_exit=failed_exit,deadline_utc=pipe.TRANSFER_DEADLINE,completed_sha256=closed['recovery_completed_sha256'],
+        completed_certificate={'path':closed['recovery_completed_path'],'sha256':closed['recovery_completed_sha256']},
+        finished_at_utc='2026-10-13T14:00:01+00:00')
+    closed['recovery_exit_sha256']=save(Path(closed['recovery_exit_path']),receipt)
+    monkeypatch.setattr(pipe,'DURABLE_OUT',tmp_path/'hybrids_v3')
+    auth.update(schema=pipe.DURABLE_SCHEMA,scope_root=str(pipe.DURABLE_OUT),queue_deadline_utc=pipe.QUEUE_DEADLINE,
+                created_at_utc='2026-10-12T16:00:00+00:00')
+    save(path,auth)
+    gate.update(schema=pipe.DURABLE_GATE_SCHEMA,authorization_sha256=pipe.sha256_file(path),
+                created_at_utc='2026-10-13T16:00:00+00:00',expires_at_utc=pipe.QUEUE_DEADLINE)
+    save(Path(auth['launch_gate_path']),gate)
+    monkeypatch.setattr(pipe.time,'time',lambda:pipe.timestamp('2026-10-13T16:00:01+00:00'))
+    return path,auth,gate,protocol,completed,receipt,approved,preparation
+
+
+def test_durable_gate_accepts_both_closed_attempts_and_exact_success_even_after_transfer_deadline(tmp_path,monkeypatch):
+    path,auth,gate,protocol,_,_,_,_=durable_gate_fixture(tmp_path,monkeypatch)
+    assert pipe.check_authorization(path,protocol,'pilot')['schema']==pipe.DURABLE_SCHEMA
+    Path(auth['launch_gate_path']).unlink()
+    assert pipe.check_authorization(path,protocol,'pilot',require_gate=False)['n_fits']==12
+    with pytest.raises(FileNotFoundError):pipe.check_authorization(path,protocol,'pilot')
+
+
+@pytest.mark.parametrize('alteration',[
+    'failed_durable_exit','wrong_owner','changed_attempt','source_missing','source_changed','cloud_open',
+    'local_success_fabricated','local_cleanup_failed','local_closure_count','local_state_complete','local_evidence_changed',
+    'preparation_count','partial_cells','wrong_retained','wrong_discarded','wrong_total','changed_artifact',
+    'certificate_auth','certificate_failure','exit_certificate','late_completion','late_exit','active_owner',
+    'wrong_auth_schema','wrong_gate_schema','queue_extension','gate_extension','pilot_extension','wrong_output'])
+def test_durable_gate_rejects_tampered_evidence(tmp_path,monkeypatch,alteration):
+    path,auth,gate,protocol,completed,receipt,approved,preparation=durable_gate_fixture(tmp_path,monkeypatch)
+    prior=auth['predecessor'];closed=gate['predecessor']
+    if alteration=='failed_durable_exit':receipt.update(status='failed',exit_code=1)
+    if alteration=='wrong_owner':completed['pid']+=1;receipt['pid']=completed['pid']
+    if alteration=='changed_attempt':
+        target=Path(prior['recovery_attempt_path']);value=json.loads(target.read_text());value['pid']+=1;prior['recovery_attempt_sha256']=save(target,value)
+    if alteration=='source_missing':approved['sources'].pop(next(iter(pipe.DURABLE_SOURCES)))
+    if alteration=='source_changed':approved['sources']['scripts/final_transfer_durable.py']='0'*64
+    if alteration=='cloud_open':
+        target=Path(prior['closure_path']);value=json.loads(target.read_text());value['app_stopped']=False;prior['closure_sha256']=save(target,value)
+    if alteration in ('local_success_fabricated','local_cleanup_failed','local_state_complete','local_closure_count'):
+        key='local_failure_exit' if alteration in ('local_success_fabricated','local_cleanup_failed') else 'local_failure_state' if alteration=='local_state_complete' else 'local_failure_closure'
+        target=Path(prior[key]['path']);value=json.loads(target.read_text())
+        if alteration=='local_success_fabricated':value['status']='complete';value['exit_code']=0
+        elif alteration=='local_cleanup_failed':value['cleanup_error']='still running'
+        elif alteration=='local_state_complete':value['status']='complete'
+        else:value['total_discarded_recorded_completed_fits']=699
+        item={'path':str(target),'sha256':save(target,value)}
+        prior[key]=approved[key]=preparation[key]=item
+        # Rebind outer ownership so semantic checks, rather than stale hashes, reject the mutation.
+        if key!='local_failure_closure':
+            target=Path(prior['local_failure_closure']['path']);value=json.loads(target.read_text())
+            value['controller_exit_sha256' if key=='local_failure_exit' else 'controller_state_sha256']=item['sha256']
+            prior['local_failure_closure']=approved['local_failure_closure']=preparation['local_failure_closure']={'path':str(target),'sha256':save(target,value)}
+    if alteration=='local_evidence_changed':Path(approved['local_failure_state']['path']).write_text('{}')
+    if alteration=='preparation_count':preparation['known_completed_including_discarded']=11529
+    if alteration=='partial_cells':completed['completed_cell_hashes'].pop(pipe.TRANSFER_CELLS[-1])
+    if alteration=='wrong_retained':completed['n_retained_fits']=10829
+    if alteration=='wrong_discarded':completed['discarded_partial_completed_fits']=699
+    if alteration=='wrong_total':completed['known_completed_including_discarded']=11529
+    if alteration=='changed_artifact':(Path(prior['recovery_root'])/pipe.TRANSFER_CELLS[-1]/'predictions.csv').write_text('changed')
+    if alteration=='certificate_auth':completed['authorization_sha256']='0'*64
+    if alteration=='certificate_failure':completed['local_failure_exit']={}
+    if alteration=='late_completion':completed['finished_at_utc']='2026-10-13T16:00:00+00:00'
+    if alteration=='late_exit':receipt['finished_at_utc']='2026-10-13T16:00:00+00:00'
+    if alteration=='active_owner':
+        def absent(pid):
+            if pid==prior['recovery_controller_pid']:raise ValueError('active durable owner')
+        monkeypatch.setattr(pipe,'assert_process_absent',absent)
+    approved['preparation']['sha256']=save(Path(approved['preparation']['path']),preparation)
+    old_auth_hash=prior['recovery_authorization_sha256']
+    prior['recovery_authorization_sha256']=save(Path(prior['recovery_authorization_path']),approved)
+    if old_auth_hash!=prior['recovery_authorization_sha256']:
+        exact={'path':prior['recovery_authorization_path'],'sha256':prior['recovery_authorization_sha256']}
+        target=Path(prior['recovery_attempt_path']);attempt=json.loads(target.read_text())
+        attempt.update(authorization=exact,authorization_sha256=exact['sha256'],local_failure_closure=approved['local_failure_closure'],local_failure_exit=approved['local_failure_exit'])
+        prior['recovery_attempt_sha256']=save(target,attempt)
+    closed['recovery_completed_sha256']=save(Path(closed['recovery_completed_path']),completed)
+    receipt['completed_sha256']=closed['recovery_completed_sha256'];receipt['completed_certificate']['sha256']=closed['recovery_completed_sha256']
+    if alteration=='exit_certificate':receipt['completed_certificate']['sha256']='0'*64
+    closed['recovery_exit_sha256']=save(Path(closed['recovery_exit_path']),receipt)
+    if alteration=='wrong_output':auth['scope_root']=str(tmp_path/'old_scope')
+    if alteration=='wrong_auth_schema':auth['schema']=pipe.RECOVERY_SCHEMA
+    if alteration=='wrong_gate_schema':gate['schema']=pipe.RECOVERY_GATE_SCHEMA
+    if alteration=='queue_extension':auth['queue_deadline_utc']='2026-10-14T15:00:00+00:00'
+    if alteration=='gate_extension':gate['expires_at_utc']='2026-10-14T15:00:00+00:00'
+    if alteration=='pilot_extension':auth['fit_wall_seconds']=7201
+    gate['authorization_sha256']=save(path,auth);save(Path(auth['launch_gate_path']),gate)
+    with pytest.raises(ValueError):pipe.check_authorization(path,protocol,'pilot')
+
+
+def test_durable_main_needs_separate_runtime_gate_and_fixed_ten_jobs(tmp_path,monkeypatch):
+    path,auth,gate,protocol,_,_,_,_=durable_gate_fixture(tmp_path,monkeypatch)
+    auth.update(phase='main',max_workers=2,n_fits=480,jobs=[f'fold_{f}/{r}' for f,r in pipe.phase_jobs('main')])
+    gate.update(phase='main',authorization_sha256=save(path,auth))
+    pilot=dict(status='complete',phase='pilot',n_fits=12,protocol_hash=protocol['protocol_hash'],pid=2147483641)
+    pilot_completed=tmp_path/'pilot_completed.json';pilot_exit=tmp_path/'pilot_exit.json';forecast=tmp_path/'pilot_forecast.json'
+    gate['pilot']=dict(completed_path=str(pilot_completed),completed_sha256=save(pilot_completed,pilot),
+        exit_path=str(pilot_exit),exit_sha256=save(pilot_exit,pilot),runtime_forecast_path=str(forecast),
+        runtime_forecast_sha256=save(forecast,{'conservative_seconds':1000}))
+    save(Path(auth['launch_gate_path']),gate)
+    with pytest.raises(ValueError,match='separate root scientific runtime approval'):
+        pipe.check_authorization(path,protocol,'main')
+    gate['runtime_approved']=True;save(Path(auth['launch_gate_path']),gate)
+    actual=pipe.check_authorization(path,protocol,'main')
+    assert len(actual['jobs'])==10 and actual['n_fits']==480 and actual['max_workers']==2
+    auth['max_workers']=3;save(path,auth)
+    with pytest.raises(ValueError,match='resources mismatch'):pipe.check_authorization(path,protocol,'main',require_gate=False)
+
+
+@pytest.mark.parametrize('mode',['queue_phase','run_phase'])
+def test_durable_controller_refuses_other_output_before_writing_ownership(tmp_path,monkeypatch,mode):
+    path,_,_,protocol,_,_,_,_=durable_gate_fixture(tmp_path,monkeypatch)
+    monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol))
+    wrong=tmp_path/'wrong_output'
+    with pytest.raises(ValueError,match='out-dir differs'):getattr(pipe,mode)(wrong,path,'pilot')
+    assert not wrong.exists()
+
+
+def test_v2_cannot_accept_durable_completion_or_failed_old_controller(tmp_path,monkeypatch):
+    path,auth,gate,protocol,completed,receipt,_=recovery_gate_fixture(tmp_path,monkeypatch)
+    receipt['status']='failed';receipt['exit_code']=1
+    gate['predecessor']['recovery_exit_sha256']=save(Path(gate['predecessor']['recovery_exit_path']),receipt)
+    save(Path(auth['launch_gate_path']),gate)
+    with pytest.raises(ValueError,match='successful exact recovery controller exit'):
+        pipe.check_authorization(path,protocol,'pilot')
+    completed.update(schema='final_transfer_durable_completion.1',known_completed_including_discarded=12615)
+    gate['predecessor']['recovery_completed_sha256']=save(Path(gate['predecessor']['recovery_completed_path']),completed)
+    save(Path(auth['launch_gate_path']),gate)
+    with pytest.raises(ValueError,match='complete exact thirty-cell recovery'):
+        pipe.check_authorization(path,protocol,'pilot')
+
+
+def test_durable_gate_revalidates_every_new_checkpoint_cell_and_blocks_corruption(tmp_path,monkeypatch):
+    from scripts import final_transfer_checkpoint_worker
+    path,auth,_,protocol,_,_,approved,_=durable_gate_fixture(tmp_path,monkeypatch)
+    checked=[]
+    def verify(root,regime,cell,bound):
+        assert root==Path(auth['predecessor']['recovery_root'])
+        assert bound==approved
+        checked.append(f'{regime}/{cell}')
+    monkeypatch.setattr(final_transfer_checkpoint_worker,'verify_checkpoint_cell',verify)
+    pipe.check_authorization(path,protocol,'pilot')
+    assert checked==list(pipe.TRANSFER_CELLS[18:])
+    def corrupt(*args):raise ValueError('checkpoint payload hash mismatch after completion')
+    monkeypatch.setattr(final_transfer_checkpoint_worker,'verify_checkpoint_cell',corrupt)
+    with pytest.raises(ValueError,match='checkpoint payload hash mismatch'):
+        pipe.check_authorization(path,protocol,'pilot')
