@@ -1,0 +1,196 @@
+{
+  "schema": "hybrid_report_aggregation_diagnosis.1",
+  "created_at_utc": "2026-10-12T23:41:04.700553+00:00",
+  "scope": "Representative fold_0/R0 inner_0 and final saved prediction vectors only; no model inference, fitting, held scoring, bootstrap or full audit.",
+  "cause": "Worker calls evaluation.validate_finite, which promotes each member to float64 before averaging. Report averages restored MLP float32 arrays without the same promotion.",
+  "repair": "Report-only promotion with evaluation.validate_finite before the unchanged mean. Preserve member replay assertions and CSV tolerances; do not rewrite saved predictions or scientific worker sources.",
+  "evidence": [
+    {
+      "stage": "inner_0",
+      "component": "standard",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1846,
+      "maximum_absolute_report_mean_difference": 2.384185791015625e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "inner_0",
+      "component": "tree_rmse",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float64",
+        "float64"
+      ],
+      "report_mean_dtype": "float64",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 0,
+      "maximum_absolute_report_mean_difference": 0.0,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "inner_0",
+      "component": "tree_rank",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float64",
+        "float64"
+      ],
+      "report_mean_dtype": "float64",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 0,
+      "maximum_absolute_report_mean_difference": 0.0,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "inner_0",
+      "component": "leaf_mlp",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1914,
+      "maximum_absolute_report_mean_difference": 1.1920928955078125e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "inner_0",
+      "component": "quantile_mlp",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1877,
+      "maximum_absolute_report_mean_difference": 2.384185791015625e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "inner_0",
+      "component": "pca_mlp",
+      "n_rows": 5258,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1998,
+      "maximum_absolute_report_mean_difference": 1.1920928955078125e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "standard",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1380,
+      "maximum_absolute_report_mean_difference": 1.1920928955078125e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "tree_rmse",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float64",
+        "float64"
+      ],
+      "report_mean_dtype": "float64",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 0,
+      "maximum_absolute_report_mean_difference": 0.0,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "tree_rank",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float64",
+        "float64"
+      ],
+      "report_mean_dtype": "float64",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 0,
+      "maximum_absolute_report_mean_difference": 0.0,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "leaf_mlp",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1432,
+      "maximum_absolute_report_mean_difference": 2.384185791015625e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "quantile_mlp",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1496,
+      "maximum_absolute_report_mean_difference": 1.1920928955078125e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    },
+    {
+      "stage": "final",
+      "component": "pca_mlp",
+      "n_rows": 3944,
+      "member_dtypes": [
+        "float32",
+        "float32"
+      ],
+      "report_mean_dtype": "float32",
+      "worker_mean_dtype": "float64",
+      "report_mean_different_rows": 1414,
+      "maximum_absolute_report_mean_difference": 2.384185791015625e-07,
+      "worker_mean_matches_saved_csv_exactly": true
+    }
+  ],
+  "source_and_input_sha256": {
+    "scripts/final_hybrids_cloud.py": "9e1010ae90adc2c2dd0dcc12019925b14b5fc61326e9de693c42dc7a051806a8",
+    "scripts/final_hybrids_cloud_report.py": "91acbae5d5bd1635e6f811924758edded696b6fbb7f005eab4efc288545d8f09",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/final_hybrid_reporting.py": "d6e84748677d0b949938dfbf4234f56578c25401d3ef5ed6790fc3cb58636766",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/inner_predictions.csv": "ec0d8bab35bb54bf4ba6e6e1c9decf31f2b7c5159ec288b876cbd52ee7dc7637",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_0/stop_0_seed_0/arrays.npz": "b73ac00f25fc55ba0bad6ebf4432b9506d571096fcbe713a35da24302441202e",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_0/stop_1_seed_1/arrays.npz": "d71f969dcbf4c8bd19bf23e8519e6c969078c16be8e56d6c61479baf1acf3ba4",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/raw_final_predictions.csv": "f112452a4d84af26e5dab2cfdfa31239915bd166c47d5c0af22488c38bfaf2db",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/final/stop_0_seed_0/arrays.npz": "95f8abbead9cc0638f28f5d50dbf9911b75a0966ad7f0fd25979d257585a6a22",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/final/stop_1_seed_1/arrays.npz": "58210e47741309fc8fbc58a7f7b9e8e59250cfe61551680d353d622b56b1ca30"
+  },
+  "adjacent_source_review": {
+    "member_schedules_contexts_and_roles": "Worker/report use the same outer/inner/stopping assignments, contexts, member order and ancestry.",
+    "selection": "Worker/report invoke the same replay_selection helper and candidate order.",
+    "ranker_calibration_and_blend": "Worker/report use the same positive-affine helper, learned inner mapping and (1-w)*standard+w*tree_rmse formula; consistent once worker aggregate precision is reproduced.",
+    "csv_parsing": "Current report uses pandas default parser, while evidence uses round_trip to compare the original binary64 arithmetic exactly. Existing numeric CSV tolerances remain unchanged. No additional deterministic incompatibility established.",
+    "remaining_limit": "Saved-model replay, transform reconstruction, source/feature identity and all full-report checks still require the bounded cloud report. This diagnostic establishes only the aggregation mismatch."
+  }
+}

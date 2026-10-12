@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_cloud_scientific_entry.py", line 50, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_cloud_scientific_entry.py", line 46, in main
+    runpy.run_path(str(script),run_name='__main__')
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_hybrids_cloud_report.py", line 334, in <module>
+    print(json.dumps(build_report(args.out_dir, args.approved), indent=2))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_hybrids_cloud_report.py", line 247, in build_report
+    return _build_report(out, approved)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_hybrids_cloud_report.py", line 261, in _build_report
+    table, choice, audit = audit_component(out, protocol, train, features, rep, fold)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1/scripts/final_hybrids_cloud_report.py", line 215, in audit_component
+    np.testing.assert_allclose(align_predictions(call_held, rows), values, rtol=0, atol=2e-12)
+  File "/usr/local/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 1780, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 988, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=0, atol=2e-12
+
+Mismatched elements: 1846 / 5258 (35.1%)
+First 5 mismatches are at indices:
+ [7]: 1.7689029574394226 (ACTUAL), 1.7689030170440674 (DESIRED)
+ [9]: 0.8227422535419464 (ACTUAL), 0.822742223739624 (DESIRED)
+ [12]: 1.1787081360816956 (ACTUAL), 1.1787080764770508 (DESIRED)
+ [14]: 1.7107802033424375 (ACTUAL), 1.710780143737793 (DESIRED)
+ [15]: 1.5163671374320984 (ACTUAL), 1.5163671970367432 (DESIRED)
+Max absolute difference among violations: 2.38418579e-07
+Max relative difference among violations: 5.95953949e-08
+ ACTUAL: array([ 0.86022 , -0.649426, -0.696655, ...,  1.52443 ,  1.087221,
+        1.967316], shape=(5258,))
+ DESIRED: array([ 0.86022 , -0.649426, -0.696655, ...,  1.52443 ,  1.087221,
+        1.967316], shape=(5258,), dtype=float32)

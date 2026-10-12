@@ -1,0 +1,35 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "hybrid_report",
+  "phase_nonce": "hybrid-report-20261012-2320",
+  "authorization_sha256": "8ca687d2b9c9bdd567df29283542919cd6916fe05ae337816dd9bbf2c9e32c61",
+  "input_manifest_sha256": "d6e1297df282771b32c66cb7b06443abed9ff8f52a174eaf6f80960c3f6cf688",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T23:23:31.304546+00:00",
+  "sandbox_id": "sb-01M4S6V5S2HAVBCCAR3MR9Z37K",
+  "app_id": "ap-s6KYerBFivGn7WuTmBNVuM",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-4mrvdhw2Wb3LmEKHGib6q1"
+  },
+  "status": "attempted",
+  "no_retry": true
+}

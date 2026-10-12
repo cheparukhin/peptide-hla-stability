@@ -201,7 +201,7 @@ def audit_component(out, protocol, train, features, rep, fold):
             count += audit['n_fits']
             runtimes.append(bundle_runtime(path,rep,fold,item['role'],i,stop,seed))
             for name in COMPONENTS:
-                predictions[name].append(audit['predictions'][name])
+                predictions[name].append(evaluation.validate_finite(audit['predictions'][name], f'{name} member'))
                 expected_ancestry.add(role='hybrid_member', fit=gradient, held=call_held,
                     stopping=None if name in ('tree_rmse','tree_rank') else stopping,
                     component=name, representation=rep, context=context, stop_fold=stop, seed=seed,
@@ -316,12 +316,15 @@ def _build_report(out, approved):
         'The MSE-first hybrid selector and five fixed blend weights are selected from three clean inner folds. The ranking tree uses a positive affine map learned from its own inner predictions before the outer refit; this transports scale between different fitting-set sizes. Raw inner rank scores are never calibrated on their own labels for blend selection.', '',
         'All 24 ordinary contrasts and one paired interaction share 2,000 whole-peptide-cluster draws on each 20/50-row panel. Secondary intervals are nominal exploratory intervals, not multiplicity-adjusted discoveries. Uncertainty conditions on fitted models and selection, excluding repeated selection and independent assay variation.', '',
         'Historical 30-member MLPs and the competitive sequence selector are descriptive references only. Fixed-budget trees and adaptively stopped MLPs differ in training recipe; representation dimensions and parameter counts also differ. These are comparisons of complete procedures, not causal attribution to structure, normalization or a learner alone.', '',
+        'Replay promotes member outputs to float64 before ensemble averaging, matching the actual frozen worker. The earlier report-only float32 aggregation bug was corrected without changing any saved prediction, fit, selection or comparison tolerance.', '',
         'See [comparisons.csv](comparisons.csv), [scores.csv](scores.csv), [selections.csv](selections.csv), [runtime_summary.json](runtime_summary.json), [audit.json](audit.json) and [protocol.json](protocol.json).', '']
     (out/'REPORT.md').write_text('\n'.join(lines))
     audit = dict(status='passed', completed_at_utc=datetime.now(timezone.utc).isoformat(),
         protocol_hash=protocol['protocol_hash'], n_rows=len(train), new_supervised_fits=480,
         engineering_fits=12, original_test_reopened=False, component_audits=audits,
-        bootstrap=metadata, conditional_development_only=True)
+        bootstrap=metadata, conditional_development_only=True,
+        ensemble_replay=dict(member_promotion='evaluation.validate_finite float64',
+            matches_frozen_worker=True, saved_predictions_unchanged=True, comparison_tolerances_unchanged=True))
     (out/'audit.json').write_text(json.dumps(audit, indent=2)+'\n')
     return primary
 

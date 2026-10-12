@@ -1,0 +1,43 @@
+{
+  "schema": "final_hybrid_ensemble_replay_amendment.1",
+  "approved": true,
+  "recorded_at_utc": "2026-10-12T23:43:32.949681+00:00",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "new_fits": 0,
+  "scope": "Report-only conversion of replayed member outputs via evaluation.validate_finite before mean, exactly matching frozen fitting worker.",
+  "original_cloud_report": {
+    "path": "reports/finalization/cloud/report_aggregation_original/final_hybrids_cloud_report.py",
+    "sha256": "91acbae5d5bd1635e6f811924758edded696b6fbb7f005eab4efc288545d8f09"
+  },
+  "corrected_cloud_report": {
+    "path": "scripts/final_hybrids_cloud_report.py",
+    "sha256": "9d6499521c0b471f54034619792b700f9c071940eed798c19a317c5082de3116"
+  },
+  "diagnosis": {
+    "path": "reports/finalization/cloud/report_aggregation_diagnosis.json",
+    "sha256": "d0c8011cf28653c0c8fd8bea10eca58daacfd8ed3dcd4f5aedd76c9f7e3afadb"
+  },
+  "failure_closeout": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2320/failure_closeout.json",
+    "sha256": "e6b533ccdb40b115c0c6a5fc543f0b393a40a2901f19e6128f5b66850a8383e0"
+  },
+  "prior_stopping_mse_amendment": {
+    "path": "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+    "sha256": "52706610025afcb82eead1625ff27fb5b76397f8a4a28be2bdb9ca2a314083f6"
+  },
+  "regression_test": {
+    "path": "tests/test_final_hybrid_aggregation.py",
+    "sha256": "bc9035c26935dc1d214fe43adf06d1688b4011af98f585f4f630d5db54fc48ae"
+  },
+  "targeted_checks_passed": 25,
+  "saved_member_predictions_unchanged": true,
+  "saved_aggregate_predictions_unchanged": true,
+  "comparison_tolerances_unchanged": true,
+  "scientific_sources_unchanged": true,
+  "statistics_unchanged": true,
+  "original_work_deadline_utc": "2026-10-13T06:45:00+00:00",
+  "original_provider_stop_utc": "2026-10-13T06:47:00+00:00",
+  "phase_cap_usd": 5,
+  "failed_attempt_conservative_carry_usd": 0.2,
+  "independent_review": "Astra approved exact worker-arithmetic correction; all23 frozen scientific sources verified unchanged. Synthetic integration rejects re-signed corrupt aggregate. No other deterministic adjacent replay mismatch identified."
+}
