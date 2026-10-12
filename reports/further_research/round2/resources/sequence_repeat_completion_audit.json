@@ -1,0 +1,308 @@
+{
+  "schema": "round2_sequence_repeat_completion_audit.1",
+  "generated_at_utc": "2026-10-12T03:25:18.380646+00:00",
+  "status": "passed",
+  "population": {
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "n_alleles": 75
+  },
+  "protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+  "verified_checks": [
+    "All five repeated-completion markers bind the unchanged primary completion, frozen protocol, repeat predictions, members and combined ancestry.",
+    "Existing load_diagnostics re-audits combined ancestry and exact held pair/cluster/allele identity for both repeats in every declared arm and fold.",
+    "Every fold contains exactly 84 fresh locked-repeat members: two sets of 30 original MLP + 6 tree-log + 6 PairLogit members.",
+    "All primary artifacts match the prior completion audit; all five active implementation hashes match the reviewed implementation amendment.",
+    "Paired seed0/1 diagnostics remain complete and completion-hash-bound."
+  ],
+  "folds": [
+    {
+      "outer_fold": 0,
+      "additional_members": 84,
+      "member_counts": [
+        {
+          "repeat": 1,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 1,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 1,
+          "arm": "pairlogit",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 2,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "pairlogit",
+          "members": 6
+        }
+      ],
+      "ancestry_audit": {
+        "records": 557,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 1,
+      "additional_members": 84,
+      "member_counts": [
+        {
+          "repeat": 1,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 1,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 1,
+          "arm": "pairlogit",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 2,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "pairlogit",
+          "members": 6
+        }
+      ],
+      "ancestry_audit": {
+        "records": 557,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 2,
+      "additional_members": 84,
+      "member_counts": [
+        {
+          "repeat": 1,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 1,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 1,
+          "arm": "pairlogit",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 2,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "pairlogit",
+          "members": 6
+        }
+      ],
+      "ancestry_audit": {
+        "records": 557,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 3,
+      "additional_members": 84,
+      "member_counts": [
+        {
+          "repeat": 1,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 1,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 1,
+          "arm": "pairlogit",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 2,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "pairlogit",
+          "members": 6
+        }
+      ],
+      "ancestry_audit": {
+        "records": 557,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 4,
+      "additional_members": 84,
+      "member_counts": [
+        {
+          "repeat": 1,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 1,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 1,
+          "arm": "pairlogit",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "mlp_log",
+          "members": 30
+        },
+        {
+          "repeat": 2,
+          "arm": "tree_log",
+          "members": 6
+        },
+        {
+          "repeat": 2,
+          "arm": "pairlogit",
+          "members": 6
+        }
+      ],
+      "ancestry_audit": {
+        "records": 557,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    }
+  ],
+  "diagnostic_status": {
+    "paired_seed0_1": {
+      "complete": true,
+      "folds_available": 5,
+      "expected_procedures": [
+        "mlp_log",
+        "mlp_centred",
+        "tree_log",
+        "tree_centred",
+        "pairlogit"
+      ],
+      "completion_hash_bound": true
+    },
+    "identical_seed_repeats": {
+      "complete": true,
+      "folds_available": 5,
+      "repeats": 2,
+      "completion_hash_bound": true
+    }
+  },
+  "diagnostic_source_sha256": {
+    "reports/further_research/round2/sequence/fold_0/seed_predictions.csv": "3da42e546f526498bfe6803ebff0e2fcc869cf730fa36d0c3b4123602dc1d153",
+    "reports/further_research/round2/sequence/fold_1/seed_predictions.csv": "21ae83f1333081c354de8da6f25b45cb7314d0eb7a4d1abd524443a54434bff5",
+    "reports/further_research/round2/sequence/fold_2/seed_predictions.csv": "18627044d66777c2ff35ccea28b63efcc1bf970c5546d2ae405dfb44bf7ff924",
+    "reports/further_research/round2/sequence/fold_3/seed_predictions.csv": "f9e418481538b67f4751daea9a7ed58532ba821c02169aa165ee8b357771fbd7",
+    "reports/further_research/round2/sequence/fold_4/seed_predictions.csv": "e7aa75c3e630448f58e9d85f11a2f90ddc0a66b19a2c092f992b95d72f160765",
+    "reports/further_research/round2/sequence/fold_0/repeats_completed.json": "aeac7f654389e269b0d236c6a08864c34c86856efa15ee07fd6f9d0845f0afc4",
+    "reports/further_research/round2/sequence/fold_1/repeats_completed.json": "4fee16bc8b4a69da55e624e30264040178040e89e30d10572c8aefd52b51fb90",
+    "reports/further_research/round2/sequence/fold_2/repeats_completed.json": "f9ea142f923c172ac7402a41425a0f4d9cd030a150ae12a275e0b714d86fc0e4",
+    "reports/further_research/round2/sequence/fold_3/repeats_completed.json": "96d5827dee00e1fb6707f0ab7f109a2fca1301f72345f25985ecada6fd044b3b",
+    "reports/further_research/round2/sequence/fold_4/repeats_completed.json": "3b9a598ca27683d11b977760b825956590905ba0388ad31761c8f32e0a73b8c7",
+    "reports/further_research/round2/sequence/fold_0/repeat_predictions.csv": "eebb2b5770031da4eb9ba225d523c1a54ae74e954f626217995f40649f92cf85",
+    "reports/further_research/round2/sequence/fold_1/repeat_predictions.csv": "201804a726fd2dc15758666a71871ebeb929e74d3f13a7dcddb014b30a3bdde2",
+    "reports/further_research/round2/sequence/fold_2/repeat_predictions.csv": "8338687e7804c6fc056cd9f4788566df1aef69cb705851cc0cd0eb1314f90572",
+    "reports/further_research/round2/sequence/fold_3/repeat_predictions.csv": "045c9cf9228cd2efab5745690aa12eea80282a42e8f0ead6c360d31114f7137b",
+    "reports/further_research/round2/sequence/fold_4/repeat_predictions.csv": "eb62a4e07cb82ce2642381c6629d77978c870ce265859303e3b2a03371de7607",
+    "reports/further_research/round2/sequence/fold_0/ancestry_with_repeats.json": "a7512dd803ff47d308334bf0da48d144246d38556fc148996470acc1573c5b96",
+    "reports/further_research/round2/sequence/fold_1/ancestry_with_repeats.json": "f690481e9ade7997303b8f139938b365f4eec6d8d5786d61470441040b6a1c10",
+    "reports/further_research/round2/sequence/fold_2/ancestry_with_repeats.json": "72e0cbdc7dd4620baa19d3274f9d609346b3c4ead91ff9b294dfcacd2f9272bd",
+    "reports/further_research/round2/sequence/fold_3/ancestry_with_repeats.json": "cbe80c53fb8591bc710f75c6b72d491ceeac014d159c9dafb192d83e2f586db4",
+    "reports/further_research/round2/sequence/fold_4/ancestry_with_repeats.json": "c2bffc9704e1da1af333ba256b4422dfd4df2f2ffe093c925229aab6a5b682d1"
+  },
+  "scope_limit": "Locked identical-seed execution refits; not new selection, assay repeatability or independent confirmation. Ranker calibration mappings stay fixed.",
+  "report_validation": {
+    "completed_at_utc": "2026-10-12T03:28:40.104146+00:00",
+    "status": "passed",
+    "n_procedures": 22,
+    "n_pooled_scores": 44,
+    "n_fold_scores": 220,
+    "n_contrasts_per_panel": 24,
+    "n_boot_per_panel": 2000,
+    "panels": [
+      20,
+      50
+    ],
+    "checks": [
+      "Manifest input/output hashes current; exact full training pair/cluster/allele/fold identity and all saved predictions finite and matching source procedures.",
+      "All pooled and fold score arithmetic recomputed in first validation pass; per-allele eligibility/coverage and pooled median reconciled.",
+      "All declared contrasts retained in frozen order at both panels; point differences and 95% quantile bounds replayed from saved shared bootstrap scores.",
+      "Exactly 2000 finite saved whole-cluster draws per panel, unchanged seed, no degenerate resamples.",
+      "All execution-difference diagnostics replayed from complete saved predictions."
+    ],
+    "report_sha256": {
+      "REPORT.md": "c869496c317ef8bb98fa9e687957a9ddfe7764a94185efd45d3b2fe046e15c52",
+      "bootstrap_scores_min20.csv": "7d7972b2448cc0c1b5198223c66ed923950e7dd8c5b73f5e1d732f8f4222e43e",
+      "bootstrap_scores_min50.csv": "deb35046490ec7567853c1e0bad521e11f19178cbadb122afae5ee81644efb6b",
+      "coverage.csv": "02804147d97aa77ab08d7660310f103666b3c3e27ba532598d3818d5c5658dd1",
+      "declared_contrasts.csv": "d5cd8ad3a8b2fa3f0f751e4eee98f5d3c0da648084d714f0be5329b1eca39f63",
+      "execution_differences.csv": "82fe8ae7bcb1b9661068847f9ab3ff9d27866af5de54901273f0cab10881f289",
+      "fold_scores.csv": "fda69da48841cae271e5ebad6eaf7e40c04f27dd74724604ebeebe103628c891",
+      "manifest.json": "652b859a8f8324a070c967567745cd4740144b57ccd5a669a58a1fda4e3789ff",
+      "matched_predictions.csv": "a436372c48c2dd7a877df6bd7757666ae3d5be1337f85c14002c33ecb2468e9b",
+      "paired_comparisons.csv": "09e0389a9b28c7afcb771c61852e365f9b624003dfa2cb5217318c5a2dff4c05",
+      "per_allele_scores.csv": "ee69cd46fb8cf4ae3f2fc72b17369298cf5c6278d76009484b3d1135575ed170",
+      "pooled_scores.csv": "bf99058020733584fdb11c8d9446aca05c239d15be790b2141fa53dbe2c7963a",
+      "selections.csv": "aca1b8f7b568178eacab11e897db8f16e0042dffb6765b831d89eb662cc4339a"
+    }
+  }
+}

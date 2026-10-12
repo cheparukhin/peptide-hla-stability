@@ -1,0 +1,25 @@
+baseline,candidate,comparison_kind,interpretation
+sequence_selector,mlp_log,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,mlp_centred,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,mlp_centred,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,tree_log,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,tree_log,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,tree_centred,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,tree_centred,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,pairlogit,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,pairlogit,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,sequence_selector,sequence_reference,corrected sequence procedure versus original recipe
+mlp_log__seed0,mlp_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+mlp_centred__seed0,mlp_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+tree_log__seed0,tree_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+tree_centred__seed0,tree_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+pairlogit__seed0,pairlogit__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+mlp_log,mlp_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+mlp_log,mlp_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+mlp_log__repeat1,mlp_log__repeat2,execution_repeat,two identical-seed locked refits
+tree_log,tree_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+tree_log,tree_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+tree_log__repeat1,tree_log__repeat2,execution_repeat,two identical-seed locked refits
+pairlogit,pairlogit__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+pairlogit,pairlogit__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+pairlogit__repeat1,pairlogit__repeat2,execution_repeat,two identical-seed locked refits

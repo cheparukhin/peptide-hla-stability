@@ -64,7 +64,7 @@ captures its case log until the shard returns.
 |---|---|---|
 | First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Completed 256/256 cases; app `ap-CTPosnxjWl1PutPuL6XHcK` stopped. Saved charge $0.8734; measured full-cache forecast plus 10% is $73.99. |
 | Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` is running; one continuation only, with the unchanged $80 reservation ceiling. |
-| Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | All five primary folds passed the 02:56 UTC completion audit (19,716 rows; 2,100 members). Two fixed-setting repeats remain in progress; app `ap-vgwn2eHeZngfofbxH6SMsf`; unchanged $18 guard and 900-call quota. Once all five repeat markers exist, generate the sequence-only report under `results/sequence/` with the existing report CLI before interpreting outcomes. |
+| Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | Complete: five primary folds and both fixed-setting repeats passed audits (19,716 rows; 2,100 primary + 420 repeat members). App `ap-vgwn2eHeZngfofbxH6SMsf` stopped normally at 03:14 UTC; all 900 calls settled, no reservations. [Validated report](results/sequence/REPORT.md) and [cost closeout](resources/sequence_cost_closeout.json): $7.9957 conservative estimate including preemptions, against $18. |
 | Main local pipeline | `pipeline/status.json` | Waits up to 12 hours for the complete 19,716-row cache and all sequence markers, then runs embedding folds, main report, complementarity folds and report at three local workers. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
 | Independent spending watchdog | `resources/runtime_guard/status.json` | Adds lost-attempt reservations and fixed wall deadlines; launches no cloud work and preserves study ledgers. |
@@ -105,6 +105,8 @@ An unresolved reservation is not free budget. First inspect the corresponding
 Modal app and local controller; stop only this study's orphaned work if needed,
 then reconcile against saved receipts and provider usage. Preserve failure
 records. Never erase reservations or rerun an uncertain shard automatically.
+Stopped Modal apps can age out of the CLI listing. The sequence [terminal-state receipt](resources/sequence_cost_closeout.json) preserves the provider-observed normal stop and zero tasks. An absent old app is not evidence of a restart. Once cache also completes and its app/controller shutdown is verified, stop the local watchdog after validating its exact launch PID/command; its current implementation requires both stopped apps to remain visible together before self-exiting. Do not alter its active deadlines or relaunch a completed sequence scope.
+
 The fanout controller persists launch intent before starting its child and
 refuses an automatic second attempt. The local pipeline stops its own remaining
 children if a stage fails.
@@ -150,3 +152,16 @@ Implementation readiness for the next continuation:
   telemetry from the deterministic first HLA/joint cells to validate practical
   scheduling after the scope gate. Preserve all 30 cells and never nominate or
   discard cells using their held outcomes.
+
+Preparatory task `/root/transfer_candidate_support` (6.1 Sol) is extending the
+unfrozen transfer implementation to accept at most two existing main-screen
+representation/head procedures and a separately named bounded MLP sequence
+comparator. This is capability preparation, not candidate nomination or launch
+approval. The proposed comparator selects between original log MLP and centred
+MLP with the existing k=100/20 grid, using 12-member inner screening and
+30-member final ensembles. It cannot stand in for the full main five-family
+sequence selector. The orchestrator must review this restricted scope after
+the complete main report, document any amendment, and freeze before fitting.
+Expected complete-30-cell counts are 10,440 sequence fits plus 750 per ridge
+procedure or 2,340 per neural embedding procedure; actual implementation and
+focused tests must substantiate them. No new transfer fit has been launched.
