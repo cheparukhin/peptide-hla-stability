@@ -1,0 +1,42 @@
+{
+  "status": "validated_no_new_real_fits_no_cloud_launch",
+  "at_utc": "2026-10-12T13:12:03.034303+00:00",
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "protocol_sha256": "9c000ed2217e122977218d1049a88fdd3cddddc0b65c3ab91801afad930defa7",
+  "source_freeze_validation": "passed all30 source hashes, population/specification, grouping and all30 legacy artifact hash bindings",
+  "test_runs": [
+    {
+      "files": [
+        "tests/test_final_transfer.py",
+        "tests/test_final_transfer_pipeline.py",
+        "tests/test_final_modal_backend.py",
+        "tests/test_final_transfer_cloud.py",
+        "tests/test_final_runtime_guard.py"
+      ],
+      "passed": 68,
+      "timing": "before final smoke-function move from driver to worker module"
+    },
+    {
+      "files": [
+        "tests/test_final_transfer_cloud.py"
+      ],
+      "passed": 4,
+      "timing": "after final smoke-function wiring; no scientific/core/controller changes"
+    }
+  ],
+  "synthetic_coverage": [
+    "10830-fit registry and regime schedules",
+    "HLA/joint gradient, stopping, scaler and outer exclusions",
+    "held-label perturbation invariance",
+    "fixed rawranker OOF map scope and baseline-first ties",
+    "full saved-cell HLA/joint replay",
+    "re-signed affine mapping and per-member prediction corruption rejection",
+    "unique batched cloud task identities across outer cells",
+    "durable failed attempts, no queued retry, prerequisite process absence",
+    "paired peptide/HLA/crossed reporting, min20/min50, all35 group deletions, direct matched-head contrasts"
+  ],
+  "legacy_reuse_audit_sha256": "5c4793c218cdba7be71ed32df1b7c30bfaed6ee174b9e4671470aa663649f485",
+  "real_new_fits": 0,
+  "cloud_launches": 0,
+  "next_gate": "root source/scientific review then separately bounded guarded pilot; mainlaunch remains unapproved"
+}

@@ -1,0 +1,144 @@
+{
+  "status": "complete",
+  "pid": 78831,
+  "completed_fits": 2,
+  "scientific_scope_fits_added": 0,
+  "engineering_runtime_fits_added": 2,
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "results": [
+    {
+      "candidate": {
+        "id": "tree_log_d8",
+        "procedure": "tree_log",
+        "learner": "rmse",
+        "target": "log",
+        "depth": 8
+      },
+      "pid": 78831,
+      "status": "complete",
+      "fit_seconds": 4.324502583942376,
+      "process_cpu_seconds": 8.266388,
+      "max_rss_mib": 685.46875,
+      "rss_statistic": "process cumulative peak resident set",
+      "shapes": {
+        "gradient": [
+          10379,
+          860
+        ],
+        "stopping": [
+          5378,
+          860
+        ],
+        "held": [
+          3959,
+          860
+        ]
+      },
+      "n_fit": 10379,
+      "n_stop": 5378,
+      "n_predicted": 3959,
+      "scaler": null,
+      "details": {
+        "config": {
+          "iterations": 2000,
+          "od_type": "Iter",
+          "od_wait": 100,
+          "bootstrap_type": "Bernoulli",
+          "subsample": 0.8,
+          "rsm": 1.0,
+          "random_strength": 1.0,
+          "border_count": 128,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10.0,
+          "thread_count": 2,
+          "verbose": false,
+          "allow_writing_files": false,
+          "depth": 8,
+          "random_seed": 0,
+          "loss_function": "RMSE",
+          "eval_metric": "RMSE"
+        },
+        "best_iteration": 419,
+        "tree_count": 420
+      },
+      "prediction_finite": true,
+      "raw_prediction_sha256": "633e6726e974e1f293ccc764052f039031ee44b0e0cb62628d53dd7edb7ec774",
+      "restored_prediction_sha256": "633e6726e974e1f293ccc764052f039031ee44b0e0cb62628d53dd7edb7ec774",
+      "held_scores_computed": false,
+      "completed_at_utc": "2026-10-12T13:19:38.598329+00:00"
+    },
+    {
+      "candidate": {
+        "id": "tree_centred_d8",
+        "procedure": "tree_centred",
+        "learner": "rmse",
+        "target": "centred",
+        "depth": 8,
+        "k": 20
+      },
+      "pid": 78831,
+      "status": "complete",
+      "fit_seconds": 5.771480542025529,
+      "process_cpu_seconds": 11.154471000000001,
+      "max_rss_mib": 696.546875,
+      "rss_statistic": "process cumulative peak resident set",
+      "shapes": {
+        "gradient": [
+          10379,
+          860
+        ],
+        "stopping": [
+          5378,
+          860
+        ],
+        "held": [
+          3959,
+          860
+        ]
+      },
+      "n_fit": 10379,
+      "n_stop": 5378,
+      "n_predicted": 3959,
+      "scaler": null,
+      "details": {
+        "config": {
+          "iterations": 2000,
+          "od_type": "Iter",
+          "od_wait": 100,
+          "bootstrap_type": "Bernoulli",
+          "subsample": 0.8,
+          "rsm": 1.0,
+          "random_strength": 1.0,
+          "border_count": 128,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10.0,
+          "thread_count": 2,
+          "verbose": false,
+          "allow_writing_files": false,
+          "depth": 8,
+          "random_seed": 0,
+          "loss_function": "RMSE",
+          "eval_metric": "RMSE"
+        },
+        "best_iteration": 624,
+        "tree_count": 625
+      },
+      "prediction_finite": true,
+      "raw_prediction_sha256": "5826eaf10560d6dc45508a38ad6613d4f5012604057db1fcdd38c3212092a4d0",
+      "restored_prediction_sha256": "0c961a052363dd6a8a9c94782c79e0315d9fad40b97ef822b6be05b680f8a5c6",
+      "held_scores_computed": false,
+      "completed_at_utc": "2026-10-12T13:19:44.370690+00:00"
+    }
+  ],
+  "artifact_sha256": {
+    "authorization.json": "dc61da0776543b2061e04d4aa1d403689f6a22960593503515cd199495f00e35",
+    "inputs.json": "cd1fac66d2756acc1291fb70a796ef35e075cc900a3eaaa2ceefa742c3f144fa",
+    "launch_receipt.json": "b57a400d5b1a645fb102162716245dfcad9e63c60a1e39479f92f13ca424d198",
+    "runtime.json": "ab1c3e12498fc265b7d12d9ee7b85e3c686a0c1ac4d5a628ccc6d239d86cf6ff",
+    "tree_centred_d8.completed.json": "8b330d0021ff28f32f89e1862686c334957001cce709c93a7e41c53be0cfa3e6",
+    "tree_centred_d8.fit_intent.json": "3f969c9d9fab8bb71f8260cfbeb7941d49b9a58723ae2cae44544f1e458dd5ef",
+    "tree_log_d8.completed.json": "765a280f90763bd0ea19875f007b2871607d920534653bca1843b771b53e79f1",
+    "tree_log_d8.fit_intent.json": "335c4a52cee6ce9215af1a4439a61febe4d6dee69c6e82d29c096641a426a9f7"
+  },
+  "completed_at_utc": "2026-10-12T13:19:44.372411+00:00"
+}

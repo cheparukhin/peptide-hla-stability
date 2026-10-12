@@ -1,0 +1,56 @@
+{
+  "app_state": "stopped",
+  "app_stop_attempts": 3,
+  "app_stop_command_succeeded": false,
+  "app_stopped": true,
+  "authorization_sha256": "c8afe32f439daf8e556041e1ca2ce308ace8143b8f14c6dc9b5dd74caa13d123",
+  "budget_verified": true,
+  "calls": 2,
+  "controller_state": "done",
+  "cumulative_commitment_usd": 1.3895622678414123,
+  "effective_commitment_usd": 1.3895622678414123,
+  "errors": [
+    "app telemetry: unknown authorized app state"
+  ],
+  "guard_pid": 68543,
+  "inflight_calls": 1,
+  "inflight_reserved_usd": 0.037347,
+  "ledger_complete_bytes": 880,
+  "ledger_complete_prefix_sha256": "8545d592b5d6e029b03ad4d3bff55a37fa67b52f89d1572ef9d58a1c8056779e",
+  "log_prefixes": {
+    "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_smoke/driver.log": {
+      "bytes": 13566,
+      "sha256": "c2ff6cb737eb46dbb63f46e9849c63b1f93d3a1ca84d76ab1bf5886bb532a890"
+    }
+  },
+  "ordinary_commitment_usd": 1.3895622678414123,
+  "partial_tail_bytes": 0,
+  "phase": "finished",
+  "preemption_count": 0,
+  "preemptions_by_log": {
+    "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_smoke/driver.log": 0
+  },
+  "schema": "final_runtime_guard.1",
+  "scope_id": "transfer-smoke-20261012",
+  "seen_app": true,
+  "seen_ledger": true,
+  "settled_usd": 1.3522152678414123,
+  "stop_intent": {
+    "app_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+    "authorization_sha256": "c8afe32f439daf8e556041e1ca2ce308ace8143b8f14c6dc9b5dd74caa13d123",
+    "controller_pid": 64511,
+    "reason": "app_telemetry_unknown",
+    "time": 1791810984.0326452
+  },
+  "stop_result": {
+    "errors": [
+      "app stop attempt 1: App is already stopped. (Finished at 2026-10-12 14:16:24+01:00).",
+      "app stop attempt 2: App is already stopped. (Finished at 2026-10-12 14:16:24+01:00).",
+      "app stop attempt 3: App is already stopped. (Finished at 2026-10-12 14:16:24+01:00).",
+      "terminate: controller PID/group/start-time/command identity differs; refusing signals"
+    ],
+    "frozen": true,
+    "terminated": false
+  },
+  "updated_at_utc": "2026-10-12T13:16:26.247036+00:00"
+}

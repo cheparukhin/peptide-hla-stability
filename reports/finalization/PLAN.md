@@ -90,3 +90,19 @@ The proposed cloud allocation is $65 including the smoke allowance, within the
 new $100 ceiling; it is not yet a launch authorization. Current rates give a
 $61.85 full per-call timeout accounting bound before additional preemption
 charges. The independent watchdog must preserve room for those and shutdown.
+
+### Runtime-only pilot authorization
+
+The separate cloud pilot contains two remote calls: one synthetic compatibility
+case and one full-size HLA h0 ranker member whose predictions are never scored
+or reused in assessment. It also contains one local synthetic compatibility
+fit. After that pilot, exactly two local engineering timing fits are authorized:
+HLA h0 final stopping cell0/seed0, depth8 log-target and depth8 centred-target
+(k20) trees. Use the frozen gradient/stopping roles and source, save immutable
+prefit identities, fit one member each, and inspect only runtime/completion
+telemetry and output finiteness. These diagnostics do not change the 10,830
+scientific fits or select candidates from held outcomes. No retries are implied.
+
+### Pilot shutdown implementation amendment
+
+Both cloud pilot calls and both local timing fits completed. The watchdog rejected a Modal shutdown label and interrupted the driver exit receipt after the calls settled. The app is confirmed stopped with zero tasks and all pilot processes absent. The exact pilot protocol is archived as `transfer_controls/protocol.pilot_v1.json`; the main implementation v2 changes only watchdog lifecycle handling and its tests, retaining the scientific specification and hash. The documented amendment and reconciliation are in `resources/transfer_smoke/`. Carry the higher historical guard commitment ($1.3895623), despite the final journal accounting of $1.3589062. Provider metering currently reports $0.00577712 for the pilot and can lag; it is not a balance. No pilot retry is authorized. All 95 combined transfer/backend/watchdog checks passed after repair.

@@ -29,6 +29,8 @@ class FakeSystem:
         self.before_signal = None
         self.before_stop = None
         self.ignore_successful_stop = False
+        self.before_list = None
+        self.exit_on_term = False
 
     def run(self, argv, **kwargs):
         assert kwargs["timeout"] <= 30
@@ -47,6 +49,8 @@ class FakeSystem:
         if argv[1:3] == ["app", "list"]:
             if self.fail_list:
                 raise TimeoutError("list unavailable")
+            if self.before_list:
+                self.before_list()
             return SimpleNamespace(returncode=0, stdout=json.dumps(self.apps), stderr="")
         assert argv[1:3] == ["app", "stop"] and argv[3] in ("ap-target", "ap-main")
         if self.before_stop:
@@ -65,7 +69,7 @@ class FakeSystem:
         if self.before_signal:
             self.before_signal(sig)
         self.actions.append(("signal", pid, sig))
-        if sig == signal.SIGCONT:
+        if sig == signal.SIGCONT or (sig == signal.SIGTERM and self.exit_on_term):
             self.controller_status = "done"
 
 
@@ -400,3 +404,117 @@ def test_main_without_prior_reconciliation_rejected_and_validate_only_has_no_sys
         guard.validate_authorization(wrong)
     assert guard.main(["--authorization", str(path), "--validate-only"]) == 0
     assert not system.actions and not Path(auth["status_path"]).exists()
+
+
+@pytest.mark.parametrize("raw,canonical", [("initializing...", "initializing"), ("stopping...", "stopping"),
+    ("ephemeral (detached)", "ephemeral"), ("disabled", "disabled"), ("deployed", "deployed")])
+def test_exact_installed_sdk_labels_are_normalized_and_preserved(setup, raw, canonical):
+    setup[2].apps[0]["state"] = raw
+    runtime = build(setup)
+    try:
+        assert not runtime.tick()
+        assert runtime.state["app_state"] == canonical
+        assert runtime.state["app_state_raw"] == raw
+        assert runtime.state["stop_intent"] is None
+    finally:
+        runtime.close()
+
+
+def test_natural_context_shutdown_stopping_then_stopped_never_stops_controller(setup):
+    system = setup[2]
+    runtime = build(setup)
+    try:
+        assert not runtime.tick()
+        system.apps[0]["state"] = "stopping..."
+        assert not runtime.tick()
+        assert runtime.state["phase"] == "finishing"
+        system.controller_status = "done"
+        assert not runtime.tick()
+        assert runtime.state["stop_intent"] is None
+        system.apps[0]["state"] = "stopped"
+        assert runtime.tick()
+        assert runtime.state["phase"] == "finished"
+        assert not any(a[0] == "signal" or a[1:3] == ("app", "stop") for a in system.actions)
+    finally:
+        runtime.close()
+
+
+def test_natural_shutdown_still_obeys_fixed_wall_deadline(setup):
+    setup[2].apps[0]["state"] = "stopping..."
+    clock = [NOW]
+    runtime = build(setup, now=lambda: clock[0])
+    try:
+        assert not runtime.tick()
+        assert runtime.state["stop_intent"] is None
+        clock[0] = NOW + 3601
+        assert runtime.tick()
+        assert runtime.state["stop_intent"]["reason"] == "immutable_wall_deadline"
+    finally:
+        runtime.close()
+
+
+@pytest.mark.parametrize("raw", ["stopping....", "initializing?!", "ephemeral (mystery)", "UNKNOWN raw state"])
+def test_unknown_labels_are_never_fuzzily_accepted_and_raw_text_is_audited(setup, raw):
+    setup[2].apps[0]["state"] = raw
+    runtime = build(setup)
+    try:
+        runtime.tick()
+        assert runtime.state["stop_intent"]["reason"] == "app_telemetry_unknown"
+        assert any(repr(raw) in error for error in runtime.state["errors"])
+    finally:
+        runtime.close()
+
+
+def test_sigterm_receipt_remains_true_when_process_exits_before_sigcont_lookup(setup):
+    setup[2].exit_on_term = True
+    write_ledger(setup[0], [reserve(540)])
+    runtime = build(setup)
+    try:
+        assert runtime.tick()
+        assert runtime.state["stop_result"]["terminated"]
+        assert ("signal", 100001, signal.SIGTERM) in setup[2].actions
+        assert ("signal", 100001, signal.SIGCONT) not in setup[2].actions
+    finally:
+        runtime.close()
+
+
+def test_sigterm_receipt_survives_failed_identity_recheck_and_never_continues_reused_pid(setup):
+    system = setup[2]
+    def reuse_after_term(sig):
+        if sig == signal.SIGTERM:
+            system.controller_status = "wrong_command"
+    system.before_signal = reuse_after_term
+    write_ledger(setup[0], [reserve(540)])
+    runtime = build(setup)
+    try:
+        assert not runtime.tick()
+        assert runtime.state["stop_result"]["terminated"]
+        assert any("terminate:" in error for error in runtime.state["stop_result"]["errors"])
+        assert ("signal", 100001, signal.SIGTERM) in system.actions
+        assert ("signal", 100001, signal.SIGCONT) not in system.actions
+    finally:
+        runtime.close()
+
+
+def test_terminal_read_replays_last_settlement_appended_during_shutdown_observation(setup):
+    auth, _, system = setup
+    write_ledger(auth, [reserve(3)])
+    system.controller_status = "done"
+    system.apps[0]["state"] = "stopped"
+    appended = [False]
+    def append_last_settlement():
+        if not appended[0]:
+            record = {"event": "settlement", "token": "a", "calls": 3, "charged_usd": .05, "outcome": "success"}
+            with Path(auth["ledger_path"]).open("a") as handle:
+                handle.write(json.dumps(record) + "\n")
+            appended[0] = True
+    system.before_list = append_last_settlement
+    runtime = build(setup)
+    try:
+        assert runtime.tick()
+        assert runtime.state["effective_commitment_usd"] == pytest.approx(1.05)
+        assert runtime.state["inflight_reserved_usd"] == 0
+        assert runtime.state["budget_verified"]
+        assert runtime.state["stop_intent"] is None
+    finally:
+        runtime.close()

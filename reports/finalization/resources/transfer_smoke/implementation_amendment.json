@@ -1,0 +1,34 @@
+{
+  "schema": "implementation_amendment.1",
+  "at_utc": "2026-10-12T13:24:21.527473+00:00",
+  "reason": "Pilot completed both calls, but watchdog rejected a provider shutdown state and interrupted final driver receipt. Installed Modal CLI uses initializing... and stopping...; raw rejected label was not preserved so exact transition is inferred, not established.",
+  "changes_authorized": [
+    "Explicit known SDK state normalization; unknown states remain fail-closed with raw label evidence",
+    "Allow observed normal stopping transition within fixed deadline",
+    "Record successful SIGTERM before subsequent identity recheck",
+    "Refresh read-only final budget after confirmed stopped app and absent controller"
+  ],
+  "historical_evidence_sha256": {
+    "reports/finalization/transfer_controls/protocol.pilot_v1.json": "9c000ed2217e122977218d1049a88fdd3cddddc0b65c3ab91801afad930defa7",
+    "scripts/final_runtime_guard.py": "d1b247769f51e17d39ca72f4ff29dec25cdb8e283331ab7c510cd9b7f2a0a673",
+    "reports/finalization/resources/transfer_smoke/guard_status.json": "1dc70ca053e1bdc6e0aefa1dafcfaf8187ccb25d9cce6e21eee0690694798441",
+    "reports/finalization/resources/transfer_smoke/guard_authorization.json": "c8afe32f439daf8e556041e1ca2ce308ace8143b8f14c6dc9b5dd74caa13d123",
+    "reports/finalization/resources/transfer_smoke/budget.jsonl": "b351d37182cd74019a2bb859c5900c10fca11f520d7fe43072692ead4a2777c5",
+    "reports/finalization/resources/transfer_smoke/smoke.completed.json": "3d91f71d2407309f7e2cbb4dfe82c0a5a4f39f5108d904247935011e21e9c2c5"
+  },
+  "pilot_app_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+  "observed_provider_state": "stopped; zero tasks",
+  "observed_absent_pids": [
+    64511,
+    64512,
+    68543,
+    68544
+  ],
+  "driver_exit_receipt_missing": true,
+  "pilot_settled_usd": 1.3589061513801521,
+  "carry_forward_conservative_usd": 1.3895622678414123,
+  "scientific_changes": false,
+  "repeat_pilot_authorized": false,
+  "main_launch_authorized": false,
+  "protocol_policy": "Preserve pilot_v1; create documented main implementation v2 with same scientific protocol hash and refreshed guard/test bindings after tests."
+}

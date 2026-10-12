@@ -1,0 +1,62 @@
+{
+  "candidate": {
+    "id": "tree_centred_d8",
+    "procedure": "tree_centred",
+    "learner": "rmse",
+    "target": "centred",
+    "depth": 8,
+    "k": 20
+  },
+  "pid": 78831,
+  "status": "complete",
+  "fit_seconds": 5.771480542025529,
+  "process_cpu_seconds": 11.154471000000001,
+  "max_rss_mib": 696.546875,
+  "rss_statistic": "process cumulative peak resident set",
+  "shapes": {
+    "gradient": [
+      10379,
+      860
+    ],
+    "stopping": [
+      5378,
+      860
+    ],
+    "held": [
+      3959,
+      860
+    ]
+  },
+  "n_fit": 10379,
+  "n_stop": 5378,
+  "n_predicted": 3959,
+  "scaler": null,
+  "details": {
+    "config": {
+      "iterations": 2000,
+      "od_type": "Iter",
+      "od_wait": 100,
+      "bootstrap_type": "Bernoulli",
+      "subsample": 0.8,
+      "rsm": 1.0,
+      "random_strength": 1.0,
+      "border_count": 128,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10.0,
+      "thread_count": 2,
+      "verbose": false,
+      "allow_writing_files": false,
+      "depth": 8,
+      "random_seed": 0,
+      "loss_function": "RMSE",
+      "eval_metric": "RMSE"
+    },
+    "best_iteration": 624,
+    "tree_count": 625
+  },
+  "prediction_finite": true,
+  "raw_prediction_sha256": "5826eaf10560d6dc45508a38ad6613d4f5012604057db1fcdd38c3212092a4d0",
+  "restored_prediction_sha256": "0c961a052363dd6a8a9c94782c79e0315d9fad40b97ef822b6be05b680f8a5c6",
+  "held_scores_computed": false,
+  "completed_at_utc": "2026-10-12T13:19:44.370690+00:00"
+}

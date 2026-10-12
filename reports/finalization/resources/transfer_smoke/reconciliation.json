@@ -1,0 +1,42 @@
+{
+  "schema": "final_scope_reconciliation.1",
+  "at_utc": "2026-10-12T13:25:57.006971+00:00",
+  "authorization_sha256": "c8afe32f439daf8e556041e1ca2ce308ace8143b8f14c6dc9b5dd74caa13d123",
+  "guard_status_sha256": "1dc70ca053e1bdc6e0aefa1dafcfaf8187ccb25d9cce6e21eee0690694798441",
+  "cumulative_prior_charges_usd": 1.3895622678414123,
+  "journal_settled_usd": 1.3589061513801521,
+  "inflight_calls": 0,
+  "preemptions": 0,
+  "app_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+  "app_stopped": true,
+  "provider_tasks": 0,
+  "processes_absent": [
+    64511,
+    64512,
+    68543,
+    68544
+  ],
+  "process_check": "ps returned exit1, empty output after completion",
+  "driver_exit_missing": true,
+  "normal_shutdown_interrupted": true,
+  "calls_completed": 2,
+  "relaunch_needed": false,
+  "provider_metering_rows": [
+    {
+      "object_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+      "description": "pepstab-final-transfer-smoke",
+      "environment": "main",
+      "interval_start": "2026-10-12T13:00:00",
+      "cost": "0.00577712"
+    }
+  ],
+  "provider_metering_may_lag": true,
+  "accounting_note": "Carry higher historical guard commitment; do not revise historical guard status or release build allowance. Metering is not remaining balance.",
+  "evidence_sha256": {
+    "reports/finalization/resources/transfer_smoke/reconciled_apps.json": "0a5e3439433f1d0b01daad935b4f6d7a9fd33059462a0c2e72fa7705fcca60af",
+    "reports/finalization/resources/transfer_smoke/reconciled_hourly_metering.json": "b762c45526de20143fec8aa63b5970c9ac63bfc344eea8c61bef9bfb2e7139e3",
+    "reports/finalization/resources/transfer_smoke/budget.jsonl": "b351d37182cd74019a2bb859c5900c10fca11f520d7fe43072692ead4a2777c5",
+    "reports/finalization/resources/transfer_smoke/smoke.completed.json": "3d91f71d2407309f7e2cbb4dfe82c0a5a4f39f5108d904247935011e21e9c2c5",
+    "reports/finalization/resources/transfer_smoke/implementation_amendment.json": "cb8786aa359123f02a59170d240a9ae9685d5f90f1031cf4c714317e52eb982f"
+  }
+}

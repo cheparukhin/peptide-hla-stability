@@ -451,11 +451,11 @@
     "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551",
     "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
     "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
-    "scripts/final_runtime_guard.py": "d1b247769f51e17d39ca72f4ff29dec25cdb8e283331ab7c510cd9b7f2a0a673",
+    "scripts/final_runtime_guard.py": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627",
     "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
     "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
     "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
-    "tests/test_final_runtime_guard.py": "0c40c13fa331e4651c4c471ce387afce6aa2258b9c8ad3bb189c8854d1473f21",
+    "tests/test_final_runtime_guard.py": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b",
     "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
     "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
     "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
@@ -472,5 +472,23 @@
     "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
     "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
     "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3"
+  },
+  "implementation_revision": {
+    "version": 2,
+    "at_utc": "2026-10-12T13:26:57.088288+00:00",
+    "pilot_protocol_sha256": "9c000ed2217e122977218d1049a88fdd3cddddc0b65c3ab91801afad930defa7",
+    "amendment_path": "reports/finalization/resources/transfer_smoke/implementation_amendment.json",
+    "amendment_sha256": "cb8786aa359123f02a59170d240a9ae9685d5f90f1031cf4c714317e52eb982f",
+    "changes": {
+      "scripts/final_runtime_guard.py": {
+        "old": "d1b247769f51e17d39ca72f4ff29dec25cdb8e283331ab7c510cd9b7f2a0a673",
+        "new": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627"
+      },
+      "tests/test_final_runtime_guard.py": {
+        "old": "0c40c13fa331e4651c4c471ce387afce6aa2258b9c8ad3bb189c8854d1473f21",
+        "new": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b"
+      }
+    },
+    "scientific_specification_unchanged": true
   }
 }

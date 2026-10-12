@@ -1,0 +1,61 @@
+{
+  "candidate": {
+    "id": "tree_log_d8",
+    "procedure": "tree_log",
+    "learner": "rmse",
+    "target": "log",
+    "depth": 8
+  },
+  "pid": 78831,
+  "status": "complete",
+  "fit_seconds": 4.324502583942376,
+  "process_cpu_seconds": 8.266388,
+  "max_rss_mib": 685.46875,
+  "rss_statistic": "process cumulative peak resident set",
+  "shapes": {
+    "gradient": [
+      10379,
+      860
+    ],
+    "stopping": [
+      5378,
+      860
+    ],
+    "held": [
+      3959,
+      860
+    ]
+  },
+  "n_fit": 10379,
+  "n_stop": 5378,
+  "n_predicted": 3959,
+  "scaler": null,
+  "details": {
+    "config": {
+      "iterations": 2000,
+      "od_type": "Iter",
+      "od_wait": 100,
+      "bootstrap_type": "Bernoulli",
+      "subsample": 0.8,
+      "rsm": 1.0,
+      "random_strength": 1.0,
+      "border_count": 128,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10.0,
+      "thread_count": 2,
+      "verbose": false,
+      "allow_writing_files": false,
+      "depth": 8,
+      "random_seed": 0,
+      "loss_function": "RMSE",
+      "eval_metric": "RMSE"
+    },
+    "best_iteration": 419,
+    "tree_count": 420
+  },
+  "prediction_finite": true,
+  "raw_prediction_sha256": "633e6726e974e1f293ccc764052f039031ee44b0e0cb62628d53dd7edb7ec774",
+  "restored_prediction_sha256": "633e6726e974e1f293ccc764052f039031ee44b0e0cb62628d53dd7edb7ec774",
+  "held_scores_computed": false,
+  "completed_at_utc": "2026-10-12T13:19:38.598329+00:00"
+}

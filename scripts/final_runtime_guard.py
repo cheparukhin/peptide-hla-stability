@@ -25,7 +25,14 @@ SCHEMA = "final_runtime_guard.1"
 PHASE_CEILING_USD = 100.
 RATE_USD_PER_SECOND = .1266 / 3600  # Authorized 2 CPU, 4 GiB container.
 STOPPED = {"stopped", "terminated"}
-APP_STATES = STOPPED | {"ephemeral", "deployed", "initializing", "pending", "stopping"}
+# Exact Modal 1.6.1 CLI labels, plus previously supported canonical labels.
+# Never infer lifecycle from an unknown label or remove arbitrary punctuation.
+APP_STATE_LABELS = {
+    "deployed": "deployed", "ephemeral": "ephemeral",
+    "ephemeral (detached)": "ephemeral", "initializing...": "initializing",
+    "stopping...": "stopping", "disabled": "disabled", "stopped": "stopped",
+    "terminated": "terminated", "initializing": "initializing", "pending": "pending", "stopping": "stopping",
+}
 PREEMPTION_LINE = (
     "Container terminated due to preemption. Your Function will be restarted with the same input. "
     "For more details, see https://modal.com/docs/guide/preemption"
@@ -405,10 +412,14 @@ class RuntimeGuard:
             state = record.get("state", record.get("State"))
             if not isinstance(app, str) or not isinstance(state, str) or app in states:
                 raise ValueError("malformed/duplicate app telemetry")
-            states[app] = state.strip().lower()
-        value = states.get(self.auth["app_id"])
-        if value is not None and value not in APP_STATES:
-            raise ValueError("unknown authorized app state")
+            states[app] = state
+        raw = states.get(self.auth["app_id"])
+        self.state["app_state_raw"] = raw
+        if raw is None:
+            return None
+        value = APP_STATE_LABELS.get(raw.strip().lower())
+        if value is None:
+            raise ValueError(f"unknown authorized app state: {raw!r}")
         return value
 
     def budget(self):
@@ -464,8 +475,8 @@ class RuntimeGuard:
                 result["errors"].append(f"app stop attempt {self.state['app_stop_attempts']}: {exc}")
         try:
             if self.signal_controller(signal.SIGTERM):
-                self.signal_controller(signal.SIGCONT)
                 result["terminated"] = True
+                self.signal_controller(signal.SIGCONT)
         except Exception as exc:
             result["errors"].append(f"terminate: {exc}")
         self.state["stop_result"] = result
@@ -523,7 +534,8 @@ class RuntimeGuard:
         finished = self.state["app_stopped"] and self.state["controller_state"] == "done"
         if self.now() >= utc_timestamp(self.auth["startup_deadline_utc"]) and not (self.state["seen_app"] and self.state["seen_ledger"]):
             reason = reason or "immutable_startup_deadline"
-        if self.state["controller_state"] == "done" and not self.state["app_stopped"]:
+        if (self.state["controller_state"] == "done" and not self.state["app_stopped"]
+                and self.state["app_state"] != "stopping"):
             reason = reason or "controller_done_app_not_stopped"
         if not finished and not stopped_this_tick and (reason or self.state["stop_intent"] is not None):
             self.stop(reason or self.state["stop_intent"]["reason"])
@@ -536,11 +548,22 @@ class RuntimeGuard:
             except Exception as exc:
                 errors.append(f"post-stop observation: {exc}")
             finished = self.state["app_stopped"] and self.state["controller_state"] == "done"
+        if finished:
+            # The controller may append its last settlement after the initial
+            # budget read, while the provider is closing the app. Refresh only
+            # after stopped+absent observation; never rewrite historical ledgers.
+            try:
+                self.budget()
+                self.state["budget_verified"] = True
+            except Exception as exc:
+                self.state["budget_verified"] = False
+                errors.append(f"terminal budget telemetry: {exc}")
         exhausted = (self.state["stop_intent"] is not None and not self.state["app_stopped"]
                      and self.state["app_stop_attempts"] >= self.auth["max_app_stop_attempts"])
         self.state["errors"] = errors
-        ready = self.state["seen_app"] and self.state["seen_ledger"] and self.state.get("budget_verified")
-        self.state["phase"] = "finished" if finished else "stop_failed_manual_action" if exhausted else "stopping" if self.state["stop_intent"] else "degraded" if errors else "monitoring" if ready else "starting"
+        ready = (self.state["seen_app"] and self.state["seen_ledger"] and self.state.get("budget_verified")
+                 and self.state["controller_state"] == "running" and self.state["app_state"] not in ("stopping", "disabled"))
+        self.state["phase"] = "finished" if finished else "stop_failed_manual_action" if exhausted else "stopping" if self.state["stop_intent"] else "degraded" if errors else "finishing" if self.state["app_state"] == "stopping" else "monitoring" if ready else "starting"
         self.persist()
         return finished
 
