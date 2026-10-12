@@ -17,6 +17,44 @@ reservations are conservative accounting, not a provider invoice or a live
 credit-balance API. No retry, extra arm, cohort reduction or budget expansion is
 automatically authorized.
 
+### Preemption accounting amendment, 12 October 2026
+
+Modal infrastructure preemptions restart an input even with `retries=0`.
+Successful-worker runtime therefore omits a lost attempt. The original ledgers
+remain intact; the independent [runtime watchdog authorization](resources/runtime_guard/authorization.json)
+adds a full per-call reservation for each exact preemption warning and stops
+the affected scope before its adjusted commitments consume the remaining
+maximum-concurrency burst cushion. This is an operational budget repair; no
+scientific grid, source hash, model setting or evaluated row changes.
+
+The watchdog polls every 30 seconds. Cache commitments stop at $70.808724,
+leaving $9.191276 for an eight-call burst and shutdown; sequence commitments
+stop at $16.779590, leaving $1.220410. Independent fixed wall deadlines are
+**07:39:25 UTC / 08:39:25 London for cache** and **05:42:28 UTC / 06:42:28
+London for sequence**. They conservatively charge every permitted container
+continuously from the recorded start of paid work, add the prior pilot/smoke
+debit, and leave a further $1/$0.50 shutdown/overlap allowance. These are latest
+stop deadlines, not completion forecasts, and must not be extended automatically.
+
+`resources/runtime_guard/status.json` must remain fresh; the launch receipt
+records its PID and keep-awake helper. The single-owner watchdog verifies exact
+process commands and process groups, persists stop intent, freezes submissions,
+stops only the two authorized app IDs, then terminates the matching local
+controllers. For cache, it targets Modal child PID 16698 rather than its wrapper
+PID 15111. Reservations survive a stop and require reconciliation. The watchdog
+never launches replacement work. Thirteen mock-only tests cover accounting,
+partial journals, ownership, process identity, immutable deadlines and failures.
+
+The [01:43 UTC provider snapshot](resources/modal_billing_20261012T014323Z.json)
+shows $10.8964 additional metered ephemeral-app usage against the pre-study
+snapshot; this can lag actual activity and is not a remaining-credit balance.
+Provider metering and live app state must be reconciled before any recovery.
+Deadline enforcement depends on the local watcher remaining alive and the
+provider accepting shutdown, so check both on every heartbeat.
+
+References: [Modal preemption behavior](https://modal.com/docs/guide/preemption)
+and [resource billing](https://modal.com/pricing).
+
 Exactly one controller owns each active scope. Each launch receipt records its
 PID, command, log, start time and (where applicable) idle-sleep guard. Do not
 start a second controller merely because a log is quiet. The extraction worker
@@ -29,6 +67,7 @@ captures its case log until the shard returns.
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | All five outer folds plus two fixed-setting repeats; app `ap-vgwn2eHeZngfofbxH6SMsf`; $18 persistent reservation guard and 900 remote-call quota. |
 | Main local pipeline | `pipeline/status.json` | Waits up to 12 hours for the complete 19,716-row cache and all sequence markers, then runs embedding folds, main report, complementarity folds and report at three local workers. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
+| Independent spending watchdog | `resources/runtime_guard/status.json` | Adds lost-attempt reservations and fixed wall deadlines; launches no cloud work and preserves study ledgers. |
 
 Launch authorizations bind the exact code/protocol/source hashes. Do not edit
 active sequence or extraction implementation files. An implementation repair
@@ -54,6 +93,10 @@ Persistent artifacts and cache locations:
   counts, ancestry and hashes remain under this report directory.
 - Logs, locks, transient journals and partial files are ignored by Git. Commit
   complete validated evidence; do not stage active ledgers or partial folds.
+
+The user expects a progress check around **11 AM Europe/London on 12 October**.
+The existing heartbeat includes this checkpoint and continues unfinished work
+afterward. It is not a promise that every transfer fit will finish overnight.
 
 ## Failure and recovery
 

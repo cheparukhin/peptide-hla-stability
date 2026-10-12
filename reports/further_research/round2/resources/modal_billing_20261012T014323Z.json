@@ -1,0 +1,139 @@
+{
+  "at_utc": "2026-10-12T01:43:23.706674+00:00",
+  "summary": {
+    "start": "2026-10-01 00:00:00+00:00",
+    "end": "2026-11-01 00:00:00+00:00",
+    "metered_cost": "128.90399924",
+    "metered_cost_breakdown": {
+      "LLM Tokens": "0E-8",
+      "Ephemeral Apps": "127.54411355",
+      "Volumes": "1.36252072"
+    },
+    "adjustments": {
+      "Network Egress Allowance": "-0.02147852",
+      "Credits": "-127.52000000",
+      "Plan Cost": "0E-8",
+      "Free Storage": "-1.36252072",
+      "Reservation Adjustment": "-0E-8"
+    },
+    "billed_cost": "0E-8"
+  },
+  "study_rows": [
+    {
+      "object_id": "ap-3VYp2CIyTqqTgvl5EMh8cA",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.02243634",
+      "cost_by_resource": {
+        "CPU": "0.01676523",
+        "Memory": "0.00567111"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-CTPosnxjWl1PutPuL6XHcK",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.76281920",
+      "cost_by_resource": {
+        "A10G": "0.56649999",
+        "CPU": "0.09743921",
+        "Memory": "0.09888000"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-CTPosnxjWl1PutPuL6XHcK",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "0.08804906",
+      "cost_by_resource": {
+        "A10G": "0.06538885",
+        "CPU": "0.01124688",
+        "Memory": "0.01141333"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-LWIdYOzFfzkVvT0pU8o7zp",
+      "description": "pepstab-round2-boltz-audit",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.16292828",
+      "cost_by_resource": {
+        "A10G": "0.12099724",
+        "CPU": "0.02081152",
+        "Memory": "0.02111952"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-WHLUeJrzgbYWR9L13OtuqF",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.01520352",
+      "cost_by_resource": {
+        "CPU": "0.01136185",
+        "Memory": "0.00384167"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-ailqSkkRms7DNOJe0S66Qa",
+      "description": "pepstab-round2-boltz-audit",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.23699170",
+      "cost_by_resource": {
+        "A10G": "0.17599978",
+        "CPU": "0.03027196",
+        "Memory": "0.03071996"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-laQ27F2Bw9zPsqjIJs50gD",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.00121681",
+      "cost_by_resource": {
+        "CPU": "0.00111290",
+        "Memory": "0.00008334",
+        "Network Egress": "0.00002057"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-vgwn2eHeZngfofbxH6SMsf",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "0.77378664",
+      "cost_by_resource": {
+        "CPU": "0.57874976",
+        "Memory": "0.19503689"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "7.69648967",
+      "cost_by_resource": {
+        "A10G": "5.71572178",
+        "CPU": "0.98311464",
+        "Memory": "0.99765326"
+      },
+      "tags": {}
+    }
+  ],
+  "interpretation": "Lagging metered usage snapshot; not remaining credits. App records may omit late metering. No live balances inferred.",
+  "ephemeral_apps_delta_since_before_usd": 10.896410209999999
+}

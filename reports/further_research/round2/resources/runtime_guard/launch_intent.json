@@ -1,0 +1,15 @@
+{
+  "started_at_utc": "2026-10-12T01:52:13.959037+00:00",
+  "authorization_sha256": "a9c2be37eb664f6358c7fd8781fcaae60c09530e5840e9f5f37aa6625688a9c6",
+  "source_sha256": "255e6af4534208ce7c4d7654fc199edc4a06760c5dc0323be558f091b117d099",
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+    "scripts/round2_runtime_guard.py",
+    "--authorization",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/resources/runtime_guard/authorization.json",
+    "--approved"
+  ],
+  "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/resources/runtime_guard/controller.log",
+  "budget_ceiling_usd": 100,
+  "purpose": "Independent bounded stop-only watchdog; no cloud launches; exact existing app and controller scopes; user-authorized overnight cost protection."
+}

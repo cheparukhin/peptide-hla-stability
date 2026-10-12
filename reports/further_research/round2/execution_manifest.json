@@ -12,7 +12,7 @@
   "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
   "independent_confirmation": "not yet available; external labels reserved",
   "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
-  "updated_at_utc": "2026-10-12T01:04:30.862348+00:00",
+  "updated_at_utc": "2026-10-12T01:51:48.890307+00:00",
   "branch": "codex/round2-research",
   "allocations_usd": {
     "cache": 80,
@@ -26,13 +26,16 @@
     "first_cache_shard": "extractor/full_training/controller_launch.json",
     "conditional_cache_fanout": "extractor/full_training/fanout_controller/controller_launch.json",
     "sequence": "sequence/controller_launch.json",
-    "local_main_pipeline": "pipeline/controller_launch.json"
+    "local_main_pipeline": "pipeline/controller_launch.json",
+    "runtime_budget_guard": "resources/runtime_guard/controller_launch.json"
   },
   "continuation": {
     "kind": "current-thread heartbeat",
     "id": "continue-round-two-research",
     "interval_minutes": 30,
-    "policy": "quiet on unchanged healthy jobs; continue gated work autonomously"
+    "policy": "quiet on unchanged healthy jobs; continue gated work autonomously",
+    "morning_progress_checkpoint": "2026-10-12T11:00:00+01:00",
+    "scope": "Continue unfinished authorized work after morning checkpoint; preserve fixed spending deadlines."
   },
   "operations": "OPERATIONS.md",
   "cache_fanout": {
@@ -40,5 +43,6 @@
     "app_id": "ap-wYa6yW8KQunK4VNxPInsPd",
     "pilot_gate": "extractor/full_training/production_pilot_gate.json",
     "forecast_with_contingency_usd": 73.99009822360709
-  }
+  },
+  "runtime_guard_authorization": "resources/runtime_guard/authorization.json"
 }

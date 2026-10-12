@@ -1,0 +1,59 @@
+{
+  "schema": "round2_runtime_guard.1",
+  "created_at_utc": "2026-10-12T01:50:41.725817+00:00",
+  "modal_cli": "/Users/cheparukhin/ai_science_hack/.venv/bin/modal",
+  "status_path": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/resources/runtime_guard/status.json",
+  "event_log_path": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/resources/runtime_guard/events.json",
+  "lock_path": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/resources/runtime_guard/owner.lock",
+  "poll_seconds": 30,
+  "command_timeout_seconds": 15,
+  "studies": {
+    "cache": {
+      "app_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+      "controller_pid": 16698,
+      "controller_command": "/Users/cheparukhin/ai_science_hack/.venv/bin/python /Users/cheparukhin/ai_science_hack/.venv/bin/modal run modal_app/round2_boltz_extract.py --cohort /Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/cohort.csv --forecast /Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/forecast.json --run-id round2-fulltrain-20261012 --budget-usd 80 --workers 8",
+      "ledger_path": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/extraction_budget_ledger.json",
+      "execution_log_paths": [
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_controller/child.log"
+      ],
+      "limit_usd": 80,
+      "rate_usd_per_second": 0.0004114444444444445,
+      "max_concurrency": 8,
+      "per_call_upper_usd": 1.1364095555555558,
+      "stop_commitment_usd": 70.80872355555556,
+      "deadline_utc": "2026-10-12T07:39:25Z",
+      "deadline_derivation": {
+        "max_resources_per_container": "A10G + 4 CPU + 24 GiB hard limits",
+        "paid_window_start_utc": "2026-10-12T01:03:50Z",
+        "max_parallel_rate_usd_hour": 11.8496,
+        "prior_pilot_usd": 0.8733776510652822,
+        "additional_shutdown_and_restart_overlap_buffer_usd": 1.0,
+        "formula": "start + (80 - prior_pilot - 1.00) / 11.8496 hours, rounded down",
+        "scope": "targets Modal child group16698; wrapper15111 owns no remote submissions"
+      }
+    },
+    "sequence": {
+      "app_id": "ap-vgwn2eHeZngfofbxH6SMsf",
+      "controller_pid": 13198,
+      "controller_command": "/Users/cheparukhin/ai_science_hack/.venv/bin/python /Users/cheparukhin/ai_science_hack/.venv/bin/modal run modal_app/round2_sequence.py::run --approved",
+      "ledger_path": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/sequence/modal_budget.jsonl",
+      "execution_log_paths": [
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/sequence/execution.log"
+      ],
+      "limit_usd": 18,
+      "rate_usd_per_second": 3.516666666666666e-05,
+      "max_concurrency": 30,
+      "per_call_upper_usd": 0.037347,
+      "stop_commitment_usd": 16.77959,
+      "deadline_utc": "2026-10-12T05:42:28Z",
+      "deadline_derivation": {
+        "max_resources_per_container": "2 CPU + 4 GiB hard limits",
+        "paid_window_start_epoch": 1791768440.4879858,
+        "max_parallel_rate_usd_hour": 3.7979999999999996,
+        "prior_smoke_and_build_usd": 1.35,
+        "additional_shutdown_and_restart_overlap_buffer_usd": 0.5,
+        "formula": "first remote reservation + (18 - 1.35 - 0.50) / 3.798 hours, rounded down"
+      }
+    }
+  }
+}

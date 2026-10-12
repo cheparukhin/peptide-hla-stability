@@ -1,0 +1,53 @@
+{
+  "checked_at_utc": "2026-10-12T01:52:55.081979+00:00",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_round2_runtime_guard.py",
+    "passed": 13,
+    "failed": 0,
+    "scope": "mock-only; no real stops exercised"
+  },
+  "live_first_tick": {
+    "authorization_sha256": "a9c2be37eb664f6358c7fd8781fcaae60c09530e5840e9f5f37aa6625688a9c6",
+    "errors": [],
+    "guard_pid": 25226,
+    "phase": "monitoring",
+    "schema": "round2_runtime_guard.1",
+    "studies": {
+      "cache": {
+        "app_state": "ephemeral",
+        "app_stopped": false,
+        "controller_state": "running",
+        "effective_commitment_usd": 16.90804194359367,
+        "errors": [],
+        "ordinary_commitment_usd": 16.90804194359367,
+        "preemption_count": 0,
+        "preemptions_by_log": {
+          "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_controller/child.log": 0
+        },
+        "seen_app": true,
+        "stop_intent": null,
+        "stop_result": null
+      },
+      "sequence": {
+        "app_state": "ephemeral",
+        "app_stopped": false,
+        "controller_state": "running",
+        "effective_commitment_usd": 3.9717724199471505,
+        "errors": [],
+        "ordinary_commitment_usd": 3.7850374199471504,
+        "preemption_count": 5,
+        "preemptions_by_log": {
+          "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/sequence/execution.log": 5
+        },
+        "seen_app": true,
+        "stop_intent": null,
+        "stop_result": null
+      }
+    },
+    "updated_at_utc": "2026-10-12T01:52:45.324892+00:00"
+  },
+  "source_sha256": "255e6af4534208ce7c4d7654fc199edc4a06760c5dc0323be558f091b117d099",
+  "authorizations_unchanged": true,
+  "apps_stopped_or_launched_by_validation": false,
+  "interpretation": "Validated launch snapshot; refer to status.json for current state."
+}
