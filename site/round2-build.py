@@ -21,7 +21,10 @@ SOURCES = {}
 
 
 def read(name, kind="json"):
-    path = BASE + name
+    return read_path(BASE + name, kind)
+
+
+def read_path(path, kind="json"):
     raw = (ROOT / path).read_bytes()
     SOURCES[path] = hashlib.sha256(raw).hexdigest()
     if kind == "csv":
@@ -58,7 +61,11 @@ def interval(row):
 
 
 def link(name, label):
-    return f'<a href="{REPO_URL}{BASE}{name}">{html.escape(label)}</a>'
+    return path_link(BASE + name, label)
+
+
+def path_link(path, label):
+    return f'<a href="{REPO_URL}{path}">{html.escape(label)}</a>'
 
 
 def build():
@@ -83,6 +90,48 @@ def build():
     residual = compare(comp, "sequence_selector", "R4_residual")
     transfer_rows = [compare(transfer, "bounded_MLP_sequence_selector", "embedding_selector", regime=regime, mode="crossed") for regime in ("hla", "joint")]
     original_transfer = [compare(transfer, "original", "embedding_selector", regime=regime, mode="crossed") for regime in ("hla", "joint")]
+    ranking_base = "reports/finalization/ranking/"
+    ranking_comparisons = read_path(ranking_base + "comparisons.csv", "csv")
+    ranking_scores = read_path(ranking_base + "scores.csv", "csv")
+    ranking_selections = read_path(ranking_base + "selections.csv", "csv")
+    ranking_audit = read_path(ranking_base + "completion_audit.json")
+    read_path(ranking_base + "protocol.json")
+    read_path(ranking_base + "REPORT.md", "text")
+    inference = read_path("reports/finalization/inference/distribution_manifest.json")
+    read_path("reports/finalization/inference/README.md", "text")
+    read_path("docs/ROUND2_INFERENCE.md", "text")
+    read_path("reports/finalization/INDEPENDENT_ASSAY_BRIEF.md", "text")
+    read_path("reports/finalization/FINAL_REPORT.md", "text")
+    read_path("reports/finalization/transfer_controls/SPECIFICATION.md", "text")
+    if ranking_audit["status"] != "passed" or ranking_audit["new_scientific_fits"] != 840 or ranking_audit["report_invocations"] != 1:
+        raise ValueError("Ranking completion audit is missing or incomplete")
+    ranking_rows = []
+    for label, contrast in (("R5 mixed ranking loss − R5 MSE", "R5_ranked-R5_mse"),
+                           ("R0 mixed ranking loss − R0 MSE", "R0_ranked-R0_mse"),
+                           ("Loss × representation interaction", "deltaR5-deltaR0")):
+        row = one(ranking_comparisons, contrast=contrast, min_rows=20)
+        for key in ("delta", "ci_low", "ci_high"):
+            row[key] = float(row[key])
+            if not math.isfinite(row[key]):
+                raise ValueError("Nonfinite ranking comparison")
+        expected = (one(ranking_scores, arm="R5_ranked", min_rows=20), one(ranking_scores, arm="R5_mse", min_rows=20),
+                    one(ranking_scores, arm="R0_ranked", min_rows=20), one(ranking_scores, arm="R0_mse", min_rows=20))
+        r5, m5, r0, m0 = [float(r["median_spearman"]) for r in expected]
+        delta = r5-m5 if contrast.startswith("R5_") else r0-m0 if contrast.startswith("R0_") else (r5-m5)-(r0-m0)
+        if not math.isclose(delta, row["delta"], abs_tol=1e-12):
+            raise ValueError("Ranking scores and paired difference disagree")
+        if not row["ci_low"] <= 0 <= row["ci_high"]:
+            raise ValueError("Ranking uncertainty statement needs review")
+        ranking_rows.append((label, row))
+    ranking_primary = ranking_rows[0][1]
+    ranking_sensitivity = one(ranking_comparisons, contrast="R5_ranked-R5_mse", min_rows=50)
+    if len(ranking_selections) != 10 or any(row["deployment"] != "mse" for row in ranking_selections if row["representation"] == "R5"):
+        raise ValueError("Ranking fallback statement needs review")
+    ranking_html = "\n".join(f'<tr><th scope="row">{label}</th><td class="num">{interval(row)}</td></tr>' for label, row in ranking_rows)
+    if inference["actual_fits"] != 31 or inference["cloud_calls"] != 0 or not all(a["roundtrip_prediction_exact"] for a in inference["artifacts"]):
+        raise ValueError("Portable inference completion needs review")
+    ridge = one(inference["artifacts"], candidate="R4_ridge_100")
+    neural = one(inference["artifacts"], candidate="R5_mlp_0.01")
     display_arms = [
         ("mlp_log", "Original 30-member sequence MLP"),
         ("sequence_selector", "Competitive sequence selector"),
@@ -128,6 +177,21 @@ def build():
     </details>
   </section>
 
+  <section id="ranking-followup" aria-labelledby="ranking-followup-title">
+    <div class="shead"><p class="eyebrow">Completed matched follow-up · 12 October 2026</p><h2 class="title" id="ranking-followup-title">Ranking loss adds no established gain.</h2><p class="lede">The mixed MSE + within-allele ranking objective slightly raises the R5 point estimate. Its paired interval crosses zero, and the inner deployment selector retains MSE in all five R5 folds.</p></div>
+    <div class="scroller" tabindex="0" role="region" aria-label="Matched ranking-loss comparisons"><table><caption>Original-training peptide-cluster assessment · ≥20 rows per allele</caption><thead><tr><th scope="col">Frozen comparison</th><th scope="col">Difference [paired 95% interval]</th></tr></thead><tbody>{ranking_html}</tbody></table></div>
+    <p class="note">R5 mixed-loss MLP scores <b>{fmt(r5)}</b>, compared with <b>{fmt(m5)}</b> for its matched MSE head. The ≥50-row sensitivity gives {interval(ranking_sensitivity)}. These comparisons do not establish a ranking-loss benefit or equivalence.</p>
+    <details class="evidence-detail"><summary>Matched recipe, audit and limits</summary><p>R0 onehot and R5 Boltz features use the same 64-unit head, MSE stopping, regularisation grid and final 30-member ensemble. Positive ranking weights 0.1, 0.3 and 1 were selected inside fitting partitions only. All 840 new fits, 480 reused MSE members, fresh inner predictions and gradient-only scaler statistics were audited; both real zero-weight checks reproduced the cached MSE member exactly.</p><p>The interaction subtracts the two loss differences on the same 2,000 paired cluster draws. Intervals condition on fitted predictions and inner selections. Screening uses two members and final prediction 30; feature dimensions and parameter counts still differ. MSE anchors prediction scale. This outcome triggers no extra grid, new stopping rule or transfer expansion.</p></details>
+    <p class="source-line">{path_link(ranking_base + "REPORT.md", "Ranking readout")} · {path_link(ranking_base + "comparisons.csv", "All paired comparisons")} · {path_link(ranking_base + "completion_audit.json", "Independent arithmetic and artifact audit")}</p>
+  </section>
+
+  <section id="portable-inference" aria-labelledby="portable-inference-title">
+    <div class="shead"><p class="eyebrow">Completed portable prediction package</p><h2 class="title" id="portable-inference-title">Use the trained heads with verified Boltz features.</h2><p class="lede">Locked demonstration recipes export R4 ridge (alpha 100) and a 30-member R5 MLP (L2 0.01). Save/reload predictions match exactly.</p></div>
+    <p class="col">Warm single-row cached-head medians are <b>{ridge["single_seconds"]["median"]*1000:.2f} ms</b> for ridge and <b>{neural["single_seconds"]["median"]*1000:.2f} ms</b> for the MLP on the recorded host. These are performance-only measurements on identified training-cache inputs, excluding Boltz extraction, MSA generation, cache reads and startup.</p>
+    <p class="note">The package accepts compatible verified compact features. Novel peptide/HLA inputs need real feature extraction; this page does not simulate sequence-to-prediction output. The two recipes were locked before new outcomes and are deployment demonstrations, without a new accuracy or universal-winner claim.</p>
+    <p class="source-line">{path_link("docs/ROUND2_INFERENCE.md", "Input contract and prediction commands")} · {path_link("reports/finalization/inference/README.md", "Exports and measured timing")} · {path_link("reports/finalization/inference/distribution_manifest.json", "Model artifact hashes")}</p>
+  </section>
+
   <section id="round2-methods" aria-labelledby="round2-methods-title">
     <div class="shead"><p class="eyebrow">How to read the evidence</p><h2 class="title" id="round2-methods-title">Select inside, assess outside.</h2></div>
     <ol class="method-flow"><li><b>Freeze features and partitions.</b> All original training rows remain in five outer peptide-cluster folds; assessed clusters stay outside fitting, stopping and scaling.</li><li><b>Select with inner folds.</b> Regularisation and procedure choices use inner outcomes only, with an original-sequence fallback.</li><li><b>Pair the comparisons.</b> Subtract the two pooled medians of per-allele Spearman on the same eligible panel, then resample whole peptide clusters with 2,000 shared draws.</li></ol>
@@ -139,7 +203,8 @@ def build():
     <div class="scroller" tabindex="0" role="region" aria-label="Transfer comparison results"><table><caption>≥20-row panel · crossed peptide-cluster × HLA-group paired 95% intervals</caption><thead><tr><th scope="col">Regime</th><th scope="col">Embedding selector</th><th scope="col">Bounded MLP selector</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody>{transfer_html}</tbody></table></div>
     <p class="note">Crossed lower bounds exceed 0.05 for these complete procedures and narrow comparators. Gains also remain positive against the original reference: HLA {interval(original_transfer[0])}; joint {interval(original_transfer[1])}. Representation and training-recipe effects are combined. These results do not isolate a causal structural effect or establish independent generalisation.</p>
     <details class="evidence-detail"><summary>Transfer scope and uncertainty</summary><p>The bounded sequence selector excludes the main-screen trees and PairLogit. R4 ridge and R5 MLP were nominated before transfer outcomes. HLA Hamming groups are a declared sequence convention, not a validated functional distance. Crossed draws independently resample peptide clusters and HLA groups, with HLA multiplicities replicating alleles in the median; they are dependence sensitivities, not refitting.</p><p>Saved inner choices and scaler ancestry were audited; raw inner prediction vectors and numerical scaler statistics were not independently reconstructed. Main execution repeats do not measure transfer execution variation.</p></details>
-    <p class="source-line">{link("transfer/results/README.md", "Complete transfer report")} · {link("transfer/results/comparisons.csv", "All transfer intervals")} · {link("resources/transfer_completion_audit.json", "Transfer audit")}</p>
+    <p class="note"><b>Stronger transfer controls remain pending.</b> A separately frozen extension adds stronger sequence procedures and matched representation heads. The figures above are the completed prior study; no result from that extension is claimed here.</p>
+    <p class="source-line">{link("transfer/results/README.md", "Complete prior transfer report")} · {link("transfer/results/comparisons.csv", "Prior transfer intervals")} · {path_link("reports/finalization/transfer_controls/SPECIFICATION.md", "Pending extension specification")}</p>
   </section>
 
   <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
@@ -162,7 +227,7 @@ def build():
 
   <section id="round2-evidence" aria-labelledby="round2-evidence-title">
     <div class="shead"><h2 class="title" id="round2-evidence-title">Inspect the evidence.</h2><p class="lede">This page is a local static submission snapshot. Numeric tables are generated from saved result CSVs, with source SHA-256 hashes in the <a href="round2-data.json">downloadable evidence payload</a>. Reading this page starts no model jobs.</p></div>
-    <p class="source-line">{link("REPORT.md", "Canonical assessment")} · <a href="{REPO_URL}reports/NEXT_RESEARCH_PLAN.md">Research plan and execution gates</a> · <a href="#archive">Original hackathon archive</a></p>
+    <p class="source-line">{path_link("reports/finalization/FINAL_REPORT.md", "Combined finalisation readout")} · {link("REPORT.md", "Closed round-two assessment")} · {path_link("reports/finalization/INDEPENDENT_ASSAY_BRIEF.md", "Unsent independent-assay brief")} · <a href="{REPO_URL}reports/NEXT_RESEARCH_PLAN.md">Research plan and execution gates</a> · <a href="#archive">Original hackathon archive</a></p>
   </section>
 '''
     payload = {"schema": "round2-site-snapshot.1", "assessment_date": "2026-10-12", "scope": "development only; original historical test separate; independent confirmation open", "cohort": cohort,
@@ -170,6 +235,12 @@ def build():
                "matched_controls": [{"label": label, "comparison": row} for label, row in controls],
                "complementarity": {"blend": blend, "residual": residual}, "transfer": transfer_rows,
                "transfer_original_reference": original_transfer,
+               "ranking_followup": {"comparisons": [{"label": label, "comparison": row} for label, row in ranking_rows],
+                                    "sensitivity": ranking_sensitivity, "scores": ranking_scores,
+                                    "selections": ranking_selections, "audit_status": ranking_audit["status"]},
+               "portable_inference": {"recipes": [ridge, neural], "actual_fits": 31,
+                                      "latency_scope": inference["latency_scope"]},
+               "transfer_extension_status": "pending; no extension outcomes claimed",
                "cost_accounting": {k: v for k, v in costs.items() if k != "interpretation"},
                "source_sha256": dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"

@@ -4,6 +4,11 @@ Local static submission view for the **audited round-two development assessment,
 12 October 2026**. The primary finding, methods, bounded transfer, complementarity,
 execution repeats, provenance gap, cost accounting and open independent confirmation
 are backed by [the current round-two assessment](../reports/further_research/round2/REPORT.md).
+The completed [matched ranking-loss follow-up](../reports/finalization/ranking/REPORT.md)
+and [portable inference package](../reports/finalization/inference/README.md) now
+have their own source-backed sections. Ranking intervals cross zero and the R5
+deployment selector retained MSE in all five folds. Stronger transfer controls
+remain explicitly pending in the [combined readout](../reports/finalization/FINAL_REPORT.md).
 The original October 3–4 film, approaches and held-out test are retained in a clearly
 dated, collapsed archive. Their original numeric results are unchanged.
 
@@ -61,7 +66,8 @@ The historical live film requires JavaScript; the MP4 is its fallback.
 
 The builder validates unique selected CSV rows, finite scores, delta consistency,
 point/interval agreement, the authored primary-criterion interpretation, the budget
-ceiling and zero locked-repeat differences. `--check` compares the generated HTML
+ceiling, zero locked-repeat differences, completed ranking audit and MSE fallback,
+ranking interval interpretation, and exact model-export completion. `--check` compares the generated HTML
 and JSON against current saved inputs and fails on stale content or source hashes.
 It never executes models, reads the original test for selection, edits saved research
 evidence, accesses the network or launches paid compute.
@@ -71,6 +77,10 @@ comparisons, crossed transfer comparisons, runtime/cost accounting, cache and
 embedding-repeat audits. The canonical assessment and audit/independent-data
 narratives are hash-bound too. New results require reviewing the authored prose and
 regenerating; the builder does not infer new scientific claims from a higher score.
+The current follow-up also binds ranking comparisons/scores/selections and audit,
+the portable distribution manifest, the unsent assay brief, the combined report,
+and the pending transfer specification. Updating the combined report after transfer
+completion requires regenerating the snapshot and reviewing its pending-state copy.
 
 The generated section lies between `ROUND2 GENERATED START` and `ROUND2 GENERATED END`
 in `index.html`. Change its template in `round2-build.py`, then rebuild. Other parts

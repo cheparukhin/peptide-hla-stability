@@ -14,10 +14,19 @@ examined development cohort; it does not establish that the gain exceeds the
 predeclared worthwhile threshold of +0.05. Independent assay confirmation remains
 open. The original test has not been reopened.
 
+The matched ranking-loss follow-up is now complete. Adding within-allele
+ranking loss to the R5 MLP gives **+0.0071 [−0.0051, +0.0098]** against its
+matched MSE head. This does not establish an additional gain; the inner
+deployment selector retained MSE in all five R5 folds.
+
 ## Explore the project
 
 - [Current research report](reports/further_research/round2/REPORT.md): complete
   main, transfer, complementarity, reproducibility and resource findings.
+- [Combined finalisation readout](reports/finalization/FINAL_REPORT.md): completed
+  portable inference and ranking follow-up, with the transfer extension pending.
+- [Matched ranking-loss report](reports/finalization/ranking/REPORT.md): frozen
+  outcome, source tables and the completed artifact/arithmetic audit.
 - [Project page](site/index.html): locally updated evidence and a clearly dated
   archive of the original film/test. Serve with `python3 -m http.server 8000 --directory site` and open `http://localhost:8000`. This branch has not been
   deployed to the public site.
@@ -51,6 +60,17 @@ The main interval resamples paired peptide clusters; the transfer intervals
 shown use crossed peptide/HLA-group uncertainty. Selection and stopping obey
 the corresponding held-out grouping. Reported results remain conditional on
 this examined development cohort and frozen candidate sets.
+
+The separate matched follow-up compares mixed MSE + RankNet against MSE for
+both R0 sequence inputs and R5 Boltz features. R5 scores 0.7281 versus 0.7210;
+R0's difference is +0.0029 [−0.0077, +0.0120]. The paired loss-by-representation
+interaction is +0.0042 [−0.0125, +0.0119]. The ≥50-row R5 sensitivity is also
+uncertain: +0.0055 [−0.0039, +0.0085]. All 840 new scientific fits, 480 reused
+MSE members and both exact zero-weight validation members passed the audit.
+These intervals condition on fitted predictions and inner selections; they
+do not establish equivalence or independent confirmation. See the
+[saved comparisons](reports/finalization/ranking/comparisons.csv) and
+[independent completion audit](reports/finalization/ranking/completion_audit.json).
 
 Position-aware interface representations substantially outperform global
 pooling in matched neural comparisons. The designated contact-map representation
@@ -99,15 +119,15 @@ The inherited extraction-wrapper hash discrepancy is disclosed in the report:
 scientific source and feature audits passed, but exact launch-wrapper bytes
 cannot be certified. No new result repairs that historical provenance gap.
 
-## Work currently being finalised
+## Completed follow-up and remaining work
 
-The newly authorized follow-up tests **Boltz embeddings plus a within-allele
-ranking loss**, with matched sequence inputs and MSE controls. A separate
-bounded extension adds stronger sequence transfer comparators and matched
-learners. Their protocols and resource gates are being prepared; no outcomes
-are claimed here before completion. The model package and current report page
-are ready, while the final combined submission readout will include every
-completed follow-up and any remaining limitations.
+The portable model package and **Boltz + ranking-loss follow-up are complete**.
+The uncertain ranking result does not trigger another grid or stopping rule.
+A separately frozen bounded extension adds stronger sequence transfer
+comparators and matched learners; **its results remain pending** in this
+readout. See its [specification](reports/finalization/transfer_controls/SPECIFICATION.md).
+The [combined report](reports/finalization/FINAL_REPORT.md) distinguishes these
+completed deliverables from pending transfer evidence and independent assays.
 
 The completed round-two phase conservatively accounted for $76.84 of its $100
 ceiling, including a retained engineering allowance. Its cloud jobs are stopped.

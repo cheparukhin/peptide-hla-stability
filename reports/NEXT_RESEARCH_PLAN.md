@@ -642,7 +642,10 @@ After round two closed in commit `3cf7443`, the user requested autonomous
 project finalisation, then reported **$143 remaining Modal credit** and
 authorized **up to $100 additional** for this new phase. This is a separate
 ceiling; old studies, authorizations and accounting remain closed. It is not a
-spending target. Current paid commitments for this new phase are zero.
+spending target. The completed cloud pilot carries $1.3895623 conservatively,
+including its retained build allowance and the higher historical guard snapshot.
+The app is stopped; its reconciled journal is $1.3589062, with zero reservations.
+Provider metering can lag and is not an account balance.
 
 The user proposed combining Boltz embeddings with ranking loss. Freeze a
 bounded, matched sequence/Boltz representation by regression/ranking-loss
@@ -661,3 +664,11 @@ and [durable manifest](finalization/execution_manifest.json) record operational
 ownership, frozen follow-up protocols, budget guards and completion. Earlier
 closeout source hashes remain historical snapshots of commit `3cf7443`; this
 dated new authorization intentionally updates the living canonical plan.
+
+### Completed ranking follow-up and pilot gates
+
+All 840 new ranking fits, 480 logical reused MSE members and two exact lambda-zero compatibility checks are audited. Boltz R5 mixed ranking minus MSE improves the development endpoint by +0.00707, with paired 95% interval [−0.00505,+0.00983]; the gain is not established. The matched representation-by-loss interaction is also uncertain. The inner deployment rule retains MSE in all five R5 folds. See [ranking report](finalization/ranking/REPORT.md) and [completion audit](finalization/ranking/completion_audit.json).
+
+The stronger transfer extension remains pending: exactly 30 cells and 10,830 new fits, including 1,620 bounded cloud ranker members. Two cloud pilot calls and two local tree timing fits completed without scoring held outcomes. A documented watchdog lifecycle repair preserves the original pilot protocol and scientific scope. Main launch requires the recorded runtime forecast and fixed resource authorization; no repeated pilot or enlarged grid is implied. Portable development heads and the unsent independent-assay brief are complete.
+
+The main transfer extension launched once at 13:32 UTC on 12 October under the fixed $65 cumulative allocation and independent watchdog. Its immutable deadline is 15:32:19 UTC on 13 October; forecast completion is roughly ten hours, not guaranteed. Current exact ownership is in the phase manifest. No source changes, grid expansion, deadline extension or blind retries are authorized. The later Boltz/tree-ranking and tree/MLP hybrid suggestion is recorded as an unexecuted follow-up, separate from these sequence-input transfer controls.
