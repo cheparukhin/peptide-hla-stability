@@ -1,0 +1,234 @@
+{
+  "scores": [
+    {
+      "candidate": "tree_log_d4",
+      "pooled_inner_score": 0.012071882927506918
+    },
+    {
+      "candidate": "tree_log_d8",
+      "pooled_inner_score": 0.0458883188045852
+    },
+    {
+      "candidate": "tree_centred_d4",
+      "pooled_inner_score": 0.09381862110575409
+    },
+    {
+      "candidate": "tree_centred_d8",
+      "pooled_inner_score": 0.08974971311295382
+    },
+    {
+      "candidate": "R0_ridge_10000",
+      "pooled_inner_score": 0.10005938871250646
+    },
+    {
+      "candidate": "R0_ridge_100",
+      "pooled_inner_score": 0.06606825592027032
+    },
+    {
+      "candidate": "R0_ridge_1",
+      "pooled_inner_score": 0.06576949857534854
+    },
+    {
+      "candidate": "R0_mlp_1",
+      "pooled_inner_score": 0.018182362145765386
+    },
+    {
+      "candidate": "R0_mlp_0.01",
+      "pooled_inner_score": 0.10614149332126459
+    },
+    {
+      "candidate": "R0_mlp_0.0001",
+      "pooled_inner_score": 0.09827539498726828
+    },
+    {
+      "candidate": "fixed_ranker8",
+      "pooled_inner_score": 0.09740376359109507
+    }
+  ],
+  "selected": {
+    "tree_log": "tree_log_d8",
+    "tree_centred": "tree_centred_d4",
+    "R0_ridge": "R0_ridge_10000",
+    "R0_mlp": "R0_mlp_0.01",
+    "fixed_ranker8": "fixed_ranker8"
+  },
+  "sequence_family_scores": {
+    "original": 0.09269481215326798,
+    "mlp_centred": 0.11279075018482804,
+    "tree_log": 0.0458883188045852,
+    "tree_centred": 0.09381862110575409,
+    "fixed_ranker8": 0.09740376359109507
+  },
+  "expanded_selected": "mlp_centred",
+  "inner_panel": [
+    "HLA-A*03:01",
+    "HLA-A*11:01",
+    "HLA-A*23:01",
+    "HLA-A*24:02",
+    "HLA-A*24:03",
+    "HLA-A*24:07",
+    "HLA-A*24:19",
+    "HLA-A*25:01",
+    "HLA-A*26:01",
+    "HLA-A*26:02",
+    "HLA-A*26:03",
+    "HLA-A*30:02",
+    "HLA-A*31:01",
+    "HLA-A*32:01",
+    "HLA-A*32:07",
+    "HLA-A*33:03",
+    "HLA-A*43:01",
+    "HLA-A*66:01",
+    "HLA-A*68:01",
+    "HLA-A*68:23",
+    "HLA-A*74:01",
+    "HLA-A*80:01",
+    "HLA-B*07:02",
+    "HLA-B*08:01",
+    "HLA-B*08:03",
+    "HLA-B*14:01(C67S)",
+    "HLA-B*14:02(C67S)",
+    "HLA-B*15:01",
+    "HLA-B*15:02",
+    "HLA-B*15:10",
+    "HLA-B*15:17",
+    "HLA-B*18:01",
+    "HLA-B*27:02",
+    "HLA-B*27:03",
+    "HLA-B*27:05",
+    "HLA-B*27:20",
+    "HLA-B*35:01",
+    "HLA-B*35:03",
+    "HLA-B*39:01",
+    "HLA-B*39:02",
+    "HLA-B*39:06(C67S)",
+    "HLA-B*39:10",
+    "HLA-B*40:01",
+    "HLA-B*41:01",
+    "HLA-B*44:05",
+    "HLA-B*45:01",
+    "HLA-B*46:01",
+    "HLA-B*54:01",
+    "HLA-B*55:01",
+    "HLA-B*56:01",
+    "HLA-B*57:01",
+    "HLA-B*57:02",
+    "HLA-B*57:03",
+    "HLA-B*58:01",
+    "HLA-B*81:01"
+  ],
+  "ranker_mapping": {
+    "slope": 1.9366576143919596,
+    "intercept": 1.0757443363314356,
+    "minimum_slope": 1e-08,
+    "n_rows": 12643
+  },
+  "mapping_scope": "clean fixed-candidate OOF on outer-fit rows only; smaller-inner-to-outer training-size scale transport; inner scores use raw predictions; mapped inner values are not independently calibrated",
+  "reused_selection": {
+    "scores": [
+      {
+        "candidate": "original",
+        "pooled_inner_score": 0.09269481215326798
+      },
+      {
+        "candidate": "mlp_centred_k100",
+        "pooled_inner_score": 0.11279075018482804
+      },
+      {
+        "candidate": "mlp_centred_k20",
+        "pooled_inner_score": 0.10084201154737181
+      },
+      {
+        "candidate": "R4_ridge_10000",
+        "pooled_inner_score": 0.4795432230933047
+      },
+      {
+        "candidate": "R4_ridge_100",
+        "pooled_inner_score": 0.4821650765588863
+      },
+      {
+        "candidate": "R4_ridge_1",
+        "pooled_inner_score": 0.3774682883018924
+      },
+      {
+        "candidate": "R5_mlp_1",
+        "pooled_inner_score": 0.49628982917716263
+      },
+      {
+        "candidate": "R5_mlp_0.01",
+        "pooled_inner_score": 0.46021551701026653
+      },
+      {
+        "candidate": "R5_mlp_0.0001",
+        "pooled_inner_score": 0.4529150085097265
+      }
+    ],
+    "selected": {
+      "original": "original",
+      "mlp_centred": "mlp_centred_k100",
+      "R4_ridge": "R4_ridge_100",
+      "R5_mlp": "R5_mlp_1",
+      "bounded_MLP_sequence_selector": "mlp_centred_k100",
+      "embedding_selector": "R5_mlp_1"
+    },
+    "inner_panel": [
+      "HLA-A*03:01",
+      "HLA-A*11:01",
+      "HLA-A*23:01",
+      "HLA-A*24:02",
+      "HLA-A*24:03",
+      "HLA-A*24:07",
+      "HLA-A*24:19",
+      "HLA-A*25:01",
+      "HLA-A*26:01",
+      "HLA-A*26:02",
+      "HLA-A*26:03",
+      "HLA-A*30:02",
+      "HLA-A*31:01",
+      "HLA-A*32:01",
+      "HLA-A*32:07",
+      "HLA-A*33:03",
+      "HLA-A*43:01",
+      "HLA-A*66:01",
+      "HLA-A*68:01",
+      "HLA-A*68:23",
+      "HLA-A*74:01",
+      "HLA-A*80:01",
+      "HLA-B*07:02",
+      "HLA-B*08:01",
+      "HLA-B*08:03",
+      "HLA-B*14:01(C67S)",
+      "HLA-B*14:02(C67S)",
+      "HLA-B*15:01",
+      "HLA-B*15:02",
+      "HLA-B*15:10",
+      "HLA-B*15:17",
+      "HLA-B*18:01",
+      "HLA-B*27:02",
+      "HLA-B*27:03",
+      "HLA-B*27:05",
+      "HLA-B*27:20",
+      "HLA-B*35:01",
+      "HLA-B*35:03",
+      "HLA-B*39:01",
+      "HLA-B*39:02",
+      "HLA-B*39:06(C67S)",
+      "HLA-B*39:10",
+      "HLA-B*40:01",
+      "HLA-B*41:01",
+      "HLA-B*44:05",
+      "HLA-B*45:01",
+      "HLA-B*46:01",
+      "HLA-B*54:01",
+      "HLA-B*55:01",
+      "HLA-B*56:01",
+      "HLA-B*57:01",
+      "HLA-B*57:02",
+      "HLA-B*57:03",
+      "HLA-B*58:01",
+      "HLA-B*81:01"
+    ],
+    "selection_rule": "largest pooled inner score; frozen parsimony exact ties"
+  },
+  "selection_rule": "pooled inner median argmax; frozen candidate/family order breaks exact ties"
+}
