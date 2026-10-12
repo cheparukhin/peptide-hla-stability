@@ -1,0 +1,232 @@
+{
+  "seed": 20261012,
+  "pilot_trials_per_cell": 1000,
+  "evaluation_trials_per_cell": 500,
+  "diagnostic_trials_per_cell": 30,
+  "diagnostic_bootstrap_resamples": 399,
+  "cells": 108,
+  "elapsed_seconds": 423.27,
+  "panels": [
+    {
+      "name": "balanced_12x50",
+      "counts": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "balanced_12x100",
+      "counts": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "balanced_12x200",
+      "counts": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "balanced_12x400",
+      "counts": [
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400,
+        400
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "balanced_12x800",
+      "counts": [
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "balanced_24x200",
+      "counts": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "sparse_2400",
+      "counts": [
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        390,
+        390,
+        390,
+        390,
+        390,
+        390
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "near_threshold_2400",
+      "counts": [
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        370,
+        370,
+        370,
+        370,
+        370,
+        370
+      ],
+      "group_size": 4
+    },
+    {
+      "name": "repaired_2400",
+      "counts": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        350,
+        350,
+        350,
+        350,
+        350,
+        350
+      ],
+      "group_size": 4
+    }
+  ],
+  "dependence": [
+    {
+      "name": "weak",
+      "peptide_fraction": 0.0,
+      "hla_group_fraction": 0.0,
+      "paired_error_correlation": 0.8
+    },
+    {
+      "name": "moderate",
+      "peptide_fraction": 0.25,
+      "hla_group_fraction": 0.2,
+      "paired_error_correlation": 0.8
+    },
+    {
+      "name": "strong",
+      "peptide_fraction": 0.6,
+      "hla_group_fraction": 0.25,
+      "paired_error_correlation": 0.8
+    },
+    {
+      "name": "moderate_pair05",
+      "peptide_fraction": 0.25,
+      "hla_group_fraction": 0.2,
+      "paired_error_correlation": 0.5
+    }
+  ],
+  "baseline_population_spearman_assumption": 0.66,
+  "floor_fraction_assumption": 0.2,
+  "measurement_sd_assumption": 0.4,
+  "gains": [
+    0.0,
+    0.02,
+    0.05
+  ],
+  "min_rows": 20,
+  "sensitivity_min_rows": 50,
+  "planning_interval": "independent parametric endpoint error quantile inversion; known synthetic DGP",
+  "confirmatory_interval": "not replaced; frozen evaluation paired whole-peptide-cluster 2000 percentile bootstrap",
+  "external_labels_read": false,
+  "empirical_noise_ceiling_estimated": false,
+  "scope": "fixed chosen HLA panel; not uncertainty over unseen HLA population",
+  "script_sha256": "a1774cff4fd3be33f9a169bb1f05efa25ed10265bdcf2f45e7e056de79c699b9",
+  "evaluation_sha256": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+  "audit_eligibility_sha256": "1c97c1ffe0c1c75e4e36b7a626d44000fe02093f1162edd090a0943c7d9964b9",
+  "python": "3.12.12 (main, Dec  9 2025, 19:05:33) [Clang 21.1.4 ]",
+  "numpy": "2.5.3",
+  "pandas": "3.0.6"
+}

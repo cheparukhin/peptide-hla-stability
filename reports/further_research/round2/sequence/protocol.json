@@ -1,0 +1,162 @@
+{
+  "frozen_at_utc": "2026-10-12T00:06:49.783726+00:00",
+  "protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+  "git_revision": "8148166ce2af7b0f846d56242f1129208aa32876",
+  "code_sha256": {
+    "pepstab/round2_nested.py": "533c9e13967c417df888b1d13f4011d306a3c92c9656ffe9b5170127b7b91204",
+    "pepstab/round2_sequence.py": "f0eec2c1f40894ff60d2ede9e82031581c9f276415ac2853e67d191bf117f09d",
+    "scripts/round2_sequence.py": "e761729522dd06400b9af4db87bd023e556740b014019de20c566ea77d6571b1"
+  },
+  "specification": {
+    "schema": "round2_sequence.1",
+    "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+    "population": "original training partition only; development evidence",
+    "source_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "splits_sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data_hash": "558ab95517b6f0b7c3e9f60d088ad2afef4ace3a1d085a784ec8b7123c41c84b",
+    "fold_hash": "50fdca745c9e8e99e87b50741cfc9bd4c703e400aff8dd6469555ecdeea31b6f",
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "candidate_grids": {
+      "mlp_log": [
+        {
+          "id": "mlp_log",
+          "learner": "mlp",
+          "target": "log"
+        }
+      ],
+      "mlp_centred": [
+        {
+          "id": "mlp_centred_k100",
+          "learner": "mlp",
+          "target": "centred",
+          "k": 100
+        },
+        {
+          "id": "mlp_centred_k20",
+          "learner": "mlp",
+          "target": "centred",
+          "k": 20
+        }
+      ],
+      "tree_log": [
+        {
+          "id": "tree_log_d4",
+          "learner": "tree",
+          "target": "log",
+          "depth": 4,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10
+        },
+        {
+          "id": "tree_log_d8",
+          "learner": "tree",
+          "target": "log",
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10
+        }
+      ],
+      "tree_centred": [
+        {
+          "id": "tree_centred_d4",
+          "learner": "tree",
+          "target": "centred",
+          "depth": 4,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10,
+          "k": 20
+        },
+        {
+          "id": "tree_centred_d8",
+          "learner": "tree",
+          "target": "centred",
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10,
+          "k": 20
+        }
+      ],
+      "pairlogit": [
+        {
+          "id": "pairlogit_d4",
+          "learner": "pairlogit",
+          "target": "log",
+          "depth": 4,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10
+        },
+        {
+          "id": "pairlogit_d8",
+          "learner": "pairlogit",
+          "target": "log",
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10
+        }
+      ]
+    },
+    "family_order": [
+      "mlp_log",
+      "mlp_centred",
+      "tree_log",
+      "tree_centred",
+      "pairlogit"
+    ],
+    "selection": "per-outer-fold, three inner cluster folds; first in frozen parsimony order within one fold-SE of best mean inner panel median",
+    "family_selector": "same parsimony rule on selected candidate's inner scores; original-only is first and always available",
+    "features": {
+      "mlp": [
+        "position-preserving onehot",
+        "position-preserving BLOSUM"
+      ],
+      "tree": [
+        "position-preserving onehot"
+      ],
+      "input": "peptide+pseudosequence; no allele ID"
+    },
+    "centering": "gradient-fitting rows only; shrink toward shared fitting mean; unseen alleles use that shared mean",
+    "early_stopping": "further cluster folds wholly within each candidate fitting partition; MLP MSE, trees RMSE/PairLogit; predictions never on stopping rows",
+    "ranker_scale": "positive affine slope>=1e-8 fit to clean nested-selected crossfit scores inside outer fitting partition; raw fold scores reported separately",
+    "ranker_pair_recipe": "all untied within-allele pairs, equal total weight per contributing allele, weights rescaled to mean 1",
+    "mapping_training_size_difference": "crossfit base models fit 2/3 of outer-fitting rows before their stopping splits, whereas outer base models use the complete outer fitting partition before stopping; same 6-member recipe",
+    "inner_final_recipe_difference": "inner MLP screening uses 3 stopping folds x 2 encodings x seeds0,1=12; final original and centred MLP use original 5 x2 x seeds0,1,2=30; trees always 3 x1 x seeds0,1=6",
+    "fit_graph": {
+      "per_outer": {
+        "mlp_log": 66,
+        "mlp_centred": 102,
+        "tree_log": 42,
+        "tree_centred": 42,
+        "pairlogit": 168
+      },
+      "five_outer_total": 2100,
+      "mlp_fits": 840,
+      "rmse_fits": 420,
+      "ranker_fits": 840,
+      "selection_folds": 3,
+      "screen_seeds": [
+        0,
+        1
+      ],
+      "final_mlp_members": 30,
+      "final_tree_members": 6,
+      "repeats_additional_fits": 420,
+      "repeat_scope": "two additional locked refits of original MLP, A1, and A4 on all five folds; ranker calibration map held fixed"
+    },
+    "min_rows_primary": 20,
+    "min_rows_sensitivity": 50,
+    "primary_statistic": "pooled outer-held median per-allele Spearman; fixed evaluation tie/constant rules",
+    "execution": {
+      "device": "local CPU",
+      "threads_per_worker": 2,
+      "dtype_mlp": "float32",
+      "cloud_spend_usd": 0
+    },
+    "comparisons": "every component and inner-selected sequence vs original; no Boltz comparison until extraction passes",
+    "repeats": "two additional identical-seed refits of original, A1 and A4 after initial fit; report paired seed0/1 diagnostics separately",
+    "runtime_ceiling": "local only; no automatic cloud launch or grid expansion"
+  },
+  "hardware": "macOS-27.0-arm64-arm-64bit",
+  "python": "3.12.12",
+  "threadpools": []
+}

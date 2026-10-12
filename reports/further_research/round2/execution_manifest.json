@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-12",
+  "started_utc": "2026-10-12T00:04:17.797805+00:00",
+  "source_revision": "8148166ce2af7b0f846d56242f1129208aa32876",
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "evidence_status": "development only; original held-out benchmark remains untouched",
+  "user_reported_modal_credit_usd": 213,
+  "incremental_modal_cap_usd": 100,
+  "minimum_reported_credit_reserve_usd": 113,
+  "engineering_pilot_cap_usd": 2,
+  "full_cache_requires": "one passed and settled 256-case production shard; unchanged complete 19716-row cohort/source/feature/code hashes; max(frozen cost forecast, measured full-cohort projection plus 10 percent) <=80; total allocations <=100",
+  "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
+  "independent_confirmation": "not yet available; external labels reserved",
+  "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
+  "updated_at_utc": "2026-10-12T00:55:24.054197+00:00",
+  "branch": "codex/round2-research",
+  "allocations_usd": {
+    "cache": 80,
+    "sequence_including_smoke": 18,
+    "engineering": 2,
+    "total": 100
+  },
+  "full_cache_authorization": "extractor/full_training/fanout_authorization.json",
+  "sequence_authorization": "sequence/launch_authorization.json",
+  "controllers": {
+    "first_cache_shard": "extractor/full_training/controller_launch.json",
+    "conditional_cache_fanout": "extractor/full_training/fanout_controller/controller_launch.json",
+    "sequence": "sequence/controller_launch.json",
+    "local_main_pipeline": "pipeline/controller_launch.json"
+  },
+  "continuation": {
+    "kind": "current-thread heartbeat",
+    "id": "continue-round-two-research",
+    "interval_minutes": 30,
+    "policy": "quiet on unchanged healthy jobs; continue gated work autonomously"
+  },
+  "operations": "OPERATIONS.md"
+}

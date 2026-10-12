@@ -1,0 +1,195 @@
+[
+  {
+    "source": "binding_stability/train",
+    "peptide_lengths": {
+      "9": 21626
+    },
+    "mhc_sequence_lengths": {
+      "181": 873,
+      "362": 10704,
+      "365": 10049
+    },
+    "assay": {
+      "SPA": 21626
+    },
+    "temperature_C": {
+      "37.0": 21626
+    }
+  },
+  {
+    "source": "binding_stability/val",
+    "peptide_lengths": {
+      "9": 2705
+    },
+    "mhc_sequence_lengths": {
+      "181": 116,
+      "362": 1315,
+      "365": 1274
+    },
+    "assay": {
+      "SPA": 2705
+    },
+    "temperature_C": {
+      "37.0": 2705
+    }
+  },
+  {
+    "source": "binding_stability/test",
+    "peptide_lengths": {
+      "9": 2700
+    },
+    "mhc_sequence_lengths": {
+      "181": 114,
+      "362": 1327,
+      "365": 1259
+    },
+    "assay": {
+      "SPA": 2700
+    },
+    "temperature_C": {
+      "37.0": 2700
+    }
+  },
+  {
+    "source": "binding_affinity/train",
+    "peptide_lengths": {
+      "8": 4544,
+      "9": 91805,
+      "10": 25334,
+      "11": 4299,
+      "12": 201,
+      "13": 327,
+      "14": 173
+    },
+    "mhc_sequence_lengths": {
+      "181": 985,
+      "362": 45533,
+      "363": 170,
+      "365": 77554,
+      "366": 2441
+    }
+  },
+  {
+    "source": "binding_affinity/val",
+    "peptide_lengths": {
+      "8": 591,
+      "9": 16847,
+      "10": 3466,
+      "11": 716,
+      "12": 28,
+      "13": 48,
+      "14": 16
+    },
+    "mhc_sequence_lengths": {
+      "181": 202,
+      "362": 8114,
+      "363": 31,
+      "365": 12775,
+      "366": 590
+    }
+  },
+  {
+    "source": "binding_affinity/test",
+    "peptide_lengths": {
+      "8": 427,
+      "9": 17723,
+      "10": 3139,
+      "11": 376,
+      "12": 4,
+      "13": 12,
+      "14": 31
+    },
+    "mhc_sequence_lengths": {
+      "181": 210,
+      "362": 8443,
+      "363": 28,
+      "365": 12486,
+      "366": 545
+    }
+  },
+  {
+    "source": "stage3_assay_conditioning/train",
+    "peptide_lengths": {
+      "7": 1,
+      "8": 44,
+      "9": 8183,
+      "10": 159,
+      "11": 78
+    },
+    "mhc_sequence_lengths": {
+      "362": 3141,
+      "365": 5324
+    },
+    "assay": {
+      "SPA": 5887,
+      "Purified_Fluor": 2468,
+      "Cellular_Fluor": 105,
+      "Other": 5
+    },
+    "temperature_C": {
+      "37.0": 6284,
+      "25.0": 2176,
+      "nan": 5
+    },
+    "pmid_nonmissing_rows": 659,
+    "pmid_distinct": 54,
+    "ref_iri_nonmissing_rows": 8461,
+    "ref_iri_distinct": 65
+  },
+  {
+    "source": "stage3_assay_conditioning/val",
+    "peptide_lengths": {
+      "8": 4,
+      "9": 530,
+      "10": 7,
+      "11": 2
+    },
+    "mhc_sequence_lengths": {
+      "362": 181,
+      "365": 362
+    },
+    "assay": {
+      "SPA": 427,
+      "Purified_Fluor": 110,
+      "Cellular_Fluor": 6
+    },
+    "temperature_C": {
+      "37.0": 444,
+      "25.0": 99
+    },
+    "pmid_nonmissing_rows": 43,
+    "pmid_distinct": 12,
+    "ref_iri_nonmissing_rows": 543,
+    "ref_iri_distinct": 24
+  },
+  {
+    "source": "stage3_assay_conditioning/test",
+    "peptide_lengths": {
+      "8": 50,
+      "9": 876,
+      "10": 131,
+      "11": 68,
+      "12": 6,
+      "13": 1,
+      "15": 1
+    },
+    "mhc_sequence_lengths": {
+      "362": 258,
+      "365": 850,
+      "366": 25
+    },
+    "assay": {
+      "Purified_Fluor": 758,
+      "SPA": 217,
+      "Cellular_Fluor": 158
+    },
+    "temperature_C": {
+      "37.0": 576,
+      "25.0": 557
+    },
+    "pmid_nonmissing_rows": 476,
+    "pmid_distinct": 69,
+    "ref_iri_nonmissing_rows": 1133,
+    "ref_iri_distinct": 81
+  }
+]

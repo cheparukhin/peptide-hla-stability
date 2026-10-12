@@ -1,0 +1,23 @@
+{
+  "status": "grouping_frozen; transfer candidates and fitting pending main screen",
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "population": "original training partition only",
+  "hla_groups": 35,
+  "hla_threshold": "single-linkage Hamming <=3 over 34-residue pseudosequences",
+  "construct_rule": "engineered and matching wild-type names share a group",
+  "folds": "five HLA folds; largest-group-first balanced row count, deterministic group-id ties",
+  "peptide_folds": "unchanged canonical five training-cluster outer folds",
+  "joint": "all 25 HLA x peptide fold intersections; fit outside BOTH, exclude cross quadrants",
+  "inner_requirement": "mirror HLA or joint exclusions in selection and stopping; peptide-only inner folds are insufficient",
+  "uncertainty_requirement": "paired peptide-cluster and HLA-group uncertainty; crossed resampling for joint; sparse-group sensitivity",
+  "limitations": [
+    "threshold is a declared sequence convention, not a validated functional HLA distance",
+    "five folds do not imply five biological groups; uncertainty uses actual HLA groups",
+    "manifest and label/count eligibility do not constitute assessed transfer results"
+  ],
+  "sha256": {
+    "hla_groups.csv": "8179d2d15f0a7341e765aa29b04e7eb8a81e37598e68e2fafaae8250fed102fe",
+    "manifest.csv": "10f72322fdf042a847a5e1d1cc32be9c7eb4b07c738cb010db829c11e18120e9",
+    "coverage.csv": "a4d6efe16ced3e9de8fbfb5ead876bb88f661f4c2ec976a1e379b374dd36c50d"
+  }
+}

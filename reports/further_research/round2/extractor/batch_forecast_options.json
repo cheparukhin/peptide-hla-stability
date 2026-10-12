@@ -1,0 +1,57 @@
+{
+  "measured_warm_s_per_case": 7.898148777515624,
+  "measured_startup_s": 67.44297224299999,
+  "n_cases": 19716,
+  "rate_usd_per_hour": 1.4812,
+  "options": [
+    {
+      "shard_size": 64,
+      "shards": 309,
+      "timeout_s": 900,
+      "base_runtime_usd": 72.64454047836962,
+      "features_allowance_s_per_case": 0.1,
+      "additional_input_preparation_s_per_case_beyond64_sensitivity": 0.4,
+      "runtime_with_feature_and_preparation_allowances_usd": 73.45574434503628,
+      "ledger_with_extra60s_per_shard_usd": 81.08392434503628,
+      "reservation_usd_per_call": 0.39498666666666665,
+      "estimated_wall_hours_8_workers": 6.199006240298092
+    },
+    {
+      "shard_size": 128,
+      "shards": 155,
+      "timeout_s": 1800,
+      "base_runtime_usd": 68.37118889645431,
+      "features_allowance_s_per_case": 0.1,
+      "additional_input_preparation_s_per_case_beyond64_sensitivity": 0.4,
+      "runtime_with_feature_and_preparation_allowances_usd": 70.80447134089876,
+      "ledger_with_extra60s_per_shard_usd": 74.6309046742321,
+      "reservation_usd_per_call": 0.7652866666666667,
+      "estimated_wall_hours_8_workers": 5.975262569276495
+    },
+    {
+      "shard_size": 256,
+      "shards": 78,
+      "timeout_s": 2700,
+      "base_runtime_usd": 66.23451310549667,
+      "features_allowance_s_per_case": 0.1,
+      "additional_input_preparation_s_per_case_beyond64_sensitivity": 0.4,
+      "runtime_with_feature_and_preparation_allowances_usd": 69.47883483883001,
+      "ledger_with_extra60s_per_shard_usd": 71.40439483883002,
+      "reservation_usd_per_call": 1.1355866666666667,
+      "estimated_wall_hours_8_workers": 5.863390733765697
+    },
+    {
+      "shard_size": 512,
+      "shards": 39,
+      "timeout_s": 5400,
+      "base_runtime_usd": 65.15230069189474,
+      "features_allowance_s_per_case": 0.1,
+      "additional_input_preparation_s_per_case_beyond64_sensitivity": 0.4,
+      "runtime_with_feature_and_preparation_allowances_usd": 68.79753389189474,
+      "ledger_with_extra60s_per_shard_usd": 69.76031389189474,
+      "reservation_usd_per_call": 2.2464866666666667,
+      "estimated_wall_hours_8_workers": 5.805895042186634
+    }
+  ],
+  "important": "Extrapolated larger-batch forecasts, not new measured profiles. The first bounded production shard must validate cost before fanout. No full-cohort jobs launched."
+}

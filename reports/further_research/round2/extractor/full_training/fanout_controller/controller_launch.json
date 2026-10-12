@@ -1,0 +1,15 @@
+{
+  "pid": 15111,
+  "sleep_guard_pid": 15112,
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+    "scripts/round2_cache_fanout.py",
+    "--authorization",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_authorization.json",
+    "--approved"
+  ],
+  "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_controller/controller.log",
+  "started_at_utc": "2026-10-12T00:54:26.653594+00:00",
+  "scope": "conditional one-shot resume at eight workers after successful settled first shard and <=80 cost gate",
+  "budget_ceiling_usd": 80
+}

@@ -1,0 +1,762 @@
+{
+  "protocol_hash": "2251f3e6db0ff8f106f2a0050e7d8930cff5b3054196a40561f10ff42dc5b013",
+  "frozen_at_utc": "2026-10-12T00:27:36.447069+00:00",
+  "specification": {
+    "schema": "round2_embedding.1",
+    "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+    "population": "all original training rows only; previously examined development evidence",
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "source_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "splits_sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data_hash": "558ab95517b6f0b7c3e9f60d088ad2afef4ace3a1d085a784ec8b7123c41c84b",
+    "outer_fold_hash": "50fdca745c9e8e99e87b50741cfc9bd4c703e400aff8dd6469555ecdeea31b6f",
+    "feature_protocol": {
+      "schema_version": "pepstab-round2-representations-v1",
+      "seed": 20261012,
+      "label_independent": true,
+      "source_plan": "reports/NEXT_RESEARCH_PLAN.md sections 4-5",
+      "required_cache_schema": "pepstab-boltz-interface-v2",
+      "dtype": "float32",
+      "flatten_order": "C",
+      "chain_mean_order": [
+        "A full HLA ectodomain",
+        "B beta2m",
+        "C peptide"
+      ],
+      "direction_order": [
+        "peptide_to_groove_z",
+        "groove_to_peptide_z"
+      ],
+      "representations": {
+        "R2": "concatenate full-chain means A,B,C; no replacement by groove mean",
+        "R3": "P1-P9 then groove1-182; shared fixed 384-to-8 channel projection; flatten",
+        "R4": "groove mean for each P1-P9; layout [peptide,direction,128 channels]",
+        "R5": "contact mean per peptide position; layout [P1,P2,P9,mean(P3-P8),direction,128 channels]",
+        "R5_shuffled": "same R5 pooling with fixed permutation of HLA contact membership; cardinality per peptide preserved",
+        "R5_position9x34": "all P1-P9 x canonical34; layout [peptide,contact,direction,4 projected channels]",
+        "R3_pooled": "same tokens, projection and dimensions as R3; tile peptide mean over nine positions and groove mean over182 before projection",
+        "R5_position9x34_pooled": "same projection and dimensions as position9x34; per-peptide/direction contact-mask mean of projected channels tiled over34 positions"
+      },
+      "dimensions": {
+        "R2": 1152,
+        "R3": 1528,
+        "R4": 2304,
+        "R5": 1024,
+        "R5_shuffled": 1024,
+        "R5_position9x34": 2448,
+        "R3_pooled": 1528,
+        "R5_position9x34_pooled": 2448
+      },
+      "projections": {
+        "token": {
+          "input_channels": 384,
+          "output_channels": 8,
+          "algorithm": "numpy PCG64 Gaussian; reduced QR; positive R diagonal",
+          "float32_sha256": "62d13f6c868a2afea84b6df2ae61b3d8aa0d8ac41e63a4f59e595849888b2feb"
+        },
+        "pair": {
+          "input_channels": 128,
+          "output_channels": 4,
+          "algorithm": "numpy PCG64 Gaussian; reduced QR; positive R diagonal",
+          "float32_sha256": "280a64db85f224f63a65874f72b6adc30a31410530713705624746826a3f7b9f"
+        }
+      },
+      "scope_amendment": "Fixed random projections bound fitting cost; never fitted on data or labels. This screen tests compressed positional channels and cannot exclude gains from full-channel or fitting-partition dimensional reduction.",
+      "contact_rule": "union across all five existing crystals of minimum heavy-atom distance <=4.5 Angstrom, restricted to canonical NetMHCpan34",
+      "central_pooling": "equal mean of six per-position pocket means; each P3-P8 receives equal weight",
+      "shuffling": "fixed PCG64(seed) permutation of the 34 groove columns in the contact mask, applied before constrained pooling"
+    },
+    "contact_map_sha256": "11c1f2ef314dffa8001450f6b956d6e13b7ab09dceabf449ab4f734f255e805e",
+    "representations": [
+      "R0",
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R5_shuffled",
+      "R5_position9x34",
+      "R3_pooled",
+      "R5_position9x34_pooled"
+    ],
+    "component_order": [
+      "R0_ridge",
+      "R0_mlp",
+      "R1_ridge",
+      "R1_mlp",
+      "R2_ridge",
+      "R2_mlp",
+      "R3_ridge",
+      "R3_mlp",
+      "R4_ridge",
+      "R4_mlp",
+      "R5_ridge",
+      "R5_mlp",
+      "R5_shuffled_ridge",
+      "R5_shuffled_mlp",
+      "R5_position9x34_ridge",
+      "R5_position9x34_mlp",
+      "R3_pooled_ridge",
+      "R3_pooled_mlp",
+      "R5_position9x34_pooled_ridge",
+      "R5_position9x34_pooled_mlp"
+    ],
+    "feature_dimensions": {
+      "R0": 860,
+      "R1": 969,
+      "R2": 1152,
+      "R3": 1528,
+      "R4": 2304,
+      "R5": 1024,
+      "R5_shuffled": 1024,
+      "R5_position9x34": 2448,
+      "R3_pooled": 1528,
+      "R5_position9x34_pooled": 2448
+    },
+    "R0": "position-preserving peptide+pseudosequence onehot; matched head/scaling",
+    "R1": {
+      "representation": "R0 plus existing 109 geometry/confidence summaries; historical diagnostic",
+      "source_sha256": "6bbd0d34691b0faf05f3cd299ef2095e61ce74443652a4df5417b97b35651523",
+      "columns": [
+        "groove_contacts_4p5A_total",
+        "groove_contacts_4p5A_mean_per_residue",
+        "groove_residues_contacted",
+        "pep_min_dist_to_groove_A",
+        "pep_max_min_dist_to_groove_A",
+        "groove_contacts_4p5A_p1",
+        "pep_min_dist_to_groove_p1",
+        "groove_contacts_4p5A_p2",
+        "pep_min_dist_to_groove_p2",
+        "groove_contacts_4p5A_p3",
+        "pep_min_dist_to_groove_p3",
+        "groove_contacts_4p5A_p4",
+        "pep_min_dist_to_groove_p4",
+        "groove_contacts_4p5A_p5",
+        "pep_min_dist_to_groove_p5",
+        "groove_contacts_4p5A_p6",
+        "pep_min_dist_to_groove_p6",
+        "groove_contacts_4p5A_p7",
+        "pep_min_dist_to_groove_p7",
+        "groove_contacts_4p5A_p8",
+        "pep_min_dist_to_groove_p8",
+        "groove_contacts_4p5A_p9",
+        "pep_min_dist_to_groove_p9",
+        "pep_sasa_alone_A2",
+        "pep_sasa_in_groove_A2",
+        "pep_buried_sasa_A2",
+        "pep_buried_sasa_frac",
+        "pep_buried_sasa_frac_p1",
+        "pep_buried_sasa_frac_p2",
+        "pep_buried_sasa_frac_p3",
+        "pep_buried_sasa_frac_p4",
+        "pep_buried_sasa_frac_p5",
+        "pep_buried_sasa_frac_p6",
+        "pep_buried_sasa_frac_p7",
+        "pep_buried_sasa_frac_p8",
+        "pep_buried_sasa_frac_p9",
+        "pep_plddt_mean",
+        "pep_plddt_min",
+        "pep_plddt_max",
+        "pep_plddt_std",
+        "pep_plddt_p1",
+        "pep_plddt_p2",
+        "pep_plddt_p3",
+        "pep_plddt_p4",
+        "pep_plddt_p5",
+        "pep_plddt_p6",
+        "pep_plddt_p7",
+        "pep_plddt_p8",
+        "pep_plddt_p9",
+        "groove_plddt_mean",
+        "hla_chain_plddt_mean",
+        "alpha3_plddt_mean",
+        "beta2m_plddt_mean",
+        "complex_plddt_mean_tokens",
+        "pae_pep_rows_groove_cols_mean",
+        "pae_pep_rows_groove_cols_min",
+        "pae_pep_rows_groove_cols_max",
+        "pae_pep_rows_groove_cols_std",
+        "pae_groove_rows_pep_cols_mean",
+        "pae_groove_rows_pep_cols_min",
+        "pae_groove_rows_pep_cols_max",
+        "pae_groove_rows_pep_cols_std",
+        "pae_pep_groove_asymmetry",
+        "pae_pep_rows_groove_cols_p1",
+        "pae_groove_rows_pep_cols_p1",
+        "pae_pep_rows_groove_cols_p2",
+        "pae_groove_rows_pep_cols_p2",
+        "pae_pep_rows_groove_cols_p3",
+        "pae_groove_rows_pep_cols_p3",
+        "pae_pep_rows_groove_cols_p4",
+        "pae_groove_rows_pep_cols_p4",
+        "pae_pep_rows_groove_cols_p5",
+        "pae_groove_rows_pep_cols_p5",
+        "pae_pep_rows_groove_cols_p6",
+        "pae_groove_rows_pep_cols_p6",
+        "pae_pep_rows_groove_cols_p7",
+        "pae_groove_rows_pep_cols_p7",
+        "pae_pep_rows_groove_cols_p8",
+        "pae_groove_rows_pep_cols_p8",
+        "pae_pep_rows_groove_cols_p9",
+        "pae_groove_rows_pep_cols_p9",
+        "pae_pep_intra_mean",
+        "pae_groove_intra_mean",
+        "pae_pep_rows_alpha3_cols_mean",
+        "pae_alpha3_rows_pep_cols_mean",
+        "pae_groove_rows_alpha3_cols_mean",
+        "pae_alpha3_rows_groove_cols_mean",
+        "pae_pep_rows_b2m_cols_mean",
+        "pae_b2m_rows_pep_cols_mean",
+        "pae_groove_rows_b2m_cols_mean",
+        "pae_b2m_rows_groove_cols_mean",
+        "global_confidence_score",
+        "global_ptm",
+        "global_iptm",
+        "global_protein_iptm",
+        "global_ligand_iptm",
+        "global_complex_plddt",
+        "global_complex_iplddt",
+        "global_complex_pde",
+        "global_complex_ipde",
+        "chain_ptm_hla_chain",
+        "chain_ptm_peptide",
+        "chain_ptm_b2m",
+        "iptm_pair_b2m_rows_hla_chain_cols",
+        "iptm_pair_b2m_rows_peptide_cols",
+        "iptm_pair_hla_chain_rows_b2m_cols",
+        "iptm_pair_hla_chain_rows_peptide_cols",
+        "iptm_pair_peptide_rows_b2m_cols",
+        "iptm_pair_peptide_rows_hla_chain_cols"
+      ]
+    },
+    "candidate_grids": {
+      "R0_ridge": [
+        {
+          "id": "R0_ridge_10000",
+          "representation": "R0",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R0_ridge_100",
+          "representation": "R0",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R0_ridge_1",
+          "representation": "R0",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R0_mlp": [
+        {
+          "id": "R0_mlp_1",
+          "representation": "R0",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R0_mlp_0.01",
+          "representation": "R0",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R0_mlp_0.0001",
+          "representation": "R0",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R1_ridge": [
+        {
+          "id": "R1_ridge_10000",
+          "representation": "R1",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R1_ridge_100",
+          "representation": "R1",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R1_ridge_1",
+          "representation": "R1",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R1_mlp": [
+        {
+          "id": "R1_mlp_1",
+          "representation": "R1",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R1_mlp_0.01",
+          "representation": "R1",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R1_mlp_0.0001",
+          "representation": "R1",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R2_ridge": [
+        {
+          "id": "R2_ridge_10000",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R2_ridge_100",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R2_ridge_1",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R2_mlp": [
+        {
+          "id": "R2_mlp_1",
+          "representation": "R2",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R2_mlp_0.01",
+          "representation": "R2",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R2_mlp_0.0001",
+          "representation": "R2",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R3_ridge": [
+        {
+          "id": "R3_ridge_10000",
+          "representation": "R3",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R3_ridge_100",
+          "representation": "R3",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R3_ridge_1",
+          "representation": "R3",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R3_mlp": [
+        {
+          "id": "R3_mlp_1",
+          "representation": "R3",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R3_mlp_0.01",
+          "representation": "R3",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R3_mlp_0.0001",
+          "representation": "R3",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R4_ridge": [
+        {
+          "id": "R4_ridge_10000",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R4_ridge_100",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R4_ridge_1",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R4_mlp": [
+        {
+          "id": "R4_mlp_1",
+          "representation": "R4",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R4_mlp_0.01",
+          "representation": "R4",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R4_mlp_0.0001",
+          "representation": "R4",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R5_ridge": [
+        {
+          "id": "R5_ridge_10000",
+          "representation": "R5",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R5_ridge_100",
+          "representation": "R5",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R5_ridge_1",
+          "representation": "R5",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R5_mlp": [
+        {
+          "id": "R5_mlp_1",
+          "representation": "R5",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R5_mlp_0.01",
+          "representation": "R5",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R5_mlp_0.0001",
+          "representation": "R5",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R5_shuffled_ridge": [
+        {
+          "id": "R5_shuffled_ridge_10000",
+          "representation": "R5_shuffled",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R5_shuffled_ridge_100",
+          "representation": "R5_shuffled",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R5_shuffled_ridge_1",
+          "representation": "R5_shuffled",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R5_shuffled_mlp": [
+        {
+          "id": "R5_shuffled_mlp_1",
+          "representation": "R5_shuffled",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R5_shuffled_mlp_0.01",
+          "representation": "R5_shuffled",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R5_shuffled_mlp_0.0001",
+          "representation": "R5_shuffled",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R5_position9x34_ridge": [
+        {
+          "id": "R5_position9x34_ridge_10000",
+          "representation": "R5_position9x34",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R5_position9x34_ridge_100",
+          "representation": "R5_position9x34",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R5_position9x34_ridge_1",
+          "representation": "R5_position9x34",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R5_position9x34_mlp": [
+        {
+          "id": "R5_position9x34_mlp_1",
+          "representation": "R5_position9x34",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R5_position9x34_mlp_0.01",
+          "representation": "R5_position9x34",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R5_position9x34_mlp_0.0001",
+          "representation": "R5_position9x34",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R3_pooled_ridge": [
+        {
+          "id": "R3_pooled_ridge_10000",
+          "representation": "R3_pooled",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R3_pooled_ridge_100",
+          "representation": "R3_pooled",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R3_pooled_ridge_1",
+          "representation": "R3_pooled",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R3_pooled_mlp": [
+        {
+          "id": "R3_pooled_mlp_1",
+          "representation": "R3_pooled",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R3_pooled_mlp_0.01",
+          "representation": "R3_pooled",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R3_pooled_mlp_0.0001",
+          "representation": "R3_pooled",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ],
+      "R5_position9x34_pooled_ridge": [
+        {
+          "id": "R5_position9x34_pooled_ridge_10000",
+          "representation": "R5_position9x34_pooled",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R5_position9x34_pooled_ridge_100",
+          "representation": "R5_position9x34_pooled",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R5_position9x34_pooled_ridge_1",
+          "representation": "R5_position9x34_pooled",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R5_position9x34_pooled_mlp": [
+        {
+          "id": "R5_position9x34_pooled_mlp_1",
+          "representation": "R5_position9x34_pooled",
+          "learner": "mlp",
+          "regularization": 1.0
+        },
+        {
+          "id": "R5_position9x34_pooled_mlp_0.01",
+          "representation": "R5_position9x34_pooled",
+          "learner": "mlp",
+          "regularization": 0.01
+        },
+        {
+          "id": "R5_position9x34_pooled_mlp_0.0001",
+          "representation": "R5_position9x34_pooled",
+          "learner": "mlp",
+          "regularization": 0.0001
+        }
+      ]
+    },
+    "selection": "three inner peptide-cluster folds; first frozen strongest-regularization candidate within one fold-SE of best mean inner median per-allele Spearman; select independently per outer fold, representation and learner",
+    "min_rows_inner": 20,
+    "scaling": "StandardScaler fitted on ridge fitting rows or MLP gradient-fitting rows only; no feature reduction is fitted",
+    "head": {
+      "ridge": {
+        "solver": "lsqr",
+        "tol": 1e-05,
+        "max_iter": 2000,
+        "alpha": [
+          10000.0,
+          100.0,
+          1.0
+        ],
+        "members": 1
+      },
+      "mlp": {
+        "hidden": [
+          64
+        ],
+        "l2": [
+          1.0,
+          0.01,
+          0.0001
+        ],
+        "learning_rate": 0.001,
+        "batch_size": 256,
+        "max_epochs": 200,
+        "patience": 15,
+        "inner_members": "seed0 stop-fold0 and seed1 stop-fold1 of five fitting-cluster stopping folds",
+        "final_members": "five stopping folds x six seeds0-5 =30",
+        "stopping_metric": "MSE log1p half-life"
+      }
+    },
+    "fit_graph": {
+      "per_representation_per_outer": {
+        "ridge": {
+          "inner": 9,
+          "final": 1
+        },
+        "mlp": {
+          "inner": 18,
+          "final": 30
+        }
+      },
+      "per_outer_actual_model_fits": 580,
+      "five_outer_actual_model_fits": 2900,
+      "selector_extra_fits": 0,
+      "sequence_reference_fits": "separate sequence protocol"
+    },
+    "selector_order": [
+      "mlp_log",
+      "R2_ridge",
+      "R2_mlp",
+      "R3_ridge",
+      "R3_mlp",
+      "R4_ridge",
+      "R4_mlp",
+      "R5_ridge",
+      "R5_mlp"
+    ],
+    "selector": "selected component inner mean scores only; first frozen procedure within one SE of best; original mlp_log baseline-only first and always eligible; delay finalization until sequence outputs complete",
+    "comparisons": {
+      "primary": [
+        "embedding_selector",
+        "sequence_selector"
+      ],
+      "all_components": "every declared component vs original mlp_log and sequence_selector",
+      "positional_per_learner": [
+        [
+          "R3",
+          "R3_pooled"
+        ],
+        [
+          "R5",
+          "R5_shuffled"
+        ],
+        [
+          "R5_position9x34",
+          "R5_position9x34_pooled"
+        ]
+      ],
+      "confounded_component_contrasts": [
+        [
+          "R3",
+          "R2"
+        ],
+        [
+          "R5_position9x34",
+          "R5"
+        ]
+      ],
+      "matched_head_control": "each representation vs R0 with its same learner",
+      "statistic": "pooled outer-held median per-allele Spearman using fixed original tie/constant rules; per-fold medians separately"
+    },
+    "execution": {
+      "device": "CPU",
+      "threads_per_worker": 2,
+      "cloud_spend_usd": 0
+    },
+    "gate": "do not execute fits before repaired evaluation and extraction equivalence/cost/cohort gates pass",
+    "limitations": [
+      "fixed projected channels and unequal feature dimensions do not perfectly match capacity",
+      "R3 vs R2 changes full-chain/beta2m context as well as positions; position9x34 vs R5 changes channels and central pooling",
+      "R0/R1 matched small heads differ from original sequence architecture/encoding ensemble",
+      "inner two-member MLP screening differs from final30-member recipe",
+      "development results are not independent confirmation"
+    ]
+  },
+  "code_sha256": {
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab"
+  },
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "implementation_amendments": [
+    {
+      "at_utc": "2026-10-12T00:35:43.550281+00:00",
+      "reason": "Before any real fitting: persist per-seed final predictions and verify code hashes at execution; grids, features, fitting and selection unchanged.",
+      "previous_code_sha256": {
+        "scripts/round2_embedding_screen.py": "5008aca1b283fb3c53104ffdfbe7b5700c69be15c6095bc49a5fd6b9bda5eb84",
+        "pepstab/round2_embedding.py": "c6cff1ed437cf04e38b0a8e7b969d20a0e40798ebdd14ba91adadb99b9546c69",
+        "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+        "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab"
+      }
+    }
+  ]
+}

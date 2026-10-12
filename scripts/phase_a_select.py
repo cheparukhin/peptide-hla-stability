@@ -1855,6 +1855,8 @@ def cross_check_runs_csv(path: Path, runs: pd.DataFrame) -> str:
 
 
 def main() -> int:
+    from pepstab.legacy_assessment import refuse_legacy_assessment
+    refuse_legacy_assessment("phase_a_select.py")
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--journal", type=Path, default=DEFAULT_JOURNAL,

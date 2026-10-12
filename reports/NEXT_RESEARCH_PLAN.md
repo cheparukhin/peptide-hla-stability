@@ -1,6 +1,6 @@
 # Project review and prioritised research plan
 
-Reviewed and reconciled: **12 October 2026**. Status: **final recommended priorities; round-two experiments not started**. This review updates the research record and work queue. It does not repair modelling code, refit models, rescore the original test or launch cloud jobs.
+Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **round-two evaluation repair and extractor verification complete; full-cohort extraction and sequence assessment in progress**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
 
 This is the **single current source of truth for project status, research priorities and execution gates**. It consolidates the original follow-up plan, completed Phase A–D findings, the [8 October Boltz strategy](archive/plans/boltz-strategy-2026-10-08.md), and the remaining hackathon proposals. Superseded proposals are in the [plan archive](archive/plans/README.md). Stage reports, saved tables and dated prespecifications remain evidence about completed work; they are not additional work queues. The frozen [original evaluation contract](../EVALUATION.md) remains unchanged. Section 11 records the reconciliation decisions.
 
@@ -48,9 +48,9 @@ The existing outer-fold results have already informed study design. Repaired ass
 
 ### Current implementation and evidence status
 
-- The original benchmark and Phase A–D runs are complete. Completed runs do not imply all their interpretations or selection procedures are sound. There is no `reports/further_research/round2/` output directory at this review.
+- The original benchmark and Phase A–D runs are complete. Completed runs do not imply all their interpretations or selection procedures are sound. Round-two implementation and audit artifacts now live in [further_research/round2/](further_research/round2/); see §12 for current completion status.
 - Reusable assets include the frozen splits, original predictions, 28,166 reported production structures, their 109-feature summary table, cached MSAs and follow-up prediction tables. Remote structure availability and provider bills were not reverified in this review.
-- The production runner persists coordinates/confidence, not the desired trunk cache. An embedding-only extractor and its equivalence test remain to be implemented.
+- The original production runner persists coordinates/confidence. The new embedding-only extractor has passed pinned full-forward equivalence and technical repeat checks; full-cohort extraction remains separately gated on cost (§12).
 - This review inspected the current working tree, including pre-existing uncommitted planning edits, and checked headline values against saved tables. The source dataset checksum passes. Software test results are recorded under §10; they do not certify the statistical design.
 - The source corpus contains no supplied assay replicates. Fold spread, execution variation and correlations between different alleles cannot establish irreducible assay noise or recoverable performance headroom.
 
@@ -87,7 +87,7 @@ During implementation, run the existing suite plus these targeted tests. Existin
 
 ### Dated correction register — 12 October 2026
 
-These corrections govern interpretation now. Notices in the historical reports point here; numerical artifacts remain intact. **Documented corrections are complete; code repair and replacement assessment are pending.**
+These corrections govern interpretation now. Notices in the historical reports point here; numerical artifacts remain intact. **Documented corrections, repaired assessment code and saved-prediction reconciliation are complete; new fitted assessments remain in execution (§12).**
 
 | Historical claim or issue | Current interpretation and required action | Evidence |
 |---|---|---|
@@ -104,7 +104,7 @@ These corrections govern interpretation now. Notices in the historical reports p
 
 These are specific interpretation and implementation defects, not grounds for discarding every saved measurement. Fix generators as well as prose so rerunning a legacy script cannot silently republish a superseded claim. Record which replacement tables can be rebuilt from existing predictions and which require refitting. Do not present either as independent confirmation.
 
-**Gate:** tested assessment harness, ancestry manifests and corrected report generators before supervised candidate assessment. This review completes the written correction register only.
+**Gate:** tested assessment harness, ancestry manifests and corrected report generators before supervised candidate assessment. The original review completed the written register; subsequent tested implementation and reconciliation are recorded in §12.
 
 ## 4. Milestone 1 — audited Boltz embedding extraction
 
@@ -311,7 +311,7 @@ The 12 October review checked source-data integrity, the current test suite, the
 
 Keep the [research index](README.md), [project README](../README.md) and site source as entry points to this plan, without separate priority lists. The submission film is a dated historical artifact; its proposals are not current instructions. Local site-source cleanup does not publish a website update.
 
-**Immediate next action:** implement milestone 0 and the extraction equivalence harness. The first full extraction follows its correctness/cost gate; the first supervised assessment follows the evaluation gate.
+**Immediate next action:** monitor the authorized sequence assessment and first larger extraction shard; the conditional cache controller will expand only after its measured cost gate passes, and the local downstream pipeline will start after complete audited inputs arrive. Do not reduce the cohort or change grids in response to assessment outcomes. See §12 for current gates.
 
 
 ## 11. Reconciliation decisions (8 October 2026)
@@ -333,7 +333,7 @@ The report index points to this document for future scope. Historical phase pres
 
 ### 12 October review and final disposition
 
-This revision completes the written correction register above. Evaluation code repair, replacement tables, extractor verification and all round-two experiments remain pending.
+At the initial review, only the written correction register was complete. The following execution record supersedes that initial pending status without changing the historical findings.
 
 | Additional conflict found in review | Resolution |
 |---|---|
@@ -343,3 +343,35 @@ This revision completes the written correction register above. Evaluation code r
 | Phase C's stopping decision is treated as a scientific closure of adaptation/blends | Retract the clean blend-gate rationale. Keep adaptation deferred on opportunity cost and scope, rather than claiming the flawed gate has excluded it. |
 | Proposals omit total search cost or mistake a feature permutation for a biological control | Count the full fitting graph; require pocket-membership controls that actually change the tested summaries. |
 | Historical reports and methods contain future-tense instructions | Label them historical at entry, preserve results/protocols, and route all future scope changes here. |
+
+
+## 12. Autonomous execution record — 12 October 2026
+
+The user authorized autonomous execution and reported **$213 remaining Modal credit**. The orchestration ceiling is **$100 additional spend**, preserving at least $113 of that reported balance, subject to unrelated account activity and delayed provider metering. No automatic expansion, retry loop, new coordinate production or encoder adaptation is authorized by this execution record. Bounded delegated implementation/reporting uses 6.1 Sol; complex extractor/statistical judgments remain with the orchestrator and the existing specialist work.
+
+| Gate | Current evidence and disposition |
+|---|---|
+| Assessment repair | Implemented per-partition selection, target-stripped prediction inputs, clean reselected cross-fitting, positive ranker scaling, exact zero-weight endpoint and content-addressed ancestry. The latest full integration passed **878 tests** with the 17 existing structure-parser warnings; subsequent focused seed-persistence, budget and pipeline tests also pass. Tests are evidence about implementation, not independent scientific confirmation. |
+| Historical reconciliation | [Generated reconciliation](further_research/round2/corrections/REPORT.md) and saved paired comparisons rebuild compatible pooled endpoints, correct Brier/ECE/weight-count claims and preserve historical artifacts. Five superseded assessment CLIs now stop before publishing obsolete analyses; importable historical helpers remain available. |
+| Extractor correctness | Ten technical cases passed full-forward versus extraction and repeated-input **bitwise equality** of final native s/z tensors. Construct, token indexing, checkpoint/source hashes, MSA provenance, directionality, finite fp16 storage and reload were checked. [Engineering forecast](further_research/round2/extractor/forecast.json) records 64 additional successful cases. |
+| Full cache | All **19,716 original training rows**, **3,587 peptide clusters**, **75 alleles** are preserved in the [frozen cohort](further_research/round2/extractor/full_training/cohort.csv). The 64-case batch forecast was $72.62 before contingency. A 256-case scheduling amendment reduces replicated startup; projected budget-accounted spend including startup/idle allowances is $71.47. A single bounded production shard precedes fanout. The authorized conditional controller expands to eight workers only after this shard passes and its measured whole-cohort forecast with 10% contingency also fits the fixed $80 allocation. Full allocations are $80 cache + $18 sequence + $2 engineering = $100. |
+| Sequence controls | [Frozen protocol](further_research/round2/sequence/protocol.json) covers the full MLP/tree × log/centred target grid plus PairLogit, per-fold selection, original 30-member neural reference, six-member tree procedure, clean positive affine ranker mapping and two identical-setting execution repeats. Initial remote packaging failure was repaired and retained in the failure record. The remote smoke passed: full-size depth-8 fit 576.11 seconds, synthetic local/remote maximum difference 9.7e-17 and repeated remote predictions identical. The complete 900-remote-call fit-graph forecast is $17.50 including margins and the smoke/build debit; the $18 reservation ledger stops before exceeding commitments. The full five-fold assessment and two repeats launched at 00:47 UTC. Completion within the forecast is not guaranteed; tiny-platform agreement is not a full-cohort cross-platform equivalence claim. |
+| Representation screen | [Frozen protocol](further_research/round2/embedding/protocol.json) covers R0–R5, shuffled memberships and matched positional controls, with three regularization settings per learner and three inner folds. The full graph is **2,900 actual head fits**, including all refits and secondary controls, on local CPU. No real head fitting preceded the gate. A durable local controller waits for the complete cache and sequence outputs before launching these fits and the audited report. |
+| Independent data | [Identity-only provenance audit](further_research/round2/independent_data/README.md) found all 27,031 released source stability pairs in the canonical corpus. Strict donor/canonical exclusions leave only 129 potential rows across heterogeneous assay strata, insufficient for the planned confirmation endpoint. External labels were not opened. Metadata, cross-length similarity and checkpoint provenance gaps remain. |
+| Complementarity | [Frozen protocol](further_research/round2/complementarity/protocol.json) covers R2/R4 ridge blends and strongly regularized residuals against the exact original reference, with baseline-only options and fresh nested stacking ancestry. The additional local graph contains 2,140 actual fits; execution is queued behind completed main outputs in the same local controller. |
+| Transfer | [Auxiliary manifest](further_research/round2/transfer/protocol.json) freezes 35 HLA sequence groups, five HLA folds and all 25 joint intersections. Coverage and nearest-sequence distances are recorded before transfer outcomes. Transfer candidates and fitting remain gated on the main screen; this is not a transfer result. |
+| Confirmation | [Bounded acquisition design](further_research/round2/independent_data/design/README.md) completed 108 synthetic scenarios, 162,000 endpoint draws and 3,240 exact paired-bootstrap diagnostics. Balanced 12×200/400/800 panels and a separate 20% independent-replicate subset are options for quotes; rates are conditional planning sensitivity, not a guaranteed real-world power result. No assay quote, reserved adequately powered cohort or confirmatory result exists. Performance claims remain development-only. |
+
+### Declared implementation amendments
+
+- Original assay rows, splits, labels and all original/Phase A–D numerical artifacts are unchanged. All new outputs are isolated under `further_research/round2/` and a separate Modal volume.
+- R3 uses a fixed, label-independent orthonormal Gaussian projection to eight channels, preserving every peptide/groove position. R5's 9×34 control uses four channels. The frozen cache retains full cropped channels, so a projected-head null cannot exclude richer channel use.
+- Contact membership is the union of heavy-atom contacts within 4.5 Å from five existing crystal structures, restricted to the canonical 34 HLA positions. Both pair directions are retained. R5 shuffled membership changes the constrained information, rather than only permuting unrestricted columns.
+- `R3_pooled` and `R5_position9x34_pooled` have exactly the same dimension, channel projection, context and head as their respective positional arms, with within-block pooling tiled back to positions. These secondary controls are excluded from the primary embedding selector. R3-versus-R2 and full-position-versus-R5 contrasts remain confounded by other representation differences and are labelled accordingly.
+- Each embedding learner selects its own regularization. Ridge is deterministic and fitted once per cell; duplicating it for nominal seeds would not add execution evidence. Final neural heads use 30 members. The primary embedding selector retains the original baseline-only option; it never chooses by outer outcomes.
+- Ranking procedures are compared using the exact original pooled per-allele statistic and paired whole-cluster resampling. The optimized count-weighted bootstrap has been checked against expanded-row resampling, including ties and constant predictions.
+- The source publication describes geometric means from two independent experiments, but replicate-level observations and uncertainty are absent from the supplied corpus. This does not establish an assay noise ceiling.
+
+Budget records and environment/source hashes live under [round-two resources](further_research/round2/resources/). The provider's historical October compute records total approximately $116.65 before the new study; the older $212.71 runtime-derived estimate is not a provider invoice and must not be treated as credit consumption. New usage is tracked separately.
+
+[Execution operations and recovery](further_research/round2/OPERATIONS.md) record durable controller paths and the 30-minute quiet-unless-actionable chat continuation. Transfer/refit implementation is being prepared without launching transfer fits or reading transfer outcomes; its candidate freeze remains gated on the completed main screen.

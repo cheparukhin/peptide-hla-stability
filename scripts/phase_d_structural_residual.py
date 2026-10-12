@@ -432,6 +432,8 @@ def select_alpha(inner_metric: dict[float, list[float]], higher_is_better: bool
 
 
 def main() -> int:
+    from pepstab.legacy_assessment import refuse_legacy_assessment
+    refuse_legacy_assessment("phase_d_structural_residual.py")
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--seq-oof", type=Path,

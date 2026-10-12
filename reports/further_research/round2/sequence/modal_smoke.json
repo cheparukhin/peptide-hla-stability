@@ -1,0 +1,199 @@
+{
+  "passed": true,
+  "local_vs_remote_max_abs": 9.71445146547012e-17,
+  "remote_repeat_max_abs": 0.0,
+  "tolerance": 1e-06,
+  "total_wall_seconds": 584.1089767079102,
+  "outputs": [
+    {
+      "stop_fold": 0,
+      "seed": 0,
+      "fit_seconds": 0.3217585810000001,
+      "details": {
+        "best_epoch": 13,
+        "epochs": 14,
+        "config": {
+          "iterations": 20,
+          "od_type": "Iter",
+          "od_wait": 100,
+          "bootstrap_type": "Bernoulli",
+          "subsample": 0.8,
+          "rsm": 1.0,
+          "random_strength": 1.0,
+          "border_count": 128,
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10,
+          "random_seed": 0,
+          "thread_count": 2,
+          "verbose": false,
+          "allow_writing_files": false,
+          "loss_function": "PairLogit",
+          "eval_metric": "PairLogit"
+        },
+        "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+        "threadpools": [
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-5f890258.so",
+            "version": "0.3.31.dev",
+            "threading_layer": "pthreads",
+            "architecture": "Haswell"
+          },
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so",
+            "version": "0.3.34.106.0",
+            "threading_layer": "pthreads",
+            "architecture": "Haswell"
+          }
+        ]
+      },
+      "worker_seconds": 0.3247454240000005,
+      "backend": "Modal Linux CPU 2 cores / 4 GiB hard cap",
+      "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+      "catboost_version": "1.2.10",
+      "max_rss_mib": 556.59765625
+    },
+    {
+      "stop_fold": 0,
+      "seed": 0,
+      "fit_seconds": 0.25678491500000034,
+      "details": {
+        "best_epoch": 13,
+        "epochs": 14,
+        "config": {
+          "iterations": 20,
+          "od_type": "Iter",
+          "od_wait": 100,
+          "bootstrap_type": "Bernoulli",
+          "subsample": 0.8,
+          "rsm": 1.0,
+          "random_strength": 1.0,
+          "border_count": 128,
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10,
+          "random_seed": 0,
+          "thread_count": 2,
+          "verbose": false,
+          "allow_writing_files": false,
+          "loss_function": "PairLogit",
+          "eval_metric": "PairLogit"
+        },
+        "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+        "threadpools": [
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so",
+            "version": "0.3.34.106.0",
+            "threading_layer": "pthreads",
+            "architecture": "SkylakeX"
+          },
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-5f890258.so",
+            "version": "0.3.31.dev",
+            "threading_layer": "pthreads",
+            "architecture": "SkylakeX"
+          }
+        ]
+      },
+      "worker_seconds": 0.25835305600000025,
+      "backend": "Modal Linux CPU 2 cores / 4 GiB hard cap",
+      "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+      "catboost_version": "1.2.10",
+      "max_rss_mib": 566.61328125
+    },
+    {
+      "stop_fold": 0,
+      "seed": 0,
+      "fit_seconds": 576.10079628,
+      "details": {
+        "best_epoch": 1822,
+        "epochs": 1823,
+        "config": {
+          "iterations": 2000,
+          "od_type": "Iter",
+          "od_wait": 100,
+          "bootstrap_type": "Bernoulli",
+          "subsample": 0.8,
+          "rsm": 1.0,
+          "random_strength": 1.0,
+          "border_count": 128,
+          "depth": 8,
+          "learning_rate": 0.06,
+          "l2_leaf_reg": 10,
+          "random_seed": 0,
+          "thread_count": 2,
+          "verbose": false,
+          "allow_writing_files": false,
+          "loss_function": "PairLogit",
+          "eval_metric": "PairLogit"
+        },
+        "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+        "threadpools": [
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-5f890258.so",
+            "version": "0.3.31.dev",
+            "threading_layer": "pthreads",
+            "architecture": "Haswell"
+          },
+          {
+            "user_api": "blas",
+            "internal_api": "openblas",
+            "num_threads": 2,
+            "prefix": "libscipy_openblas",
+            "filepath": "/usr/local/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-f48b354e.so",
+            "version": "0.3.34.106.0",
+            "threading_layer": "pthreads",
+            "architecture": "Haswell"
+          }
+        ]
+      },
+      "worker_seconds": 576.109711907,
+      "backend": "Modal Linux CPU 2 cores / 4 GiB hard cap",
+      "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+      "catboost_version": "1.2.10",
+      "max_rss_mib": 825.46484375
+    }
+  ],
+  "successful_worker_runtime_estimate_usd": 0.020280363831942833,
+  "smoke_upper_usd": 0.462041,
+  "full_graph_worst_case": {
+    "member_count": 900,
+    "requested_cpu_cores": 2,
+    "requested_gib": 4,
+    "cpu_hour_usd": 0.0473,
+    "gib_hour_usd": 0.008,
+    "task_timeout_seconds": 1000,
+    "startup_seconds_per_member": 60,
+    "scaledown_seconds_per_member": 2,
+    "task_and_per_call_overhead_upper_usd": 33.6123,
+    "smoke_reserve_usd": 1.0,
+    "image_build_reserve_usd": 0.35,
+    "total_upper_usd": 34.9623,
+    "scope_ceiling_usd": 35.0,
+    "automatic_retries": 0,
+    "rates_source": "https://modal.com/pricing",
+    "rates_checked_date": "2026-10-12"
+  },
+  "forecast_1_25_all_at_full_depth8_runtime_usd": 25.245215477320684,
+  "full_cohort_launch_authorized": false
+}

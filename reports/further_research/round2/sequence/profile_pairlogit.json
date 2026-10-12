@@ -1,0 +1,28 @@
+{
+  "learner": "PairLogit",
+  "encoding": "onehot",
+  "depth": 8,
+  "seconds": 206.22416645800695,
+  "n_fit": 10514,
+  "best_epoch": 1155,
+  "epochs": 1156,
+  "config": {
+    "iterations": 2000,
+    "od_type": "Iter",
+    "od_wait": 100,
+    "bootstrap_type": "Bernoulli",
+    "subsample": 0.8,
+    "rsm": 1.0,
+    "random_strength": 1.0,
+    "border_count": 128,
+    "depth": 8,
+    "learning_rate": 0.06,
+    "l2_leaf_reg": 10,
+    "random_seed": 0,
+    "thread_count": 2,
+    "verbose": false,
+    "allow_writing_files": false,
+    "loss_function": "PairLogit",
+    "eval_metric": "PairLogit"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "approved": true,
+  "approved_at_utc": "2026-10-12T00:54:17.419842+00:00",
+  "approved_by": "root orchestrator under user autonomous research authorization",
+  "run_id": "round2-fulltrain-20261012",
+  "cache_fingerprint": {
+    "batch_forecast_sha256": "a67c5e95935702d7d3bc261a93426ee2de9171d07c68f5fbea8cf2fc3dadc24d",
+    "cohort_sha256": "2cf4ab02a738a3af916003fbc470c07c9c6445234cc084c850148174f01effd0",
+    "contact_map_sha256": "972621754fb34f0fdc5460c75ef4a1e9caff293563db964af6f4c59074074bf9",
+    "forecast_sha256": "107b2688e77aa0132a0b83619d428927bc540dfbd573cdc95aa9f2627d0b4f1e",
+    "n_cases": 19716,
+    "run_id": "round2-fulltrain-20261012",
+    "shard_size": 256,
+    "shards": 78,
+    "source_hashes": {
+      "modal_app/round2_boltz_extract.py": "4829f86a35c5d396bf178015cfd132443f9ba20a5c620aefa4468ec6dd879bfb",
+      "modal_app/round2_boltz_worker.py": "0d38bd885a298b10fb4a931876cc7389e900d9d04b87851b6ad7cabb69dd5e91",
+      "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+      "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab"
+    }
+  },
+  "cohort_manifest_sha256": "305a316d8fbba503eafee9ebec0c92e57628fa6c71cbb3395c15e34671da8557",
+  "feature_protocol_sha256": "1f5d477efc6ab38d7bb37e2a9136115c847c58e61b16d09b795f985088693d18",
+  "sequence_authorization_sha256": "6e0e8f7e416c4dbe53b4552b80bdfe7021dbef8d20e574ffc291c8066c148021",
+  "allocations_usd": {
+    "cache": 80,
+    "sequence": 18,
+    "engineering": 2,
+    "total": 100
+  },
+  "controller_sha256": "24873b2eb95ac7c919693b0f22f589e3f8575ad37f92346b099101c6113c0592",
+  "condition": "First 256-case production shard passed, fully settled and finite; max(frozen all-shard forecast, measured charged upper per row scaled to 19716 with 10 percent contingency) <=80; no unresolved reservations or failed shards; all source and feature hashes unchanged.",
+  "authorization_scope": "One automatic continuation of existing full-training run at at most eight workers; no automatic retries or new cohort."
+}

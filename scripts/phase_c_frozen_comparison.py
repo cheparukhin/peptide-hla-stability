@@ -480,6 +480,8 @@ def cmd_compare(args) -> None:
 
 
 def main() -> None:
+    from pepstab.legacy_assessment import refuse_legacy_assessment
+    refuse_legacy_assessment("phase_c_frozen_comparison.py")
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name, fn in (("time", cmd_time), ("fit", cmd_fit), ("compare", cmd_compare)):

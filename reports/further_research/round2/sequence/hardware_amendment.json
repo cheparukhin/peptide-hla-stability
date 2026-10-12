@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-12",
+  "status": "approved by root orchestrator before assessment; root owns durable launch",
+  "scientific_protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+  "change": "Move PairLogit member fitting only to Modal Linux CPU; retain identical grid, seeds, features, fitting/selection/stopping partitions, mapping procedure, ensemble counts and runtime caps. MLP and RMSE trees remain local.",
+  "reason": "Full local depth8 PairLogit pilot required206.224s/member. The complete nested ranker graph is substantially slower than the provisional forecast based on RMSE; cloud parallelism is required to make overnight completion plausible.",
+  "ranker_member_calls": 900,
+  "limits": {
+    "cpu_request_limit": [
+      2,
+      2
+    ],
+    "memory_mib_request_limit": [
+      4096,
+      4096
+    ],
+    "max_containers": 30,
+    "task_timeout_seconds": 1000,
+    "startup_timeout_seconds": 60,
+    "scaledown_seconds": 2,
+    "retries": 0
+  },
+  "scope_ceiling_usd": 18,
+  "full_graph_upper_usd": 34.9623,
+  "billing_limitations": "Runtime-based budget guard; not a reconciled provider invoice. Smoke reserve1 and image-build reserve.35 included. Failed calls consume reservation and no automatic retry may add calls.",
+  "platform_check": "Synthetic paired local/remote same-code predictions and repeated remote smoke, tolerance1e-6; full-size d8 throughput smoke; no outer scores consulted.",
+  "repeat_scope": "Final same-setting ranker repeats are on the same Modal backend; maps and selected configurations fixed. Paired seeds and execution repeats remain separate.",
+  "previous_scope_ceiling_usd": 35,
+  "budget_policy": "Single shared persistent pool reserves timeout1000 + startup60 + idle2 seconds per call before dispatch. Successful calls settle at measured worker seconds +62; failed or unacknowledged calls consume full reservation. Unused reservation is released. Calls never release the900-call quota. One controller owns the ledger; concurrent folds share it.",
+  "forecast_with_margin_usd": 17.503254196146425,
+  "completion_limit": "The full-graph unconditional bound exceeds18; the dynamic pool stops before exceeding18 if realized cost is higher than forecast. It preserves checkpoints and does not silently truncate or change a candidate.",
+  "budget_amendment_reason": "Full Boltz cache requires80 allocation; root reserves18 for sequence plus2 engineering to preserve the overall100cap. Grid-aware successful timing forecast17.503 supports the revised allocation with explicit uncertainty."
+}

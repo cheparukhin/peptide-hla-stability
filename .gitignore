@@ -52,3 +52,11 @@ reports/further_research/*_runs*.partial.jsonl
 reports/further_research/phase_a_runs.csv
 reports/further_research/phase_a_screen_assembled.csv
 reports/further_research/*_members.npz
+
+# Round-two live controller logs/locks and transient fitting journals. Final
+# predictions, member tables, provenance and budget records remain versioned.
+reports/further_research/round2/**/*.log
+reports/further_research/round2/**/*.lock
+reports/further_research/round2/**/*.tmp
+reports/further_research/round2/**/*.partial.csv
+reports/further_research/round2/**/members.jsonl

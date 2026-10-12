@@ -55,6 +55,8 @@ def panel_median(allele, y, pred, panel, rank) -> float:
 
 
 def main() -> None:
+    from pepstab.legacy_assessment import refuse_legacy_assessment
+    refuse_legacy_assessment("phase_c_blend_gate_check.py")
     seq = pd.read_csv(OUT / "phase_a_seq_oof_cluster.csv")
     seq = seq[seq.role == "outer_held"][["pair_id", "y_pred"]].rename(
         columns={"y_pred": "seq"}

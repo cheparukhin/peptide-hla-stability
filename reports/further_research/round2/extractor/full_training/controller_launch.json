@@ -1,0 +1,31 @@
+{
+  "pid": 7256,
+  "log": "/tmp/round2-fullcache-first-shard.log",
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/modal",
+    "run",
+    "modal_app/round2_boltz_extract.py",
+    "--cohort",
+    "reports/further_research/round2/extractor/full_training/cohort.csv",
+    "--forecast",
+    "reports/further_research/round2/extractor/forecast.json",
+    "--run-id",
+    "round2-fulltrain-20261012",
+    "--budget-usd",
+    "80",
+    "--workers",
+    "1",
+    "--pilot-only"
+  ],
+  "launched_utc": "2026-10-12T00:28:59.889150+00:00",
+  "scope": "FIRST production shard ONLY; 256 original-training rows; no fanout",
+  "runtime_timeout_s": 2700,
+  "startup_timeout_s": 60,
+  "scaledown_s": 2,
+  "maximum_reserved_usd": 1.1364095555555558,
+  "full_cohort_rows": 19716,
+  "full_cohort_allocation_usd": 80,
+  "allocation_status": "only first shard currently authorized; total budget and first-shard outcome gate fanout",
+  "app_id": "ap-CTPosnxjWl1PutPuL6XHcK",
+  "launch_mechanism": "subprocess.Popen(start_new_session=True, stdout=durable log, stderr=STDOUT); stdin inherited already-consumed noninteractive input pipe"
+}
