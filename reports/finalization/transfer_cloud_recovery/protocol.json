@@ -1,0 +1,494 @@
+{
+  "status": "FROZEN_NOT_EXECUTION_APPROVAL",
+  "frozen_at_utc": "2026-10-12T13:10:55.027160+00:00",
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "specification": {
+    "schema": "final_transfer_controls.1",
+    "population": "original training only; previously examined development evidence; original test excluded",
+    "rows": 19716,
+    "hla_groups": 35,
+    "outer_cells": "existing five HLA and 25 joint cells; all retained",
+    "candidate_order": [
+      {
+        "id": "tree_log_d4",
+        "procedure": "tree_log",
+        "learner": "rmse",
+        "target": "log",
+        "depth": 4
+      },
+      {
+        "id": "tree_log_d8",
+        "procedure": "tree_log",
+        "learner": "rmse",
+        "target": "log",
+        "depth": 8
+      },
+      {
+        "id": "tree_centred_d4",
+        "procedure": "tree_centred",
+        "learner": "rmse",
+        "target": "centred",
+        "depth": 4,
+        "k": 20
+      },
+      {
+        "id": "tree_centred_d8",
+        "procedure": "tree_centred",
+        "learner": "rmse",
+        "target": "centred",
+        "depth": 8,
+        "k": 20
+      },
+      {
+        "id": "R0_ridge_10000",
+        "procedure": "R0_ridge",
+        "learner": "ridge",
+        "regularization": 10000.0
+      },
+      {
+        "id": "R0_ridge_100",
+        "procedure": "R0_ridge",
+        "learner": "ridge",
+        "regularization": 100.0
+      },
+      {
+        "id": "R0_ridge_1",
+        "procedure": "R0_ridge",
+        "learner": "ridge",
+        "regularization": 1.0
+      },
+      {
+        "id": "R0_mlp_1",
+        "procedure": "R0_mlp",
+        "learner": "mlp",
+        "regularization": 1.0
+      },
+      {
+        "id": "R0_mlp_0.01",
+        "procedure": "R0_mlp",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      {
+        "id": "R0_mlp_0.0001",
+        "procedure": "R0_mlp",
+        "learner": "mlp",
+        "regularization": 0.0001
+      },
+      {
+        "id": "fixed_ranker8",
+        "procedure": "fixed_ranker8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8
+      }
+    ],
+    "reported_arms": [
+      "original",
+      "mlp_centred",
+      "R4_ridge",
+      "R5_mlp",
+      "embedding_selector",
+      "tree_log",
+      "tree_centred",
+      "R0_ridge",
+      "R0_mlp",
+      "fixed_ranker8",
+      "expanded_sequence_selector"
+    ],
+    "sequence_order": [
+      "original",
+      "mlp_centred",
+      "tree_log",
+      "tree_centred",
+      "fixed_ranker8"
+    ],
+    "fit_graph": {
+      "regimes": {
+        "hla": {
+          "outer_cells": 5,
+          "inner_cells": 3,
+          "fits_per_cell": 166,
+          "members_per_procedure": {
+            "tree_log": 42,
+            "tree_centred": 42,
+            "R0_ridge": 10,
+            "R0_mlp": 48,
+            "fixed_ranker8": 24
+          },
+          "total_fits": 830
+        },
+        "joint": {
+          "outer_cells": 25,
+          "inner_cells": 9,
+          "fits_per_cell": 400,
+          "members_per_procedure": {
+            "tree_log": 114,
+            "tree_centred": 114,
+            "R0_ridge": 28,
+            "R0_mlp": 84,
+            "fixed_ranker8": 60
+          },
+          "total_fits": 10000
+        }
+      },
+      "by_procedure": {
+        "tree_log": 3060,
+        "tree_centred": 3060,
+        "R0_ridge": 750,
+        "R0_mlp": 2340,
+        "fixed_ranker8": 1620
+      },
+      "total_fits": 10830,
+      "reused_fits": 0,
+      "selector_extra_fits": 0,
+      "mapping_extra_fits": 0
+    },
+    "inner_selection": "3 HLA folds or all 3x3 joint intersections; pooled inner median per-allele Spearman min20; argmax with frozen order exact ties",
+    "stopping": "trees/ranker: 3 stops x 2 seeds inner AND final; joint stops diagonal intersections gradients outside both; R0 MLP same feature-head recipe as reused R5, 2 inner/30 final members",
+    "tree_params": {
+      "iterations": 2000,
+      "od_type": "Iter",
+      "od_wait": 100,
+      "bootstrap_type": "Bernoulli",
+      "subsample": 0.8,
+      "rsm": 1.0,
+      "random_strength": 1.0,
+      "border_count": 128,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10.0,
+      "thread_count": 2,
+      "verbose": false,
+      "allow_writing_files": false
+    },
+    "centred_tree_k": 20,
+    "ranker": "one fixed depth8 PairLogit; positional onehot; within-allele pairs with inverse pair-count allele weights; no ranker grid",
+    "affine": "one positive affine map per outer cell, slope floor1e-8; raw fixed-candidate clean pooled inner OOF scored before mapping; outer-fit labels only; map applied to final raw ranker predictions",
+    "affine_limit": "training-size scale transport from smaller inner fits to larger outer-fit refits; mapped inner values are not independently calibrated; differs from old nested ranker",
+    "legacy": "reuse audited original/centred scores and finals plus R4/R5/unchanged embedding_selector finals; absent legacy raw inner predictions are disclosed and not recreated",
+    "matched_controls": "R4 ridge minus R0 ridge; R5 hidden64 MLP minus R0 hidden64 MLP; same grids/scaling/selection/stopping; R0 positional sequence onehot",
+    "uncertainty": {
+      "draws": 2000,
+      "modes": [
+        "peptide",
+        "hla",
+        "crossed"
+      ],
+      "panels": [
+        20,
+        50
+      ],
+      "deletions": "all 35 actual HLA groups; conditional on fitted predictions; crossed sensitivity may be conservative"
+    },
+    "execution": {
+      "local_workers_max": 3,
+      "numerical_threads": 2,
+      "no_retry": true,
+      "no_auto_expansion": true,
+      "cloud_calls": 1620,
+      "task_timeout_seconds": 1000,
+      "startup_timeout_seconds": 60
+    },
+    "data_hash": "b7151cb39be2487a61e3c05281df11f21c0a5645c057b0420b8c74881ee573d5"
+  },
+  "legacy_directory": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/transfer",
+  "legacy_protocol_sha256": "a5c623104553f8cf3794993633849ef035e6cc2502b7045019fde312176cbf97",
+  "legacy_evidence_sha256": {
+    "hla/h0": {
+      "completed.json": "5b87becf41bd15f49f1217019472f328a98d012cfde3be058b9ecb2f5ff42810",
+      "predictions.csv": "9dcc6ad04d52103470d84098a1e237d28698ce9383661537cad7c775d9905458",
+      "selection.json": "d09fcf549aee846529605576718cdc9cd696d865c1fedf6397acbd10bfa4a786",
+      "ancestry.json": "8e99fba1ddaa21c66ff1f3b51a1e5a8985178e49f12beb83f9730316dd6237c8",
+      "members.json": "9252d660739eceea74113cfbfb8407eaf07df1ce9158509ff0eafcafed9120c5",
+      "runtime.json": "0df5203c7f9d421c51a7d079c007e4c020f285a16345b36cb26b45d9109f5a07"
+    },
+    "hla/h1": {
+      "completed.json": "9d4e4a3bbd641744fd40da43b77e48ea5b415bf9ccf07594b2d10c1554894199",
+      "predictions.csv": "b2ece7112205ec8f7f87e42cb36696142023932ee776cdf5f7800ba6c138a7ed",
+      "selection.json": "afd8726fc94e39928e5485389bfc1e4e5936864b13596fbb57e7b57a4601579b",
+      "ancestry.json": "b62f07efce13b5a147b0a03ca9e47a0b2f320c7e52ccdc9048e8ba100c436a3b",
+      "members.json": "1cea4bc7652e39d2b87cfedaf372f30a05a98be297f31c91e2326c17833602d3",
+      "runtime.json": "8408b76fc2a621e5583e9c9647a63b3c8c78cee9e8ad061fcfe255553927e5b9"
+    },
+    "hla/h2": {
+      "completed.json": "61e40712d27b81eb8066172b3b4ce6a74637ad9d6390bac429c5141a410c6fa6",
+      "predictions.csv": "00dc83049c364bca5f13455918e923388cbee2430554d078e1016eb245a0bc1a",
+      "selection.json": "c8aa2d9c21248aff52525693187a4ec5a7a8ae6c0741647649a9442e46092152",
+      "ancestry.json": "0b4b777f3ac1dde903470f4d72db5289579d6ada3fddf4c82f480bcceb8cbc1c",
+      "members.json": "7f525ca3aab41e47c5b90496e7f4878550b5fdb2ce659e1aac26d30006cbbfe1",
+      "runtime.json": "b0150540890c5c993d82ce13b0df296651f6716403bc5395181253d51616e4c7"
+    },
+    "hla/h3": {
+      "completed.json": "9ff97fbb06060a74eb21bcb80404ed1afa230dbca76340e573d6f3ed9ae17129",
+      "predictions.csv": "4ab52b852e99aab78edfdd3118616f46e949d76c2c59161a3dd72faca0034a04",
+      "selection.json": "3f590f7a988f905a9dbc58d6999eb6915b5cf1c78dbcf1cdbac835f4d870ce33",
+      "ancestry.json": "fc59d07fe5c40bfbf8f35ba93762e923248797ec28c432be6b27d49ccfb6b350",
+      "members.json": "8447b1832585f72beda6037b323ec2c0653c7019e1bcba679501bbd044707684",
+      "runtime.json": "39b3e1fd1ce58794f6fddd47fcab9b157e8130a1a3c815e91ccb496110e808f5"
+    },
+    "hla/h4": {
+      "completed.json": "a7dfdcf4bb84f9abf0af4fee58b99761d58a4a520c1588c34c34d22b11819e86",
+      "predictions.csv": "ab27495312925f952425bef70c8666017e2d1e55ebb4dd9d7e5c13c16f73c483",
+      "selection.json": "fb4830bf18793aac26c2272b12c5ff298959ab28c347338816b51cefba2c665a",
+      "ancestry.json": "2dec2944760b00073624e313de95c735795e3b4f4e293d79e586fd68659aea3c",
+      "members.json": "18e6e04de897cf360d852227ed603436c39b022c67bb7a536feab65a91f98e7b",
+      "runtime.json": "fa5db92d318764d746e686527cd9e1ce0cff8a1eaf14447ed3b89254154f4892"
+    },
+    "joint/h0_p0": {
+      "completed.json": "81364cb75ec9951223c925c07b62548cbc66c8397644afc877d499303d58b726",
+      "predictions.csv": "c6b399248dd415ba0afeaa5c4fb7d2942927df9e374ea36221ba17c4da2e67fa",
+      "selection.json": "3d8aba9e7290795461c3c2bf524863ba7c7574169383727c72fe937e9afd359d",
+      "ancestry.json": "45ee7308195e1cee03895dfc8b1742eb4b0685365e7ea7696465e2819af78ce2",
+      "members.json": "2ab6a7fff900e1f33187cc949ec73da4590e491623bb7bcf2a9f75828e5c9942",
+      "runtime.json": "82f0f37e32427f6714700e4a1f469a770d7abe52674b05a242d1cf715780b8ce"
+    },
+    "joint/h0_p1": {
+      "completed.json": "5ff599f615222086179ba02d67f271cbc3e1a200fc0e439d63ff40aa5cc58f79",
+      "predictions.csv": "1b9572fc40d94673e44d375ab9911421bc51200d2354d2be338cc5023870fa9a",
+      "selection.json": "5893d913465b6e05e99e2e318e519b12d4c62abb3b575508fbaccaafb3a53db0",
+      "ancestry.json": "1f91cf7cf30f51dece4c1308a14189cafd707738d8f64a279a3eb3d08c5befef",
+      "members.json": "9402e9622355a9a440a8119537b01a9a8f71d2e54e2d1fea4963de30c67976a3",
+      "runtime.json": "8c25bc710fcc6964b302865114e13770d0f3930beb27971f461a49f64cbb3926"
+    },
+    "joint/h0_p2": {
+      "completed.json": "1f8f5ee6e9d5a0ff822a6a7c9cae3623448de23ae8eecbe3c9d802e908203eb3",
+      "predictions.csv": "d935bdb83e2cda83a0b424b244e99f4b5a9ae4da4cfa535925ff2e2fbd078d8d",
+      "selection.json": "74f9d7ddb8e1efdca6c4eee20745ebb1b243c6d48e940ee442af2f1b5e837d60",
+      "ancestry.json": "47960f6dda97855a0aa5613f038dc43f0ec99c278d5764e945e4fc8381d6f675",
+      "members.json": "3c7ec30c6a237a14536acd198e93306b7cae14cc8dec2f9b48d27f85e82812b8",
+      "runtime.json": "f298ce100a0d8d5aeb1bf2615b59672c5feffc1e208b3604ccfda2db3b478ca0"
+    },
+    "joint/h0_p3": {
+      "completed.json": "b51699e7a277eb9898f0fcd5181cc3c8a997e2c5e6185ef25066b1a2ee7a4732",
+      "predictions.csv": "7f2a0f8ff83b208c4e54d4de0839dd7507112e181c3a0889f7e48317e326c3b4",
+      "selection.json": "ca9e04cdece0dc244453d7cd98c8fb9381bddc350138bb6591f612e5f7c66e5c",
+      "ancestry.json": "d9a5d5f2b182fbce09fbd9c201b82463fce3b5a85f283b5bd14ecd03d5e0ae22",
+      "members.json": "b6ae58eccf0c1d830917e39beeaf11ab41b76571ea4ab11d98a3a750460b9141",
+      "runtime.json": "c43039882c2c85834ea48f203497ba43b7b297ab8f633acecafc638a5d5bdb08"
+    },
+    "joint/h0_p4": {
+      "completed.json": "cabcdd988dcc1c3fd80d5e301408e033d9962a10662f60138b857782ae02e33a",
+      "predictions.csv": "4e36172698f2d927e217f458d53f56568df34471adcdc8980d39feda06858135",
+      "selection.json": "87771486cdbbbcad631c92ff66ccfceaf0cd2fef342e32455c2d50e70bb4767b",
+      "ancestry.json": "41ed86e1cf2c1b4cddaff3685342d38ea2d3036ee95f95d81fefa4fa79379dfa",
+      "members.json": "d53c239aa92b59a7daa1856d7c8da0fd0bcf9fb594aa4c263f722788804b7270",
+      "runtime.json": "77d803aff5697263f4edd32321399bc6ef1c4130d03162ef1d18ab8b69749585"
+    },
+    "joint/h1_p0": {
+      "completed.json": "7196a2694f858d5dc06f4fad149739608d8ef3f9ad59ae42a246c8fd178c6803",
+      "predictions.csv": "52778dcca5a6241a13ab8472399239646a7585e0ea1a58ce4675b84a154b819f",
+      "selection.json": "5a680b79b72ba4498cae0dbd924bb850ccd7ee7c938a2b96a0f975913691c976",
+      "ancestry.json": "38a3736ec5b91326204a36f9a60275729275904c01a088c32984096c888dbb46",
+      "members.json": "db2e75f8bf3877a5662fd042d89360f84c2fee5bb0a6b972f6cf9ac1ef4097ab",
+      "runtime.json": "557a97a14f1fb18f7b6adf8be5faae31368fa631fc99c28118bec82516ad7623"
+    },
+    "joint/h1_p1": {
+      "completed.json": "6bf357caa92452627b96738b97235aa00cdf420de026c27bfa1a8a1b24dc304b",
+      "predictions.csv": "20c26d7b0f6c0510544a30276a6e265c75ef5aaf521146b6be47b6a402b9d82f",
+      "selection.json": "f720674f25b21ed465a766a457affda36e3413031c1b27eb201ad6fd4462f63c",
+      "ancestry.json": "5e35db50c05d0757075298cc14235a75699c3986f9bb6fc6e6b5b88a08b3467e",
+      "members.json": "95d1beb8ced8fa9a3f3dd9bc5f03ee27b3acefd1c4923e7c8824c7b41fe99952",
+      "runtime.json": "66acda727b55cbbf39541c96c95f64cda0e3894919e7844e1487d2992774892c"
+    },
+    "joint/h1_p2": {
+      "completed.json": "e97cdc5df105972ae7eab02b25197c095703c8418db54e23485bb7a13cba2b15",
+      "predictions.csv": "227eeea38dff8c15af3fd70e05fbe097cbf1cb8f67f2d2a8af0ae27720dbd864",
+      "selection.json": "8c4575107bc7d5b929853b21cf1ad3d4d9e33a5622aaab5823e27c67a5a89754",
+      "ancestry.json": "3b930f10eb1919ecd9d1b1cf48ef6353776bd164cc72eebb8389bebb797b8a99",
+      "members.json": "2ddda2e4bcfbaca73ce16a76dc78ef82f0c1da08fe248bb866fbfc2e8abbdd52",
+      "runtime.json": "79d3d9a7f0b716083134e52042a6077633715236cd88e8ca38884fe5a0fed9c8"
+    },
+    "joint/h1_p3": {
+      "completed.json": "98bb7b9c6e9aead6ffbbd4b45b63794b34bf45256001b7a033b641635233b6ac",
+      "predictions.csv": "77f0cabce4fb3df5fdec1817ee49a2893105e8ecf23491139d30f622967bfc64",
+      "selection.json": "7d9ec2f8a928c6e2c2f862d5c8ab9399304d8a07ecadbc188251e89f22c77d37",
+      "ancestry.json": "91bb28e4972b8669b20cb1a0d60fde4369b3dbe511f2e0f2dd0179cee72ab474",
+      "members.json": "d39ac8092ddf6dd1bcd2e0177b1ef034f2273ffa91d9151037835d803016fc9e",
+      "runtime.json": "4bd1b83e390d33b2a65d7e5df52aa2c1e7f8f456808b58fdad656b6339ad2003"
+    },
+    "joint/h1_p4": {
+      "completed.json": "ea9335fa0f9b6fc302f4a85ef24765e7fe68dcaaf250ff74cc5a8b5e38f105c3",
+      "predictions.csv": "3278992ac023debe6f6206b11b98e24cc64cd026a840566cb9ea84384f701705",
+      "selection.json": "41ad0f0c70cdce9b85fc228dadd51373add4c0017550e2569393412259eb138b",
+      "ancestry.json": "3b0433b059a760d4148d21c115e7a2582753b428063ea1e32d55c169e28062a7",
+      "members.json": "01f00b76167ef7897af676cb36f58eeb6806e9df075c50bf522ce38092322ee6",
+      "runtime.json": "8640622d471c25d4cdad9555fb7c5907aecd1d166302ec0d697561b5870236c3"
+    },
+    "joint/h2_p0": {
+      "completed.json": "f3927db5e52408f499052f502ff0114354d3069cd243e43eac8e3fc71a41248f",
+      "predictions.csv": "ca5a341ddb7760f4c6617a442c95fcbf0d7037ce347e47d584e2e0b0cbf4903a",
+      "selection.json": "aac902e6a2176e382d35e6971b4980bd119dff917cb093136177b233f7c4089e",
+      "ancestry.json": "ebcbe09d893be448f6c445cded48b67b335506a301196232886d547d4da75d46",
+      "members.json": "2386f76baa2eaabdb23386d690e3cf1c472193aacdb495c4aa60e3ecf98f745c",
+      "runtime.json": "bba0b0afedfc8263c11e7d12627594a3c458baa69fa1bf5587ca86f9addc175b"
+    },
+    "joint/h2_p1": {
+      "completed.json": "53f35757bda5dafc894db6f8be38c0a4cd95ad79e377eae65fe958f20f111a84",
+      "predictions.csv": "abb69c339900aa64ff3407e6355d5bcc8d4dc9ea43d508ecc27b4644d434d1a3",
+      "selection.json": "744795b800b2bd96bcd600db2c5cce67b4b9cb2e008aee7bc2bccfbad670c466",
+      "ancestry.json": "d752d842cf60d91581b9f773db06f67563c6fd86f1cd4fd89af8c3fdbe869279",
+      "members.json": "7e27685d4d8a16a33441bb8dea4f5c20a2dae71297194a469a4f28e746cb483f",
+      "runtime.json": "83a22393156b81f8f5123408b7164b77a1b765e99f306f7cf6b7ab6102a37a27"
+    },
+    "joint/h2_p2": {
+      "completed.json": "0371f8131930409b0aa0c24a60a202b8943adbf7e941f91c92c28ca6f7d23d09",
+      "predictions.csv": "ed44ccecc18eeb868bac5801cdac350e9c9bb8bac2a285dd4a89abf95d49c370",
+      "selection.json": "3abd3017979bcf38c2b7e3fe9f55fce43d5e55d8c391452f16f6b9cb4eebe507",
+      "ancestry.json": "08c8f9c9d684cd5f55712d25a50a468612f887b498084c1992d940e1ffd03250",
+      "members.json": "0622f0bdbb81b332ea356482b4a9b1c122cb4320e41ef00b5ed123d8b5273cb8",
+      "runtime.json": "21c61a671dcf7d02141141a7505a8aaf171d9d86634b9454f26f60c19c83f6ab"
+    },
+    "joint/h2_p3": {
+      "completed.json": "57d47a6711a36aaf3db45944002a9fda4f4242098daeb1171f263fbe6055cda0",
+      "predictions.csv": "88fd60e7139a52fcfdeafc1c27a287552f25c0b2eaa8940fb8cea45a602c950f",
+      "selection.json": "71caece4116f29f259f36c789f4fbdbc328b68970a4327390502e14670e00cde",
+      "ancestry.json": "09c77a72dff75aab1e51e913c3869da7f1d9c572cbc97f98e8597f6cc2fd0d20",
+      "members.json": "2d6ec271ec7f9c269aeb91fe0e00322c31dd6a6e3be9f262b76786bb451cd2c4",
+      "runtime.json": "9226502f7f3aef50bf9c2cb8ea1cd1af5d3da4e6a293204024c4a99800bebd8b"
+    },
+    "joint/h2_p4": {
+      "completed.json": "df6d60d8495e5c9e1374d109e9f29a40fef1e9b1e9cfc6a6d5aa3c9b009d37c0",
+      "predictions.csv": "4fc128e232dbe4a3e4d402a328bc547d1baeb21d27fa8242ae9d9367c1f9d549",
+      "selection.json": "6e61a3d234a337d4db928b93787791ee9a8d2a1e960f165f623be56909ab82b7",
+      "ancestry.json": "77d177f66aa1337381766cac08f7bcc35f146fb98b3debe47ad503e5ac7a66d5",
+      "members.json": "78926a4ae702024a683cd9a61d283179831706ed1c99b66cceb66113c1f6203f",
+      "runtime.json": "ec2240ee926ba39225be7a5a186f806e0c0dae8b066f9b85c243687db71706ca"
+    },
+    "joint/h3_p0": {
+      "completed.json": "c2995ce30e87b9b0db32ef47503ced81effb1c99804c7fb4a530b4cb83d2b54d",
+      "predictions.csv": "7eee5926101451ab21db8ef04c37b10992a856cf71dfd223defff79473a89375",
+      "selection.json": "9138167094ee3dcea7deaba74f098650dacc67c7789e3cf5dbe61c4d99c9132b",
+      "ancestry.json": "7aac926d663771ccde89db95264d181b4929e75999f600131231668523105db5",
+      "members.json": "25fc4396496d3770f4633aedc5a4ead42c67e904d969453ba4c301e83fa50a84",
+      "runtime.json": "5886544da56ba83c46271ad818b0f8cc9f9d18e22a73327cfdbb8c1fafa4a6b1"
+    },
+    "joint/h3_p1": {
+      "completed.json": "841f2be35f92fdf75d6832bf16c183a92148fdc5344c966595485e7aa794e80c",
+      "predictions.csv": "1289845a854f124a007cee4409eeb40c194d5f4b4f61888b178c20f5d2512999",
+      "selection.json": "b9e84f4247d7e01f138040fc5247f964d3ccbab4078a614af675434ffdfc15ec",
+      "ancestry.json": "9f52f1118fcfaad6746f47b5c4d44bc77500d57b8cfd2b5e1c3c19ce3ab10b5a",
+      "members.json": "0833aab26cb3cc245438f2b62e16cb2369f80d7db18e96e3141cddadb80a0f35",
+      "runtime.json": "82a6106b2db7108d58030776795c000e1214900ef7aab6f66cb997bf6fb48ceb"
+    },
+    "joint/h3_p2": {
+      "completed.json": "1a94e956bd23d5cc6081bca7e20df1c0668ef1c62ae023c4e19f7b1c1631baf5",
+      "predictions.csv": "9cf7b3282e867e00108f678f4c175fd500e82a8571fe924fb5ef1e8ff7ad8e0b",
+      "selection.json": "897850e08117b3d12a2c3830f98c04af59bf8c128a9f0f590fc4cf597059318c",
+      "ancestry.json": "64926e56e670854cbf6e1be0656a9611ce1a6002b42d9a61d6c47f8a19acd4e2",
+      "members.json": "b8e32aa99ac397aa0d127c6c0e835e0a4e56fbf68b460bd4524c9e88ddcd9f3e",
+      "runtime.json": "3c6bcb35762529a656ae86d87eab219f00b13d6d50c4cbca5062bff166186e41"
+    },
+    "joint/h3_p3": {
+      "completed.json": "c7bc554c1e66e2b6826add3c1b673d7bf28f0157901357d315fe71785cbca17c",
+      "predictions.csv": "de509aa096ecc96d062f42f4c461da880f476c4224374c6839ca9817938d4f67",
+      "selection.json": "538778ab8d5345364689ce2f22d34dde0fb380022dbeb721c61af93466d5f7a7",
+      "ancestry.json": "2c911590df5b78a34cdff2e4160733973e22c423247cccf75943ae3268c2ac27",
+      "members.json": "2794b9cde79bd773fa13ecee704ebc0ef6d351324956b5eeb435bdfb159a00eb",
+      "runtime.json": "5ee789c3258b5d6b0be3822b0b4aaf57ebc9eb5ed639c61376efe3be0f6d40ec"
+    },
+    "joint/h3_p4": {
+      "completed.json": "b691f48479d140720cd447669fc412abdc419a56640834ab6aadd28e0d505f19",
+      "predictions.csv": "dfb32e817a29b173777c25c43020145907f5358b2752241ea83a5bf107605434",
+      "selection.json": "ccb58a78597cee4cac2ede361940c46727fd67982086974c310ed0d4e2ab7404",
+      "ancestry.json": "06835d1684e36605c3ca48fb7170f859142d62f53d15a507e3580e814274699f",
+      "members.json": "05d50f5af6923edf7e3ebe04f71376faecc719e38c7cf2540a090bacb631376f",
+      "runtime.json": "6f1c24e9ad29eced09b349e86ceb85f7df1bc9b6c7a9d9cc51cc34bea642e06f"
+    },
+    "joint/h4_p0": {
+      "completed.json": "ae4a59209763b68476c368de456c60db4f9efe2831dff451f9badb1cd9e4241f",
+      "predictions.csv": "0b2bcb49714b51357a6f236e5b4aa98ff2f0baff2f153727cb998e4e3dbd1458",
+      "selection.json": "d26cac3b229f7500f4b2a2a9419ab8420311e01991b6559c24e7bbbaaee072b8",
+      "ancestry.json": "046348c52d5adb7cf26f02fe50571bc4c3203517a73ba295acd6d13862e7e412",
+      "members.json": "d73c7371f17afdf43508c47d1aed40f61015428fcbfb312d351dd505a2146d2a",
+      "runtime.json": "e4223018fb1d6ee3dd002f87f89aa8d316a799d49f5c510a6c00203a8950ae86"
+    },
+    "joint/h4_p1": {
+      "completed.json": "6d6466038b4f86f85c999b031d959d3c7d0121c62352f734a0b9b0ca9baffedc",
+      "predictions.csv": "9973e3da61f3f17b5f4c72adfb06dd948e7e0d51075c15f69a8ac47b8a95e542",
+      "selection.json": "c7ddf77c90584ee94a667e1f5acf00b8dd5bb8ce82c1726764340249f52c7baa",
+      "ancestry.json": "b0134bd590c5c8fbca993746c02d6148ef0a7040dd7a206a1f62d6d0db7c9d34",
+      "members.json": "743acf8fa03e0724c9c40ecb4c84d23c84a199d0ef2b133ea242a5d18d6a7a3f",
+      "runtime.json": "7bac59e3eef3cebb14ba70bd4a05639183e621cf48bd3b8fc43a161a830db525"
+    },
+    "joint/h4_p2": {
+      "completed.json": "b5e7c2b05fbba9ab5ba85d795bce7f1fe8b8a821f2fa21505fced8003a337bac",
+      "predictions.csv": "362df6673ef8a1ca4fbb8f8a13b0039a6d55d945a9a179a4468733b7aab2e8aa",
+      "selection.json": "6c61d515ae49b0aaaafc54e3707cac7fc24ded41398399c6633ed27044621cdc",
+      "ancestry.json": "a3bc3593716825cb0ccb05f44eedc75f83afe254c212d9d732746e1cbca3910a",
+      "members.json": "d0167d539148e1a087f49d4c0e41682f2ffe49c188eb2cefcf61271022417ed5",
+      "runtime.json": "fa2f5ab9581fa12935636c68417a10eda58005116f0490620d72be684c28af55"
+    },
+    "joint/h4_p3": {
+      "completed.json": "b45bc0f9bbb694c2aebc15db75bb719b2c2d078d6c51f6d3f3d554562416cc49",
+      "predictions.csv": "d3ae0d7cd393aeca8fbecfa63873c7c927637e0858c97f0c41b8f06852b81154",
+      "selection.json": "f2c37735e60dd4c0f96e3ba6c305f0681fb6b91b4ac6e78d0c8869afea917ce8",
+      "ancestry.json": "73781cfa40b3ec6e2c2b6890176fb54de882a9e21eb3c3d5cb57a0126ec4022e",
+      "members.json": "17b4e282263694f20bcdfeb374dc5b4069cb8d8ba6cba87db36d08729591c6d8",
+      "runtime.json": "0a481f6c9f1b6c312442c9fca85bf3c7e43795b7556bd42f6649d92b85b167a3"
+    },
+    "joint/h4_p4": {
+      "completed.json": "15bce5c8c46a4e9f977180d04f37fb632b6994443ec9e539d91d288ab647812e",
+      "predictions.csv": "cd60cd2d3fdbdfb930755bc2e09b171183b7e5c26cc28438bc2247d0b0510879",
+      "selection.json": "51a24225fae08030cb146af7ba8f899bc637ea31df44d6904b12e6fc5efefc50",
+      "ancestry.json": "b24f1dafdc72f44d844d24678c4286ae8980a9b001f60d89b53bb07d3700bef0",
+      "members.json": "3caf31a456a855107766a9790a9ace5e463c6a8c5c5be5fdda7f117ec9b26adb",
+      "runtime.json": "dfc67e664aeba76e6c63aea69876d6b877a9b8ae26b0001edc055adda66a8090"
+    }
+  },
+  "grouping_sha256": {
+    "protocol.json": "50224f674913cabdd10fe1d9772e151c8c31ce0e705b424fc0825157ebe6484a",
+    "manifest.csv": "10f72322fdf042a847a5e1d1cc32be9c7eb4b07c738cb010db829c11e18120e9",
+    "hla_groups.csv": "8179d2d15f0a7341e765aa29b04e7eb8a81e37598e68e2fafaae8250fed102fe",
+    "coverage.csv": "a4d6efe16ced3e9de8fbfb5ead876bb88f661f4c2ec976a1e379b374dd36c50d"
+  },
+  "code_sha256": {
+    "pepstab/final_transfer.py": "aba5a72e1183a93df707bb2350d32a78b73a6a5cf44360ba73a3268256a9cb9d",
+    "scripts/final_transfer.py": "c20906775caa14616c03d94a36f34ce4b6925292edb506a9aa03ec9afb88e801",
+    "scripts/final_transfer_pipeline.py": "e98e5e1953d52745fcca5da7cdd164275ed27500575bdb8d56638a04facc31ff",
+    "scripts/final_transfer_report.py": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca",
+    "modal_app/final_transfer.py": "8603bf6989aa92a553df751aba28673cfc424efca3979205c978126c100e48c4",
+    "tests/test_final_transfer.py": "25278ee2e92d0d0f886c2ae0466479c3afe15a0a9ca807f76dd323d50f768886",
+    "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551",
+    "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
+    "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
+    "scripts/final_runtime_guard.py": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627",
+    "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+    "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
+    "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
+    "tests/test_final_runtime_guard.py": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b",
+    "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
+    "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
+    "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+    "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+    "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3"
+  },
+  "implementation_revision": {
+    "version": 2,
+    "at_utc": "2026-10-12T13:26:57.088288+00:00",
+    "pilot_protocol_sha256": "9c000ed2217e122977218d1049a88fdd3cddddc0b65c3ab91801afad930defa7",
+    "amendment_path": "reports/finalization/resources/transfer_smoke/implementation_amendment.json",
+    "amendment_sha256": "cb8786aa359123f02a59170d240a9ae9685d5f90f1031cf4c714317e52eb982f",
+    "changes": {
+      "scripts/final_runtime_guard.py": {
+        "old": "d1b247769f51e17d39ca72f4ff29dec25cdb8e283331ab7c510cd9b7f2a0a673",
+        "new": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627"
+      },
+      "tests/test_final_runtime_guard.py": {
+        "old": "0c40c13fa331e4651c4c471ce387afce6aa2258b9c8ad3bb189c8854d1473f21",
+        "new": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b"
+      }
+    },
+    "scientific_specification_unchanged": true
+  }
+}

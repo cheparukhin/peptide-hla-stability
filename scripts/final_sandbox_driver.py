@@ -19,11 +19,13 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 CPU_RATE = .00003942
 GIB_RATE = .00000667
-LIMITS = {'transfer_report': (2, 8192, 28800, 5),
+LIMITS = {'transfer_recovery': (4, 16384, 21600, 10),
+          'transfer_report': (2, 8192, 28800, 5),
           'hybrid_pilot': (2, 8192, 7200, 2),
           'hybrid_main': (4, 16384, 43200, 20),
           'hybrid_report': (2, 8192, 28800, 5)}
 OUTER_STOP = '2026-10-14T14:15:17.567539+00:00'
+TRANSFER_STOP = '2026-10-13T15:32:19.924192+00:00'
 
 
 def now():
@@ -98,7 +100,7 @@ def validate_plan(path, *, admission=False):
         raise ValueError('approved known phase required')
     cpu, memory, wall, cap = LIMITS[phase]
     r = auth['resources']
-    expected_workers = 2 if phase == 'hybrid_main' else 1
+    expected_workers = 2 if phase in ('hybrid_main','transfer_recovery') else 1
     if (type(r.get('cpu_cores')) is not int
             or any(type(r.get(k)) is not int for k in ('memory_mib', 'numerical_threads', 'max_workers'))
             or r != dict(cpu_cores=cpu, memory_mib=memory, numerical_threads=2, max_workers=expected_workers)
@@ -112,7 +114,7 @@ def validate_plan(path, *, admission=False):
         raise ValueError('exact named provider resources required')
     stop, work = stamp(plan['provider_stop_deadline_utc']), stamp(auth['deadline_utc'])
     created = stamp(plan['created_at_utc'])
-    if not created < work <= stop - 120 or stop > stamp(OUTER_STOP):
+    if not created < work <= stop - 120 or stop > stamp(TRANSFER_STOP if phase=='transfer_recovery' else OUTER_STOP):
         raise ValueError('deadline or shutdown cushion invalid')
     if stop - created > auth['fit_wall_seconds'] + 900:
         raise ValueError('setup/lifecycle allowance exceeds bound')
@@ -137,10 +139,14 @@ def validate_plan(path, *, admission=False):
                 'phase_cap_usd', 'reserved_phase_usd', 'conservative_spend_usd'):
         if type(accounting.get(key)) not in (int, float) or not math.isfinite(accounting[key]) or accounting[key] < 0:
             raise ValueError('finite nonnegative accounting required')
+    other=accounting.get('other_scopes_reserved_usd',0)
+    if type(other) not in (int,float) or not math.isfinite(other) or other<0:raise ValueError('invalid other-scope reservation')
+    if phase=='transfer_recovery' and (accounting['future_envelope_usd']!=10 or other!=35):
+        raise ValueError('separate recovery10 and future35 reservations required')
     if (accounting.get('schema') != 'final_cloud_accounting.1'
             or accounting['prior_conservative_liability_usd'] < 5.1793820030564595
-            or not 32 <= accounting['future_envelope_usd'] <= 35 or accounting['total_ceiling_usd'] > 100
-            or accounting['prior_conservative_liability_usd'] + accounting['future_envelope_usd'] > accounting['total_ceiling_usd']
+            or not (accounting['future_envelope_usd']==10 if phase=='transfer_recovery' else 32 <= accounting['future_envelope_usd'] <= 35) or accounting['total_ceiling_usd'] > 100
+            or accounting['prior_conservative_liability_usd'] + accounting['future_envelope_usd'] + other > accounting['total_ceiling_usd']
             or accounting['phase'] != phase or accounting['phase_cap_usd'] != cap
             or accounting['reserved_phase_usd'] < cap
             or accounting['conservative_spend_usd'] + accounting['reserved_phase_usd'] > accounting['future_envelope_usd']):

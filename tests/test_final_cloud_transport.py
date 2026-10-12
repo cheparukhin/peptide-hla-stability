@@ -217,3 +217,24 @@ def test_duplicate_json_manifest_refused(tmp_path,monkeypatch):
     remote['/'+auth['run_directory']+'/exit_receipt.json']=json.dumps(receipt).encode()
     provider(monkeypatch,remote=remote,tags=tags)
     with pytest.raises(ValueError):asyncio.run(t.download(path,terminal,root=tmp_path))
+
+
+@pytest.mark.parametrize('name,allowed',[
+    ('joint/h4_p0/completed.json',True),('joint/h4_p4/member_predictions.npz',True),
+    ('recovery_completion.json',True),('joint/h3_p4/completed.json',False),
+    ('joint/h4_p5/completed.json',False),('results/REPORT.md',False),('checkpoints/joint/h4_p0/call.json',False)])
+def test_recovery_outputs_have_exact_new_scope(tmp_path,name,allowed):
+    auth={'phase':'transfer_recovery'}
+    assert t.allowed_output(t.c.CLOUD_TRANSFER_ROOT+'/'+name,auth,tmp_path)==allowed
+
+
+def test_successor_report_outputs_use_completed_cloud_scope(tmp_path):
+    auth={'phase':'transfer_report','scope_root':t.c.CLOUD_TRANSFER_ROOT}
+    assert t.allowed_output(t.c.CLOUD_TRANSFER_ROOT+'/results/REPORT.md',auth,tmp_path)
+    assert not t.allowed_output(t.c.TRANSFER_ROOT+'/results/REPORT.md',auth,tmp_path)
+
+
+def test_legacy_report_auth_scope_keeps_original_transfer_results(tmp_path):
+    auth={'phase':'transfer_report','scope_root':t.c.SCOPE}
+    assert t.allowed_output(t.c.TRANSFER_ROOT+'/results/REPORT.md',auth,tmp_path)
+    assert not t.allowed_output(t.c.CLOUD_TRANSFER_ROOT+'/results/REPORT.md',auth,tmp_path)

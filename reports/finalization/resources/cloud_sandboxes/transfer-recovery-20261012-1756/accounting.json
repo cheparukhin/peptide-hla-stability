@@ -1,0 +1,16 @@
+{
+  "schema": "final_cloud_accounting.1",
+  "phase": "transfer_recovery",
+  "prior_conservative_liability_usd": 5.1793820030564595,
+  "future_envelope_usd": 10,
+  "other_scopes_reserved_usd": 35,
+  "total_ceiling_usd": 100,
+  "phase_cap_usd": 10,
+  "reserved_phase_usd": 10,
+  "conservative_spend_usd": 0,
+  "reconciliation": {
+    "path": "reports/finalization/resources/transfer_durable/interruption_20261012_172654/reconciliation.json",
+    "sha256": "4bde0316c72a8630c3e4b2b22f0b848dd5c48b0a0a67719396a9df1fee5532ca"
+  },
+  "interpretation": "Separate recovery reservation;35USD future finalization envelope remains reserved. Not invoiced spend or a live account balance."
+}

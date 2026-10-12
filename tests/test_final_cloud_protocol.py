@@ -539,3 +539,44 @@ def test_child_cleanup_refuses_unowned_process_group_without_signalling(monkeypa
     with pytest.raises(RuntimeError,match='owned cleanup incomplete'):
         runner.cleanup_children([Child()],grace_seconds=0)
     assert signals==[]
+
+
+def test_recovery_gate_is_exact_five_cells_and_separate_budget(tmp_path,monkeypatch):
+    auth=authorization_fixture(tmp_path,monkeypatch)
+    historical=c.read(tmp_path/'predecessor.json')
+    monkeypatch.setattr(c,'verify_transfer_failure',lambda reference,root:historical)
+    monkeypatch.setattr(c,'verify_input_manifest',lambda reference,root:{'files':auth['sources']})
+    auth.update(phase='transfer_recovery',scope_root=c.CLOUD_TRANSFER_ROOT,protocol_hash=c.TRANSFER_HASH,
+        cells=list(c.RECOVERY_CELLS),ranker_backend='local',n_fits=2000,phase_cap_usd=10,fit_wall_seconds=21600,
+        resources=dict(cpu_cores=4,memory_mib=16384,numerical_threads=2,max_workers=2))
+    account=c.read(tmp_path/'account.json');account.update(phase='transfer_recovery',phase_cap_usd=10,
+        reserved_phase_usd=10,future_envelope_usd=10,other_scopes_reserved_usd=35)
+    auth['cloud_accounting']=save(tmp_path,'account.json',account)
+    check=lambda:c.validate_authorization('authorization.json',root=tmp_path,clock=lambda:c.timestamp('2026-10-12T18:00:00+00:00'))
+    save(tmp_path,'authorization.json',auth);assert check()['n_fits']==2000
+    for key,value in [('cells',list(c.RECOVERY_CELLS[:-1])),('n_fits',2001),('ranker_backend','modal'),
+            ('deadline_utc','2026-10-13T15:32:20+00:00'),('scope_root',c.SCOPE)]:
+        save(tmp_path,'authorization.json',dict(auth,**{key:value}))
+        with pytest.raises(ValueError):check()
+
+
+def test_recovery_dispatch_uses_unchanged_worker_and_native_attempt_owner(tmp_path,monkeypatch):
+    monkeypatch.setattr(runner,'ROOT',tmp_path)
+    auth=dict(phase='transfer_recovery',_sha256='a'*64)
+    assert runner.phase_jobs('transfer_recovery')==[('joint',f'h4_p{i}') for i in range(5)]
+    command=runner.child_command(auth,Path('/approved'),('joint','h4_p0'))
+    assert command[1]==str(tmp_path/'scripts/final_transfer.py') and command[2]=='run-cell'
+    assert command[-4:]==['--regime','joint','--cell','h4_p0']
+    preserved=tmp_path/c.CLOUD_TRANSFER_ROOT/'joint/h3_p4';preserved.mkdir(parents=True)
+    runner.require_fresh_outputs(auth)
+    directory=tmp_path/c.CLOUD_TRANSFER_ROOT/'joint/h4_p0';directory.mkdir()
+    save(tmp_path,str((directory/'attempt.json').relative_to(tmp_path)),dict(pid=17,authorization_sha256='a'*64))
+    save(tmp_path,str((directory/'exit_receipt.json').relative_to(tmp_path)),dict(status='complete',exit_code=0))
+    save(tmp_path,str((directory/'completed.json').relative_to(tmp_path)),dict(n_fits=400,protocol_hash=c.TRANSFER_HASH))
+    monkeypatch.setattr(c,'verify_transfer_cells',lambda *args:400)
+    from types import SimpleNamespace
+    assert runner.job_receipt(auth,('joint','h4_p0'),SimpleNamespace(pid=17))==400
+    with pytest.raises(ValueError,match='completion'):runner.job_receipt(auth,('joint','h4_p0'),SimpleNamespace(pid=18))
+    with pytest.raises(ValueError,match='existing'):runner.require_fresh_outputs(auth)
+    report=runner.child_command(dict(phase='transfer_report',scope_root=c.CLOUD_TRANSFER_ROOT),Path('/approved'),(None,None))
+    assert report[-1]==str(tmp_path/c.CLOUD_TRANSFER_ROOT)

@@ -17,12 +17,15 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = '/Users/cheparukhin/ai_science_hack'
 SCOPE = 'reports/finalization/hybrids_cloud_v1'
 TRANSFER_ROOT = 'reports/finalization/transfer_recovery_v2'
+CLOUD_TRANSFER_ROOT = 'reports/finalization/transfer_cloud_recovery'
+RECOVERY_CELLS = tuple(f'joint/h4_p{i}' for i in range(5))
 SCIENCE_HASH = 'c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955'
 TRANSFER_HASH = 'bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d'
 TRANSFER_AUTH_HASH = 'd00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c'
 TRANSFER_DEADLINE = '2026-10-13T15:32:19.924192+00:00'
 OUTER_DEADLINE = '2026-10-14T14:15:17.567539+00:00'
-PHASES = {'transfer_report': (2,8192,1,28800,5,0),
+PHASES = {'transfer_recovery': (4,16384,2,21600,10,2000),
+          'transfer_report': (2,8192,1,28800,5,0),
           'hybrid_pilot': (2,8192,1,7200,2,12),
           'hybrid_main': (4,16384,2,43200,20,480),
           'hybrid_report': (2,8192,1,28800,5,0)}
@@ -125,6 +128,82 @@ def verify_input_manifest(reference, root=ROOT):
     return item
 
 
+def verify_transfer_cells(scope,hashes,expected_cells,root=ROOT):
+    if set(hashes)!=set(expected_cells):raise ValueError('transfer cell coverage differs')
+    total=0
+    expected_files={'predictions.csv','selection.json','ancestry.json','members.json','runtime.json','raw_inner_predictions.csv','raw_final_predictions.csv','member_predictions.npz'}
+    for cell,digest in hashes.items():
+        done=read(bound({'path':f'{scope}/{cell}/completed.json','sha256':digest},root))
+        regime,name=cell.split('/');count=166 if regime=='hla' else 400
+        if any(done.get(k)!=v for k,v in dict(status='complete',regime=regime,cell=name,protocol_hash=TRANSFER_HASH,n_fits=count).items()) or set(done.get('sha256',{}))!=expected_files:
+            raise ValueError('retained transfer cell identity/count changed')
+        for name,digest in done['sha256'].items():bound({'path':f'{scope}/{cell}/{name}','sha256':digest},root)
+        total+=count
+    return total
+
+
+def verify_transfer_failure(reference,root=ROOT):
+    """A failed owner with 25 retained cells authorizes only five fresh cells."""
+    item=read(bound(reference,root))
+    expected=dict(schema='finalization_portable_transfer_failure.1',status='failed_scope_closed',
+        preserved_fits=8830,new_discarded_completed_fits=794,discarded_partial_completed_fits=2579,
+        remaining_cells=list(RECOVERY_CELLS))
+    if any(item.get(k)!=v for k,v in expected.items()):raise ValueError('exact failed recovery closure/counts required')
+    owner=item.get('owner',{})
+    if (owner.get('pid')!=59308 or owner.get('absent') is not True or owner.get('children_absent') is not True
+            or owner.get('launchd_label')!='org.pepstab.transfer-recovery-v2-20261012'
+            or any(not owner.get(k) for k in ('host','boot_id','command','started_at_utc'))):
+        raise ValueError('failed Mac owner and child absence required')
+    old=read(bound(item['authorization'],root));attempt=read(bound(item['attempt'],root))
+    failed=read(bound(item['exit'],root));state=read(bound(item['state'],root))
+    if item['authorization']['sha256']!=TRANSFER_AUTH_HASH or old.get('approved') is not True:
+        raise ValueError('original transfer authorization changed')
+    for document in (failed,state):
+        if any(document.get(k)!=v for k,v in dict(status='failed',pid=59308,protocol_hash=TRANSFER_HASH,
+            authorization_sha256=TRANSFER_AUTH_HASH,deadline_utc=TRANSFER_DEADLINE,cleanup_error=None).items()):
+            raise ValueError('truthful failed transfer exit/state required')
+    if failed.get('schema')!='final_transfer_durable_exit.1' or failed.get('exit_code')!=1:
+        raise ValueError('failed exact owner exit required')
+    if attempt.get('pid')!=59308 or attempt.get('authorization_sha256')!=TRANSFER_AUTH_HASH:
+        raise ValueError('exact failed transfer attempt required')
+    if not (timestamp(owner['started_at_utc'])<=timestamp(attempt['started_at_utc'])<=timestamp(owner['started_at_utc'])+300
+            and timestamp(attempt['started_at_utc'])<=timestamp(failed['finished_at_utc'])<=timestamp(TRANSFER_DEADLINE)
+            and timestamp(failed['finished_at_utc'])<=timestamp(item['checked_at_utc'])):
+        raise ValueError('failed owner closure chronology changed')
+    verify_files(old['sources'],root);verify_files(item['evidence_files'],root)
+    if verify_transfer_cells(TRANSFER_ROOT,item['preserved_cell_hashes'],CELLS[:25],root)!=8830:
+        raise ValueError('exact preserved count required')
+    # New root receives complete cell files only; partial checkpoints never enter it.
+    verify_transfer_cells(CLOUD_TRANSFER_ROOT,item['preserved_cell_hashes'],CELLS[:25],root)
+    if sha(path_in_root(f'{CLOUD_TRANSFER_ROOT}/protocol.json',root))!=sha(path_in_root(f'{TRANSFER_ROOT}/protocol.json',root)):
+        raise ValueError('original transfer scientific protocol changed')
+    return item
+
+
+def verify_cloud_transfer_closure(reference,root=ROOT):
+    item=read(bound(reference,root))
+    expected=dict(schema='finalization_portable_cloud_transfer_closure.1',status='complete',scope_root=CLOUD_TRANSFER_ROOT,
+        protocol_hash=TRANSFER_HASH,retained_fits=10830,preserved_fits=8830,new_fits=2000,
+        discarded_partial_completed_fits=2579,known_completed_including_discarded=13409,unknown_remote_fits=12,unknown_local_fits=True)
+    if any(item.get(k)!=v for k,v in expected.items()):raise ValueError('exact completed cloud transfer closure required')
+    previous=verify_transfer_failure(item['failed_predecessor'],root)
+    if item['authorization']!=previous['authorization']:raise ValueError('original failed owner provenance changed')
+    recovery=read(bound(item['recovery_authorization'],root))
+    certificate=verify_phase_certificate(item['phase_certificate'],'transfer_recovery',root)
+    if (certificate['authorization_sha256']!=item['recovery_authorization']['sha256']
+            or recovery.get('portable_predecessor')!=item['failed_predecessor'] or recovery.get('cells')!=list(RECOVERY_CELLS)
+            or recovery.get('scope_root')!=CLOUD_TRANSFER_ROOT or recovery.get('n_fits')!=2000):
+        raise ValueError('cloud recovery authorization/phase linkage changed')
+    if any(item['completed_cell_hashes'].get(cell)!=digest for cell,digest in previous['preserved_cell_hashes'].items()):
+        raise ValueError('preserved cells changed during cloud recovery')
+    if verify_transfer_cells(CLOUD_TRANSFER_ROOT,item['completed_cell_hashes'],CELLS,root)!=10830:
+        raise ValueError('all thirty completed transfer cells required')
+    aggregate=read(path_in_root(f'{CLOUD_TRANSFER_ROOT}/recovery_completion.json',root))
+    if aggregate.get('completed_cell_hashes')!=item['completed_cell_hashes']:
+        raise ValueError('cloud aggregate cell linkage changed')
+    return item
+
+
 def verify_predecessor(reference, root=ROOT):
     """Authenticate Mac closure and hash-check its already-audited evidence.
 
@@ -134,6 +213,8 @@ def verify_predecessor(reference, root=ROOT):
     completion itself binds all 30 cells and their original historical audits.
     """
     item = read(bound(reference, root))
+    if item.get('schema') == 'finalization_portable_cloud_transfer_closure.1':
+        return verify_cloud_transfer_closure(reference,root)
     if item.get('schema') != 'finalization_portable_transfer_closure.1' or item.get('status') != 'complete':
         raise ValueError('successful portable transfer closure required')
     owner = item.get('owner', {})
@@ -218,7 +299,7 @@ def verify_phase_certificate(reference, phase, root=ROOT):
     item = read(bound(reference, root))
     count = PHASES[phase][-1]
     expected = dict(schema='finalization_sandbox_phase_completion.1',status='complete',phase=phase,
-                    protocol_hash=TRANSFER_HASH if phase=='transfer_report' else SCIENCE_HASH,n_fits=count)
+                    protocol_hash=TRANSFER_HASH if phase in ('transfer_report','transfer_recovery') else SCIENCE_HASH,n_fits=count)
     if any(item.get(k) != v for k,v in expected.items()):
         raise ValueError('exact successful cloud phase certificate required')
     terminal = item.get('provider_terminal', {})
@@ -247,6 +328,16 @@ def verify_phase_certificate(reference, phase, root=ROOT):
         audit = read(path_in_root(audits[0],root))
         if any(audit.get(k) != v for k,v in dict(schema='final_cloud_pilot_audit.1',status='passed',n_fits=12,held_scores_computed=False,reuse_into_scientific=False,saved_model_predictions_replayed=True,protocol_hash=SCIENCE_HASH,authorization_sha256=item['authorization_sha256']).items()):
             raise ValueError('pilot unscored saved-model audit changed')
+    if phase=='transfer_recovery':
+        name=f'{CLOUD_TRANSFER_ROOT}/recovery_completion.json'
+        if name not in manifest['files']:raise ValueError('cloud recovery semantic audit missing')
+        aggregate=read(path_in_root(name,root))
+        expected_aggregate=dict(schema='final_transfer_cloud_recovery_completion.1',status='complete',protocol_hash=TRANSFER_HASH,
+            n_retained_fits=10830,n_new_fits=2000,preserved_fits=8830,discarded_partial_completed_fits=2579,
+            known_completed_including_discarded=13409,semantic_audit_passed=True,authorization_sha256=item['authorization_sha256'])
+        if any(aggregate.get(k)!=v for k,v in expected_aggregate.items()):raise ValueError('cloud recovery audit/counts changed')
+        verify_transfer_cells(CLOUD_TRANSFER_ROOT,aggregate['completed_cell_hashes'],CELLS,root)
+        if timestamp(item['finished_at_utc'])>timestamp(TRANSFER_DEADLINE):raise ValueError('original transfer deadline exceeded')
     finite_number(item['elapsed_fit_seconds'])
     if not timestamp(item['started_at_utc']) <= timestamp(item['finished_at_utc']) <= timestamp(OUTER_DEADLINE):
         raise ValueError('phase chronology exceeds fixed expiry')
@@ -257,7 +348,8 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
     path = path_in_root(path,root)
     auth = read(path)
     phase = phase or auth.get('phase')
-    if phase not in PHASES or auth.get('schema') != 'final_cloud_phase_authorization.1' or auth.get('approved') is not True or auth.get('phase') != phase or auth.get('scope_root') != SCOPE:
+    expected_scope=CLOUD_TRANSFER_ROOT if phase=='transfer_recovery' else auth.get('scope_root') if phase=='transfer_report' and auth.get('scope_root')==CLOUD_TRANSFER_ROOT else SCOPE
+    if phase not in PHASES or auth.get('schema') != 'final_cloud_phase_authorization.1' or auth.get('approved') is not True or auth.get('phase') != phase or auth.get('scope_root') != expected_scope:
         raise ValueError('approved exact cloud phase/scope required')
     cpu,memory,workers,max_wall,max_cap,_ = PHASES[phase]
     resources = dict(cpu_cores=cpu,memory_mib=memory,numerical_threads=2,max_workers=workers)
@@ -268,7 +360,8 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
     if type(auth['fit_wall_seconds']) is not int or auth['fit_wall_seconds'] > max_wall or auth['phase_cap_usd'] != max_cap:
         raise ValueError('phase wall/budget cap exceeded')
     current = datetime.now(timezone.utc).timestamp() if clock is None else clock()
-    if not current < timestamp(auth['deadline_utc']) <= timestamp(OUTER_DEADLINE):
+    phase_deadline=TRANSFER_DEADLINE if phase=='transfer_recovery' else OUTER_DEADLINE
+    if not current < timestamp(auth['deadline_utc']) <= timestamp(phase_deadline):
         raise ValueError('cloud deadline expired or extended')
     if (auth.get('run_directory') != f"reports/finalization/cloud/remote/{auth.get('phase_nonce')}"
             or not re.fullmatch(r'[A-Za-z0-9_-]{12,128}',str(auth.get('phase_nonce','')))
@@ -282,11 +375,16 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
     manifest = verify_input_manifest(auth['input_manifest'],root) if verify_inputs else read(bound(auth['input_manifest'],root))
     if any(manifest['files'].get(k) != v for k,v in sources.items()):
         raise ValueError('executed source absent from immutable input manifest')
-    predecessor = verify_predecessor(auth['portable_predecessor'],root)
+    predecessor = verify_transfer_failure(auth['portable_predecessor'],root) if phase=='transfer_recovery' else verify_predecessor(auth['portable_predecessor'],root)
+    if phase=='transfer_recovery':
+        if any(auth.get(k)!=v for k,v in dict(protocol_hash=TRANSFER_HASH,cells=list(RECOVERY_CELLS),ranker_backend='local',n_fits=2000).items()):
+            raise ValueError('exact five-cell original scientific authorization required')
+    if phase=='transfer_report' and (expected_scope==CLOUD_TRANSFER_ROOT)!=(predecessor.get('schema')=='finalization_portable_cloud_transfer_closure.1'):
+        raise ValueError('report root differs from exact completed transfer predecessor')
     historical_auth = read(bound(predecessor['authorization'],root))
     if any(sources.get(k) != h for k,h in historical_auth['sources'].items()):
         raise ValueError('all historical transfer sources must be execution-bound')
-    if phase != 'transfer_report':
+    if phase not in ('transfer_report','transfer_recovery'):
         original_protocol = read(path_in_root('reports/finalization/hybrids_recovery_v2/protocol.json',root))
         staged_protocol = path_in_root(f'{SCOPE}/protocol.json',root)
         if (sha(staged_protocol) != sha(path_in_root('reports/finalization/hybrids_recovery_v2/protocol.json',root))
@@ -298,13 +396,17 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
         raise ValueError('phase accounting schema/identity changed')
     for key in ('prior_conservative_liability_usd','future_envelope_usd','total_ceiling_usd','phase_cap_usd','reserved_phase_usd','conservative_spend_usd'):
         finite_number(account[key])
+    other=account.get('other_scopes_reserved_usd',0)
+    finite_number(other)
+    if phase=='transfer_recovery' and (account['future_envelope_usd']!=10 or other!=35):
+        raise ValueError('recovery10 and future35 reservations must remain separate')
     if (account['prior_conservative_liability_usd'] < 5.1793820030564595 or account['future_envelope_usd'] > 35
-            or account['total_ceiling_usd'] > 100 or account['prior_conservative_liability_usd'] + account['future_envelope_usd'] > account['total_ceiling_usd']
+            or account['total_ceiling_usd'] > 100 or account['prior_conservative_liability_usd'] + account['future_envelope_usd'] + other > account['total_ceiling_usd']
             or account['phase_cap_usd'] != auth['phase_cap_usd'] or account['reserved_phase_usd'] < auth['phase_cap_usd']
             or account['conservative_spend_usd'] + account['reserved_phase_usd'] > account['future_envelope_usd']):
         raise ValueError('accounting under-reserved or exceeds authorized ceiling')
     certificates = auth.get('phase_certificates',{})
-    required = () if phase in ('transfer_report','hybrid_pilot') else ('hybrid_pilot',) if phase=='hybrid_main' else ('hybrid_pilot','hybrid_main')
+    required = () if phase in ('transfer_report','transfer_recovery','hybrid_pilot') else ('hybrid_pilot',) if phase=='hybrid_main' else ('hybrid_pilot','hybrid_main')
     if set(certificates) != set(required):
         raise ValueError('exact preceding phase certificates required')
     checked = {key:verify_phase_certificate(certificates[key],key,root) for key in required}

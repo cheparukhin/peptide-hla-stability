@@ -33,6 +33,7 @@ def verify_environment():
 
 
 def phase_jobs(phase):
+    if phase=='transfer_recovery':return [('joint',f'h4_p{i}') for i in range(5)]
     if phase=='hybrid_pilot':return [(0,'R0'),(0,'R5')]
     if phase=='hybrid_main':return [(fold,rep) for fold in range(5) for rep in ('R0','R5')]
     return [(None,None)]
@@ -40,8 +41,13 @@ def phase_jobs(phase):
 
 def child_command(auth,approved,job):
     phase=auth['phase'];out=ROOT/contract.SCOPE
+    if phase=='transfer_recovery':
+        regime,cell=job
+        return [sys.executable,str(ROOT/'scripts/final_transfer.py'),'run-cell','--out-dir',str(ROOT/contract.CLOUD_TRANSFER_ROOT),
+                '--approved',str(approved),'--regime',regime,'--cell',cell]
     if phase=='transfer_report':
-        return [sys.executable,str(ROOT/'scripts/final_transfer_report.py'),'--out-dir',str(ROOT/contract.TRANSFER_ROOT)]
+        report_root=contract.CLOUD_TRANSFER_ROOT if auth.get('scope_root')==contract.CLOUD_TRANSFER_ROOT else contract.TRANSFER_ROOT
+        return [sys.executable,str(ROOT/'scripts/final_transfer_report.py'),'--out-dir',str(ROOT/report_root)]
     if phase=='hybrid_report':
         return [sys.executable,str(ROOT/'scripts/final_hybrids_cloud_report.py'),'--out-dir',str(out),'--approved',str(approved)]
     fold,rep=job
@@ -247,6 +253,16 @@ def cleanup_children(active,*,grace_seconds=10):
 
 
 def job_receipt(auth,job,child):
+    if auth['phase']=='transfer_recovery':
+        regime,cell=job;directory=ROOT/contract.CLOUD_TRANSFER_ROOT/regime/cell
+        attempt=contract.read(directory/'attempt.json');receipt=contract.read(directory/'exit_receipt.json')
+        done=contract.read(directory/'completed.json')
+        if (attempt.get('pid')!=child.pid or attempt.get('authorization_sha256')!=auth['_sha256']
+                or receipt.get('status')!='complete' or receipt.get('exit_code')!=0
+                or done.get('n_fits')!=400 or done.get('protocol_hash')!=contract.TRANSFER_HASH):
+            raise ValueError('exact original transfer worker completion required')
+        contract.verify_transfer_cells(contract.CLOUD_TRANSFER_ROOT,{f'{regime}/{cell}':contract.sha(directory/'completed.json')},[f'{regime}/{cell}'])
+        return 400
     if auth['phase'] not in ('hybrid_pilot','hybrid_main'):return 0
     fold,rep=job;pilot=auth['phase']=='hybrid_pilot'
     directory=ROOT/contract.SCOPE/('pilot' if pilot else '')/f'fold_{fold}'/rep
@@ -263,7 +279,8 @@ def job_receipt(auth,job,child):
 
 def require_fresh_outputs(auth):
     phase=auth['phase'];out=ROOT/contract.SCOPE
-    if phase=='transfer_report':paths=[ROOT/contract.TRANSFER_ROOT/'results']
+    if phase=='transfer_recovery':paths=[ROOT/contract.CLOUD_TRANSFER_ROOT/cell for cell in contract.RECOVERY_CELLS]+[ROOT/contract.CLOUD_TRANSFER_ROOT/'recovery_completion.json']
+    elif phase=='transfer_report':paths=[ROOT/(contract.CLOUD_TRANSFER_ROOT if auth.get('scope_root')==contract.CLOUD_TRANSFER_ROOT else contract.TRANSFER_ROOT)/'results']
     elif phase=='hybrid_pilot':paths=[out/'pilot']
     elif phase=='hybrid_main':paths=[out/f'fold_{fold}' for fold in range(5)]
     else:paths=[out/name for name in ('predictions.csv','scores.csv','comparisons.csv','audit.json','REPORT.md','runtime_summary.json','bootstrap_min20.csv','bootstrap_min50.csv')]
@@ -273,7 +290,8 @@ def require_fresh_outputs(auth):
 
 def output_files(auth,run_dir):
     phase=auth['phase'];out=ROOT/contract.SCOPE
-    if phase=='transfer_report':directories=[ROOT/contract.TRANSFER_ROOT/'results']
+    if phase=='transfer_recovery':directories=[ROOT/contract.CLOUD_TRANSFER_ROOT/cell for cell in contract.RECOVERY_CELLS]
+    elif phase=='transfer_report':directories=[ROOT/(contract.CLOUD_TRANSFER_ROOT if auth.get('scope_root')==contract.CLOUD_TRANSFER_ROOT else contract.TRANSFER_ROOT)/'results']
     elif phase=='hybrid_pilot':directories=[out/'pilot']
     elif phase=='hybrid_main':directories=[out/f'fold_{fold}' for fold in range(5)]
     else:directories=[]
@@ -283,6 +301,7 @@ def output_files(auth,run_dir):
                'per_allele_scores.csv','per_fold_scores.csv','historical_descriptive_scores.csv','runtime_summary.json','REPORT.md','audit.json']
         files.extend(out/name for name in names)
     if phase=='hybrid_pilot':files.append(run_dir/'pilot_audit.json')
+    if phase=='transfer_recovery':files.append(ROOT/contract.CLOUD_TRANSFER_ROOT/'recovery_completion.json')
     if not files or any(p.is_symlink() or not p.is_file() for p in files):
         raise ValueError('missing or unsafe phase outputs')
     return {str(p.relative_to(ROOT)):contract.sha(p) for p in sorted(files)}
@@ -302,6 +321,32 @@ def audit_pilot(approved,destination):
     contract.exclusive_json(destination,dict(schema='final_cloud_pilot_audit.1',status='passed',n_fits=12,
         held_scores_computed=False,reuse_into_scientific=False,saved_model_predictions_replayed=True,
         protocol_hash=contract.SCIENCE_HASH,authorization_sha256=auth['_sha256'],runtime=telemetry,finished_at_utc=contract.now()))
+    contract.durable_sync()
+
+
+def audit_transfer_recovery(approved):
+    """Unchanged transfer semantic audit, without fitting or bootstrap reporting."""
+    from scripts.final_transfer import validate_frozen
+    from scripts.final_transfer_report import audit_cell
+    from pepstab.final_transfer import outer_cells
+    from threadpoolctl import threadpool_limits
+    auth=contract.validate_authorization(approved,'transfer_recovery')
+    if os.environ.get('FINAL_CLOUD_AUTH_SHA256')!=auth['_sha256']:
+        raise ValueError('transfer audit requires released supervisor context')
+    out=ROOT/contract.CLOUD_TRANSFER_ROOT;hashes={}
+    with threadpool_limits(limits=2):
+        frame,protocol=validate_frozen(out)
+        for regime,cell,fit,held in outer_cells(frame):
+            audit_cell(frame,fit,held,regime,cell,out/regime/cell,protocol)
+            hashes[f'{regime}/{cell}']=contract.sha(out/regime/cell/'completed.json')
+    if set(hashes)!=set(contract.CELLS) or any(hashes[k]!=v for k,v in auth['_predecessor']['preserved_cell_hashes'].items()):
+        raise ValueError('recovered scope or preserved cells changed')
+    contract.exclusive_json(out/'recovery_completion.json',dict(schema='final_transfer_cloud_recovery_completion.1',
+        status='complete',protocol_hash=contract.TRANSFER_HASH,n_retained_fits=10830,n_new_fits=2000,
+        preserved_fits=8830,discarded_partial_completed_fits=2579,known_completed_including_discarded=13409,
+        unknown_remote_fits=12,unknown_local_fits=True,semantic_audit_passed=True,
+        authorization_sha256=auth['_sha256'],failed_predecessor=auth['portable_predecessor'],
+        completed_cell_hashes=hashes,finished_at_utc=contract.now()))
     contract.durable_sync()
 
 
@@ -329,7 +374,7 @@ def run_phase(approved,*,startup_wait_seconds=300,stream=sys.stdin,popen=subproc
     for sig in previous:signal.signal(sig,stop)
     base=dict(schema='final_cloud_phase_exit.1',phase=bare['phase'],phase_nonce=bare['phase_nonce'],
         authorization_sha256=auth['_sha256'],input_manifest_sha256=bare['input_manifest']['sha256'],
-        protocol_hash=contract.TRANSFER_HASH if bare['phase']=='transfer_report' else contract.SCIENCE_HASH,real_process_owner=owner,started_at_utc=started)
+        protocol_hash=contract.TRANSFER_HASH if bare['phase'] in ('transfer_report','transfer_recovery') else contract.SCIENCE_HASH,real_process_owner=owner,started_at_utc=started)
     try:
         environment=verify_environment()
         reader=RawJsonLines(stream)
@@ -344,7 +389,7 @@ def run_phase(approved,*,startup_wait_seconds=300,stream=sys.stdin,popen=subproc
         require_fresh_outputs(auth)
         work_start=monotonic();deadline=min(contract.timestamp(auth['deadline_utc']),time.time()+auth['fit_wall_seconds'])
         env={**os.environ,**{key:'2' for key in THREAD_VARIABLES},'FINAL_CLOUD_SANDBOX_ID':release['sandbox_id'],'FINAL_CLOUD_AUTH_SHA256':auth['_sha256']}
-        pending=phase_jobs(auth['phase']);audit_pending=auth['phase']=='hybrid_pilot'
+        pending=phase_jobs(auth['phase']);audit_pending=auth['phase'] in ('hybrid_pilot','transfer_recovery')
         def check_running():
             if interrupted[0]:raise RuntimeError('phase interrupted; no retry')
             if time.time()>=deadline or monotonic()-work_start>=auth['fit_wall_seconds']:
@@ -360,16 +405,19 @@ def run_phase(approved,*,startup_wait_seconds=300,stream=sys.stdin,popen=subproc
                 if code is None:continue
                 record.update(exit_code=code,finished_at_utc=contract.now());finished.append(record)
                 if code:raise RuntimeError(f"cloud child {record['job']} failed; no retry")
-                if record['job']!='pilot_saved_model_audit':n_fits+=job_receipt(auth,record['axes'],child)
+                if record['job'] not in ('pilot_saved_model_audit','transfer_semantic_audit'):n_fits+=job_receipt(auth,record['axes'],child)
                 contract.exclusive_json(run_dir/f"child_{record['index']:03d}.exit.json",record);contract.durable_sync()
             if pending and len(active)<auth['resources']['max_workers']:
                 with ownership_lock:
                     if any(child.poll() is not None for child in active):continue
-                axes=pending.pop(0);job=f'fold_{axes[0]}/{axes[1]}' if axes[0] is not None else auth['phase']
+                axes=pending.pop(0);job=f'{axes[0]}/{axes[1]}' if auth['phase']=='transfer_recovery' else f'fold_{axes[0]}/{axes[1]}' if axes[0] is not None else auth['phase']
                 command=child_command(auth,approved,axes)
             elif not pending and not active and audit_pending:
-                axes=None;job='pilot_saved_model_audit';audit_pending=False
-                command=[sys.executable,str(Path(__file__).resolve()),'--approved',str(approved),'--audit-pilot',str(run_dir/'pilot_audit.json')]
+                axes=None;audit_pending=False
+                if auth['phase']=='transfer_recovery':
+                    job='transfer_semantic_audit';command=[sys.executable,str(Path(__file__).resolve()),'--approved',str(approved),'--audit-transfer-recovery']
+                else:
+                    job='pilot_saved_model_audit';command=[sys.executable,str(Path(__file__).resolve()),'--approved',str(approved),'--audit-pilot',str(run_dir/'pilot_audit.json')]
             else:
                 if active:sleep(.2)
                 continue
@@ -418,8 +466,10 @@ def main():
     parser.add_argument('--approved',type=Path,required=True)
     parser.add_argument('--startup-wait-seconds',type=int,default=300)
     parser.add_argument('--audit-pilot',type=Path)
+    parser.add_argument('--audit-transfer-recovery',action='store_true')
     args=parser.parse_args()
-    if args.audit_pilot:audit_pilot(args.approved,args.audit_pilot)
+    if args.audit_transfer_recovery:audit_transfer_recovery(args.approved)
+    elif args.audit_pilot:audit_pilot(args.approved,args.audit_pilot)
     else:run_phase(args.approved,startup_wait_seconds=args.startup_wait_seconds)
 
 if __name__=='__main__':main()

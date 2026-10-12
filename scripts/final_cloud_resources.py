@@ -1,6 +1,6 @@
 """Prepare uniquely named empty cloud resources once; never start compute.
 
-The input manifest and completed transfer closure must already be frozen.
+The input manifest and authenticated closed predecessor must already be frozen.
 An uncertain provider response preserves its intent and forbids a second call.
 Use read-only provider reconciliation, not rerunning this command, after error.
 """
@@ -60,8 +60,9 @@ def validate(path, *, verify_inputs=True):
         raise ValueError('exact upload manifest exceeds byte reservation')
     gib = 1024**3
     storage = (plan['max_upload_bytes'] + plan['max_download_bytes']) / gib * .09 * (cleanup-now) / (30*86400)
-    # Four separately capped result downloads, with no free-tier assumption.
-    egress = 4 * plan['max_download_bytes'] / gib * .04
+    # Recovery plus four finalization downloads, with no free-tier assumption.
+    downloads = 5 if auth.get('phase') == 'transfer_recovery' else 4
+    egress = downloads * plan['max_download_bytes'] / gib * .04
     if storage + egress + .5 > plan['overhead_envelope_usd']:
         raise ValueError('storage, all-phase egress and cleanup reserve exceed overhead envelope')
     return plan, auth, directory

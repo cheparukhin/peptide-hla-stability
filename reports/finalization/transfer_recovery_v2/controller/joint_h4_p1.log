@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_transfer_checkpoint_worker.py", line 201, in <module>
+    main()
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_transfer_checkpoint_worker.py", line 197, in main
+    run_cell(args.out_dir, args.regime, args.cell, args.approved)
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_transfer_checkpoint_worker.py", line 140, in run_cell
+    values, selection, inner, raw_final = ft.assess_cell(fit, held, regime, predictor, ancestry, reused)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/pepstab/final_transfer.py", line 211, in assess_cell
+    prediction=predictor(fit,unlabelled(held),CANDIDATES[i],f'final/{p}',final=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/pepstab/final_transfer_checkpoint.py", line 214, in __call__
+    aggregate = super().__call__(fit, held, candidate, context, final=final)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/pepstab/final_transfer.py", line 165, in __call__
+    pred,details=tree_fit(arrays[0],y,gradient.allele,arrays[1],stop.y_log1p.to_numpy()-offsets(stop),stop.allele,arrays[2],candidate,member['seed'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/pepstab/final_transfer.py", line 88, in tree_fit
+    if ranking: model.fit(pool(X,y,allele),eval_set=pool(Xstop,ystop,astop),use_best_model=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/catboost/core.py", line 2895, in fit
+  File "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/catboost/core.py", line 2716, in _fit
+  File "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/catboost/core.py", line 1824, in _train
+  File "_catboost.pyx", line 5430, in _catboost._CatBoost._train
+  File "_catboost.pyx", line 5479, in _catboost._CatBoost._train
+KeyboardInterrupt

@@ -94,3 +94,13 @@ def test_existing_or_uncertain_resources_never_retried(tmp_path,monkeypatch,app_
     with pytest.raises(FileExistsError):asyncio.run(r.create(path))
     assert calls==original
     create.assert_not_awaited()
+
+
+def test_recovery_resource_budget_counts_fifth_download(tmp_path,monkeypatch):
+    path,plan,auth=fixture(tmp_path,monkeypatch)
+    auth['phase']='transfer_recovery'
+    assert r.validate(path)[0]==plan
+    # With five downloads this cap exhausts the $3 overhead reservation;
+    # accepting the old four-download arithmetic would incorrectly pass.
+    plan['max_download_bytes']=12*1024**3;path.write_text(json.dumps(plan))
+    with pytest.raises(ValueError,match='overhead'):r.validate(path)

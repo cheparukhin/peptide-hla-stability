@@ -458,3 +458,17 @@ def test_launcher_rejects_release_receipt_from_other_writer(planned,provider):
     with pytest.raises(ValueError,match='acknowledgement'):
         asyncio.run(d.await_release_receipt(path,'sb-exact'))
     assert wire==[]
+
+
+def test_recovery_phase_preserves_original_deadline_and_separate_35_reserve(planned):
+    path,plan,auth,account_path,clock=planned
+    auth.update(phase='transfer_recovery',phase_cap_usd=10,fit_wall_seconds=21600,
+        resources=dict(cpu_cores=4,memory_mib=16384,numerical_threads=2,max_workers=2))
+    account=d.read(account_path);account.update(phase='transfer_recovery',phase_cap_usd=10,reserved_phase_usd=10,
+        future_envelope_usd=10,other_scopes_reserved_usd=35)
+    rewrite(account_path,account);auth['cloud_accounting']['sha256']=d.sha(account_path)
+    auth_path=Path(plan['authorization']['path']);rewrite(auth_path,auth)
+    plan['authorization']['sha256']=d.sha(auth_path);plan['phase_cap_usd']=10;rewrite(path,plan)
+    assert d.validate_plan(path)[1]['phase']=='transfer_recovery'
+    plan['provider_stop_deadline_utc']='2026-10-13T15:32:20+00:00';rewrite(path,plan)
+    with pytest.raises(ValueError,match='deadline'):d.validate_plan(path)

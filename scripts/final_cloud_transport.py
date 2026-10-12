@@ -187,7 +187,12 @@ async def upload(path, *, root=ROOT):
 def allowed_output(name, auth, root=ROOT):
     safe_path(name,root)  # lexical validation also applies before remote reads
     phase=auth['phase'];scope=c.SCOPE
-    if phase=='transfer_report':return name.startswith(c.TRANSFER_ROOT+'/results/')
+    if phase=='transfer_recovery':
+        return (name==c.CLOUD_TRANSFER_ROOT+'/recovery_completion.json'
+            or any(name.startswith(c.CLOUD_TRANSFER_ROOT+'/'+cell+'/') for cell in c.RECOVERY_CELLS))
+    if phase=='transfer_report':
+        transfer=c.CLOUD_TRANSFER_ROOT if auth.get('scope_root')==c.CLOUD_TRANSFER_ROOT else c.TRANSFER_ROOT
+        return name.startswith(transfer+'/results/')
     if phase=='hybrid_pilot':
         return name.startswith(scope+'/pilot/') or name==auth['run_directory']+'/pilot_audit.json'
     if phase=='hybrid_main':return any(name.startswith(f'{scope}/fold_{fold}/') for fold in range(5))
@@ -267,7 +272,7 @@ async def download(path, terminal_path, *, certificate_path=None, root=ROOT):
             expected=dict(schema='final_cloud_phase_exit.1',status='complete',phase=auth['phase'],phase_nonce=auth['phase_nonce'],
                 sandbox_id=created['sandbox_id'],app_id=resources['app_id'],authorization_sha256=auth['_sha256'],
                 input_manifest_sha256=auth['input_manifest']['sha256'],exit_code=0,cleanup_complete=True,
-                protocol_hash=c.TRANSFER_HASH if auth['phase']=='transfer_report' else c.SCIENCE_HASH,n_fits=c.PHASES[auth['phase']][-1])
+                protocol_hash=c.TRANSFER_HASH if auth['phase'] in ('transfer_recovery','transfer_report') else c.SCIENCE_HASH,n_fits=c.PHASES[auth['phase']][-1])
             if (any(receipt.get(k)!=v for k,v in expected.items())
                     or type(receipt.get('exit_code')) is not int
                     or not receipt.get('real_process_owner',{}).get('pid_namespace')
