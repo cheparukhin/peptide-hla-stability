@@ -1,5 +1,21 @@
 # Continuation after the 12 October process interruption
 
+**New execution preference — 12 October:** the user requests that future
+compute-heavy jobs run on Modal so the Mac is not overwhelmed. This supersedes
+the earlier local-first instructions for phases that have not started. Do not
+launch the local hybrid pilot or main phase. Prepare a bounded Modal operational
+amendment for the unchanged scientific scope, including heavy reporting/audits
+where needed, before paid execution. Reconcile existing liabilities, freeze
+resource/concurrency limits and a fixed independent watchdog deadline, and
+retain the same $100 additional ceiling. The previously discussed hybrid
+cloud allowance is at most $35, not a spending target or an automatic launch.
+No fresh cloud job is launched by this preference record.
+
+The already-running, bounded transfer recovery remains under its frozen
+authorization; the user specified future jobs and did not request stopping it.
+Do not interrupt or migrate it blindly, duplicate completed work, or change its
+scientific sources/deadline. Keep subsequent local work lightweight.
+
 **Current run:** one checkpointed local recovery launched through macOS
 launchd at16:09 UTC on12 October, controller **PID59308**, parent PID1;
 keep-awake helper **PID59464**. Inspect
@@ -36,9 +52,10 @@ Hybrid operational version3 is frozen at `hybrids_recovery_v2/`, with63 pipeline
 checks. Its scientific480+12-fit scope is unchanged. **No hybrid authorization,
 launch gate, queue or fit has started.** The actual predecessor bindings are
 saved in `resources/hybrid_durable_pilot/predecessor.json` and validated against
-both closures and the exact live transfer attempt. Launch the pilot only after
-successful transfer closure; do not restart either old queue. Use one-shot
-OS-managed execution for later phases as well.
+both closures and the exact live transfer attempt. A future Modal pilot still
+requires successful transfer closure and a reviewed cloud operational gate;
+the frozen local-only version3 authorization must not be used to start fitting.
+Do not restart either old queue.
 
 ## Earlier interruptions and preparation history
 

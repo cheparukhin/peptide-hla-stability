@@ -1,5 +1,14 @@
 # Hackathon finalisation — authorized 12 October 2026
 
+**Latest execution preference:** run future compute-heavy jobs on Modal and
+reserve the Mac for orchestration and lightweight checks. The current bounded
+transfer recovery is already running; subsequent hybrid fitting and heavy
+reporting must use a separately reviewed cloud operational amendment. Preserve
+the frozen scientific scope and the existing $100 additional credit ceiling,
+with explicit resource limits, metering reconciliation and an independent
+fixed-deadline watchdog. Earlier local-first statements below are historical
+and do not authorize new heavy local jobs.
+
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;
 completed round-two protocols, artifacts and accounting remain unchanged.
