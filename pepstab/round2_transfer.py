@@ -18,15 +18,111 @@ from sklearn.preprocessing import StandardScaler
 from . import evaluation as ev
 from .features import build_features
 from .mlp import MLPConfig, MLPRegressor
-from .round2_nested import config_digest, unlabelled
+from .round2_nested import unlabelled
 from .round2_reporting import _weighted_rho
+from .round2_embedding import EMBEDDING_PRIMARY, head_candidates
+from .phase_a import allele_offsets, shrunk_allele_means
 
 ORIGINAL = {"id": "original", "learner": "original"}
-CANDIDATES = (ORIGINAL,) + tuple(
-    {"id": f"{rep}_ridge_{alpha:g}", "learner": "ridge", "representation": rep,
-     "regularization": alpha}
-    for rep in ("R2", "R4") for alpha in (10000., 100., 1.))
-ARMS = ("original", "R2_ridge", "R4_ridge", "transfer_selector")
+SEQUENCE_CANDIDATES = (ORIGINAL,) + tuple(
+    {"id": f"mlp_centred_k{k}", "learner": "mlp", "target": "centred", "k": k}
+    for k in (100, 20))
+SEQUENCE_SELECTOR = "bounded_MLP_sequence_selector"
+EMBEDDING_SELECTOR = "embedding_selector"
+
+
+def candidate_registry(nominations=()):
+    """Preparation registry only; nominees are explicit after the main gate.
+
+    A nomination identifies a representation/head PROCEDURE, not an alpha
+    chosen from outer outcomes. Its entire existing main regularization grid
+    is screened anew inside each transfer outer cell.
+    """
+    nominations = tuple(nominations)
+    permitted = tuple(f"{rep}_{learner}" for rep in EMBEDDING_PRIMARY
+                      for learner in ("ridge", "mlp"))
+    if len(nominations) > 2 or len(set(nominations)) != len(nominations):
+        raise ValueError("at most two distinct main-nominated procedures required")
+    if any(name not in permitted for name in nominations):
+        raise ValueError("nomination outside existing primary main procedures")
+    # The main parsimony order resolves ties, independently of CLI ordering.
+    ordered = [name for name in permitted if name in nominations]
+    return SEQUENCE_CANDIDATES + tuple(c for name in ordered
+        for rep, learner in [name.rsplit("_", 1)] for c in head_candidates(rep, learner))
+
+
+def validate_candidates(candidates):
+    candidates = tuple(candidates)
+    procedures = tuple(dict.fromkeys(f"{c['representation']}_{c['learner']}"
+                                    for c in candidates if "representation" in c))
+    if candidates != candidate_registry(procedures):
+        raise ValueError("candidate grid outside existing bounded registry/order")
+    return candidates
+
+
+def procedure_order(candidates):
+    validate_candidates(candidates)
+    return ("original", "mlp_centred") + tuple(dict.fromkeys(
+        f"{c['representation']}_{c['learner']}" for c in candidates if "representation" in c))
+
+
+def candidate_procedure(candidate):
+    if "representation" in candidate:
+        return f"{candidate['representation']}_{candidate['learner']}"
+    return "original" if candidate == ORIGINAL else "mlp_centred"
+
+
+def reported_arms(candidates):
+    return procedure_order(candidates) + (SEQUENCE_SELECTOR, EMBEDDING_SELECTOR)
+
+
+def replay_selection(scores, candidates):
+    """Max pooled endpoint; exact ties use frozen parsimony order, no one-SE."""
+    candidates = validate_candidates(candidates)
+    if [s['candidate'] for s in scores] != [c['id'] for c in candidates]:
+        raise ValueError("selection candidate grid changed")
+    values = ev.validate_finite([s['pooled_inner_score'] for s in scores], "selection scores")
+    best = lambda indices: max(indices, key=lambda i: values[i])
+    chosen = {arm: best([i for i,c in enumerate(candidates) if candidate_procedure(c) == arm])
+              for arm in procedure_order(candidates)}
+    chosen[SEQUENCE_SELECTOR] = best(range(len(SEQUENCE_CANDIDATES)))
+    chosen[EMBEDDING_SELECTOR] = best(range(len(candidates)))
+    return chosen
+
+
+def member_schedule(fit, regime, candidate, *, final):
+    """Exact supervised-member loops shared by fitting and evidence replay."""
+    if candidate['learner'] == 'ridge':
+        yield dict(gradient=fit, stopping=None, seed=None)
+        return
+    feature_head = 'representation' in candidate
+    n_stop = 5 if final or feature_head else 3
+    partitions = list(inner_partitions(fit, regime, n_stop, stopping=True))
+    if feature_head:
+        axes = [(stop, 'features', seed) for stop in range(5) for seed in range(6)] if final else [(0, 'features', 0), (1, 'features', 1)]
+    else:
+        axes = [(stop, enc, seed) for stop in range(n_stop)
+                for enc in ('onehot', 'blosum') for seed in range(3 if final else 2)]
+    for stop, encoding, seed in axes:
+        cell, gradient, stopping = partitions[stop]
+        cfg = MLPConfig(hidden=(64,) if feature_head else (256,64),
+            l2=candidate['regularization'] if feature_head else (1e-5 if encoding == 'onehot' else 1e-3),
+            max_epochs=200 if feature_head else 300, patience=15, seed=seed)
+        yield dict(gradient=gradient, stopping=stopping, stopping_cell=cell,
+                   encoding=encoding, seed=seed, config=cfg)
+
+
+def members_per_call(candidate, *, final):
+    if candidate['learner'] == 'ridge':
+        return 1
+    if 'representation' in candidate:
+        return 30 if final else 2
+    return 30 if final else 12
+
+
+# No implicit Boltz shortlist: final scope is intentionally unfrozen.
+CANDIDATES = candidate_registry()
+ARMS = reported_arms(CANDIDATES)
 
 
 def validate_frame(frame):
@@ -174,9 +270,10 @@ class TransferAncestry:
 
 
 class TransferPredictor:
-    """Local original recipe (always 30 members) and deterministic ridge."""
-    def __init__(self, population, features, ancestry, *, callback=None):
+    """Bounded sequence families and main-nominated ridge/neural feature heads."""
+    def __init__(self, population, features, ancestry, *, candidates=CANDIDATES, callback=None):
         validate_frame(population)
+        self.candidates = validate_candidates(candidates)
         self.position = {int(pid): i for i, pid in enumerate(population.pair_id)}
         self.features = {key: np.asarray(value, dtype=np.float32) for key, value in features.items()}
         for key, value in self.features.items():
@@ -189,41 +286,60 @@ class TransferPredictor:
         return self.features[key][[self.position[int(pid)] for pid in frame.pair_id]]
 
     def __call__(self, fit, held, candidate, context):
+        return self.predict(fit, held, candidate, context, final=context.startswith('final/'))
+
+    def predict(self, fit, held, candidate, context, *, final=False):
         validate_partition(fit, held, self.ancestry.regime)
         if any(k in held for k in ("y_log1p", "thalf_hours")):
             raise ValueError("predictor received assessment labels")
-        if candidate not in CANDIDATES:
+        if candidate not in self.candidates:
             raise ValueError("candidate outside bounded scope")
-        y = ev.validate_finite(fit.y_log1p, "fitting labels")
-        values = []
-        if candidate["learner"] == "ridge":
+        ev.validate_finite(fit.y_log1p, "fitting labels")
+        values, prepared = [], {}
+        for specification in member_schedule(fit, self.ancestry.regime, candidate, final=final):
             start = time.perf_counter()
-            X = self.X(fit, candidate["representation"])
-            scaler = StandardScaler().fit(X)
-            model = Ridge(alpha=candidate["regularization"], solver="lsqr", tol=1e-5, max_iter=2000)
-            model.fit(scaler.transform(X), y)
-            values.append(model.predict(scaler.transform(self.X(held, candidate["representation"]))))
-            self.ancestry.add("ridge", fit, held, scaler=fit, context=context, candidate=candidate["id"])
-            self._member(context, candidate, start, len(fit), 0, seed=None, n_source=len(fit), excluded_cross_quadrant_rows=0)
-        else:
-            for stop_cell, gradient, stopping in inner_partitions(fit, self.ancestry.regime, 5, stopping=True):
-                for encoding in ("onehot", "blosum"):
-                    X, Xs, Xh = [build_features(f, "pep_pseudo", encoding).astype(np.float32)
-                                  for f in (gradient, stopping, held)]
-                    for seed in range(3):
-                        start = time.perf_counter()
-                        cfg = MLPConfig(hidden=(256, 64), l2=1e-5 if encoding == "onehot" else 1e-3,
-                                        max_epochs=300, patience=15, seed=seed)
-                        model = MLPRegressor(cfg).fit(X, gradient.y_log1p.to_numpy(), Xs, stopping.y_log1p.to_numpy())
-                        values.append(model.predict(Xh))
-                        self.ancestry.add("original_member", gradient, held, stopping=stopping,
-                                          context=context, seed=seed, encoding=encoding, stopping_cell=stop_cell)
-                        self._member(context, candidate, start, len(gradient), len(stopping), seed=seed,
-                                     encoding=encoding, stopping_cell=stop_cell, config=asdict(cfg),
-                                     n_source=len(fit), excluded_cross_quadrant_rows=len(fit)-len(gradient)-len(stopping),
-                                     best_epoch=model.best_epoch_, epochs=model.n_epochs_)
-        result = np.mean(values, axis=0)
-        return ev.validate_finite(result, "transfer predictions")
+            gradient, stopping = specification['gradient'], specification['stopping']
+            feature_head = 'representation' in candidate
+            encoding = specification.get('encoding')
+            cache_key = (specification.get('stopping_cell'), encoding)
+            if cache_key not in prepared:
+                frames = (gradient, held) if stopping is None else (gradient, stopping, held)
+                arrays = [self.X(f, candidate['representation']) if feature_head else
+                          build_features(f, 'pep_pseudo', encoding).astype(np.float32) for f in frames]
+                scaler = StandardScaler().fit(arrays[0]) if feature_head else None
+                if scaler is not None:
+                    arrays = [scaler.transform(x).astype(np.float32) for x in arrays]
+                prepared[cache_key] = (arrays, scaler)
+            arrays, scaler = prepared[cache_key]
+            means, global_mean = {}, None
+            if candidate.get('target') == 'centred':
+                means, global_mean = shrunk_allele_means(gradient.allele, gradient.y_log1p, candidate['k'])
+            offsets = lambda f: allele_offsets(f.allele, means, global_mean) if global_mean is not None else np.zeros(len(f))
+            y = gradient.y_log1p.to_numpy() - offsets(gradient)
+            details = dict(seed=specification['seed'], final_recipe=final,
+                n_source=len(fit), excluded_cross_quadrant_rows=len(fit)-len(gradient)-(0 if stopping is None else len(stopping)),
+                centering_means=means, centering_global=global_mean)
+            if stopping is None:
+                model = Ridge(alpha=candidate['regularization'], solver='lsqr', tol=1e-5, max_iter=2000).fit(arrays[0], y)
+                prediction, role = model.predict(arrays[1]), 'ridge'
+            else:
+                cfg = specification['config']
+                model = MLPRegressor(cfg).fit(arrays[0], y, arrays[1], stopping.y_log1p.to_numpy()-offsets(stopping))
+                prediction, role = model.predict(arrays[2])+offsets(held), 'mlp_member'
+                details.update(encoding=encoding, stopping_cell=specification['stopping_cell'],
+                    config=asdict(cfg), best_epoch=model.best_epoch_, epochs=model.n_epochs_)
+            if scaler is not None:
+                details.update(scaler_mean=scaler.mean_.tolist(), scaler_scale=scaler.scale_.tolist(),
+                               feature_hash=self.feature_hashes[candidate['representation']])
+            record = self.ancestry.add(role, gradient, held, stopping=stopping,
+                scaler=gradient if scaler is not None else None, context=context,
+                candidate=candidate['id'], **{k:details[k] for k in ('seed','encoding','stopping_cell') if k in details})
+            details.update({k:record[k] for k in ('fit_rows','stopping_rows','prediction_rows','scaler_rows') if k in record})
+            values.append(prediction)
+            self._member(context, candidate, start, len(gradient), 0 if stopping is None else len(stopping), **details)
+        if len(values) != members_per_call(candidate, final=final):
+            raise ValueError('actual member loop differs from declared recipe')
+        return ev.validate_finite(np.mean(values, axis=0), 'transfer predictions')
 
     def _member(self, context, candidate, start, n_fit, n_stop, **details):
         member = {"context": context, "candidate": candidate["id"], "fit_seconds": time.perf_counter()-start,
@@ -243,19 +359,16 @@ def pooled_median(allele, labels, prediction, panel):
     return float(ev.panel_spearman(ev.per_allele_spearman(allele,y,p,panel),rankable).median())
 
 
-def assess_cell(fit, held, regime, predictor, ancestry, *, min_rows=20):
-    """Selection uses pooled inner predictions: all 3 or 9 cells are retained.
-
-    No cellwise eligibility threshold is used for selecting a pooled endpoint.
-    Max pooled score wins, frozen order resolves exact ties (baseline first).
-    """
+def assess_cell(fit, held, regime, predictor, ancestry, *, min_rows=20, candidates=CANDIDATES):
+    """Pooled transfer selection on all inner cells; no full-main selector claim."""
+    candidates = validate_candidates(candidates)
     validate_partition(fit, held, regime)
     panel = ev.eligible_alleles(fit.allele, fit.y_log1p, min_rows=min_rows)
     if not panel:
         raise ValueError("no eligible inner pooled panel; no outcome-driven fallback")
     index = {pid: i for i, pid in enumerate(fit.pair_id)}
     scores = []
-    for candidate in CANDIDATES:
+    for candidate in candidates:
         pred = np.full(len(fit), np.nan)
         for cell, train, inner_held in inner_partitions(fit, regime):
             out = predictor(train, unlabelled(inner_held), candidate, f"select/{candidate['id']}/{cell}")
@@ -263,37 +376,46 @@ def assess_cell(fit, held, regime, predictor, ancestry, *, min_rows=20):
             if np.asarray(out).shape != (len(idx),):
                 raise ValueError("prediction shape mismatch")
             pred[idx] = ev.validate_finite(out, "inner prediction")
-            ancestry.add("selection_prediction", train, inner_held, candidate=candidate["id"], cell=cell)
+            ancestry.add("selection_prediction", train, inner_held, candidate=candidate['id'], cell=cell)
         ev.validate_finite(pred, "complete inner predictions")
-        score = pooled_median(fit.allele, fit.y_log1p, pred, panel)
-        scores.append({"candidate": candidate["id"], "pooled_inner_score": float(score)})
-    best = lambda indices: max(indices, key=lambda i: scores[i]["pooled_inner_score"])
-    chosen = {"original": 0, "R2_ridge": best(range(1, 4)), "R4_ridge": best(range(4, 7))}
-    chosen["transfer_selector"] = best(range(len(CANDIDATES)))
+        scores.append(dict(candidate=candidate['id'], pooled_inner_score=pooled_median(fit.allele, fit.y_log1p, pred, panel)))
+    chosen = replay_selection(scores, candidates)
     final = {}
-    for arm in ARMS[:3]:
-        candidate = CANDIDATES[chosen[arm]]
+    for arm in procedure_order(candidates):
+        candidate = candidates[chosen[arm]]
         final[arm] = predictor(fit, unlabelled(held), candidate, f"final/{arm}")
-        ancestry.add("selected_prediction", fit, held, selection=fit, candidate=candidate["id"], arm=arm)
-    chosen_id = CANDIDATES[chosen["transfer_selector"]]["id"]
-    selected_arm = next(arm for arm in ARMS[:3] if chosen[arm] == chosen["transfer_selector"])
-    final["transfer_selector"] = np.asarray(final[selected_arm]).copy()
-    ancestry.add("selector_prediction", fit, held, selection=fit, candidate=chosen_id)
-    return final, {"scores": scores, "selected": {arm: CANDIDATES[i]["id"] for arm, i in chosen.items()},
-                   "inner_panel": panel, "selection_rule": "largest pooled inner score; frozen-order exact ties"}
+        ancestry.add("selected_prediction", fit, held, selection=fit, candidate=candidate['id'], arm=arm)
+    for selector in (SEQUENCE_SELECTOR, EMBEDDING_SELECTOR):
+        source = candidate_procedure(candidates[chosen[selector]])
+        final[selector] = np.asarray(final[source]).copy()
+        ancestry.add("selector_prediction", fit, held, selection=fit, candidate=candidates[chosen[selector]]['id'], arm=selector)
+    return final, dict(scores=scores, selected={arm:candidates[i]['id'] for arm,i in chosen.items()},
+        inner_panel=panel, selection_rule="largest pooled inner score; frozen parsimony exact ties")
 
 
-def fit_graph():
-    regimes = {}
+def fit_graph(candidates=CANDIDATES):
+    candidates = validate_candidates(candidates)
+    regimes, totals = {}, dict(sequence_mlp_fits=0, embedding_mlp_fits=0, deterministic_ridge_fits=0)
     for regime, cells, inner in (("hla", 5, 3), ("joint", 25, 9)):
-        regimes[regime] = {"outer_cells": cells, "inner_cells": inner,
-            "original_members_per_cell": 30 * (inner + 1),
-            "ridge_fits_per_cell": 6 * inner + 2,
-            "total_fits": cells * (30 * (inner + 1) + 6 * inner + 2)}
-    return {"regimes": regimes, "total_fits": sum(r["total_fits"] for r in regimes.values()),
-            "original_mlp_fits": 8100, "deterministic_ridge_fits": 1500,
-            "selector_extra_fits": 0, "cloud_spend_usd": 0,
-            "repeats": "not included; main locked execution repeats are separate"}
+        # One final fit of each PROCEDURE, including one selected centred k.
+        finals = [next(c for c in candidates if candidate_procedure(c) == arm) for arm in procedure_order(candidates)]
+        by_type = dict(sequence_mlp_fits=0, embedding_mlp_fits=0, deterministic_ridge_fits=0)
+        for candidate, final, repetitions in [(c,False,inner) for c in candidates]+[(c,True,1) for c in finals]:
+            category = 'deterministic_ridge_fits' if candidate['learner'] == 'ridge' else ('embedding_mlp_fits' if 'representation' in candidate else 'sequence_mlp_fits')
+            by_type[category] += repetitions*members_per_call(candidate, final=final)
+        regimes[regime] = dict(outer_cells=cells, inner_cells=inner, **by_type,
+            fits_per_cell=sum(by_type.values()), total_fits=cells*sum(by_type.values()))
+        for category in totals:
+            totals[category] += cells*by_type[category]
+    if totals['sequence_mlp_fits'] != 10440:
+        raise ValueError('sequence fit graph discrepancy')
+    for learner, contribution in (('ridge',750), ('mlp',2340)):
+        procedures = [name for name in procedure_order(candidates) if name.endswith('_'+learner)]
+        category = 'deterministic_ridge_fits' if learner == 'ridge' else 'embedding_mlp_fits'
+        if totals[category] != len(procedures)*contribution:
+            raise ValueError('embedding fit graph discrepancy')
+    return dict(regimes=regimes, total_fits=sum(totals.values()), **totals,
+        selector_extra_fits=0, cloud_spend_usd=0, repeats="excluded; locked execution repeats separate")
 
 
 def _frequency_median(values, multiplicity):
@@ -364,17 +486,21 @@ def transfer_comparisons(frame, predictions, *, min_rows=20, n_boot=2000):
     point_panel = ev.eligible_alleles(frame.allele, frame.y_log1p, min_rows=min_rows)
     point = {name: pooled_median(frame.allele, frame.y_log1p, p, point_panel)
              for name, p in predictions.items()}
+    references = [name for name in ("original", SEQUENCE_SELECTOR) if name in predictions]
+    if not references:
+        raise ValueError("transfer comparisons require a declared reference")
+    contrasts = [(baseline, arm) for baseline in references for arm in predictions if arm != baseline and not (arm == "original" and baseline == SEQUENCE_SELECTOR)]
     rows, bootstraps = [], {}
     for mode in ("peptide", "hla", "crossed"):
         boot, meta = transfer_bootstrap(frame, predictions, min_rows=min_rows, n_boot=n_boot, mode=mode)
         bootstraps[mode] = boot
-        for arm in ARMS[1:]:
-            sample = boot[arm] - boot.original
+        for baseline, arm in contrasts:
+            sample = boot[arm] - boot[baseline]
             valid = sample[np.isfinite(sample)]
             low, high = np.percentile(valid, [2.5, 97.5]) if len(valid) else (np.nan, np.nan)
-            delta = point[arm] - point["original"]
-            rows.append({"baseline": "original", "candidate": arm, "delta": delta,
-                "baseline_score": point["original"], "candidate_score": point[arm],
+            delta = point[arm] - point[baseline]
+            rows.append({"baseline": baseline, "candidate": arm, "delta": delta,
+                "baseline_score": point[baseline], "candidate_score": point[arm],
                 "ci_low": low, "ci_high": high, "point_inside_interval": bool(low <= delta <= high),
                 "bootstrap_mean_minus_point": float(valid.mean()-delta) if len(valid) else np.nan,
                 "positive_lower_bound": bool(low > 0), "lower_bound_exceeds_0_05": bool(low > .05),
@@ -386,8 +512,8 @@ def transfer_comparisons(frame, predictions, *, min_rows=20, n_boot=2000):
         panel = [a for a in point_panel if a in set(frame.loc[mask, "allele"])]
         scores = {name: pooled_median(frame.loc[mask, "allele"], frame.loc[mask, "y_log1p"], p[mask], panel)
                   for name, p in predictions.items()}
-        for arm in ARMS[1:]:
+        for baseline, arm in contrasts:
             sensitivity.append({"dropped_hla_group": int(group), "dropped_rows": int((~mask).sum()),
                 "dropped_alleles": int(frame.loc[~mask, "allele"].nunique()), "panel_min_rows": min_rows,
-                "candidate": arm, "delta": scores[arm]-scores["original"]})
+                "baseline": baseline, "candidate": arm, "delta": scores[arm]-scores[baseline]})
     return pd.DataFrame(rows), bootstraps, pd.DataFrame(sensitivity)

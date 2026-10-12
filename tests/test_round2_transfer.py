@@ -6,7 +6,7 @@ import pytest
 
 from pepstab.round2_nested import unlabelled
 from pepstab.round2_transfer import (ARMS, CANDIDATES, TransferAncestry, TransferPredictor,
-    assess_cell, balanced_folds, fit_graph, inner_partitions, outer_cells, validate_partition)
+    assess_cell, balanced_folds, fit_graph, inner_partitions, outer_cells, validate_partition, candidate_registry, SEQUENCE_SELECTOR, EMBEDDING_SELECTOR, replay_selection)
 from scripts.round2_transfer import main_gate, verify_cell
 
 
@@ -84,7 +84,7 @@ def test_outer_label_perturbation_cannot_change_choices_or_predictions(regime):
     corrupted.thalf_hours = -99
     second, other = evaluate(corrupted)
     assert choice == other
-    assert choice["selected"]["transfer_selector"] == "original"
+    assert choice["selected"][SEQUENCE_SELECTOR] == "original"
     for arm in ARMS:
         np.testing.assert_array_equal(first[arm],second[arm])
 
@@ -118,7 +118,7 @@ def test_original_members_exact_configuration_and_joint_counts(monkeypatch):
     _,_,fit,held = next(item for item in outer_cells(frame) if item[0] == "joint")
     ancestry = TransferAncestry("joint")
     predictor = TransferPredictor(frame,{},ancestry)
-    predictor(fit,unlabelled(held),CANDIDATES[0],"synthetic")
+    predictor(fit,unlabelled(held),CANDIDATES[0],"final/synthetic")
     assert len(fitted) == 30
     assert {cfg.seed for cfg in fitted} == {0,1,2}
     assert {cfg.l2 for cfg in fitted} == {1e-5,1e-3}
@@ -133,10 +133,11 @@ def test_ridge_scaler_uses_fitting_rows_only_and_forbids_labels():
     _,_,fit,held = next(outer_cells(frame))
     features = np.arange(len(frame)*3,dtype=np.float32).reshape(len(frame),3)
     ancestry = TransferAncestry("hla")
-    predictor = TransferPredictor(frame,{"R2":features},ancestry)
+    grid = candidate_registry(("R2_ridge",))
+    predictor = TransferPredictor(frame,{"R2":features},ancestry,candidates=grid)
     with pytest.raises(ValueError,match="assessment labels"):
-        predictor(fit,held,CANDIDATES[1],"synthetic")
-    pred = predictor(fit,unlabelled(held),CANDIDATES[1],"synthetic")
+        predictor(fit,held,grid[3],"synthetic")
+    pred = predictor(fit,unlabelled(held),grid[3],"synthetic")
     assert np.isfinite(pred).all()
     assert ancestry.records[0]["scaler_rows"] == ancestry.rows(fit)
     ancestry.audit(frame,fit,held)
@@ -144,8 +145,8 @@ def test_ridge_scaler_uses_fitting_rows_only_and_forbids_labels():
 
 def test_graph_and_main_gate_fail_closed(tmp_path):
     graph = fit_graph()
-    assert graph["total_fits"] == 9600
-    assert graph["total_fits"] == graph["original_mlp_fits"]+graph["deterministic_ridge_fits"]
+    assert graph["total_fits"] == 10440
+    assert graph["total_fits"] == graph["sequence_mlp_fits"]+graph["deterministic_ridge_fits"]
     for kind in ("sequence","embedding"):
         (tmp_path/kind).mkdir()
         (tmp_path/kind/"protocol.json").write_text(json.dumps({"protocol_hash":"x"}))
@@ -182,3 +183,182 @@ def test_main_gate_requires_audited_current_report(tmp_path):
     (results/"synthetic.csv").write_text("changed\n")
     with pytest.raises(ValueError,match="output changed"):
         main_gate(tmp_path)
+
+
+def test_nomination_cap_existing_grids_and_counts():
+    from pepstab.round2_transfer import validate_candidates
+    for names,total in ((('R2_ridge','R4_ridge'),11940), (('R3_mlp','R5_mlp'),15120), (('R3_ridge','R5_mlp'),13530)):
+        registry = candidate_registry(names)
+        assert fit_graph(registry)['total_fits'] == total
+        assert len(registry) == 9
+        validate_candidates(registry)
+    for names in (('R2_ridge','R3_mlp','R4_ridge'),('R3_pooled_mlp',),('R0_ridge',),('R5_mlp','R5_mlp')):
+        with pytest.raises(ValueError):
+            candidate_registry(names)
+    altered = list(candidate_registry(('R3_mlp',)))
+    altered[-1] = dict(altered[-1],regularization=.002)
+    with pytest.raises(ValueError,match='grid'):
+        validate_candidates(altered)
+
+
+def test_selector_replay_both_sequence_fallbacks_and_parsimony():
+    grid = candidate_registry(('R3_mlp','R5_ridge'))
+    scores = [dict(candidate=c['id'],pooled_inner_score=.1) for c in grid]
+    choice = replay_selection(scores,grid)
+    assert choice[SEQUENCE_SELECTOR] == choice[EMBEDDING_SELECTOR] == 0
+    scores[1]['pooled_inner_score'] = .3
+    choice = replay_selection(scores,grid)
+    assert choice[SEQUENCE_SELECTOR] == choice[EMBEDDING_SELECTOR] == 1
+    scores[3]['pooled_inner_score'] = .4
+    assert replay_selection(scores,grid)[EMBEDDING_SELECTOR] == 3
+    assert replay_selection(scores,grid)[SEQUENCE_SELECTOR] == 1
+
+
+@pytest.mark.parametrize('regime',['hla','joint'])
+def test_centering_is_member_gradient_only_and_unseen_fallback(monkeypatch,regime):
+    import pepstab.round2_transfer as transfer
+    from pepstab.phase_a import shrunk_allele_means,allele_offsets
+    calls = []
+    class ZeroMLP:
+        def __init__(self,cfg): self.best_epoch_,self.n_epochs_ = 0,1
+        def fit(self,X,y,Xs,ys):
+            calls.append((y.copy(),ys.copy()))
+            return self
+        def predict(self,X): return np.zeros(len(X))
+    monkeypatch.setattr(transfer,'MLPRegressor',ZeroMLP)
+    frame = population()
+    _,_,fit,held = next(i for i in outer_cells(frame) if i[0] == regime)
+    candidate = CANDIDATES[1]
+    ancestry = TransferAncestry(regime)
+    predictor = TransferPredictor(frame,{},ancestry)
+    actual = predictor(fit,unlabelled(held),candidate,'select/centred')
+    expected = []
+    for specification, (y,ys),member in zip(transfer.member_schedule(fit,regime,candidate,final=False),calls,predictor.members):
+        g,stop = specification['gradient'],specification['stopping']
+        means,global_mean = shrunk_allele_means(g.allele,g.y_log1p,100)
+        np.testing.assert_allclose(y,g.y_log1p-allele_offsets(g.allele,means,global_mean))
+        # Matched-HLA stopping and held alleles are unseen in gradient rows.
+        assert set(stop.allele).isdisjoint(means) and set(held.allele).isdisjoint(means)
+        np.testing.assert_allclose(ys,stop.y_log1p-global_mean)
+        assert member['centering_means'] == means and member['centering_global'] == global_mean
+        expected.append(np.full(len(held),global_mean))
+    assert len(calls) == 12
+    np.testing.assert_allclose(actual,np.mean(expected,axis=0))
+    ancestry.audit(frame,fit,held)
+    # Corrupt one member's stopping labels only: its own centring stays fixed.
+    _,g,stop = next(inner_partitions(fit,regime,3,stopping=True))
+    altered = fit.copy();altered.loc[stop.index,'y_log1p'] += 10000
+    before = shrunk_allele_means(g.allele,g.y_log1p,100)
+    _,gg,_ = next(inner_partitions(altered,regime,3,stopping=True))
+    assert before == shrunk_allele_means(gg.allele,gg.y_log1p,100)
+
+
+@pytest.mark.parametrize('regime',['hla','joint'])
+def test_neural_feature_scaling_gradient_only_and_recipes(monkeypatch,regime):
+    import pepstab.round2_transfer as transfer
+    calls = []
+    class FakeMLP:
+        def __init__(self,cfg): self.best_epoch_,self.n_epochs_ = 0,1
+        def fit(self,X,y,Xs,ys): calls.append((X.copy(),Xs.copy())); return self
+        def predict(self,X): return np.zeros(len(X))
+    monkeypatch.setattr(transfer,'MLPRegressor',FakeMLP)
+    frame = population()
+    _,_,fit,held = next(i for i in outer_cells(frame) if i[0] == regime)
+    features = np.c_[frame.pair_id,frame.cluster_id].astype(np.float32)
+    grid = candidate_registry(('R3_mlp',))
+    ancestry = TransferAncestry(regime)
+    predictor = TransferPredictor(frame,{'R3':features},ancestry,candidates=grid)
+    for final,count in ((False,2),(True,30)):
+        start = len(predictor.members)
+        predictor.predict(fit,unlabelled(held),grid[3],'final/head' if final else 'select/head',final=final)
+        assert len(predictor.members)-start == count
+        for m in predictor.members[start:]:
+            ids = ancestry.rowsets[m['fit_rows']]
+            rows = frame.set_index('pair_id').loc[ids].index.to_numpy()
+            np.testing.assert_allclose(m['scaler_mean'],features[rows].mean(axis=0),rtol=1e-6)
+            assert m['scaler_rows'] == m['fit_rows']
+            assert m['config']['hidden'] == (64,) and m['config']['max_epochs'] == 200
+    assert all(np.allclose(X.mean(axis=0),0,atol=1e-5) for X,_ in calls)
+    ancestry.audit(frame,fit,held)
+
+
+def test_freeze_requires_explicit_nominees_after_main_gate(tmp_path,monkeypatch):
+    import scripts.round2_transfer as runner
+    monkeypatch.setattr(runner,'main_gate',lambda _: {'gated':'main'})
+    with pytest.raises(ValueError,match='explicit one or two'):
+        runner.freeze(tmp_path,tmp_path,tmp_path,None,'documented amendment')
+
+
+def test_frozen_main_nomination_grid_cannot_expand(tmp_path):
+    from scripts.round2_transfer import validate_main_nominations
+    registry = candidate_registry(('R3_mlp',))
+    directory = tmp_path/'embedding';directory.mkdir()
+    data = dict(specification=dict(selector_order=['original','R3_mlp'],candidate_grids={'R3_mlp':json.loads(json.dumps(registry[3:]))}))
+    (directory/'protocol.json').write_text(json.dumps(data))
+    validate_main_nominations(tmp_path,registry)
+    data['specification']['candidate_grids']['R3_mlp'][-1]['regularization'] = .003
+    (directory/'protocol.json').write_text(json.dumps(data))
+    with pytest.raises(ValueError,match='frozen main'):
+        validate_main_nominations(tmp_path,registry)
+
+
+def test_saved_frozen_spec_rejects_valid_head_grid_swap_with_old_hash(tmp_path,monkeypatch):
+    import scripts.round2_transfer as runner
+    from pepstab.round2_nested import config_digest
+    frame = population()
+    ridge = candidate_registry(('R3_ridge',))
+    neural = candidate_registry(('R3_mlp',))
+    specification = runner.specification(frame,runner.OUT,('R3_ridge',))
+    protocol = dict(status='FROZEN',specification=specification,
+        protocol_hash=config_digest(specification),main_completion_hashes={'main':'complete'},
+        feature_hashes={'R3':'same-feature-key'},code_sha256={})
+    directory = tmp_path/'embedding';directory.mkdir()
+    (directory/'protocol.json').write_text(json.dumps(dict(specification=dict(
+        selector_order=['original','R3_ridge','R3_mlp'],
+        candidate_grids={'R3_ridge':list(ridge[3:]),'R3_mlp':list(neural[3:])}))))
+    monkeypatch.setattr(runner,'training_frame',lambda _:frame)
+    monkeypatch.setattr(runner,'main_gate',lambda _: {'main':'complete'})
+    path = tmp_path/'assessment_protocol.json'
+    path.write_text(json.dumps(protocol))
+    runner.validate_frozen(tmp_path,runner.OUT,tmp_path)
+    old_hash = protocol['protocol_hash']
+    old_nominations = specification['nominations'].copy()
+    # This is another complete, permitted registry using the SAME R3 array.
+    # Nominations and the signed specification digest deliberately stay old.
+    protocol['specification']['candidate_order'] = list(neural)
+    assert protocol['protocol_hash'] == old_hash
+    assert protocol['specification']['nominations'] == old_nominations
+    path.write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='saved frozen transfer specification hash mismatch'):
+        runner.validate_frozen(tmp_path,runner.OUT,tmp_path)
+    # Rehashing the altered saved spec must still fail regeneration equality.
+    protocol['protocol_hash'] = config_digest(protocol['specification'])
+    path.write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='data/specification changed'):
+        runner.validate_frozen(tmp_path,runner.OUT,tmp_path)
+
+
+def test_freeze_reuse_rejects_tampered_saved_specification(tmp_path,monkeypatch):
+    import scripts.round2_transfer as runner
+    frame = population()
+    ridge = candidate_registry(('R3_ridge',))
+    neural = candidate_registry(('R3_mlp',))
+    directory = tmp_path/'embedding';directory.mkdir()
+    (directory/'protocol.json').write_text(json.dumps(dict(specification=dict(
+        selector_order=['original','R3_ridge','R3_mlp'],
+        candidate_grids={'R3_ridge':list(ridge[3:]),'R3_mlp':list(neural[3:])}))))
+    monkeypatch.setattr(runner,'main_gate',lambda _: {'main':'complete'})
+    monkeypatch.setattr(runner,'training_frame',lambda _:frame)
+    monkeypatch.setattr(runner,'preflight',lambda _: [])
+    monkeypatch.setattr(runner,'load_compact_features',lambda *_:
+        ({'R3':np.zeros((len(frame),2),dtype=np.float32)}, {'synthetic':True}))
+    arguments = (tmp_path,runner.OUT,tmp_path,None,'synthetic amendment',('R3_ridge',))
+    original = runner.freeze(*arguments)
+    assert runner.freeze(*arguments) == original
+    path = tmp_path/'assessment_protocol.json'
+    changed = json.loads(path.read_text())
+    changed['specification']['candidate_order'] = list(neural)
+    assert changed['protocol_hash'] == original['protocol_hash']
+    path.write_text(json.dumps(changed))
+    with pytest.raises(ValueError,match='saved frozen transfer specification changed'):
+        runner.freeze(*arguments)

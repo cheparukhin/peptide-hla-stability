@@ -69,3 +69,17 @@ def test_panels_separate_fixed_eligibility_and_input_rejection():
     bad.loc[0,"hla_group"] = 10
     with pytest.raises(ValueError,match="multiple"):
         transfer_bootstrap(bad,pred,min_rows=2,n_boot=4)
+
+
+def test_component_contrasts_include_both_sequence_references():
+    from pepstab.round2_transfer import transfer_comparisons,SEQUENCE_SELECTOR,EMBEDDING_SELECTOR
+    frame = sample()
+    predictions = {'original':frame.a.to_numpy(),SEQUENCE_SELECTOR:frame.b.to_numpy(),
+                   'R3_mlp':frame.a.to_numpy(), 'R5_ridge':frame.b.to_numpy(),
+                   EMBEDDING_SELECTOR:frame.a.to_numpy()}
+    comparisons,draws,sensitivity = transfer_comparisons(frame,predictions,min_rows=2,n_boot=10)
+    expected = {(baseline,candidate) for baseline in ('original',SEQUENCE_SELECTOR)
+                for candidate in ('R3_mlp','R5_ridge',EMBEDDING_SELECTOR)}
+    assert expected <= set(zip(comparisons.baseline,comparisons.candidate))
+    assert expected <= set(zip(sensitivity.baseline,sensitivity.candidate))
+    assert set(draws) == {'peptide','hla','crossed'}

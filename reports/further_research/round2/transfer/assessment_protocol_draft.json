@@ -1,6 +1,6 @@
 {
   "status": "DRAFT_NOT_FROZEN_NO_FITS",
-  "created_at_utc": "2026-10-12T01:06:25.092830+00:00",
+  "created_at_utc": "2026-10-12T03:59:44.036277+00:00",
   "specification": {
     "schema": "round2_transfer.1",
     "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md#6",
@@ -160,59 +160,46 @@
       "coverage.csv": "a4d6efe16ced3e9de8fbfb5ead876bb88f661f4c2ec976a1e379b374dd36c50d"
     },
     "outer_cells": "all five HLA cells and all 25 joint intersections; no outcome exclusions",
+    "nominations": [],
     "candidate_order": [
       {
         "id": "original",
         "learner": "original"
       },
       {
-        "id": "R2_ridge_10000",
-        "learner": "ridge",
-        "representation": "R2",
-        "regularization": 10000.0
+        "id": "mlp_centred_k100",
+        "learner": "mlp",
+        "target": "centred",
+        "k": 100
       },
       {
-        "id": "R2_ridge_100",
-        "learner": "ridge",
-        "representation": "R2",
-        "regularization": 100.0
-      },
-      {
-        "id": "R2_ridge_1",
-        "learner": "ridge",
-        "representation": "R2",
-        "regularization": 1.0
-      },
-      {
-        "id": "R4_ridge_10000",
-        "learner": "ridge",
-        "representation": "R4",
-        "regularization": 10000.0
-      },
-      {
-        "id": "R4_ridge_100",
-        "learner": "ridge",
-        "representation": "R4",
-        "regularization": 100.0
-      },
-      {
-        "id": "R4_ridge_1",
-        "learner": "ridge",
-        "representation": "R4",
-        "regularization": 1.0
+        "id": "mlp_centred_k20",
+        "learner": "mlp",
+        "target": "centred",
+        "k": 20
       }
     ],
     "reported_arms": [
       "original",
-      "R2_ridge",
-      "R4_ridge",
-      "transfer_selector"
+      "mlp_centred",
+      "bounded_MLP_sequence_selector",
+      "embedding_selector"
     ],
-    "scope_amendment": "bounded original-reference versus R2/R4 ridge transfer; does not assess the main competitive sequence selector or all embedding finalists",
-    "rationale": "R2 full-chain pooled tokens and R4 groove-pooled interface at each peptide position provide complementary bounded summaries; deterministic three-alpha ridge bounds local cost; no claim to cover position-preserving or neural transfer",
+    "selector_candidate_orders": {
+      "bounded_MLP_sequence_selector": [
+        "original",
+        "mlp_centred"
+      ],
+      "embedding_selector": [
+        "original",
+        "mlp_centred"
+      ]
+    },
+    "scope_amendment": "bounded MLP sequence comparator and at most two main-nominated embedding procedures; excludes full five-family main sequence selector",
+    "rationale": "no Boltz nominees chosen in preparation; freeze explicitly nominates one or two existing main primary representation/head procedures and retains their entire frozen regularization grids",
     "selection": "three balanced group folds; joint all 3x3 intersections; pooled inner median per-allele Spearman; max score with exact ties resolved in frozen order, original first",
     "selection_amendment": "pooled selection replaces mean cell medians/one-SE rule because joint cells can lack eligible per-cell panels and pooled endpoint is the target; inner pooled eligibility min20",
-    "stopping": "five balanced HLA folds; joint five paired diagonal HLA/peptide cells; gradients outside BOTH, stop on intersection, cross quadrants excluded; every original call retains 5x2x3=30 members",
+    "stopping": "five balanced HLA folds; joint five paired diagonal HLA/peptide cells; gradients outside BOTH, stop on intersection, cross quadrants excluded; sequence inner calls use 3x2x2=12; sequence finals use 5x2x3=30; neural feature inner calls use stop0/seed0 and stop1/seed1; neural feature finals use 5x6=30",
     "stopping_limitation": "joint diagonal stopping does not cover every fitting row; smaller gradient/stop sets differ from peptide regime and are logged per member",
     "original": {
       "encodings": [
@@ -246,29 +233,56 @@
         1.0
       ]
     },
+    "centred": {
+      "k": [
+        100,
+        20
+      ],
+      "means": "each member gradient rows only; apply to gradient/stopping targets and restore predictions; unseen allele uses gradient global mean"
+    },
+    "neural_embedding": {
+      "hidden": [
+        64
+      ],
+      "l2": [
+        1.0,
+        0.01,
+        0.0001
+      ],
+      "max_epochs": 200,
+      "patience": 15,
+      "scaling": "gradient-only StandardScaler",
+      "inner_members": 2,
+      "final_members": 30
+    },
     "fit_graph": {
       "regimes": {
         "hla": {
           "outer_cells": 5,
           "inner_cells": 3,
-          "original_members_per_cell": 120,
-          "ridge_fits_per_cell": 20,
-          "total_fits": 700
+          "sequence_mlp_fits": 168,
+          "embedding_mlp_fits": 0,
+          "deterministic_ridge_fits": 0,
+          "fits_per_cell": 168,
+          "total_fits": 840
         },
         "joint": {
           "outer_cells": 25,
           "inner_cells": 9,
-          "original_members_per_cell": 300,
-          "ridge_fits_per_cell": 56,
-          "total_fits": 8900
+          "sequence_mlp_fits": 384,
+          "embedding_mlp_fits": 0,
+          "deterministic_ridge_fits": 0,
+          "fits_per_cell": 384,
+          "total_fits": 9600
         }
       },
-      "total_fits": 9600,
-      "original_mlp_fits": 8100,
-      "deterministic_ridge_fits": 1500,
+      "total_fits": 10440,
+      "sequence_mlp_fits": 10440,
+      "embedding_mlp_fits": 0,
+      "deterministic_ridge_fits": 0,
       "selector_extra_fits": 0,
       "cloud_spend_usd": 0,
-      "repeats": "not included; main locked execution repeats are separate"
+      "repeats": "excluded; locked execution repeats separate"
     },
     "timing_reference": {
       "source": "reports/further_research/round2/sequence/profile_members.json",
@@ -287,11 +301,11 @@
           "fit_rows": 10514
         }
       ],
-      "mlp_hours_at_observed_profile": 3.74429817229975,
-      "mlp_hours_linear_300_epoch_extrapolation": 28.337931736980657,
-      "limitations": "extrapolations at profile gradient-row count; exclude 1,500 ridge fits, row-count changes, feature assembly and other overhead; not a validated runtime bound"
+      "mlp_hours_at_observed_profile": 4.825984310964122,
+      "mlp_hours_linear_300_epoch_extrapolation": 36.52444534988618,
+      "limitations": "extrapolations at profile gradient-row count; exclude nominated embedding heads, row-count changes, feature assembly and other overhead; not a validated runtime bound"
     },
-    "local_runtime_gate": "Unmeasured: before launch, forecast conservative wall time from original-member and ridge timings; 9,600 fits are not a runtime estimate",
+    "local_runtime_gate": "Unmeasured: before execution, validate conservative wall-time forecast from deterministic first HLA/joint timing telemetry; counts alone are not runtime approval",
     "execution": {
       "device": "local CPU",
       "threads": 2,
@@ -312,7 +326,7 @@
       "sparse_group_sensitivity": "leave EACH actual HLA group out of the pooled endpoint; publish all groups and coverage",
       "interpretation": "conditional on fitted predictions; no refitting; crossed pigeonhole sensitivity can be conservative with sparse intersections; execution repeats separate"
     },
-    "comparisons": "selector and both R2/R4 components versus original; all contrasts and both panels retained",
+    "comparisons": "all shortlisted components and embedding selector versus original AND bounded_MLP_sequence_selector; bounded sequence selector versus original; both panels retained",
     "gate": "main sequence and embedding completion required before scope freeze or fitting; explicit documented scope amendment required"
   },
   "preflight": [
@@ -322,9 +336,9 @@
       "fit_rows": 15757,
       "held_rows": 3959,
       "inner_cells": 3,
-      "stopping_partitions": 20,
+      "stopping_partitions": 32,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 8189,
+      "minimum_gradient_rows": 6891,
       "minimum_stopping_rows": 1974
     },
     {
@@ -333,9 +347,9 @@
       "fit_rows": 15682,
       "held_rows": 4034,
       "inner_cells": 3,
-      "stopping_partitions": 20,
+      "stopping_partitions": 32,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 7975,
+      "minimum_gradient_rows": 6888,
       "minimum_stopping_rows": 1843
     },
     {
@@ -344,9 +358,9 @@
       "fit_rows": 15720,
       "held_rows": 3996,
       "inner_cells": 3,
-      "stopping_partitions": 20,
+      "stopping_partitions": 32,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 7899,
+      "minimum_gradient_rows": 6802,
       "minimum_stopping_rows": 1854
     },
     {
@@ -355,9 +369,9 @@
       "fit_rows": 15886,
       "held_rows": 3830,
       "inner_cells": 3,
-      "stopping_partitions": 20,
+      "stopping_partitions": 32,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 8081,
+      "minimum_gradient_rows": 7000,
       "minimum_stopping_rows": 1976
     },
     {
@@ -366,9 +380,9 @@
       "fit_rows": 15819,
       "held_rows": 3897,
       "inner_cells": 3,
-      "stopping_partitions": 20,
+      "stopping_partitions": 32,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 7993,
+      "minimum_gradient_rows": 6952,
       "minimum_stopping_rows": 1975
     },
     {
@@ -377,9 +391,9 @@
       "fit_rows": 12651,
       "held_rows": 838,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3480,
+      "minimum_gradient_rows": 2398,
       "minimum_stopping_rows": 183
     },
     {
@@ -388,9 +402,9 @@
       "fit_rows": 12549,
       "held_rows": 735,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 3413,
+      "minimum_gradient_rows": 2395,
       "minimum_stopping_rows": 200
     },
     {
@@ -399,9 +413,9 @@
       "fit_rows": 12613,
       "held_rows": 799,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3462,
+      "minimum_gradient_rows": 2362,
       "minimum_stopping_rows": 195
     },
     {
@@ -410,9 +424,9 @@
       "fit_rows": 12572,
       "held_rows": 758,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3467,
+      "minimum_gradient_rows": 2385,
       "minimum_stopping_rows": 182
     },
     {
@@ -421,9 +435,9 @@
       "fit_rows": 12643,
       "held_rows": 829,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 35,
-      "minimum_gradient_rows": 3504,
+      "minimum_gradient_rows": 2387,
       "minimum_stopping_rows": 192
     },
     {
@@ -432,9 +446,9 @@
       "fit_rows": 12529,
       "held_rows": 791,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3352,
+      "minimum_gradient_rows": 2389,
       "minimum_stopping_rows": 173
     },
     {
@@ -443,9 +457,9 @@
       "fit_rows": 12563,
       "held_rows": 824,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3313,
+      "minimum_gradient_rows": 2365,
       "minimum_stopping_rows": 166
     },
     {
@@ -454,9 +468,9 @@
       "fit_rows": 12525,
       "held_rows": 786,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 3333,
+      "minimum_gradient_rows": 2416,
       "minimum_stopping_rows": 191
     },
     {
@@ -465,9 +479,9 @@
       "fit_rows": 12569,
       "held_rows": 830,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 3327,
+      "minimum_gradient_rows": 2352,
       "minimum_stopping_rows": 175
     },
     {
@@ -476,9 +490,9 @@
       "fit_rows": 12542,
       "held_rows": 803,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3317,
+      "minimum_gradient_rows": 2377,
       "minimum_stopping_rows": 196
     },
     {
@@ -487,9 +501,9 @@
       "fit_rows": 12591,
       "held_rows": 815,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 3324,
+      "minimum_gradient_rows": 2425,
       "minimum_stopping_rows": 181
     },
     {
@@ -498,9 +512,9 @@
       "fit_rows": 12578,
       "held_rows": 801,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 37,
-      "minimum_gradient_rows": 3269,
+      "minimum_gradient_rows": 2417,
       "minimum_stopping_rows": 172
     },
     {
@@ -509,9 +523,9 @@
       "fit_rows": 12571,
       "held_rows": 794,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 37,
-      "minimum_gradient_rows": 3272,
+      "minimum_gradient_rows": 2395,
       "minimum_stopping_rows": 180
     },
     {
@@ -520,9 +534,9 @@
       "fit_rows": 12566,
       "held_rows": 789,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 37,
-      "minimum_gradient_rows": 3329,
+      "minimum_gradient_rows": 2419,
       "minimum_stopping_rows": 163
     },
     {
@@ -531,9 +545,9 @@
       "fit_rows": 12574,
       "held_rows": 797,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 37,
-      "minimum_gradient_rows": 3329,
+      "minimum_gradient_rows": 2396,
       "minimum_stopping_rows": 194
     },
     {
@@ -542,9 +556,9 @@
       "fit_rows": 12691,
       "held_rows": 749,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 35,
-      "minimum_gradient_rows": 3452,
+      "minimum_gradient_rows": 2452,
       "minimum_stopping_rows": 173
     },
     {
@@ -553,9 +567,9 @@
       "fit_rows": 12697,
       "held_rows": 754,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 35,
-      "minimum_gradient_rows": 3336,
+      "minimum_gradient_rows": 2422,
       "minimum_stopping_rows": 191
     },
     {
@@ -564,9 +578,9 @@
       "fit_rows": 12754,
       "held_rows": 811,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 35,
-      "minimum_gradient_rows": 3426,
+      "minimum_gradient_rows": 2445,
       "minimum_stopping_rows": 184
     },
     {
@@ -575,9 +589,9 @@
       "fit_rows": 12724,
       "held_rows": 781,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 3332,
+      "minimum_gradient_rows": 2444,
       "minimum_stopping_rows": 183
     },
     {
@@ -586,9 +600,9 @@
       "fit_rows": 12678,
       "held_rows": 735,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 3396,
+      "minimum_gradient_rows": 2431,
       "minimum_stopping_rows": 170
     },
     {
@@ -597,9 +611,9 @@
       "fit_rows": 12626,
       "held_rows": 751,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 33,
-      "minimum_gradient_rows": 3354,
+      "minimum_gradient_rows": 2427,
       "minimum_stopping_rows": 187
     },
     {
@@ -608,9 +622,9 @@
       "fit_rows": 12705,
       "held_rows": 829,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3372,
+      "minimum_gradient_rows": 2465,
       "minimum_stopping_rows": 184
     },
     {
@@ -619,9 +633,9 @@
       "fit_rows": 12629,
       "held_rows": 753,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 34,
-      "minimum_gradient_rows": 3323,
+      "minimum_gradient_rows": 2420,
       "minimum_stopping_rows": 189
     },
     {
@@ -630,9 +644,9 @@
       "fit_rows": 12661,
       "held_rows": 785,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 3350,
+      "minimum_gradient_rows": 2399,
       "minimum_stopping_rows": 186
     },
     {
@@ -641,9 +655,9 @@
       "fit_rows": 12655,
       "held_rows": 779,
       "inner_cells": 9,
-      "stopping_partitions": 50,
+      "stopping_partitions": 80,
       "minimum_inner_eligible_alleles": 36,
-      "minimum_gradient_rows": 3328,
+      "minimum_gradient_rows": 2397,
       "minimum_stopping_rows": 194
     }
   ]

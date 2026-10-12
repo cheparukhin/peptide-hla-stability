@@ -139,29 +139,33 @@ Implementation readiness for the next continuation:
   fresh local fits; selected original-reference branches reuse the already
   budgeted sequence execution repeats. All main folds and feature/provenance
   checks must pass first. No repeat fitting has run yet.
-- `transfer/assessment_protocol_draft.json` is a draft, not launch approval.
-  The current implementation covers the original reference and R2/R4 ridge,
-  with a baseline-inclusive inner selector. It excludes the competitive main
-  sequence selector, so the orchestrator must review that comparator limitation
-  against the completed main screen, document any scope amendment in the
-  canonical plan, and freeze before any transfer outcomes. Do not imply that
-  these reduced comparisons settle superiority over the best sequence control.
-- The draft transfer graph is 9,600 local fits (8,100 original neural members,
-  1,500 ridge fits), with no cloud charge. Split feasibility is checked, but
-  total elapsed runtime is not established by the fit count. Use timing-only
-  telemetry from the deterministic first HLA/joint cells to validate practical
-  scheduling after the scope gate. Preserve all 30 cells and never nominate or
-  discard cells using their held outcomes.
+- `transfer/assessment_protocol_draft.json` is a refreshed, unfrozen draft with
+  no Boltz nominees. The reviewed implementation supports original and centred
+  MLP sequence families plus one or two explicitly nominated existing R2–R5
+  ridge/MLP procedures, retaining their full main regularization grids. See
+  [implementation readiness](transfer/implementation_readiness.md) for the
+  member recipes, tests, review and limitations. No transfer fits have run.
+- The separately named `bounded_MLP_sequence_selector` chooses between original
+  and centred MLP using regime-matched inner assessment. It excludes trees and
+  PairLogit from the full main sequence selector. After the complete main report,
+  review this comparator limitation, document a scope amendment in the canonical
+  plan, then nominate and freeze before any transfer outcomes. Do not imply that
+  the bounded comparisons establish superiority over the full sequence selector.
+  The embedding selector includes both already fitted sequence families as
+  fallback candidates, without extra fits.
+- All five HLA and 25 joint cells require 10,440 sequence fits, plus 750 for each
+  nominated ridge procedure or 2,340 for each neural feature procedure; repeats
+  are additional. The draft currently records only the sequence component.
+  Split feasibility passes all 30 cells and their deeper stopping schedules.
+  Total elapsed runtime is not established by fit counts or historical profile
+  extrapolations. Use timing-only telemetry from deterministic first HLA/joint
+  cells to validate scheduling after the scope gate. Preserve all 30 cells and
+  never nominate or discard cells using their held outcomes.
 
-Preparatory task `/root/transfer_candidate_support` (6.1 Sol) is extending the
-unfrozen transfer implementation to accept at most two existing main-screen
-representation/head procedures and a separately named bounded MLP sequence
-comparator. This is capability preparation, not candidate nomination or launch
-approval. The proposed comparator selects between original log MLP and centred
-MLP with the existing k=100/20 grid, using 12-member inner screening and
-30-member final ensembles. It cannot stand in for the full main five-family
-sequence selector. The orchestrator must review this restricted scope after
-the complete main report, document any amendment, and freeze before fitting.
-Expected complete-30-cell counts are 10,440 sequence fits plus 750 per ridge
-procedure or 2,340 per neural embedding procedure; actual implementation and
-focused tests must substantiate them. No new transfer fit has been launched.
+The bounded implementation passed 32 focused tests and an independent complex
+review. A saved-specification integrity issue found in that review was fixed:
+validation and existing-freeze reuse require the actual saved content to match
+its digest and regenerated specification. Four focused agent regressions and
+five independently rerun freeze/nomination checks passed afterward. The current
+unfrozen draft was regenerated through the CLI and has empty nominations; a
+real freeze requires one or two nominees and complete audited main evidence.
