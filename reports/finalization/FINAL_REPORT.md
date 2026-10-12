@@ -175,16 +175,26 @@ The pending transfer trees and ranker consume sequence features; they do not
 test boosted trees or tree ranking on Boltz embeddings. The small, uncertain
 MLP ranking result does not rule out a benefit from a different learner.
 
-The new protocol covers matched Boltz boosted-tree regression and ranking
-heads, a leakage-safe prediction blend with the MLP, tree-leaf features as MLP
-inputs, and quantile/PCA preprocessing. Every family has a bounded comparison
-and fit graph; execution requires frozen tested sources and a runtime gate.
-The current transfer scope stays unchanged. Both former waiting queues stopped
-before any hybrid fit. The replacement operational gate must verify successful
-completion and audit of all30 transfer cells. The hybrid protocol contains
-12 unscored engineering fits followed by480 scientific fits; its current cloud
-allocation is zero. See [hybrid authorization](hybrids/user_authorization.json)
-and [recovery operations](RECOVERY_OPERATIONS.md).
+The frozen study asks whether any of these additions improves a matched Boltz
+MLP on held peptide clusters. Its **single primary comparison** is the
+inner-selected R5 hybrid procedure minus the R5 standard MLP. Both use the same
+two-member schedule; the earlier 30-member MLP is a descriptive reference,
+not the matched control.
+
+| Scientific question | Frozen comparison |
+|---|---|
+| Do trees exploit the embeddings better? | Regression and ranking trees versus the matched MLP, on both R0 sequence and R5 Boltz features. |
+| Does ranking help a tree specifically on Boltz features? | Ranking tree minus regression tree within each representation, plus their paired interaction. |
+| Do trees and the MLP make complementary predictions? | A blend selected from clean inner predictions versus the standard MLP. |
+| Does preprocessing help the neural head? | Quantile, PCA and supervised tree-leaf inputs versus the standard MLP. |
+
+All six fitted components are evaluated even if the inner selector rejects
+them. The study has 480 scientific fits and a separate 12-fit unscored runtime
+pilot; pilot models never enter the comparison. Secondary intervals are
+exploratory, and every result remains development evidence. No hybrid fits
+have started. Future fitting and heavy reports will run on Modal after the
+existing transfer completes. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
+and [operational continuation](cloud/CONTINUATION.md).
 
 The existing MLP already standardizes features using gradient-fitting rows
 only. Additional normalization or tree-derived preprocessing is a separate
@@ -192,8 +202,10 @@ change, not an explanation established by the current results. Any learned
 tree predictions, leaf encoding, scaler and downstream head must preserve
 cluster-separated fitting, stopping and selection ancestry; outcome-fitted
 tree features cannot be generated once on the full cohort and reused as clean
-assessment inputs. A future blend would use clean inner out-of-fold predictions
-and select its weight inside fitting partitions.
+assessment inputs. Tree leaves are supervised features, not a generic way to
+normalize a distribution. The separate quantile and PCA controls test simpler
+transformations directly. A positive result would support that complete
+procedure, rather than proving why its preprocessing works.
 
 ## Independent confirmation and provenance limits
 

@@ -1,0 +1,21 @@
+{
+  "schema": "final_cloud_rates.1",
+  "observed_at_utc": "2026-10-12T16:27:17.312149+00:00",
+  "modal_sdk_version": "1.6.1",
+  "pricing_source": "https://modal.com/pricing",
+  "preemption_source": "https://modal.com/docs/guide/preemption",
+  "resource_limits_source": "https://modal.com/docs/guide/sandbox-resources",
+  "sandbox_cpu_core_second_usd": 3.942e-05,
+  "sandbox_memory_gib_second_usd": 6.67e-06,
+  "function_cpu_core_second_usd": 1.31e-05,
+  "function_memory_gib_second_usd": 2.22e-06,
+  "network_egress_gib_usd": 0.04,
+  "volume_gib_month_usd": 0.09,
+  "free_allowances_not_assumed_in_bounds": true,
+  "cpu_sandbox_preemption_policy": "CPU-only Sandboxes are not subject to preemption; no GPU allocation. Failures remain possible and do not authorize retry.",
+  "billing_rule": "max(request,actual), so request=hardlimit tuples required",
+  "new_total_ceiling_usd": 100,
+  "closed_prior_carry_usd": 5.1793820030564595,
+  "proposed_future_envelope_usd": 35,
+  "approved": false
+}

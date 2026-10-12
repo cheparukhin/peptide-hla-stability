@@ -701,3 +701,16 @@ validated complete-call checkpoints before another attempt. Scientific scope,
 original deadline and zero additional cloud allocation remain unchanged.
 Both hybrid waiting queues stopped before fitting. Current recovery ownership
 and its revised gates are recorded in the phase manifest and recovery operations.
+
+### Scientific priority and future compute placement — 12 October
+
+The user requests Modal for future heavy work and emphasizes scientific results
+over further execution infrastructure. The existing bounded transfer continues;
+subsequent reporting and the frozen 12-pilot/480-scientific-fit hybrid comparison
+move to four sequential, capped Modal phases. The reviewed operational amendment
+preserves all scientific sources and comparisons, with at most $35 inclusive
+future spend inside the unchanged $100 ceiling. Exact phase authorization still
+requires successful transfer closure. Finish these experiments and interpretation
+without expanding either the model grid or the execution framework.
+See the [continuation](finalization/cloud/CONTINUATION.md) and
+[reviewed amendment](finalization/cloud/implementation_amendment.json).

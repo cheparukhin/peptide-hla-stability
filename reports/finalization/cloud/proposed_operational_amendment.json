@@ -1,0 +1,310 @@
+{
+  "schema": "finalization_cloud_operational_amendment_proposal.1",
+  "status": "DESIGN_ONLY_REQUIRES_TESTED_SOURCE_BOUND_PHASE_AUTHORIZATIONS",
+  "design": {
+    "path": "reports/finalization/cloud/OPERATIONS_DESIGN.md",
+    "sha256": "2dda3305411eb681bb03095ffe9f2496231713bd9831cacc8e7a1c2491c9ad15"
+  },
+  "backend": "four_sequential_modal_cpu_sandboxes",
+  "repository_absolute_path": "/Users/cheparukhin/ai_science_hack",
+  "proposed_hybrid_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_cloud_v1",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "frozen_reference_files": [
+    {
+      "path": "reports/finalization/hybrids_recovery_v2/protocol.json",
+      "sha256": "d5e5560f11e779b8967f55e252c1187cbbfb6779e570273c78ba25ea807cf5d8"
+    },
+    {
+      "path": "reports/finalization/hybrids_recovery_v2/SPECIFICATION.md",
+      "sha256": "df032a58a813689396c278eb02608ade7f16140f7682f44e80080a84442c38cf"
+    },
+    {
+      "path": "reports/finalization/hybrids_recovery_v2/fit_graph.json",
+      "sha256": "d3991040333705874a7ad8ebb6408a925ab64970b649deb7431ca730786abf2b"
+    },
+    {
+      "path": "reports/finalization/hybrids_recovery_v2/task_manifest.json",
+      "sha256": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766"
+    },
+    {
+      "path": "reports/finalization/hybrids_recovery_v2/operational_amendment.json",
+      "sha256": "a13960f74db330570c9eed518dc1a135484072641b6a8cc29c6eff5cf6aa6ed4"
+    },
+    {
+      "path": "reports/finalization/transfer_recovery_v2/authorization.json",
+      "sha256": "d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c"
+    },
+    {
+      "path": "scripts/final_hybrids.py",
+      "sha256": "45adc884f21fbbe1c72cbb7545b292f230698b5d100e0a5a6e6c519500b18535"
+    },
+    {
+      "path": "scripts/final_hybrids_pipeline.py",
+      "sha256": "6f20157ebb4fabe2f0157377e811d7cfb88c1546fdacfe940c551399cc8257d6"
+    },
+    {
+      "path": "scripts/final_hybrids_report.py",
+      "sha256": "3b2919bbbb8245101f8396c6abbe56af909d37a45ee662608a158b27e27f46eb"
+    },
+    {
+      "path": "scripts/final_transfer_report.py",
+      "sha256": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca"
+    }
+  ],
+  "live_transfer": {
+    "pid": 59308,
+    "launchd_label": "org.pepstab.transfer-recovery-v2-20261012",
+    "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+    "authorization": {
+      "path": "reports/finalization/transfer_recovery_v2/authorization.json",
+      "sha256": "d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c"
+    },
+    "protected_source_sha256": {
+      "modal_app/final_transfer.py": "8603bf6989aa92a553df751aba28673cfc424efca3979205c978126c100e48c4",
+      "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+      "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+      "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+      "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+      "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
+      "pepstab/final_transfer.py": "aba5a72e1183a93df707bb2350d32a78b73a6a5cf44360ba73a3268256a9cb9d",
+      "pepstab/final_transfer_checkpoint.py": "086ed51e24f7d2b51047ebcae8dae85b977d4917d0240592ce1579904ebfba7a",
+      "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+      "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+      "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+      "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+      "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+      "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+      "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+      "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+      "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
+      "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
+      "scripts/final_runtime_guard.py": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627",
+      "scripts/final_transfer.py": "c20906775caa14616c03d94a36f34ce4b6925292edb506a9aa03ec9afb88e801",
+      "scripts/final_transfer_checkpoint_worker.py": "eeb085a087e860da60c0c0775b83f1b84f216fe6f1cd10f506a85cb3f4b121ce",
+      "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
+      "scripts/final_transfer_durable.py": "895e2439759f682838a861217557c29eda5453a153b7fa789f8b09ca4c31b97b",
+      "scripts/final_transfer_pipeline.py": "e98e5e1953d52745fcca5da7cdd164275ed27500575bdb8d56638a04facc31ff",
+      "scripts/final_transfer_report.py": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca",
+      "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+      "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+      "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+      "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
+      "tests/test_final_runtime_guard.py": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b",
+      "tests/test_final_transfer.py": "25278ee2e92d0d0f886c2ae0466479c3afe15a0a9ca807f76dd323d50f768886",
+      "tests/test_final_transfer_checkpoint.py": "f40640f6b216f0002746176c3bc74bb77d381cd7304e52bb40fd824065f38ad3",
+      "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
+      "tests/test_final_transfer_durable.py": "7fc1f989c03702527cf53418d474d012efdddd55b43707bbb262773a07247a90",
+      "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551"
+    },
+    "policy": "leave_running_do_not_edit_stop_restart_or_duplicate"
+  },
+  "scientific_counts": {
+    "hybrid_pilot_engineering": 12,
+    "hybrid_main": 480,
+    "hybrid_main_mlp": 320,
+    "hybrid_main_rmse_trees": 80,
+    "hybrid_main_rank_trees": 80,
+    "hybrid_main_jobs": 10,
+    "hybrid_main_bundles": 80,
+    "hybrid_final_arms": 16,
+    "transfer_retained": 10830,
+    "transfer_known_discarded": 1785,
+    "transfer_known_completed_after_success": 12615,
+    "transfer_unknown_remote_attempts": 12,
+    "transfer_unknown_interrupted_local_work_separate": true
+  },
+  "dependency_versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "catboost": "1.2.10",
+    "threadpoolctl": "3.7.0"
+  },
+  "python_version": "3.12.12",
+  "certificate_contract": {
+    "authentication": "certificate_sha256_pinned_in_source_bound_phase_authorization",
+    "local_checks": "exact_Mac_owner_successful_exit_deadline_source_receipt_hashes_and_absence",
+    "remote_checks": "materialized_bundle_hashes_and_recorded_historical_identity_plus_portable_semantic_audit",
+    "no_remote_Mac_pid_inference": true,
+    "no_fabricated_legacy_receipts": true,
+    "no_global_runtime_or_process_monkeypatch": true,
+    "mac_closure_schema": "finalization_portable_transfer_closure.1",
+    "sandbox_phase_schema": "finalization_sandbox_phase_completion.1",
+    "required_phase_fields": [
+      "phase",
+      "sandbox_id",
+      "app_id",
+      "authorization_sha256",
+      "input_manifest_sha256",
+      "executed_source_manifest_sha256",
+      "real_process_owner",
+      "started_at_utc",
+      "finished_at_utc",
+      "exit_code",
+      "provider_terminal_state",
+      "output_manifest_sha256",
+      "fit_counts",
+      "commit_acknowledgements",
+      "budget_closure_sha256"
+    ]
+  },
+  "operational_adapters": {
+    "preserve_original_source_bytes": true,
+    "new_files_only": true,
+    "worker_seams": [
+      "cloud_authorization_dispatch",
+      "explicit_original_ROOT",
+      "durable_before_after_bundle_hooks"
+    ],
+    "report_seams": [
+      "backend_specific_phase_certificate_preamble",
+      "explicit_original_ROOT",
+      "actual_cloud_cost_metadata"
+    ],
+    "scientific_equivalence": "allowlisted_diff_and_AST_or_exact_scientific_body_identity",
+    "transfer_report": "unchanged_original_function_under_new_supervisor",
+    "current_report_gate": "direct_controller_receipts_and_os.kill_not_check_phase_complete"
+  },
+  "budget": {
+    "incremental_total_ceiling_usd": 100,
+    "prior_conservative_liability_usd": 5.1793820030564595,
+    "future_all_phases_envelope_max_usd": 35,
+    "future_non_execution_overhead_max_usd": 3,
+    "sum_maximum_execution_usd": 19.98864,
+    "rates": {
+      "source": "https://modal.com/pricing",
+      "inspected_date": "2026-10-12",
+      "sandbox_cpu_core_second_usd": 3.942e-05,
+      "sandbox_memory_gib_second_usd": 6.67e-06,
+      "must_refresh_before_authorization": true
+    },
+    "include": [
+      "setup",
+      "build",
+      "shutdown_cushion",
+      "unknown_invocations",
+      "unexpected_replacement_overlap",
+      "storage_until_cleanup_plus_deletion_lag",
+      "egress"
+    ],
+    "no_credit_target": true
+  },
+  "phases": [
+    {
+      "phase": "transfer_report",
+      "backend": "modal_cpu_sandbox",
+      "maximum_sandboxes": 1,
+      "cpu_request": 2,
+      "cpu_limit": 2,
+      "memory_request_mib": 8192,
+      "memory_limit_mib": 8192,
+      "max_execution_seconds": 28800,
+      "maximum_phase_allocation_usd": 5,
+      "execution_ceiling_usd": 3.80736,
+      "new_supervised_fit_count": 0,
+      "threads_each": 2,
+      "max_fit_subprocesses": 0,
+      "execution_attempts": 1,
+      "absolute_deadline_utc": null,
+      "authorization_required_separately": true
+    },
+    {
+      "phase": "hybrid_pilot",
+      "backend": "modal_cpu_sandbox",
+      "maximum_sandboxes": 1,
+      "cpu_request": 2,
+      "cpu_limit": 2,
+      "memory_request_mib": 8192,
+      "memory_limit_mib": 8192,
+      "max_execution_seconds": 7200,
+      "maximum_phase_allocation_usd": 2,
+      "execution_ceiling_usd": 0.95184,
+      "new_supervised_fit_count": 12,
+      "threads_each": 2,
+      "max_fit_subprocesses": 1,
+      "execution_attempts": 1,
+      "absolute_deadline_utc": null,
+      "authorization_required_separately": true
+    },
+    {
+      "phase": "hybrid_main",
+      "backend": "modal_cpu_sandbox",
+      "maximum_sandboxes": 1,
+      "cpu_request": 4,
+      "cpu_limit": 4,
+      "memory_request_mib": 16384,
+      "memory_limit_mib": 16384,
+      "max_execution_seconds": 43200,
+      "maximum_phase_allocation_usd": 20,
+      "execution_ceiling_usd": 11.42208,
+      "new_supervised_fit_count": 480,
+      "threads_each": 2,
+      "max_fit_subprocesses": 2,
+      "execution_attempts": 1,
+      "absolute_deadline_utc": null,
+      "authorization_required_separately": true
+    },
+    {
+      "phase": "hybrid_report",
+      "backend": "modal_cpu_sandbox",
+      "maximum_sandboxes": 1,
+      "cpu_request": 2,
+      "cpu_limit": 2,
+      "memory_request_mib": 8192,
+      "memory_limit_mib": 8192,
+      "max_execution_seconds": 28800,
+      "maximum_phase_allocation_usd": 5,
+      "execution_ceiling_usd": 3.80736,
+      "new_supervised_fit_count": 0,
+      "threads_each": 2,
+      "max_fit_subprocesses": 0,
+      "execution_attempts": 1,
+      "absolute_deadline_utc": null,
+      "authorization_required_separately": true
+    }
+  ],
+  "watchdog": {
+    "placement": "independent_macOS_launchd_one_shot",
+    "survives_codex_restart": true,
+    "keep_alive": false,
+    "automatic_retry": false,
+    "minimum_shutdown_cushion_seconds": 120,
+    "requires_exact_provider_ids": true,
+    "deadline_extension": false,
+    "latest_cloud_stop_without_another_operational_amendment_utc": "2026-10-14T14:15:17.567539+00:00",
+    "lost_supervision": "close_admission_stop_exact_owned_sandbox_preserve_unknown_liability"
+  },
+  "release_sequence": [
+    "verify_exact_transfer_closure_on_Mac",
+    "freeze_portable_certificate_and_complete_input_manifest",
+    "review_tested_implementation_and_current_rate_resource_envelope",
+    "authorize_and_close_transfer_report",
+    "authorize_and_close_12_fit_unscored_pilot",
+    "replay_pilot_saved_models_remotely_without_held_scores",
+    "freeze_runtime_memory_forecast_and_separate_main_authorization",
+    "run_and_close_480_fit_main",
+    "authorize_and_close_saved_model_replay_and_hybrid_report",
+    "download_verify_hashes_reconcile_metering_and_clean_owned_cloud_storage"
+  ],
+  "no_scope_expansion": [
+    "no_extra_real_pilot_fits",
+    "no_retries_or_preemption_refits",
+    "no_new_candidates_or_scoring",
+    "no_outcome_tuned_resource_or_recipe_decisions",
+    "no_original_test_rescoring",
+    "no_feature_extraction",
+    "no_independent_confirmation_claim"
+  ],
+  "implementation_release_requirements": [
+    "source_bound_complete_input_manifest",
+    "dependency_image_build_identity",
+    "closure_and_phase_certificate_negative_tests",
+    "unchanged_scientific_body_comparison",
+    "single_attempt_restart_and_commit_fault_tests",
+    "fresh_pricing_and_provider_state",
+    "exact_absolute_phase_deadlines",
+    "independent_watchdog_acknowledgement",
+    "bounded_storage_egress_and_cleanup_plan"
+  ]
+}

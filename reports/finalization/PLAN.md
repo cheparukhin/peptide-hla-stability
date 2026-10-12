@@ -193,3 +193,20 @@ operational-v3 gate passed63 checks and retains the same scientific protocol;
 no hybrid fit or waiting queue has started. Its later pilot release must bind
 this exact successful transfer attempt. Current ownership and cleanup commands
 are in [recovery operations](RECOVERY_OPERATIONS.md).
+
+### Modal continuation and scientific focus
+
+The user's later instruction moves future heavy work to Modal and prioritizes
+the scientific comparison over additional execution infrastructure. The reviewed
+[cloud amendment](cloud/implementation_amendment.json) provides the minimal
+remaining transition: unchanged transfer report, 12-fit unscored hybrid pilot,
+480-fit hybrid main comparison, and saved-model/statistical report. It preserves
+the frozen scientific sources, candidate graph and primary comparison
+`R5_hybrid_selector - R5_standard`. Further harness features are out of scope.
+
+All four phases and overhead fit within a proposed $35 inclusive envelope,
+carrying $5.179382 conservatively inside the user's $100 new-phase ceiling.
+No phase is launched by this record. Follow [the continuation](cloud/CONTINUATION.md)
+after the existing transfer's successful closure, then complete the scientific
+readout and local delivery. The earlier local-first hybrid instructions are
+historical and superseded by the user's Modal preference.
