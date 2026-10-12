@@ -634,3 +634,30 @@ cohort or assay arrangement exists. External candidate outcomes remain
 reserved. Optional calibration/adaptation and new acquisition are not silently
 substituted. The original labels, splits, test and historical numerical
 artifacts remain unchanged.
+
+
+## 13. Newly authorized hackathon finalisation — 12 October 2026
+
+After round two closed in commit `3cf7443`, the user requested autonomous
+project finalisation, then reported **$143 remaining Modal credit** and
+authorized **up to $100 additional** for this new phase. This is a separate
+ceiling; old studies, authorizations and accounting remain closed. It is not a
+spending target. Current paid commitments for this new phase are zero.
+
+The user proposed combining Boltz embeddings with ranking loss. Freeze a
+bounded, matched sequence/Boltz representation by regression/ranking-loss
+comparison before fitting. Also price a defensible extension of the narrower
+transfer controls. Design, implementation tests, fit counts and measured cost
+gates precede any paid fanout. Neither a favorable development outcome nor
+remaining budget automatically authorizes a larger grid or another transfer
+phase. Original test data remain excluded.
+
+Final delivery includes a portable prediction package, real cached-head timing,
+updated project site, current root documentation and submission brief. Assay
+feasibility will be packaged as a concrete request, without contacting vendors
+or claiming unavailable confirmation. Bounded implementation uses 6.1 Sol;
+complex scientific scope/review uses Astra. The [phase execution plan](finalization/PLAN.md)
+and [durable manifest](finalization/execution_manifest.json) record operational
+ownership, frozen follow-up protocols, budget guards and completion. Earlier
+closeout source hashes remain historical snapshots of commit `3cf7443`; this
+dated new authorization intentionally updates the living canonical plan.

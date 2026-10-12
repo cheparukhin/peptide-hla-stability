@@ -1,12 +1,23 @@
 # site
 
-One-page project site: the task, the two-minute film, the approaches tested,
-the held-out test results and methods, with a link to the
-[single current research plan](../reports/NEXT_RESEARCH_PLAN.md).
-The submission film is a historical October 2026 artifact; its closing proposals
-are superseded. Keep research priorities in the plan rather than duplicating
-them in this site. Local source changes do not update the published site until
-the normal deployment workflow runs.
+Local static submission view for the **audited round-two development assessment,
+12 October 2026**. The primary finding, methods, bounded transfer, complementarity,
+execution repeats, provenance gap, cost accounting and open independent confirmation
+are backed by [the current round-two assessment](../reports/further_research/round2/REPORT.md).
+The original October 3–4 film, approaches and held-out test are retained in a clearly
+dated, collapsed archive. Their original numeric results are unchanged.
+
+The current result is development evidence on the original training rows, not a
+new independent confirmation. The lower bound of the peptide-held-out selector gain
+is positive but below the prespecified 0.05 criterion. Transfer comparisons concern
+complete procedures against narrow sequence comparators. Budget accounting is
+**$76.8388 conservatively allocated against $100**, including the full retained $2
+engineering allowance; it is not a final invoice or live credit balance.
+
+The page uses static generated HTML, system-font fallbacks, and local film assets.
+The current results work without JavaScript, a backend, or network access. Evidence
+links point to the repository; the downloadable numeric/hash snapshot is local.
+Local source changes do not update the published site until deployment runs.
 
 **Published to GitHub Pages at
 <https://cheparukhin.github.io/peptide-hla-stability/>** by
@@ -18,7 +29,9 @@ the built-in "/docs folder" source.
 
 | File | What it is |
 |---|---|
-| `index.html` | The page. Self-contained — all CSS inline, fonts from Google Fonts. |
+| `index.html` | The page. Inline CSS, system fonts, offline-readable result sections. |
+| `round2-build.py` | Standard-library evidence builder/checker; writes only the marked current section and payload. |
+| `round2-data.json` | Selected saved comparisons, procedure scores, cohort, conservative accounting and SHA-256 source hashes. |
 | `film/` | Generated — the submission film as a static page. Do not hand-edit. |
 | `intro/` | Generated — the original 30-second animation, live. Do not hand-edit. |
 | `intro.mp4` | The intro animation, re-encoded for web: 1280×720, **H.264 Constrained Baseline, level 3.0**, yuv420p, faststart, no audio track (2.9 MB). The 20 MB source is `pMHC Intro v2.mp4` in the repo root. |
@@ -30,16 +43,52 @@ viewer. Baseline is the widest-compatibility profile; keep it. The `<video>`
 element carries both sources plus an explicit codec string
 (`avc1.42E01E`) and falls back to a download link.
 
-## Numbers on the page
+## Current evidence and validation
 
-The headline table is the **held-out test split** (5,565 rows, 67 alleles) from
-[`../reports/stage6_test_summary.csv`](../reports/stage6_test_summary.csv) and
+From the repository root:
+
+```bash
+python3 site/round2-build.py
+python3 site/round2-build.py --check
+python3 -m http.server 8000 --directory site
+```
+
+Open `http://localhost:8000` at desktop and mobile widths. Check the primary
+paired gain and criterion statement, expand the procedure/control tables, check
+the transfer table scrolls on a narrow screen, open the source payload, and expand
+the dated archive/film. All current content remains readable with JavaScript disabled.
+The historical live film requires JavaScript; the MP4 is its fallback.
+
+The builder validates unique selected CSV rows, finite scores, delta consistency,
+point/interval agreement, the authored primary-criterion interpretation, the budget
+ceiling and zero locked-repeat differences. `--check` compares the generated HTML
+and JSON against current saved inputs and fails on stale content or source hashes.
+It never executes models, reads the original test for selection, edits saved research
+evidence, accesses the network or launches paid compute.
+
+Inputs: round-two main pooled scores/paired comparisons, complementarity paired
+comparisons, crossed transfer comparisons, runtime/cost accounting, cache and
+embedding-repeat audits. The canonical assessment and audit/independent-data
+narratives are hash-bound too. New results require reviewing the authored prose and
+regenerating; the builder does not infer new scientific claims from a higher score.
+
+The generated section lies between `ROUND2 GENERATED START` and `ROUND2 GENERATED END`
+in `index.html`. Change its template in `round2-build.py`, then rebuild. Other parts
+of the page, including the dated archive, are maintained in `index.html`. The snapshot
+schema is `round2-site-snapshot.1`; original source paths/hashes accompany selected
+rows so the payload can be traced back to saved evidence.
+
+## Historical numbers
+
+The archive table is the **original held-out test split** (5,565 rows, 67 alleles)
+from [`../reports/stage6_test_summary.csv`](../reports/stage6_test_summary.csv) and
 [`../reports/stage6_test_paired_ci.csv`](../reports/stage6_test_paired_ci.csv).
-The external-validation AUROC and the secondary experiments are validation
-numbers, labelled as such in the footer.
+The external presentation AUROC and secondary experiments are original validation
+results. These scores do not establish independent round-two confirmation and
+cannot be subtracted from round-two scores across assessment regimes.
 
-The test pass scored six arms. FoldX and ESM-2 150M were not among them, so
-they appear in the approach list but not in the results table.
+The original test pass scored six arms. FoldX and ESM-2 150M were not among them,
+so they appear in the historical approach list but not its test table.
 
 ## The film
 
@@ -113,6 +162,9 @@ ffmpeg -v error -i site/intro.mp4 -f null -    # must print nothing
 Published to GitHub Pages at
 <https://cheparukhin.github.io/peptide-hla-stability/>. Pushing to `main` with
 changes under `site/` redeploys it; there is nothing to upload by hand.
+
+Rebuild the current evidence snapshot before pushing if its saved inputs changed.
+Run `python3 site/round2-build.py --check` before release.
 
 Rebuild `film/` before pushing if any scene source or `film_data.js` changed —
 the workflow publishes this folder as-is and does not run the build.

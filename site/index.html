@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Antigen Presentation Stability</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>Antigen Presentation Stability · Audited Round 2</title>
+<meta name="description" content="Frozen interface embeddings show a positive development gain for peptide–HLA stability ranking. Audited round 2 results, uncertainty, costs, and a dated hackathon archive.">
+
 
 </head>
 <body>
@@ -573,23 +572,145 @@
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   }
+
+  /* Round-two submission view: static, offline-readable, with a dated archive. */
+  .skip-link { position:absolute; left:1rem; top:-5rem; background:var(--surface); padding:.6rem 1rem; z-index:10; }
+  .skip-link:focus { top:1rem; }
+  nav { display:flex; flex-wrap:wrap; gap:.55rem 1.4rem; font-size:.92rem; }
+  section { scroll-margin-top:1.5rem; }
+  .finding { display:grid; grid-template-columns:1fr 1.3fr; gap:2rem; background:var(--surface); padding:var(--s4); border:1px solid var(--rule); border-top:3px solid var(--accent); }
+  .gain { font-family:var(--mono); font-size:clamp(2.1rem,5vw,3.5rem); line-height:1.15; letter-spacing:-.05em; color:var(--accent); margin:.4rem 0 .75rem; }
+  .interval { font-family:var(--mono); font-size:.86rem; }
+  .finding-reading { display:flex; flex-direction:column; align-items:flex-start; gap:.9rem; justify-content:center; }
+  .finding-reading p { margin:0; }
+  .source-line { font-size:.88rem; color:var(--ink-2); }
+  tbody th { font-weight:400; border-top:1px solid var(--rule-soft); }
+  .row-best th { background:var(--pos-soft); font-weight:600; }
+  .evidence-detail { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:.75rem 0; }
+  .evidence-detail summary { cursor:pointer; font-weight:600; color:var(--accent); padding:.3rem 0; }
+  .evidence-detail[open] summary { margin-bottom:1rem; }
+  .evidence-detail p { max-width:var(--col); }
+  .evidence-detail .scroller { margin:1.4rem 0; }
+  .scroller:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .method-flow { padding-left:1.35rem; margin:0; display:flex; flex-direction:column; gap:1rem; max-width:var(--col); }
+  .budget-box { border:1px solid var(--rule); background:var(--surface); padding:var(--s4); max-width:var(--col); }
+  .budget-total { font-family:var(--mono); font-size:1.7rem; line-height:1.4; }
+  .budget-total span { font-family:var(--sans); font-size:1rem; color:var(--ink-2); }
+  .archive { border-top:2px solid var(--rule); padding-top:var(--s4); }
+  .archive > summary { cursor:pointer; font-family:var(--serif); font-size:1.55rem; font-weight:600; }
+  .archive-body { display:flex; flex-direction:column; gap:var(--s6); padding-top:var(--s4); }
+  .archive-notice { background:var(--warn-soft); padding:var(--s3); border-left:3px solid var(--warn); color:var(--ink); }
+  @media (max-width:760px) { .finding { grid-template-columns:1fr; gap:1.4rem; } .chip { white-space:normal; } }
+  @media print { .wrap { max-width:100%; gap:2rem; } nav, .skip-link, iframe { display:none; } details:not([open]) { display:none; } .scroller { overflow:visible; } .finding { break-inside:avoid; } }
+
 </style>
 
-<div class="wrap">
-
+<a class="skip-link" href="#main">Skip to content</a>
+<main class="wrap" id="main">
   <header class="masthead">
-    <p class="eyebrow">London AI × Science · logic binders team · 3–4 October 2026</p>
-    <h1>Antigen Presentation Stability:<br>Sequence Is All You Need?</h1>
-    <p class="standfirst">
-      <b>TL;DR:</b> We tested language-model embeddings and predicted structures against a
-      supervised model trained on sequences. None of them won.
-    </p>
+    <p class="eyebrow">logic binders · London AI × Science · updated 12 October 2026</p>
+    <h1>Antigen Presentation Stability:<br> What do frozen interfaces add?</h1>
+    <p class="standfirst">A source-backed assessment of peptide–HLA stability ranking. Round 2 finds useful information in frozen Boltz interface embeddings; the gain remains development evidence awaiting independent confirmation.</p>
+    <nav aria-label="Page sections"><a href="#round2">Main finding</a><a href="#round2-methods">Methods</a><a href="#round2-transfer">Transfer</a><a href="#round2-provenance">Audit &amp; cost</a><a href="#round2-confirmation">Confirmation</a><a href="#archive">Archive</a></nav>
   </header>
 
-  <!-- ========== 1. FILM ========== -->
-  <section id="intro">
+  <section id="task">
+    <div class="question">
+      <p class="eyebrow">The task</p>
+      <h2>Stability is different from affinity.</h2>
+      <dl class="formulas">
+        <div>
+          <dt>Stability — how long it stays bound</dt>
+          <dd><span class="f">t<sub>½</sub> = ln 2 / k<sub>off</sub></span></dd>
+        </div>
+        <div>
+          <dt>Affinity — how readily it binds</dt>
+          <dd><span class="f">K<sub>d</sub> = k<sub>off</sub> / k<sub>on</sub></span></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ROUND2 GENERATED START -->
+<section id="round2" aria-labelledby="round2-title">
     <div class="shead">
-      <h2 class="title">The two-minute version</h2>
+      <p class="eyebrow">Audited round 2 · 12 October 2026 · development evidence</p>
+      <h2 class="title" id="round2-title">Frozen interface embeddings add useful ranking information.</h2>
+      <p class="lede">In peptide-cluster holdout, the prespecified embedding-or-original selector improves on a competitive sequence selector. Independent confirmation remains open.</p>
+    </div>
+    <div class="finding">
+      <div><p class="eyebrow">Primary paired difference in Spearman</p><p class="gain">+0.054322</p><p class="interval">95% interval [+0.031395, +0.080805]</p></div>
+      <div class="finding-reading"><span class="chip pos">Positive conditional development gain</span><p>The lower bound is above zero, but below <b>+0.05</b>. The prespecified worthwhile-gain criterion is <b>not met</b>.</p><p>Embedding selector <b>0.721163</b> · competitive sequence selector <b>0.666841</b>.</p></div>
+    </div>
+    <dl class="spec">
+      <div><dt>Original training rows</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div>
+      <div><dt>HLA alleles</dt><dd>75</dd></div><div><dt>Outer folds</dt><dd>5</dd></div><div><dt>Primary eligible panel</dt><dd>69 alleles</dd></div>
+    </dl>
+    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/REPORT.md">Main assessment</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Saved paired comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/embedding_completion_audit.json">Completion audit</a></p>
+    <details class="evidence-detail"><summary>Declared procedures and matched controls</summary>
+      <p>Scores describe declared procedures; the highest component score does not select a new winner. The inner selector retained the original fallback and chose R5 MLP in four folds and R4 ridge in one.</p>
+      <div class="scroller" tabindex="0" role="region" aria-label="Round 2 procedure scores"><table><caption>Peptide-held-out · ≥20 rows per allele · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Procedure</th><th scope="col">Score</th></tr></thead><tbody><tr class=""><th scope="row">Original 30-member sequence MLP</th><td class="num">0.661522</td></tr>
+<tr class=""><th scope="row">Competitive sequence selector</th><td class="num">0.666841</td></tr>
+<tr class=""><th scope="row">R2 chain-mean MLP</th><td class="num">0.421852</td></tr>
+<tr class=""><th scope="row">R4 position-aware ridge</th><td class="num">0.684510</td></tr>
+<tr class=""><th scope="row">R4 position-aware MLP</th><td class="num">0.713592</td></tr>
+<tr class=""><th scope="row">R5 contact-pooled MLP</th><td class="num">0.720986</td></tr>
+<tr class=""><th scope="row">R5 shuffled-membership MLP</th><td class="num">0.720310</td></tr>
+<tr class=""><th scope="row">Full 9×34 positional MLP</th><td class="num">0.731541</td></tr>
+<tr class="row-best"><th scope="row">Prespecified embedding-or-original selector</th><td class="num">0.721163</td></tr></tbody></table></div>
+      <div class="scroller" tabindex="0" role="region" aria-label="Matched positional controls"><table><caption>Matched MLP controls · paired whole-cluster 95% intervals</caption><thead><tr><th scope="col">Declared contrast</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><th scope="row">Retain R3 token positions vs. matched tiled pooling</th><td class="num">+0.338713 [+0.302942, +0.377253]</td></tr>
+<tr><th scope="row">Retain full 9×34 positions vs. matched pooling</th><td class="num">+0.166349 [+0.137791, +0.199165]</td></tr>
+<tr><th scope="row">Crystal contact membership vs. shuffled membership</th><td class="num">+0.000676 [−0.009556, +0.023590]</td></tr></tbody></table></div>
+      <p>Positions help within these frozen compressed representations. The particular crystal-derived contact membership has no established benefit. Weak chain averages do not reject internal embeddings generally.</p>
+    </details>
+  </section>
+
+  <section id="round2-methods" aria-labelledby="round2-methods-title">
+    <div class="shead"><p class="eyebrow">How to read the evidence</p><h2 class="title" id="round2-methods-title">Select inside, assess outside.</h2></div>
+    <ol class="method-flow"><li><b>Freeze features and partitions.</b> All original training rows remain in five outer peptide-cluster folds; assessed clusters stay outside fitting, stopping and scaling.</li><li><b>Select with inner folds.</b> Regularisation and procedure choices use inner outcomes only, with an original-sequence fallback.</li><li><b>Pair the comparisons.</b> Subtract the two pooled medians of per-allele Spearman on the same eligible panel, then resample whole peptide clusters with 2,000 shared draws.</li></ol>
+    <div class="note flag"><p><b>The intervals condition on fitted predictions.</b> They exclude selection and execution uncertainty. They are neither medians of allele differences nor medians of fold scores. The primary ≥20-row panel covers 19,647 rows; the ≥50-row sensitivity gives +0.056352 [+0.031732, +0.079137] across 68 alleles.</p><p>These data and earlier benchmark/test results influenced development history. Preserving the original test in this execution does not create an independent cohort; the original test has not been rescored or used to select these round 2 procedures.</p></div>
+  </section>
+
+  <section id="round2-transfer" aria-labelledby="round2-transfer-title">
+    <div class="shead"><p class="eyebrow">Completed bounded transfer assessment</p><h2 class="title" id="round2-transfer-title">Transfer gains against narrow sequence comparators.</h2><p class="lede">Five HLA folds and all 25 joint intersections passed the complete transfer audit. Each regime retains the full cohort.</p></div>
+    <div class="scroller" tabindex="0" role="region" aria-label="Transfer comparison results"><table><caption>≥20-row panel · crossed peptide-cluster × HLA-group paired 95% intervals</caption><thead><tr><th scope="col">Regime</th><th scope="col">Embedding selector</th><th scope="col">Bounded MLP selector</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><th scope="row">HLA-held-out</th><td class="num">0.546303</td><td class="num">0.173961</td><td class="num">+0.372342 [+0.290338, +0.453269]</td></tr>
+<tr><th scope="row">Joint-held-out</th><td class="num">0.506675</td><td class="num">0.110831</td><td class="num">+0.395844 [+0.295075, +0.445743]</td></tr></tbody></table></div>
+    <p class="note">Crossed lower bounds exceed 0.05 for these complete procedures and narrow comparators. Gains also remain positive against the original reference: HLA +0.375368 [+0.283444, +0.455040]; joint +0.371689 [+0.278298, +0.436636]. Representation and training-recipe effects are combined. These results do not isolate a causal structural effect or establish independent generalisation.</p>
+    <details class="evidence-detail"><summary>Transfer scope and uncertainty</summary><p>The bounded sequence selector excludes the main-screen trees and PairLogit. R4 ridge and R5 MLP were nominated before transfer outcomes. HLA Hamming groups are a declared sequence convention, not a validated functional distance. Crossed draws independently resample peptide clusters and HLA groups, with HLA multiplicities replicating alleles in the median; they are dependence sensitivities, not refitting.</p><p>Saved inner choices and scaler ancestry were audited; raw inner prediction vectors and numerical scaler statistics were not independently reconstructed. Main execution repeats do not measure transfer execution variation.</p></details>
+    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/transfer/results/README.md">Complete transfer report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/transfer/results/comparisons.csv">All transfer intervals</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/transfer_completion_audit.json">Transfer audit</a></p>
+  </section>
+
+  <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
+    <div class="shead"><p class="eyebrow">Clean nested complementarity</p><h2 class="title" id="round2-complementarity-title">Sequence and interface information can complement each other.</h2></div>
+    <p class="col">R4 ridge blended with the exact original reference scores <b>0.723789</b>: +0.056948 [+0.042591, +0.083811] against the competitive selector. R4 residual correction gives +0.044588 [+0.030379, +0.067056]. Both support a conditional development gain; neither lower bound exceeds 0.05.</p>
+    <p class="note">Assessed clusters never enter base fitting, stopping, ridge selection or residual-target construction. Predictions from other outer folds do not supply stacking inputs. Numerical proximity to the embedding selector is not a tested superiority claim.</p>
+    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/complementarity/results/REPORT.md">Complementarity report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/complementarity_completion_audit.json">Completion audit</a></p>
+  </section>
+
+  <section id="round2-provenance" aria-labelledby="round2-provenance-title">
+    <div class="shead"><p class="eyebrow">Reproducibility, provenance and resources</p><h2 class="title" id="round2-provenance-title">Audited artifacts, with a disclosed launch-source gap.</h2></div>
+    <div class="note"><p><b>Locked repeats matched exactly on the recorded platform.</b> Two fresh identical-setting embedding-selector repeats used 242 local fits and distinct caches. Prediction and metric differences were zero over all 19,716 rows. This is execution reproducibility, not cross-platform equivalence or an assay-noise ceiling.</p><p><b>The cache fanout wrapper has an inherited provenance gap.</b> Current/committed and launch-authorization SHA-256 digests differ; exact launch-time wrapper bytes cannot be certified. Both digests are preserved in the <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/cache_completion_audit.json">cache audit</a>. The four extraction fingerprint sources, cohort, protocol and local artifact checks match; the discrepancy itself is not evidence of changed features.</p></div>
+    <div class="budget-box"><p class="eyebrow">Conservative incremental accounting</p><p class="budget-total">$76.8388 <span>against the $100 ceiling</span></p><p>Shared cache $66.8431 + sequence $7.9957 + retained engineering allowance $2.00.</p><p><b>Not a final invoice or live credit balance.</b> Retaining the engineering allowance does not mean it was spent. Provider snapshots lag and differ, leaving $3.1554 unattributed; storage is separate. No isolated head-inference or new-case end-to-end latency/cost benchmark exists.</p></div>
+    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/embedding_repeat_completion_audit.json">Embedding repeat audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/sequence_repeat_completion_audit.json">Sequence repeat audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/runtime_cost_summary.json">Runtime/cost accounting</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/transfer_runtime_closeout.json">Local transfer closeout</a></p>
+  </section>
+
+  <section id="round2-confirmation" aria-labelledby="round2-confirmation-title">
+    <div class="question"><p class="eyebrow">Still open</p><h2 id="round2-confirmation-title">Independent confirmation.</h2><p class="task-body">The public stability release overlaps the canonical corpus. Conservative exclusions leave only <b>129 candidate rows across heterogeneous assays</b>, insufficient for representative confirmation; their outcomes remain reserved. Construct, endpoint, checkpoint ancestry and cross-length exposure gaps remain.</p><p class="task-body">No assay quote, partner commitment or adequately powered independent cohort is secured. The synthetic design supports asking for comparable assay quotes, not a guaranteed power or assay-noise claim. Lock the final procedure and analysis before a one-time independent confirmation.</p><p><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/independent_data/README.md">Identity/provenance audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/independent_data/design/README.md">Conditional assay-design study</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/REPORT.md">Current round 2 assessment</a></p></div>
+  </section>
+
+  <section id="round2-evidence" aria-labelledby="round2-evidence-title">
+    <div class="shead"><h2 class="title" id="round2-evidence-title">Inspect the evidence.</h2><p class="lede">This page is a local static submission snapshot. Numeric tables are generated from saved result CSVs, with source SHA-256 hashes in the <a href="round2-data.json">downloadable evidence payload</a>. Reading this page starts no model jobs.</p></div>
+    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/REPORT.md">Canonical assessment</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/NEXT_RESEARCH_PLAN.md">Research plan and execution gates</a> · <a href="#archive">Original hackathon archive</a></p>
+  </section>
+  <!-- ROUND2 GENERATED END -->
+
+  <details class="archive" id="archive">
+    <summary>Original hackathon archive · 3–4 October 2026</summary>
+    <div class="archive-body">
+      <p class="archive-notice"><b>Historical evidence and film.</b> The original test below is separate from the current development assessment. The film’s conclusion and closing proposals describe the original tested features and are superseded by the round 2 evidence above. Original numerical results are preserved.</p>
+<section id="intro">
+    <div class="shead">
+      <h2 class="title">Original submission film</h2>
     </div>
 
     <figure>
@@ -610,7 +731,7 @@
         </p>
       </noscript>
       <figcaption class="note">
-        Historical hackathon submission, 3–4 October 2026. Its closing proposals are superseded by the <a href="#next">current research plan</a>.
+        Historical hackathon submission, 3–4 October 2026. Its closing proposals are superseded by the <a href="#round2">current assessment</a>.
         Plays in the browser. <a href="film/">Open it full-screen</a> &middot;
         the original 30-second interface animation also runs live at
         <a href="intro/">intro/</a>, or
@@ -619,28 +740,9 @@
     </figure>
   </section>
 
-  <!-- ========== 2. THE TASK ========== -->
-  <section id="task">
-    <div class="question">
-      <p class="eyebrow">The task</p>
-      <h2>Stability is different from affinity.</h2>
-      <dl class="formulas">
-        <div>
-          <dt>Stability — how long it stays bound</dt>
-          <dd><span class="f">t<sub>½</sub> = ln 2 / k<sub>off</sub></span></dd>
-        </div>
-        <div>
-          <dt>Affinity — how readily it binds</dt>
-          <dd><span class="f">K<sub>d</sub> = k<sub>off</sub> / k<sub>on</sub></span></dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ========== 3. APPROACHES TESTED ========== -->
-  <section id="approaches">
+<section id="approaches">
     <div class="shead">
-      <h2 class="title">Our approach</h2>
+      <h2 class="title">Original approaches</h2>
     </div>
 
     <ul class="arm-list">
@@ -657,11 +759,10 @@
     </ul>
   </section>
 
-  <!-- ========== 4. RESULTS TABLE ========== -->
-  <section id="results">
+<section id="results">
     <div class="shead">
-      <p class="eyebrow">Main result</p>
-      <h2 class="title">Pretrained features versus the baseline</h2>
+      <p class="eyebrow">Historical test result</p>
+      <h2 class="title">Original held-out test · October 2026</h2>
       <p class="lede">
         <b>Held-out test split</b>, median per-allele Spearman, higher is better. Scored once,
         after every modelling decision was frozen. An interval crossing zero is
@@ -683,7 +784,7 @@
           <tr class="row-best">
             <td>Sequence ensemble (30 networks)</td>
             <td class="num">0.7064</td>
-            <td><span class="chip pos">best in project</span></td>
+            <td><span class="chip pos">historical baseline</span></td>
           </tr>
           <tr>
             <td>ESM-2 35M embeddings, alone</td>
@@ -735,26 +836,12 @@
       <p>
         <b>One strong positive.</b> With no retraining, the sequence model ranked 81,600 naturally
         presented peptides above 816,000 matched decoys — a different assay, a different biological
-        event — at <strong>median AUROC 0.966</strong>. That is the evidence it learned real
-        biology rather than dataset artefacts.
+        event — at <strong>median AUROC 0.966</strong>. This secondary presentation result concerns a different biological endpoint; it does not independently confirm stability generalisation.
       </p>
     </div>
   </section>
 
-  <!-- ========== 5. CURRENT RESEARCH ========== -->
-  <section id="next">
-    <div class="shead">
-      <h2 class="title">Current research</h2>
-      <p class="lede">
-        The <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/NEXT_RESEARCH_PLAN.md">project review and prioritised research plan</a>
-        is the single current source for follow-up evidence, priorities and execution gates.
-        It supersedes the proposals in the original submission film.
-      </p>
-    </div>
-  </section>
-
-  <!-- ========== 6. METHODS ========== -->
-  <section id="methods">
+<section id="methods">
     <div class="shead">
       <h2 class="title">Methods</h2>
     </div>
@@ -764,8 +851,7 @@
         <b>The rules were fixed before any modelling.</b> Splits are frozen 70/10/20 with peptides
         grouped by similarity, so no peptide within 3 substitutions appears in two splits. The
         primary metric is median per-allele Spearman &mdash; ranking peptides <em>within</em> each
-        allele. The 0.05 bar is not a preference: below it, this benchmark cannot separate a real
-        difference from noise.
+        allele. The original prespecified worthwhile-gain threshold was 0.05; it is not an established assay-noise ceiling.
       </p>
       <p>
         Every arm uses the same rows, the same 30-network ensembling, and an equal tuning
@@ -773,8 +859,7 @@
       </p>
       <p>
         <b>NetMHCstabpan is not used as a comparator.</b> The published model for this task was
-        trained on our entire dataset, including our test peptides &mdash; any score it posts here
-        is memorisation, not prediction.
+        reported to have substantial overlap with the benchmark corpus, including test peptides. This overlap prevents a clean comparison; it does not prove checkpoint-specific training membership or pure memorisation.
       </p>
     </div>
 
@@ -787,26 +872,16 @@
       <div><dt>Worthwhile bar</dt><dd>&Delta;&rho; &ge; 0.05</dd></div>
     </dl>
   </section>
+    </div>
+  </details>
 
   <footer>
-    <p class="eyebrow">Credits</p>
-    <p>
-      <b>logic binders team</b> &middot; London AI &times; Science, Protein Engineering Track
-      &middot; 3&ndash;4 October 2026.
-    </p>
-    <p>
-      <b>The headline table is the held-out test split</b>, scored once and last, under a
-      single-pass rule fixed in writing before any test number existed. Secondary experiments
-      and the external-validation AUROC are validation numbers.
-    </p>
-    <p>
-      Detail lives in <code>reports/REPORT.md</code> (concise) and <code>reports/SUBMISSION.md</code>
-      (long form); the evaluation contract in <code>EVALUATION.md</code>, costs in
-      <code>reports/compute_ledger.md</code>, and forward plan in <code>NEXT_STEPS.md</code>.
-    </p>
+    <p class="eyebrow">logic binders · Protein Engineering Track</p>
+    <p>London AI × Science, 3–4 October 2026. Audited development update: 12 October 2026.</p>
+    <p>The current round 2 result uses original training data only. The original held-out test and film are preserved in the dated archive above; their numbers are not comparable across assessment regimes.</p>
+    <p><a href="https://github.com/cheparukhin/peptide-hla-stability">Project repository</a> · <a href="round2-data.json">Source hashes and saved comparisons</a></p>
   </footer>
-
-</div>
+</main>
 
 </body>
 </html>

@@ -1,203 +1,126 @@
-# Antigen Presentation Stability: Sequence Is All You Need?
+# Predicting peptide–HLA stability
 
-**logic binders team · London AI × Science, Protein Engineering Track ·
-3–4 October 2026**
+**logic binders · London AI × Science · Protein Engineering Track**
 
-**TL;DR:** We tested language-model embeddings and predicted structures against
-a supervised model trained on sequences. None of them won.
+Can pretrained protein representations improve predictions of how long a
+9-residue peptide remains bound to an HLA molecule? Our completed development
+study finds that **Boltz interface embeddings improve ranking over a selected
+sequence baseline**, while simple geometry features did not help in the earlier
+hackathon test. These are different representations and different assessments.
 
-### Start here
+The current development gain is **+0.054 median per-allele Spearman**
+(95% paired interval **+0.031 to +0.081**). This supports improvement on the
+examined development cohort; it does not establish that the gain exceeds the
+predeclared worthwhile threshold of +0.05. Independent assay confirmation remains
+open. The original test has not been reopened.
 
-- **[Current project review and research plan →](reports/NEXT_RESEARCH_PLAN.md)** —
-  the single current source for status, evidence corrections and prioritised next work.
-- **[The one-pager →](https://cheparukhin.github.io/peptide-hla-stability/)** —
-  the whole result in one scrolling page, opening with the two-minute film. The
-  fastest way to see what we found.
-- **[pMHC-I Stability Explorer →](https://claude.ai/artifact/HzCqEa1HBXMKywcoNiN2tT)**
-  — browse the measured peptides for any of the 75 alleles, ordered by
-  half-life, with a rotatable 3D view of the peptide in the HLA groove.
-- **[reports/REPORT.md](reports/REPORT.md)** — the write-up. Every claim sourced
-  to the stage report behind it. Everything below is the summary; that is the
-  long form.
+## Explore the project
 
-## The task
+- [Current research report](reports/further_research/round2/REPORT.md): complete
+  main, transfer, complementarity, reproducibility and resource findings.
+- [Project page](site/index.html): locally updated evidence and a clearly dated
+  archive of the original film/test. Serve with `python3 -m http.server 8000 --directory site` and open `http://localhost:8000`. This branch has not been
+  deployed to the public site.
+- [Portable model guide](docs/ROUND2_INFERENCE.md): use the trained ridge and
+  neural heads with verified, compatible cached Boltz features.
+- [Canonical research plan](reports/NEXT_RESEARCH_PLAN.md) and
+  [finalisation status](reports/finalization/execution_manifest.json): frozen
+  decisions, remaining work and spending controls.
+- [Independent assay brief](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md):
+  concrete, unsent acquisition requirements and remaining confirmation gaps.
+- [Original 4 October report](reports/REPORT.md): preserved historical study,
+  including its single held-out test pass.
 
-Your cells constantly shred their own proteins and display the fragments on the
-surface, held in a groove by an HLA molecule, so passing immune cells can check
-what is being made inside. How *long* a fragment stays in that groove — its
-**dissociation half-life** — is a large part of what makes it visible to the
-immune system, and it is what a vaccine or cancer-neoantigen designer wants to
-predict. We predict the half-life of a 9-residue peptide in a given HLA groove.
+## Completed development results
 
-**Stability is different from affinity.** One is a rate, the other an
-equilibrium, and a plausible pose or a favourable interaction energy is evidence
-for neither until it is tested against half-life labels.
+All rows below use only the **original training partition**: 19,716 pairs,
+3,587 peptide clusters and 75 alleles. The main eligible panel contains 69
+alleles with at least 20 measurements. Scores are medians of per-allele
+Spearman correlations; differences are between those medians.
 
-| | |
-|---|---|
-| **Stability** — how long it stays bound | *t*<sub>½</sub> = ln 2 / *k*<sub>off</sub> |
-| **Affinity** — how readily it binds | *K*<sub>d</sub> = *k*<sub>off</sub> / *k*<sub>on</sub> |
+| Assessment | Embedding procedure | Sequence comparator | Difference [95% interval] |
+|---|---:|---:|---:|
+| Main peptide-cluster assessment | 0.7212 | 0.6668 | +0.0543 [+0.0314, +0.0808] |
+| HLA-group holdout | 0.5463 | 0.1740 | +0.3723 [+0.2903, +0.4533] |
+| Joint peptide/HLA holdout | 0.5067 | 0.1108 | +0.3958 [+0.2951, +0.4457] |
 
-Pretrained protein models are the obvious thing to reach for. **We tested
-whether they actually help here, against a predeclared bar, on a split that was
-scored once.** They did not.
+The main comparator selects among five sequence procedures inside fitting
+partitions. The completed transfer comparison uses a narrower original/centred
+neural comparator; stronger transfer controls are a **new, unfinished follow-up**.
+The main interval resamples paired peptide clusters; the transfer intervals
+shown use crossed peptide/HLA-group uncertainty. Selection and stopping obey
+the corresponding held-out grouping. Reported results remain conditional on
+this examined development cohort and frozen candidate sets.
 
-## Our approach
+Position-aware interface representations substantially outperform global
+pooling in matched neural comparisons. The designated contact-map representation
+has no established advantage over its shuffled-contact control. These controls
+support useful positional information, not a demonstrated causal structural
+mechanism. Exact execution repeats matched on the recorded platform; they do
+not measure assay reproducibility or independent model-selection reproducibility.
 
-Ten arms, each scored through the same harness:
+## Use the trained heads
 
-- Allele mean (sanity floor)
-- Single sequence MLP — peptide + 34 HLA contact residues
-- Sequence ensemble, 30 networks — contact-residue and full-domain encodings
-- ESM-2 35M embeddings, alone
-- ESM-2 150M embeddings, alone
-- ESM-2 + sequence features
-- Boltz-2 structure — geometry only
-- Boltz-2 structure — confidence only
-- Boltz-2 structure — sequence + geometry + confidence
-- FoldX energy + sequence
+Two locked demonstration recipes are included under `models/finalization/`:
+R4 ridge with alpha 100 and a 30-member R5 MLP with L2 0.01. They were refit on
+original training rows only and are not designated universal winners. Portable
+NPZ/JSON artifacts contain weights, scalers and provenance; executable pickle
+objects are not used.
 
-Six of them reached the single test pass. ESM-2 150M, the geometry-only and
-confidence-only structural ablations, the allele-mean floor and FoldX stopped at
-validation or at pilot, and are reported as such.
+```sh
+.venv/bin/python scripts/round2_inference.py inspect \
+  --model models/finalization/R5_mlp_0.01
+```
 
-## The result
+Prediction requires a compatible verified compact feature bundle; large caches
+are external to Git. Follow the [input contract and prediction example](docs/ROUND2_INFERENCE.md).
+This is cached-feature inference, not a sequence-to-prediction service.
+Warm single-row cached-head medians were 1.56 ms for ridge and 2.40 ms for the
+MLP on the recorded host. These measurements exclude Boltz extraction, MSA,
+cache loading and startup, and are not end-to-end new-sequence costs.
 
-![Paired test comparisons against the sequence ensemble](reports/figures/report_test_comparisons.png)
+## Reproduce and inspect
 
-**Held-out test split**, median per-allele Spearman, higher is better. Scored
-once, 4 October 2026, after every modelling decision was frozen: 5,565 rows
-across 67 eligible alleles. Deltas are against the sequence ensemble, with
-paired 95% intervals from 2,000 whole-peptide-cluster resamples.
+The environment and experiment-specific commands are documented in
+[the completed study](reports/further_research/round2/REPORT.md),
+[operations](reports/further_research/round2/OPERATIONS.md), and individual stage
+reports. Source, cohort, feature and completion hashes bind the saved evidence.
+Completed expensive scopes must not be blindly relaunched.
 
-| Approach | Test Spearman | Δ vs. reference [95% CI] | Verdict |
-|---|---:|---|---|
-| **Sequence ensemble: peptide + contact residues** | **0.7064** | — | **best in project** |
-| ESM-2 35M ensemble | 0.6979 | −0.009 [−0.029, +0.023] | inconclusive; rules out +0.05 |
-| Sequence ensemble: full HLA domain | 0.6904 | −0.016 [−0.039, +0.004] | inconclusive; rules out +0.05 |
-| Sequence + ESM-2 ensemble | 0.6816 | −0.025 [−0.046, +0.007] | inconclusive; rules out +0.05 |
-| Single sequence network | 0.6181 | −0.088 [−0.120, −0.055] | worse |
-| Sequence + Boltz-2 geometry + confidence | 0.5947 | −0.112 [−0.134, −0.057] | **worse** |
+```sh
+# Check the portable head implementation without cloud work.
+.venv/bin/python -m pytest -q tests/test_round2_inference.py
 
-The winner is 30 small networks reading the peptide plus 34 HLA contact
-residues, trained on CPU in about a minute. Validation agrees with test on every
-one of these verdicts — see
-[§3 of the report](reports/REPORT.md#3-main-result-validation-comparisons).
+# Verify that the project page still matches its audited sources.
+python3 site/round2-build.py --check
+```
 
-**The structural arm is conclusively worse.** Its interval sits entirely below
-zero, after folding all 28,166 complexes for **$212.71** — roughly **7 million
-times** the cost per prediction of the winner. A sequence-only control through
-the *same* pipeline has lower development MSE at five of six tested L2 settings,
-including the one the structural arm selected, so the loss is the structural
-features rather than the fit. This is the result we would defend hardest: we
-spent the money, folded the full cohort with zero failures, and the features
-still subtracted accuracy. It measures *this* structural arm, whose sequence
-encoding also differs from the reference, not structure-based prediction in
-general ([why that matters](reports/REPORT.md#3-main-result-validation-comparisons)).
+The inherited extraction-wrapper hash discrepancy is disclosed in the report:
+scientific source and feature audits passed, but exact launch-wrapper bytes
+cannot be certified. No new result repairs that historical provenance gap.
 
-**The ESM-2 arms are inconclusive at zero.** They neither replace nor improve
-the baseline, and the intervals are tight enough to rule out a worthwhile gain:
-ESM-2 35M lands at −0.009 [−0.029, +0.023], so the *direction* is unresolved
-while the upper bound sits below the +0.05 we predeclared.
+## Work currently being finalised
 
-**We do not claim "pretraining helps."** ESM-2 only *ties* the cheap
-34-residue contact-sequence baseline. Both beat a weaker full-domain encoding by
-similar margins — a fact about that encoding, not evidence for pretraining.
+The newly authorized follow-up tests **Boltz embeddings plus a within-allele
+ranking loss**, with matched sequence inputs and MSE controls. A separate
+bounded extension adds stronger sequence transfer comparators and matched
+learners. Their protocols and resource gates are being prepared; no outcomes
+are claimed here before completion. The model package and current report page
+are ready, while the final combined submission readout will include every
+completed follow-up and any remaining limitations.
 
-Full cost accounting, including what each arm costs per 1,000 new predictions:
-[compute_ledger.md](reports/compute_ledger.md).
+The completed round-two phase conservatively accounted for $76.84 of its $100
+ceiling, including a retained engineering allowance. Its cloud jobs are stopped.
+The user separately authorized at most $100 additional against a fresh reported
+$143 balance. The new phase reuses existing embeddings and requires reservations,
+a bounded pilot and an independent deadline watchdog before paid execution.
+These figures are operational accounting, not a provider invoice or live balance.
 
-## One strong positive
+## Scope
 
-With **no retraining**, the sequence ensemble separates 81,600 naturally
-presented peptides from 816,000 matched decoys across 51 alleles at median
-**AUROC 0.9656** — a different assay and a different biological event. Two
-controls make that meaningful: it holds at 0.9157 when the decoys are real
-ligands from *other* alleles, and collapses to 0.6965 when the model is handed
-the wrong HLA sequence. So it has learned allele-specific recognition rather
-than a generic "looks like a peptide" prior, and real biology rather than
-dataset artefacts.
-
-This is a different assay, not a second measurement of half-life accuracy.
-Protocol and caveats: [stage 3c](reports/stage3c_elution_validation.md).
-
-## Methods
-
-**The rules were fixed before any modelling.** Splits are frozen 70/10/20 with
-peptides grouped by similarity, so no peptide within 3 substitutions appears in
-two splits; without this, a model scores well by recognising near-copies of its
-training data. The primary metric is median per-allele Spearman — ranking
-peptides *within* each allele. The **+0.05** bar is not a preference: below it,
-this benchmark cannot separate a real difference from noise. It was written into
-[EVALUATION.md](EVALUATION.md) at stage 1, before any model existed.
-
-Every arm uses the same rows, the same 30-network ensembling and an equal tuning
-*budget*. Ensembling alone is worth **+0.074** mean Spearman from no new
-information, so comparing an ensembled ESM arm against a single sequence network
-would have manufactured a win. Intervals resample whole peptide clusters, not
-rows, so correlated near-duplicate peptides cannot narrow one. An interval
-crossing zero is reported as **inconclusive, not negative**.
-
-**NetMHCstabpan is not used as a comparator.** The published model for this task
-trained on our entire dataset, including our test peptides, so any score it
-posts here is memorisation rather than prediction. It appears only as a
-calibration check.
-
-The test set was scored in one pass over six arms, under
-[a runbook](reports/TEST_SCORING_RUNBOOK.md) fixed in advance, with a
-[completion manifest](reports/stage6_test_manifest.json) carrying per-arm
-prediction hashes. One earlier diagnostic re-partitioned the data and exposed
-3,350 frozen test rows to fitting; we retracted its conclusion, refit the
-benchmark on the frozen training split, and
-[wrote down exactly what leaked](EVALUATION.md#disclosed-test-exposure) rather
-than quietly reusing the split. The full contract is
-[EVALUATION.md](EVALUATION.md); everything to discount the result by is in
-[limitations.md](reports/limitations.md).
-
-| Property | Value |
-|---|---:|
-| Measured peptide–HLA pairs | 28,166 |
-| Unique 9-mer peptides | 5,633 |
-| HLA alleles | 75 |
-| Peptide length | 9 exact |
-| Labels at 0 h (assay floor) | 20.2% |
-| Train / validation / test rows | 19,716 / 2,817 / 5,633 |
-| Worthwhile bar | Δρ ≥ 0.05 |
-
-Measured half-lives from Rasmussen et al.; see [docs/DATASETS.md](docs/DATASETS.md).
-
-## Current research
-
-**[Project review and prioritised research plan →](reports/NEXT_RESEARCH_PLAN.md)**
-
-The single current source of truth for project status, evidence corrections,
-research priorities and execution gates. It reconciles the completed follow-up
-experiments with the remaining proposals. Earlier proposal lists are retained
-only in the [historical archive](reports/archive/plans/README.md).
-
-## Where to look
-
-| | |
-|---|---|
-| **[reports/REPORT.md](reports/REPORT.md)** | **The write-up.** Every claim sourced to the stage report behind it. |
-| [reports/README.md](reports/README.md) | Stage-by-stage index: what each stage concluded and which report holds it. |
-| [EVALUATION.md](EVALUATION.md) | The evaluation contract, frozen at stage 1. |
-| [reports/limitations.md](reports/limitations.md) | Everything to discount the result by. |
-| [reports/compute_ledger.md](reports/compute_ledger.md) | Every dollar and GPU-hour, and cost per 1,000 predictions. |
-| [docs/README.md](docs/README.md) | The data: dataset stats, splits, structures, augmentation. |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Setup, reproduction commands, repo rules. |
-| **[Current research plan](reports/NEXT_RESEARCH_PLAN.md)** | **Forward work: evaluation repair, Boltz embeddings and transfer assessment.** |
-| [Plan archive](reports/archive/plans/README.md) | Superseded strategies and historical planning records. |
-| [HACKATHON_PLAN.md](HACKATHON_PLAN.md) | Historical hackathon scope and stage decisions; not the current work queue. |
-| [site/](site/README.md) | Source for the published one-pager and the two-minute film. |
-
-## Status
-
-The original hackathon benchmark is complete; the Boltz-2 production fold
-finished 28,166 folds with 0 failures. The subsequent Phase A–D experiments
-are also complete, with interpretation and evaluation issues identified in
-review. Current status, corrections, execution gates and the disposition of
-all remaining proposals are maintained in the
-[current research plan](reports/NEXT_RESEARCH_PLAN.md).
-
-To run any of it: **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+Stability is a kinetic endpoint; affinity, thermal melting and structural
+plausibility cannot silently substitute for dissociation half-life. The public
+candidate cohort does not yet provide representative independent confirmation,
+and available aggregate labels cannot establish an assay-noise ceiling.
+This project provides development evidence and reproducible research artifacts,
+not a validated clinical or vaccine-design system.
