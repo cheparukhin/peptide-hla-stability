@@ -161,7 +161,10 @@ def test_main_failure_terminates_active_sibling_and_never_dispatches_queue(tmp_p
         def __init__(self,pid,failed):self.pid=pid;self.code=9 if failed else None
         def poll(self):return self.code
         def wait(self,timeout):self.code=-15;return self.code
-    def launch(*args,**kwargs):child=Child(123+len(launches),not launches);launches.append(child);return child
+    def launch(*args,**kwargs):
+        child=Child(123+len(launches),False);launches.append(child)
+        if len(launches)==2:launches[0].code=9
+        return child
     monkeypatch.setattr(pipe.os,'getpgid',lambda pid:pid);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
     with pytest.raises(RuntimeError,match='failed'):pipe.run_phase(tmp_path,path,'main',popen=launch,sleep=lambda _:None)
     assert len(launches)==2 and signals==[(124,signal.SIGTERM)]
@@ -212,6 +215,151 @@ def test_pilot_artifacts_feed_independent_unscored_audit(tmp_path,monkeypatch):
         directory=tmp_path/'pilot/fold_0'/rep;done=json.loads((directory/'completed.json').read_text())
         assert done['n_fits']==6 and done['held_scores_computed'] is False and done['reuse_into_scientific'] is False
         assert not (directory/'selection.json').exists() and not (directory/'predictions.csv').exists()
+
+
+def recovery_gate_fixture(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path)
+    root=tmp_path/'recovery';(root/'controller').mkdir(parents=True)
+    hashes={}
+    for cell in pipe.TRANSFER_CELLS:
+        directory=root/cell;directory.mkdir(parents=True)
+        payload={}
+        for name in pipe.TRANSFER_FILES:
+            target=directory/name;target.write_text(cell+'/'+name);payload[name]=pipe.sha256_file(target)
+        regime,name=cell.split('/')
+        hashes[cell]=save(directory/'completed.json',dict(status='complete',protocol_hash=pipe.TRANSFER_PROTOCOL,
+            regime=regime,cell=name,n_fits=166 if regime=='hla' else 400,sha256=payload))
+    audit_path=tmp_path/'preserved_audit.json'
+    audit_hash=save(audit_path,dict(status='passed',protocol_hash=pipe.TRANSFER_PROTOCOL,n_preserved_cells=18,n_preserved_fits=6030,
+        completed_cells=[{'cell':c,'completed_sha256':hashes[c]} for c in pipe.TRANSFER_CELLS[:18]]))
+    guard_path=tmp_path/'interrupted_guard_auth.json';deadline='2026-10-13T15:32:19.924192+00:00'
+    transfer_protocol_path=root/'protocol.json'
+    original_sources={name:pipe.sha256_file(pipe.ROOT/name) for name in ('scripts/final_transfer.py','scripts/final_transfer_report.py')}
+    transfer_protocol_hash=save(transfer_protocol_path,dict(protocol_hash=pipe.TRANSFER_PROTOCOL,code_sha256=original_sources))
+    guard_hash=save(guard_path,dict(app_id='ap-interrupted',controller_pid=2147483646,deadline_utc=deadline,
+        protocol_hashes={str(pipe.ROOT/'reports/finalization/transfer_controls/protocol.json'):transfer_protocol_hash}))
+    apps=tmp_path/'stopped_apps.json';apps_hash=save(apps,[dict(app_id='ap-interrupted',state='stopped',tasks='0')])
+    closure_path=tmp_path/'closure.json'
+    closure=dict(schema='final_interrupted_scope_closure.1',status='interrupted_scope_closed_not_scientifically_complete',
+        app_stopped=True,provider_tasks=0,new_cloud_spend_authorized_usd=0,guard_authorization_path=str(guard_path),
+        authorization_sha256=guard_hash,app_id='ap-interrupted',controller_pid=2147483646,original_spending_deadline_utc=deadline,
+        provider_apps_path=str(apps),provider_apps_sha256=apps_hash,cumulative_prior_charges_usd=2.3,
+        prior_pilot_conservative_carry_usd=1.,journal_settled_usd=1.,uncertain_reservations_fully_carried_usd=.1,
+        preemption_liability_usd=.1,unobserved_guard_gap_max_concurrency_liability_usd=.1,processes_absent=[2147483646,2147483645])
+    closure_hash=save(closure_path,closure)
+    recovery_auth_path=tmp_path/'recovery_authorization.json'
+    recovery_auth=dict(schema='final_transfer_recovery_authorization.1',approved=True,scope_root=str(root),protocol_hash=pipe.TRANSFER_PROTOCOL,
+        max_workers=3,threads_each=2,deadline_utc=deadline,ranker_backend='local',n_new_fits=4800,additional_cloud_spend_usd=0,no_retry=True,
+        cells=list(pipe.TRANSFER_CELLS[18:]),closure={'path':str(closure_path),'sha256':closure_hash},
+        sources={**original_sources,**{name:pipe.sha256_file(pipe.ROOT/name) for name in ('scripts/final_transfer_recovery.py','tests/test_final_transfer_recovery.py')}},
+        preserved_audit={'path':str(audit_path),'sha256':audit_hash},reused_cell_hashes={c:hashes[c] for c in pipe.TRANSFER_CELLS[:18]})
+    forecast_path=tmp_path/'runtime_forecast.json';forecast_hash=save(forecast_path,{'conservative_seconds':1000})
+    recovery_auth.update(protocol={'path':str(transfer_protocol_path),'sha256':transfer_protocol_hash},runtime_forecast={'path':str(forecast_path),'sha256':forecast_hash})
+    preparation_path=tmp_path/'preparation.json'
+    preparation=dict(schema='final_transfer_recovery_preparation.1',scope_root=str(root),protocol_hash=pipe.TRANSFER_PROTOCOL,
+        **{key:recovery_auth[key] for key in ('protocol','closure','preserved_audit','runtime_forecast','sources','reused_cell_hashes','cells')})
+    recovery_auth['preparation']={'path':str(preparation_path),'sha256':save(preparation_path,preparation)}
+    recovery_auth_hash=save(recovery_auth_path,recovery_auth)
+    attempt_path=root/'controller/attempt.json'
+    attempt_hash=save(attempt_path,dict(status='attempted',pid=2147483644,scope_root=str(root),protocol_hash=pipe.TRANSFER_PROTOCOL,
+        authorization={'path':str(recovery_auth_path),'sha256':recovery_auth_hash},authorization_sha256=recovery_auth_hash,
+        closure=recovery_auth['closure'],deadline_utc=deadline))
+    completed_path=root/'controller/completed.json';exit_path=root/'controller/exit_receipt.json'
+    completed=dict(schema='final_transfer_recovery_completion.1',status='complete',pid=2147483644,protocol_hash=pipe.TRANSFER_PROTOCOL,
+        scope_root=str(root),n_retained_fits=10830,n_new_fits=4800,known_completed_including_discarded=11529,unknown_remote_fits=12,deadline_utc=deadline,
+        authorization={'path':str(recovery_auth_path),'sha256':recovery_auth_hash},closure=recovery_auth['closure'],preserved_audit=recovery_auth['preserved_audit'],
+        completed_cell_hashes=hashes,reused_cell_hashes=recovery_auth['reused_cell_hashes'],new_cell_hashes={c:hashes[c] for c in pipe.TRANSFER_CELLS[18:]})
+    completed_hash=save(completed_path,completed)
+    receipt=dict(schema='final_transfer_recovery_exit.1',status='complete',exit_code=0,pid=completed['pid'],protocol_hash=pipe.TRANSFER_PROTOCOL,
+        authorization_sha256=recovery_auth_hash,completed_sha256=completed_hash)
+    exit_hash=save(exit_path,receipt)
+    auth.update(schema=pipe.RECOVERY_SCHEMA,predecessor=dict(kind=pipe.RECOVERY_KIND,closure_path=str(closure_path),closure_sha256=closure_hash,
+        recovery_root=str(root),recovery_protocol_hash=pipe.TRANSFER_PROTOCOL,recovery_authorization_path=str(recovery_auth_path),recovery_authorization_sha256=recovery_auth_hash,
+        recovery_controller_pid=2147483644,recovery_attempt_path=str(attempt_path),recovery_attempt_sha256=attempt_hash))
+    save(path,auth)
+    gate.update(schema=pipe.RECOVERY_GATE_SCHEMA,authorization_sha256=pipe.sha256_file(path),predecessor=dict(recovery_completed_path=str(completed_path),
+        recovery_completed_sha256=completed_hash,recovery_exit_path=str(exit_path),recovery_exit_sha256=exit_hash))
+    save(Path(auth['launch_gate_path']),gate)
+    monkeypatch.setattr(pipe,'assert_process_absent',lambda pid:None)
+    return path,auth,gate,protocol,completed,receipt,closure
+
+
+def test_recovery_gate_accepts_closed_interruption_and_complete_thirty_cells(tmp_path,monkeypatch):
+    path,auth,gate,protocol,_,_,_=recovery_gate_fixture(tmp_path,monkeypatch)
+    assert pipe.check_authorization(path,protocol,'pilot')['schema']==pipe.RECOVERY_SCHEMA
+    Path(auth['launch_gate_path']).unlink()
+    assert pipe.check_authorization(path,protocol,'pilot',require_gate=False)['n_fits']==12
+    with pytest.raises(FileNotFoundError):pipe.check_authorization(path,protocol,'pilot')
+
+
+def test_recovery_pilot_cannot_extend_fixed_fit_cap(tmp_path,monkeypatch):
+    path,auth,_,protocol,_,_,_=recovery_gate_fixture(tmp_path,monkeypatch)
+    auth['fit_wall_seconds']=7201;save(path,auth)
+    with pytest.raises(ValueError,match='two-hour cap'):
+        pipe.check_authorization(path,protocol,'pilot',require_gate=False)
+
+
+@pytest.mark.parametrize('alteration',['partial_certificate','wrong_fit_count','changed_preserved','failed_exit','missing_exit','mutated_artifact','active_controller','underaccounted_closure','different_receipt_pid','incomplete_sources'])
+def test_recovery_gate_refuses_incomplete_mutated_or_active_predecessor(tmp_path,monkeypatch,alteration):
+    _,auth,gate,_,completed,receipt,closure=recovery_gate_fixture(tmp_path,monkeypatch)
+    closed=gate['predecessor'];root=Path(auth['predecessor']['recovery_root'])
+    if alteration=='partial_certificate':completed['completed_cell_hashes'].pop(pipe.TRANSFER_CELLS[-1])
+    if alteration=='wrong_fit_count':completed['n_new_fits']=4801
+    if alteration=='different_receipt_pid':
+        completed['pid']+=1;receipt['pid']=completed['pid']
+    if alteration=='changed_preserved':
+        completed['reused_cell_hashes'][pipe.TRANSFER_CELLS[0]]='0'*64
+        completed['completed_cell_hashes'][pipe.TRANSFER_CELLS[0]]='0'*64
+    if alteration in ('partial_certificate','wrong_fit_count','changed_preserved','different_receipt_pid'):
+        closed['recovery_completed_sha256']=save(Path(closed['recovery_completed_path']),completed)
+        receipt['completed_sha256']=closed['recovery_completed_sha256']
+        closed['recovery_exit_sha256']=save(Path(closed['recovery_exit_path']),receipt)
+    if alteration=='failed_exit':
+        receipt['status']='failed';closed['recovery_exit_sha256']=save(Path(closed['recovery_exit_path']),receipt)
+    if alteration=='missing_exit':Path(closed['recovery_exit_path']).unlink()
+    if alteration=='mutated_artifact':(root/pipe.TRANSFER_CELLS[-1]/'predictions.csv').write_text('changed after audit')
+    if alteration=='active_controller':
+        def absent(pid):
+            if pid==completed['pid']:raise ValueError('active recovery controller')
+        monkeypatch.setattr(pipe,'assert_process_absent',absent)
+    if alteration=='underaccounted_closure':
+        closure['cumulative_prior_charges_usd']=1.
+        auth['predecessor']['closure_sha256']=save(Path(auth['predecessor']['closure_path']),closure)
+    if alteration=='incomplete_sources':
+        prior=auth['predecessor'];approved_path=Path(prior['recovery_authorization_path']);approved=json.loads(approved_path.read_text())
+        approved['sources'].pop('scripts/final_transfer_recovery.py')
+        prior['recovery_authorization_sha256']=save(approved_path,approved)
+    with pytest.raises((ValueError,FileNotFoundError)):
+        pipe.check_recovery_predecessor(auth,gate)
+
+
+def test_signal_during_spawn_registers_and_cleans_child(tmp_path,monkeypatch):
+    path,_,_,protocol=authorized(tmp_path);monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));signals=[]
+    class Child:
+        pid=123
+        dead=False
+        def poll(self):return -15 if self.dead else None
+        def wait(self,timeout):self.dead=True;return -15
+    def spawn(*args,**kwargs):
+        signal.getsignal(signal.SIGTERM)(signal.SIGTERM,None)
+        return Child()
+    monkeypatch.setattr(pipe.os,'getpgid',lambda pid:pid);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
+    with pytest.raises(RuntimeError,match='during spawn'):
+        pipe.run_phase(tmp_path,path,'pilot',popen=spawn,sleep=lambda _:None)
+    assert signals==[(123,signal.SIGTERM)]
+    receipt=json.loads((tmp_path/'controller/pilot/exit_receipt.json').read_text())
+    assert receipt['active_children']==[] and len(receipt['finished_children'])==1
+
+
+def test_known_main_failure_prevents_next_dispatch(tmp_path,monkeypatch):
+    path,_,_,protocol=authorized(tmp_path,'main');monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));monkeypatch.setattr(pipe,'check_launch_gate',lambda *args:{});launches=[]
+    class Child:
+        pid=123
+        def poll(self):return 9
+    def spawn(*args,**kwargs):launches.append(args);return Child()
+    with pytest.raises(RuntimeError,match='failed'):
+        pipe.run_phase(tmp_path,path,'main',popen=spawn,sleep=lambda _:None)
+    assert len(launches)==1
 
 
 def test_report_replay_holds_numerical_thread_limit(tmp_path,monkeypatch):

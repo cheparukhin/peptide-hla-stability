@@ -154,3 +154,23 @@ must not be restarted or marked successful. A versioned operational gate in a
 separate output directory will require both the interrupted-cloud closure and
 successful completion of all30 recovered transfer cells. Its scientific
 480-fit assessment and12-fit unscored pilot remain unchanged.
+
+The tested local recovery launched once at15:13 UTC, PID37822/helper37823,
+after21 checks. Its conservative runtime forecast is4.507 hours. The repaired
+hybrid scheduler passed28 checks and independent review; a new waiting pilot
+queue launched at15:23 UTC, PID44698/helper44699, under a version-two
+operational gate. Scientific source and fit counts are unchanged. Current
+ownership, exact authorizations and release instructions are in
+[recovery operations](RECOVERY_OPERATIONS.md). Both scopes use zero new cloud
+spend. The original failed attempts and their source records remain intact.
+
+The replacement controller then received SIGTERM at15:30:54 UTC during a Codex
+app restart and stopped its workers cleanly. No new cell completed;1,086 more
+completed member records lacked whole-cell prediction artifacts. Both waiting
+hybrid queues have remained unscored and are now absent. The second dated
+amendment under `resources/transfer_recovery/interruption_20261012_153054/`
+requires a one-time macOS-managed controller and validated complete-call
+checkpoints before a further run. The twelve-cell scientific scope, original
+deadline and zero new cloud allocation remain unchanged; known discarded fits
+now total1,785. Do not automatically retry the failed controller or fabricate
+its completion.

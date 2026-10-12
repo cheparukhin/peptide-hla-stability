@@ -1,0 +1,158 @@
+# Continuation after the 12 October process interruption
+
+**Latest status:** the local recovery PID37822 received SIGTERM at15:30:54 UTC
+and recorded a failed exit with successful worker cleanup. Its waiting hybrid
+queue PID44698 is also absent. Codex app logs record a transport stop followed
+by an app-server restart at the same time. Do not relaunch these attempts or
+release their predecessor gates. An additional1,086 completed member records
+were left without full cell predictions; total known discarded fits are1,785.
+The second closure and dated amendment are under
+`resources/transfer_recovery/interruption_20261012_153054/`. Root is preparing
+a one-time operating-system-managed local run and complete-call checkpoints
+before another attempt. The deadline and scientific recipes remain unchanged.
+The ownership details below describe the now-interrupted launch history.
+
+The user cancelled the proposed handoff and schedule stop. Continue in the
+current chat. The existing heartbeat remains active; do not create another
+thread or another recurring schedule for this work.
+
+Current ownership: local transfer recovery **PID37822**, keep-awake helper
+**37823**, launched12 October15:13:27 UTC. The new hybrid pilot waiting queue
+is **PID44698**, helper **44699**, launched15:23:52 UTC. Never duplicate these
+controllers. Inspect their exact process commands and durable state before
+acting; the original dead attempts remain historical.
+
+## Closed original attempt
+
+The original transfer controller89292, watchdog89617, their helpers and waiting
+hybrid queue11628 disappeared without exit receipts. The cause is unknown.
+The exact cloud app `ap-RrFfbDvriD4rehaba5x7CA` is confirmed stopped with zero
+tasks. Do not restart those attempts, clear their ownership files, fabricate
+success receipts, or reopen their budget journal through a mutating class.
+
+The committed evidence is under
+`resources/transfer_main/interruption_20261012/`. Its closure carries
+**$5.1793820030564595** conservatively: prior pilot, settled amounts, all twelve
+uncertain reservations, two preemptions and the maximum resource allowance
+from the last watchdog observation through the provider's stop time. Provider
+metering can lag and does not show the remaining balance. No new cloud work is
+required by the recovery or the hybrid study.
+
+All18 completed transfer cells, representing6,030 fits, passed the original
+full semantic audit in `preserved_cells_audit.json` (commit9e2623d). Their
+member configurations, splits, predictions, aggregation and selection replay.
+Keep those artifacts byte-identical. Keep the three partial original cells as
+discarded evidence:699 recorded completed fits, including30 remote results,
+plus12 uncertain remote attempts and any interrupted local fit. Do not use
+partial outcomes to change scope.
+
+## One local transfer recovery
+
+The reviewed amendment (commitcf743ac) preserves the scientific protocol
+`bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d`.
+The additive recovery controller prepares a separate `transfer_recovery/`
+output root with the unchanged protocol and18 copied completed cells. It fits
+exactly the12 remaining joint cells:4,800 fresh local fits using the existing
+local ranker backend and unchanged candidates, partitions, seeds and stopping
+rules. Maximum concurrency is three worker processes with two numerical
+threads each. The absolute deadline remains **13 October15:32:19.924192 UTC**;
+never extend it or retry an uncertain attempt automatically.
+
+Root must validate the new controller tests, copied artifact hashes, closure,
+runtime forecast and exact source-bound authorization before launching once.
+Use completion/runtime telemetry for the forecast; cloud member
+`remote_meter.worker_seconds` is compute time, while its parent
+`fit_seconds` is merely local receipt handling. Record local-versus-cloud
+platform uncertainty. No new cloud allocation is implied by spare credit.
+
+Successful recovery writes `transfer_recovery/controller/completed.json`,
+schema `final_transfer_recovery_completion.1`, only after all30 cells pass
+semantic audit. It binds all30 completion hashes,18 preserved hashes,12 new
+hashes, protocol, closure, authorization, exact controller PID and source root.
+The successful exit receipt must bind that completion certificate. Confirm
+the process is absent before releasing dependent work. Process absence alone
+is never successful completion.
+
+After success, launch the unchanged `scripts/final_transfer_report.py` against
+the new recovery directory once, with durable launch/exit records and two
+numerical threads. First check for any existing report process or receipt.
+Audit every regime-matched control, selection,20/50 peptide/HLA/crossed
+interval and group-deletion sensitivity. Report10,830 retained scientific
+fits,699 discarded completed fits and the uncertain attempts separately;
+successful recovery entails11,529 known completed fits, excluding engineering
+pilots. Disclose that preserved ranker results came from Modal and recovered
+ranker results came from the unchanged local backend.
+
+## Separate hybrid operational version
+
+The original hybrid queue never started fitting. Preserve its original source,
+protocol and authorization as version-one evidence. Only its operational gate
+changes: the new gate requires the interrupted-cloud closure plus the new
+successful30-cell recovery certificate and controller exit. The scientific
+specification, task manifest, transforms, recipes, member schedule, selector,
+report and480+12 fit counts remain unchanged.
+
+Use the separate output root `hybrids_recovery/`, so the original pilot queue
+attempt is never overwritten. Root rebinds the protocol to the reviewed
+operational source version and creates a single new source-bound queue
+authorization only after the amended gate tests pass. Record its exact PID,
+paths and deadline in the phase manifest before ending the launch turn.
+
+The pilot runs12 unscored engineering fits with one worker/two threads and a
+fixed two-hour limit. After its successful exit and saved-model audit, use
+runtime and memory only to authorize the480-fit main phase separately: ten
+jobs, maximum two workers/two threads each, zero cloud allocation. The pilot
+is never reused scientifically. The transfer report may occupy the third
+local slot only with an explicitly recorded two-thread limit.
+
+Run the frozen hybrid report once after all main jobs and their controller
+complete, then review saved-model replay, ancestry, matched comparisons and
+conditional paired uncertainty. Update the consolidated final report, README,
+submission brief and local site from validated results; regenerate the site
+snapshot after final-report edits. Original test data remain excluded and
+independent assay confirmation remains open. No external publication, vendor
+message or purchase is authorized. Commit completed validated work, excluding
+live/partial/unrelated files. Pause the heartbeat only when all achievable
+authorized work and reporting are complete and all cloud apps are stopped.
+
+## Frozen recovery launch and pilot gate
+
+The recovery controller passed21 tests and source review; its authorization
+is `transfer_recovery/authorization.json`, SHA256
+`b8b8e5660332a1677d5737a7cd454457df64ce019dcd018e4b4d027b0ee873e7`.
+Preparation binds all copied18 cells and their audit. The conservative runtime
+forecast is4.507 hours, with the original absolute deadline retained. Its
+current state is `transfer_recovery/controller/state.json`; process ownership
+and logs are in `resources/transfer_recovery/`.
+
+The hybrid operational-v2 pipeline passed28 focused tests and an independent
+Astra review. Only the pipeline and its tests changed in the frozen source
+mapping; the scientific specification and protocol hash are identical.
+Original operational source/protocol files are preserved in
+`hybrids/operational_v1_archive/`. The new protocol and dated amendment are in
+`hybrids_recovery/`.
+
+The pilot queue authorization is
+`resources/hybrid_recovery_pilot/controller_authorization.json`, SHA256
+`3acfd2df988542381cbeb4d3277edf59abf4e6a1f799ebbab885d4876dde4c89`.
+It uses schema `final_hybrids_controller_authorization.2`, binds the exact
+recovery PID37822 and its immutable attempt hash, and preserves the earlier
+queue expiry **14 October14:15:17.567539 UTC**. No pilot fit has begun at this
+launch checkpoint.
+
+Once the recovery completes, exits and passes the bound checks, root creates
+`resources/hybrid_recovery_pilot/launch_gate.json` exclusively. Use schema
+`final_hybrids_launch_gate.2`, `approved: true`, `phase: pilot`, the exact
+pilot authorization SHA, and explicit UTC creation/expiry timestamps. Set
+expiry no later than the queue deadline. Its `predecessor` contains exactly
+the successful recovery certificate/exit paths and hashes using keys
+`recovery_completed_path`, `recovery_completed_sha256`,
+`recovery_exit_path`, `recovery_exit_sha256`. The queue independently validates
+the interrupted-cloud closure, full recovery source/preparation bindings,
+launched attempt/PID, all30 artifacts, preserved18 and successful controller
+exit before fitting. Do not write this gate while the controller is active.
+
+For the later main phase, retain this version-two predecessor structure and
+add the ordinary `pilot` completion/exit/runtime-forecast bindings and
+`runtime_approved: true` specified by the pipeline. The main authorization is
+separate; the pilot cannot start480 fits implicitly.

@@ -1,0 +1,8 @@
+# Keep byte-for-byte generated evidence without rendering millions of data rows
+# in code reviews. Scientific specifications, source, tests and summaries retain
+# ordinary text diffs; these artifacts remain readable as normal files.
+reports/**/task_manifest.json -diff
+reports/finalization/hybrids*/protocol.json -diff
+reports/finalization/transfer*/**/ancestry.json -diff
+reports/finalization/transfer*/**/members.json -diff
+reports/finalization/transfer*/**/*predictions.csv -diff
