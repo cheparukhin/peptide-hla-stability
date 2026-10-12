@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/scripts/final_transfer.py", line 180, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/scripts/final_transfer.py", line 179, in main
+    with threadpool_limits(limits=2): run_cell(args.out_dir,args.regime,args.cell,args.approved)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/scripts/final_transfer.py", line 136, in run_cell
+    frame,protocol=validate_frozen(out)
+                   ^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/scripts/final_transfer.py", line 117, in validate_frozen
+    if specification(frame)!=item['specification']: raise ValueError('frozen population/specification changed')
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: frozen population/specification changed

@@ -1,0 +1,22 @@
+{
+  "schema": "final_cloud_canonical_training_targets.1",
+  "n_rows": 19716,
+  "split": "train",
+  "transform": "numpy.log1p(thalf_hours)",
+  "maximum_platform_ulp_difference": 1,
+  "raw_data_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+  "splits_sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+  "arrays": {
+    "path": "reports/finalization/cloud/canonical_training_targets.npz",
+    "sha256": "3e3b3758e5beb24930a2a8b071afb4a37d349176dcb4cb688e63468f029b04c4"
+  },
+  "array_sha256": {
+    "pair_id": "e35fa375297cb85ce386ab0445fa306d84ab6c6e6d6e69c36da2e20b66eb772f",
+    "thalf_hours": "653e632c3e56bef9825303d5d5a552a23cdb2db8720aed13b7fd5c4685a0efce",
+    "y_log1p": "1914a985af48033d0c2a25a666fc6e88da8a3ca7dcb7246be447aa689cc3a555"
+  },
+  "training_frame_sha256": "558ab95517b6f0b7c3e9f60d088ad2afef4ace3a1d085a784ec8b7123c41c84b",
+  "transfer_training_frame_sha256": "b7151cb39be2487a61e3c05281df11f21c0a5645c057b0420b8c74881ee573d5",
+  "frozen_ranking_protocol_sha256": "cd6e437404915640281d8e8367cd722b126fa3badd0aa2084af0b305835412c0",
+  "original_test_or_validation_targets_included": false
+}

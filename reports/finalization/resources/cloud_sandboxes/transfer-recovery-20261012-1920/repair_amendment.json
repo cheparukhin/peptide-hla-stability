@@ -1,0 +1,36 @@
+{
+  "schema": "final_cloud_target_portability_amendment.1",
+  "at_utc": "2026-10-12T19:17:37.335906+00:00",
+  "reason": "Exactly one canonical training y_log1p differs by one ULP between Mac and Linux. Carry the frozen target bits rather than recompute them; all original scientific hash checks and sources remain unchanged.",
+  "diagnosis": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/population_diagnostic_comparison.json",
+    "sha256": "9ede92b65aa2e85f6ba7b20ac8a14293f1286d0ef489e54fb1aaaaa37aaa3c5f"
+  },
+  "failed_scope": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/closeout.json",
+    "sha256": "5587e1e03012ccc7622b645a611a8f7c90361dd9b9be62b050fc98e2c623b6da"
+  },
+  "canonical_targets": {
+    "path": "reports/finalization/cloud/canonical_training_targets.json",
+    "sha256": "f5a609a98fb7dc607242bcbe7b31db503f19a673c62a7de6398cd30b33df0b70"
+  },
+  "changed_sources": {
+    "scripts/final_cloud_phase.py": "fb273c22e5359681be50bb947e9eb6e3d2b28ebbcb838024c183bfd621c21895",
+    "tests/test_final_cloud_protocol.py": "9fee820cfa8c67b0611b3e65f95b0aa9b2c9e6c52efc0e27b97ed650d8e22997",
+    "pepstab/final_cloud_targets.py": "2ed5778238570c8bad1a599b6e8fe3552c6d54ed9437d62fc5821539b34670a2",
+    "scripts/final_cloud_scientific_entry.py": "3990879d1c281482372ad1cf1bc8263993054a7859d95212ee640ac3c8ba4930"
+  },
+  "validation": "45 targeted tests pass; real19716-row restoration and both frozen hashes pass; all35 transfer and23 hybrid scientific source hashes unchanged; independent Sol review passed.",
+  "cells": [
+    "joint/h4_p0",
+    "joint/h4_p1",
+    "joint/h4_p2",
+    "joint/h4_p3",
+    "joint/h4_p4"
+  ],
+  "n_fits": 2000,
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "work_deadline_unchanged": "2026-10-12T23:58:00+00:00",
+  "provider_stop_unchanged": "2026-10-13T00:00:00+00:00",
+  "no_scope_expansion": true
+}

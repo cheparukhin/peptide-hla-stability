@@ -56,6 +56,11 @@ def child_command(auth,approved,job):
             '--out-dir',str(out),'--approved',str(approved),'--fold',str(fold),'--representation',rep]
 
 
+def scientific_entry_command(command,approved):
+    return [command[0],str(ROOT/'scripts/final_cloud_scientific_entry.py'),'--approved',str(approved),
+            '--script',command[1],'--',*command[2:]]
+
+
 class RawJsonLines:
     """Bounded nonblocking bytes; no TextIO read-ahead can hide lease lines."""
     MAX_LINE=65536
@@ -423,6 +428,7 @@ def run_phase(approved,*,startup_wait_seconds=300,stream=sys.stdin,popen=subproc
             else:
                 if active:sleep(.2)
                 continue
+            command=scientific_entry_command(command,approved)
             index=len(all_children);record=dict(index=index,job=job,axes=axes,command=command,intent_at_utc=contract.now())
             contract.exclusive_json(run_dir/f'child_{index:03d}.intent.json',record);contract.durable_sync()
             with (run_dir/f'child_{index:03d}.log').open('x') as log:

@@ -626,3 +626,34 @@ def test_cloud_feature_alias_normalizes_only_verified_path_metadata(tmp_path,mon
     actual['bundles'][0]['npz_sha256']='b'*64
     actual['bundles'][0]['path']='/unrelated-volume/features/shard_0'
     with pytest.raises(ValueError,match='roots'):worker.validated_features(None,protocol)
+
+
+def test_canonical_training_targets_restore_one_ulp_without_touching_other_splits():
+    from pepstab.final_cloud_targets import restore_training_targets,frame_hash
+    import numpy as np
+    import pandas as pd
+    frame=pd.DataFrame({'pair_id':np.array([0,1,2,3],dtype=np.int32),
+        'split':pd.Series(['train','test','train','val'],dtype='string'),
+        'thalf_hours':np.array([1.8,5.,.3,8.]),'y_log1p':np.log1p(np.array([1.8,5.,.3,8.]))})
+    train=frame.loc[frame.split.eq('train')]
+    arrays={name:train[name].to_numpy(copy=True) for name in ('pair_id','thalf_hours','y_log1p')}
+    metadata={'training_frame_sha256':frame_hash(train.reset_index(drop=True))}
+    changed=frame.copy();changed.loc[2,'y_log1p']=np.nextafter(changed.loc[2,'y_log1p'],np.inf)
+    before=changed.loc[changed.split.ne('train')].copy(deep=True)
+    restored=restore_training_targets(changed,metadata,arrays)
+    assert np.array_equal(restored.y_log1p.to_numpy().view(np.uint64),frame.y_log1p.to_numpy().view(np.uint64))
+    pd.testing.assert_frame_equal(restored.loc[restored.split.ne('train')],before,check_exact=True)
+    assert changed.loc[2,'y_log1p']!=frame.loc[2,'y_log1p']
+    for col,value in [('pair_id',99),('thalf_hours',1.9)]:
+        wrong=changed.copy();wrong.loc[0,col]=value
+        with pytest.raises(ValueError,match='IDs/raw'):restore_training_targets(wrong,metadata,arrays)
+    wrong=changed.copy();wrong.loc[2,'y_log1p']=np.nextafter(wrong.loc[2,'y_log1p'],np.inf)
+    with pytest.raises(ValueError,match='one-ULP'):restore_training_targets(wrong,metadata,arrays)
+
+
+def test_all_scientific_subprocess_commands_receive_canonical_entry():
+    original=runner.child_command({'phase':'transfer_recovery'},Path('/auth'),('joint','h4_p0'))
+    wrapped=runner.scientific_entry_command(original,Path('/auth'))
+    assert wrapped[1].endswith('/scripts/final_cloud_scientific_entry.py')
+    assert wrapped[2:6]==['--approved','/auth','--script',original[1]]
+    assert wrapped[6:]==['--',*original[2:]]
