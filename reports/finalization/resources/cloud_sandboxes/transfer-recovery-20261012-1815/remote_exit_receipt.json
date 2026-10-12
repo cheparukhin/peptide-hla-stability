@@ -1,0 +1,23 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "transfer_recovery",
+  "phase_nonce": "transfer-recovery-20261012-1815",
+  "authorization_sha256": "fb41140d2c8d439fba9c924e9f6a90702340358220b184c20db6c2f33d68f92e",
+  "input_manifest_sha256": "7fb6e6ea5ff3cc6f01033708124a622001b047e6fdc8960dd7f0dbfc4f299fc3",
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T18:18:54.747858+00:00",
+  "status": "failed",
+  "exit_code": 1,
+  "n_fits": 0,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-12T18:18:55.848187+00:00",
+  "elapsed_seconds": 1.1003206240000003,
+  "error": "ValueError('exact Linux repository namespace required')",
+  "no_retry": true,
+  "finished_children": []
+}

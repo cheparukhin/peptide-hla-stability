@@ -26,10 +26,11 @@ def verify_environment():
     packages={name:version(name) for name in DEPENDENCIES}
     if platform.python_version()!='3.12.12' or packages!=DEPENDENCIES:
         raise ValueError('exact frozen Python/dependencies required; no fits authorized')
-    if sys.platform!='linux' or ROOT.resolve()!=Path(contract.REPOSITORY_ROOT):
+    if sys.platform!='linux' or ROOT.resolve()!=Path(contract.REPOSITORY_ROOT).resolve():
         raise ValueError('exact Linux repository namespace required')
     return dict(python=platform.python_version(),python_build=sys.version,packages=packages,
-                platform=platform.platform(),machine=platform.machine())
+                platform=platform.platform(),machine=platform.machine(),
+                logical_repository_root=contract.REPOSITORY_ROOT,resolved_repository_root=str(ROOT.resolve()))
 
 
 def phase_jobs(phase):
@@ -308,7 +309,8 @@ def output_files(auth,run_dir):
 
 
 def audit_pilot(approved,destination):
-    from scripts.final_hybrids import validate_frozen,validated_features
+    from scripts.final_hybrids import validate_frozen
+    from scripts.final_hybrids_cloud import validated_features
     from scripts.final_hybrids_report import audit_pilots
     from threadpoolctl import threadpool_limits
     auth=contract.validate_authorization(approved,'hybrid_pilot')

@@ -70,12 +70,15 @@ def read(path):
 def path_in_root(value, root=ROOT):
     root = Path(root).resolve()
     given = Path(value)
-    # Absolute evidence paths retain the original repository namespace in tests.
+    # Modal v2 mounts the logical repository as an alias of its exact Volume root.
     if given.is_absolute():
         try:
             relative = given.relative_to(REPOSITORY_ROOT)
         except ValueError:
-            raise ValueError('path leaves original repository') from None
+            try:
+                relative = given.relative_to(root)
+            except ValueError:
+                raise ValueError('path leaves logical and resolved repository roots') from None
     else:
         relative = given
     if '..' in relative.parts or not relative.parts:

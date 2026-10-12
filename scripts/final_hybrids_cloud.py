@@ -129,7 +129,14 @@ def validate_frozen(out=OUT):
     return frame,protocol
 
 def validated_features(frame,protocol):
+    from pepstab.final_cloud_protocol import REPOSITORY_ROOT,path_in_root
     features,provenance=load_features(frame)
+    # Only these path metadata fields differ when a v2 Volume resolves its alias.
+    # The original loader has already verified every payload/content identity.
+    canonical=lambda value:str(Path(REPOSITORY_ROOT)/path_in_root(value,ROOT).relative_to(ROOT.resolve()))
+    provenance=dict(provenance,
+        production_manifest=dict(provenance['production_manifest'],path=canonical(provenance['production_manifest']['path'])),
+        bundles=[dict(item,path=canonical(item['path'])) for item in provenance['bundles']])
     if provenance!=protocol['feature_provenance'] or {rep:array_hash(features[rep]) for rep in REPRESENTATIONS}!=protocol['specification']['feature_hashes']:raise ValueError('cached features/provenance changed')
     return features
 

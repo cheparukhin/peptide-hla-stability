@@ -25,7 +25,7 @@ def test_scientific_worker_functions_are_exact_ast_copies():
     functions=lambda tree:{n.name:ast.dump(n,include_attributes=False) for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
     a,b=functions(original),functions(cloud)
     assert set(a)==set(b)
-    for name in set(a)-{'fit_bundle','runtime','require_authorization','main'}:
+    for name in set(a)-{'fit_bundle','runtime','require_authorization','validated_features','main'}:
         assert a[name]==b[name],name
 
 
@@ -580,3 +580,49 @@ def test_recovery_dispatch_uses_unchanged_worker_and_native_attempt_owner(tmp_pa
     with pytest.raises(ValueError,match='existing'):runner.require_fresh_outputs(auth)
     report=runner.child_command(dict(phase='transfer_report',scope_root=c.CLOUD_TRANSFER_ROOT),Path('/approved'),(None,None))
     assert report[-1]==str(tmp_path/c.CLOUD_TRANSFER_ROOT)
+
+
+def test_modal_volume_alias_accepts_only_logical_or_exact_resolved_root(tmp_path):
+    physical=tmp_path/'volumes'/'vo-exact';physical.mkdir(parents=True)
+    logical=tmp_path/'mounted-repository';logical.symlink_to(physical,target_is_directory=True)
+    target=physical/'source.py';target.write_text('verified bytes')
+    assert c.path_in_root(f'{c.REPOSITORY_ROOT}/source.py',root=logical)==target
+    assert c.path_in_root(str(target),root=logical)==target
+    for outside in (tmp_path/'volumes'/'vo-other'/'source.py',physical/'..'/'escape'):
+        with pytest.raises(ValueError):c.path_in_root(str(outside),root=logical)
+    (physical/'nested-link').symlink_to(tmp_path,target_is_directory=True)
+    with pytest.raises(ValueError,match='symlink'):c.path_in_root('nested-link/source.py',root=logical)
+
+
+def test_environment_records_verified_logical_volume_alias(tmp_path,monkeypatch):
+    physical=tmp_path/'vo-exact';physical.mkdir()
+    logical=tmp_path/'mounted-repository';logical.symlink_to(physical,target_is_directory=True)
+    monkeypatch.setattr(runner,'ROOT',physical)
+    monkeypatch.setattr(c,'REPOSITORY_ROOT',str(logical))
+    monkeypatch.setattr(runner.platform,'python_version',lambda:'3.12.12')
+    monkeypatch.setattr(runner,'version',lambda name:runner.DEPENDENCIES[name])
+    monkeypatch.setattr(runner.sys,'platform','linux')
+    got=runner.verify_environment()
+    assert got['logical_repository_root']==str(logical) and got['resolved_repository_root']==str(physical)
+
+
+def test_cloud_feature_alias_normalizes_only_verified_path_metadata(tmp_path,monkeypatch):
+    from scripts import final_hybrids_cloud as worker
+    import numpy as np
+    monkeypatch.setattr(worker,'ROOT',tmp_path)
+    paths=['manifest.json','features/shard_0']
+    original=dict(production_manifest={'path':f'{c.REPOSITORY_ROOT}/{paths[0]}','sha256':'a'*64},
+        bundles=[{'path':f'{c.REPOSITORY_ROOT}/{paths[1]}','npz_sha256':'b'*64,'metadata_sha256':'c'*64}],
+        pair_ids=['1'],input_hashes=['d'*64])
+    actual=copy.deepcopy(original)
+    actual['production_manifest']['path']=str(tmp_path/paths[0]);actual['bundles'][0]['path']=str(tmp_path/paths[1])
+    arrays={'R0':np.array([[1,2]],dtype=np.float32),'R5':np.array([[3,4]],dtype=np.float32)}
+    protocol={'feature_provenance':original,'specification':{'feature_hashes':{key:worker.array_hash(value) for key,value in arrays.items()}}}
+    monkeypatch.setattr(worker,'load_features',lambda frame:(arrays,actual))
+    returned=worker.validated_features(None,protocol)
+    assert returned is arrays and actual['production_manifest']['path']==str(tmp_path/paths[0])
+    actual['bundles'][0]['npz_sha256']='e'*64
+    with pytest.raises(ValueError,match='provenance'):worker.validated_features(None,protocol)
+    actual['bundles'][0]['npz_sha256']='b'*64
+    actual['bundles'][0]['path']='/unrelated-volume/features/shard_0'
+    with pytest.raises(ValueError,match='roots'):worker.validated_features(None,protocol)
