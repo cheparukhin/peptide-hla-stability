@@ -1,6 +1,43 @@
 # Continuation after the 12 October process interruption
 
-**Latest, 12 October 19:19 UTC:** the five unfinished transfer cells are
+**Current, 12 October 20:28 UTC:** transfer fitting and the full semantic audit
+are complete for all 30 cells / 10,830 retained fits. Results were downloaded
+and hash-verified; recovery compute and storage are closed. The original
+watchdog shutdown-race receipt is preserved with an independent successful
+terminal reconciliation. Do not rerun recovery.
+
+Two independent Modal phases are now released, each with its own watchdog:
+
+- `transfer-report-20261012-2025`: Sandbox `sb-01M4RWTTN48RP2XCW558BD6TEF`,
+  App `ap-1QKtm1LAixAH5U5Igmzrdn`, watchdog PID 36660. Two cores / 8 GiB;
+  $5 cap; fixed work stop 13 October 04:30 UTC and provider stop 04:32 UTC.
+- `hybrid-pilot-20261012-2025`: Sandbox `sb-01M4RWTV1ZC0V93MFF0N052DZ9`,
+  App `ap-qO3FPwfYZJ4ydcOAldUHms`, watchdog PID 36664. Two cores / 8 GiB;
+  $2 cap; fixed work stop 12 October 22:30 UTC and provider stop 22:32 UTC.
+
+Exact authorizations, Volumes, leases and receipts are in the corresponding
+`resources/cloud_sandboxes/` directories. Plans are committed in `c2527cb`.
+Never change sources pinned by either live phase. Initial input verification
+precedes scientific dispatch. Use the existing transport helper after actual
+successful provider exit and verified scientific receipts.
+
+The user's parallel-compute request is implemented by the
+[parallel amendment](cloud/parallel_execution_amendment.json), commit `bd68083`.
+Transfer reporting may overlap the sequential hybrid pilot → main → report
+branch. Hybrid main still waits for the unscored pilot's successful replay and
+runtime-only forecast. Maximum concurrency is two containers, six cores and
+24 GiB. Every phase retains its frozen fit count, model recipe and spending cap.
+There is one shared $35 future envelope, including all four phases and overhead;
+closed conservative compute liability is $6.559382. Future downloads are capped
+at 8 GiB; retain at most two temporary Volumes and delete each after verified
+download. No extra experiment is authorized by parallelism.
+
+The audited scientific prediction and ancestry tables are committed in
+`2483d14`. Statistical reporting is still pending. Preserve the canonical
+training-target transport in every subsequent phase authorization and entry.
+The older running-owner paragraphs below are history, not launch instructions.
+
+**Historical recovery launch, 12 October 19:19 UTC:** the five unfinished transfer cells are
 released to one Modal Sandbox, `sb-01M4RRW8TNY5H1WRJN30PXVJF7`, in App
 `ap-GwmNX2i77HHXKL8r20lzM9`. Exact status and receipts are under
 `resources/cloud_sandboxes/transfer-recovery-20261012-1920/`. Independent

@@ -159,15 +159,13 @@ validation. Ranking outcomes do not widen that scope.
 [Frozen specification](transfer_controls/SPECIFICATION.md) and
 [protocol](transfer_controls/protocol.json).
 
-Twenty-five of 30 extension cells have completed, preserving 8,830 fits. The
-original 18 have passed the full semantic audit; the final combined audit remains
-pending. Cleanup of the active local Python environment interrupted the next
-worker. Two unfinished cells added 794 discarded completed fits, bringing the
-known discarded count to 2,579; twelve original remote attempts remain uncertain.
-A bounded Modal recovery was released for the five unfinished cells, adding 2,000 fresh
-fits with unchanged recipes and the original deadline. These counts are progress,
-not extension results. The complete 25 cells are preserved byte-for-byte.
-[Recovery operations](RECOVERY_OPERATIONS.md).
+All 30 extension cells have completed and passed the full semantic audit,
+covering 10,830 retained fits. The final 2,000 fits ran on Modal, preserving
+8,830 earlier fits byte-for-byte. All outputs were downloaded and hash-verified.
+The statistical report is running; no new extension outcome is claimed yet.
+Known discarded completed fits remain 2,579, with twelve original remote
+attempts and any unrecorded interrupted local fit counted separately as
+uncertain. [Recovery operations](RECOVERY_OPERATIONS.md).
 
 ## Newly authorized hybrid follow-up
 
@@ -192,9 +190,9 @@ not the matched control.
 All six fitted components are evaluated even if the inner selector rejects
 them. The study has 480 scientific fits and a separate 12-fit unscored runtime
 pilot; pilot models never enter the comparison. Secondary intervals are
-exploratory, and every result remains development evidence. No hybrid fits
-have started. Future fitting and heavy reports will run on Modal after the
-existing transfer completes. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
+exploratory, and every result remains development evidence. The separate unscored pilot has been released on Modal alongside transfer
+reporting. Main scientific fitting remains pending the pilot runtime and replay
+checks. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
 and [operational continuation](cloud/CONTINUATION.md).
 
 The existing MLP already standardizes features using gradient-fitting rows
@@ -238,11 +236,11 @@ ranking audit do not repair that historical gap.
 The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
-additional ceiling. Its stopped transfer scope carries $5.179382 conservatively,
-including uncertain calls and preemptions. The closed zero-fit cloud startups
-and diagnostics add a conservative $0.38. Completing the five unfinished
-transfer cells has a separate $10 cap; the remaining reporting and hybrid
-envelope stays at most $35. The combined maximum commitment is $50.559382,
+additional ceiling. Its closed compute scopes carry $6.559382 conservatively, including uncertain
+calls, preemptions, startup diagnostics and the completed recovery. The recovery
+provider snapshot is $0.878851; $1 is retained conservatively for that run.
+The remaining reporting and hybrid envelope stays at most $35 across both
+parallel branches. The combined maximum commitment is $41.559382,
 within the user's $100 new-phase ceiling. This new-phase liability is separate
 from the old accounting and is not a live balance.
 [New-phase closure](resources/transfer_main/interruption_20261012/closure.json)
