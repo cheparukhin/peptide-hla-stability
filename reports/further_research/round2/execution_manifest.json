@@ -12,7 +12,7 @@
   "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
   "independent_confirmation": "not yet available; external labels reserved",
   "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
-  "updated_at_utc": "2026-10-12T07:43:58.096989+00:00",
+  "updated_at_utc": "2026-10-12T08:08:32.026568+00:00",
   "branch": "codex/round2-research",
   "allocations_usd": {
     "cache": 80,
@@ -67,7 +67,7 @@
     "results": "results/sequence/REPORT.md",
     "report_manifest": "results/sequence/manifest.json",
     "repeat_and_report_audit": "resources/sequence_repeat_completion_audit.json",
-    "interpretation": "Conditional development evidence; no demonstrated improvement of sequence selector over original reference. Transfer candidate freeze remains gated on full main screen."
+    "interpretation": "Conditional development evidence; no demonstrated improvement of sequence selector over original reference. Completed main evidence now supports the separately amended frozen transfer scope."
   },
   "transfer_preparation": {
     "status": "scope_frozen_after_main_audit",
@@ -82,7 +82,7 @@
     "additional_fits_per_neural_nominee": 2340,
     "max_nominees": 2,
     "real_transfer_fits_launched": true,
-    "remaining_gate": "Both deterministic timing cells and successful timing exit receipt; timing-only forecast; immutable authorization for remaining28cells at at most3workers.",
+    "remaining_gate": "All30 completed cells and successful remaining exit receipt, followed by frozen transfer report and full source/ancestry/uncertainty audit.",
     "validation": "32 focused tests before integrity fix; four focused agent regressions and five independently rerun freeze/nomination tests after fix; all 30 real split preflight cells passed."
   },
   "cache_completion": {
@@ -105,11 +105,14 @@
     "new_cloud_work_queued": false
   },
   "local_assessment": {
-    "status_at_recording": "complementarity_running",
+    "status_at_recording": "complete_all_stages",
     "stage_started_at_utc": "2026-10-12T07:19:50Z",
     "controller_pid": 13236,
     "workers": 3,
-    "durable_status": "pipeline/status.json"
+    "durable_status": "pipeline/status.json",
+    "completed_at_utc": "2026-10-12T07:54:11.930236+00:00",
+    "closeout": "resources/local_pipeline_closeout.json",
+    "processes_stopped": true
   },
   "embedding_completion": {
     "status": "complete_audited",
@@ -142,28 +145,80 @@
     "scope": "Locked per-fold selector decisions only; no reselection, transfer-regime or assay variation claim."
   },
   "transfer_execution": {
-    "status_at_recording": "timing_running",
+    "status_at_recording": "remaining_running",
     "protocol": "transfer/assessment_protocol.json",
     "protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
     "nomination_decision": "transfer/nomination_decision.json",
     "total_fits": 13530,
     "all_hla_cells": 5,
     "all_joint_cells": 25,
-    "phase": "timing",
+    "phase": "remaining",
     "authorized_cells": [
-      "hla/h0",
-      "joint/h0_p0"
+      "hla/h1",
+      "hla/h2",
+      "hla/h3",
+      "hla/h4",
+      "joint/h0_p1",
+      "joint/h0_p2",
+      "joint/h0_p3",
+      "joint/h0_p4",
+      "joint/h1_p0",
+      "joint/h1_p1",
+      "joint/h1_p2",
+      "joint/h1_p3",
+      "joint/h1_p4",
+      "joint/h2_p0",
+      "joint/h2_p1",
+      "joint/h2_p2",
+      "joint/h2_p3",
+      "joint/h2_p4",
+      "joint/h3_p0",
+      "joint/h3_p1",
+      "joint/h3_p2",
+      "joint/h3_p3",
+      "joint/h3_p4",
+      "joint/h4_p0",
+      "joint/h4_p1",
+      "joint/h4_p2",
+      "joint/h4_p3",
+      "joint/h4_p4"
     ],
-    "workers": 1,
-    "controller_pid": 27679,
-    "keep_awake_pid": 27681,
-    "controller_launch": "transfer/controller/timing_controller_launch.json",
-    "authorization": "transfer/timing_authorization.json",
-    "durable_status": "transfer/controller/timing_status.json",
-    "remaining_phase_authorized": false,
+    "workers": 3,
+    "controller_pid": 30808,
+    "keep_awake_pid": 30809,
+    "controller_launch": "transfer/controller/remaining_controller_launch.json",
+    "authorization": "transfer/remaining_authorization.json",
+    "durable_status": "transfer/controller/remaining_status.json",
+    "remaining_phase_authorized": true,
     "cloud_spend_usd": 0,
     "controller_tests_passed": 37,
     "independent_controller_review": "passed_after_cleanup_fix",
-    "constraint": "No cell retry, duplication, source/grid change or held-outcome-dependent scheduling."
-  }
+    "constraint": "No cell retry, duplication, source/grid change or held-outcome-dependent scheduling.",
+    "timing_forecast": "transfer/timing_forecast.json",
+    "timing_phase_complete": true,
+    "remaining_fits": 12808
+  },
+  "complementarity_completion": {
+    "status": "complete_audited",
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "logical_model_fits": 2140,
+    "count_limitation": "Includes compatible safe fit-cache reuse; not an independent count of fresh hardware executions.",
+    "procedures": 8,
+    "declared_contrasts_per_panel": 16,
+    "panels": [
+      20,
+      50
+    ],
+    "evidence_hashes": 224,
+    "audit": "resources/complementarity_completion_audit.json",
+    "report": "complementarity/results/REPORT.md",
+    "primary_R4_blend_vs_sequence_selector": {
+      "delta": 0.056948,
+      "ci_low": 0.042591,
+      "ci_high": 0.083811
+    },
+    "interpretation": "R4 complements improve specified conditional development comparisons; R2 does not establish improvement over sequence. No declared comparison with main R5/embedding selector and no transfer shortlist changes."
+  },
+  "runtime_cost_summary": "resources/runtime_cost_summary.json"
 }

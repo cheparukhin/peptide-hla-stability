@@ -1,6 +1,6 @@
 # Project review and prioritised research plan
 
-Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **round-two evaluation repair and extractor verification complete; sequence assessment, execution repeats and full-cohort extraction complete; main representation assessment and locked execution repeats complete and audited; complementarity and transfer in progress**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
+Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **round-two evaluation repair and extractor verification complete; sequence assessment, execution repeats and full-cohort extraction complete; main representation assessment, complementarity and locked execution repeats complete and audited; transfer in progress**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
 
 This is the **single current source of truth for project status, research priorities and execution gates**. It consolidates the original follow-up plan, completed Phase A–D findings, the [8 October Boltz strategy](archive/plans/boltz-strategy-2026-10-08.md), and the remaining hackathon proposals. Superseded proposals are in the [plan archive](archive/plans/README.md). Stage reports, saved tables and dated prespecifications remain evidence about completed work; they are not additional work queues. The frozen [original evaluation contract](../EVALUATION.md) remains unchanged. Section 11 records the reconciliation decisions.
 
@@ -311,7 +311,7 @@ The 12 October review checked source-data integrity, the current test suite, the
 
 Keep the [research index](README.md), [project README](../README.md) and site source as entry points to this plan, without separate priority lists. The submission film is a dated historical artifact; its proposals are not current instructions. Local site-source cleanup does not publish a website update.
 
-**Immediate next action:** complete the local complementarity assessment and execute the amended bounded transfer assessment after its timing gate. The full main screen is audited; both cloud jobs have stopped and their reservations are settled. Do not reduce the cohort or change grids in response to assessment outcomes. See §12 for current gates.
+**Immediate next action:** monitor all remaining frozen transfer cells, then validate the full crossed-uncertainty report and consolidate the development findings. The timing gate has passed. The full main screen is audited; both cloud jobs have stopped and their reservations are settled. Do not reduce the cohort or change grids in response to assessment outcomes. See §12 for current gates.
 
 
 ## 11. Reconciliation decisions (8 October 2026)
@@ -358,8 +358,8 @@ The user authorized autonomous execution and reported **$213 remaining Modal cre
 | Sequence controls | [Frozen protocol](further_research/round2/sequence/protocol.json) covers the full MLP/tree × log/centred target grid plus PairLogit, per-fold selection, original 30-member neural reference, six-member tree procedure, clean positive affine ranker mapping and two identical-setting execution repeats. Initial remote packaging failure was repaired and retained in the failure record. The remote smoke passed: full-size depth-8 fit 576.11 seconds, synthetic local/remote maximum difference 9.7e-17 and repeated remote predictions identical. The complete 900-remote-call fit-graph forecast is $17.50 including margins and the smoke/build debit; the $18 reservation ledger stops before exceeding commitments. The full five-fold assessment and two repeats launched at 00:47 UTC. All five primary folds finished and passed the [completion audit](further_research/round2/resources/sequence_primary_completion_audit.json) at 02:56 UTC: all 19,716 training rows, 2,100 members, 53 artifact hashes, identity, ancestry and inner-selector replay checked. Both execution repeats and the [sequence-only results report](further_research/round2/results/sequence/REPORT.md) are complete. All 900 remote calls settled and the app stopped normally at 03:14 UTC. The conservative cost including smoke/build and seven lost-attempt reserves is $7.9957 against $18; provider metering remains separately recorded. Tiny-platform agreement is not a full-cohort cross-platform equivalence claim. |
 | Representation screen | [Frozen protocol](further_research/round2/embedding/protocol.json) covers R0–R5, shuffled memberships and matched positional controls, with three regularization settings per learner and three inner folds. The full graph is **2,900 actual head fits**, including all refits and secondary controls, on local CPU. No real head fitting preceded the gate. The durable local controller passed the complete cache/sequence gate and started the first three folds at 06:46:38 UTC; all five folds and the [main report](further_research/round2/results/main/REPORT.md) completed by 07:19 UTC. The [completion audit](further_research/round2/resources/embedding_completion_audit.json) passed all 100 component procedures, 2,900 members, identity/ancestry/scaler/selector checks, source/output hashes and both panels' endpoint/interval arithmetic. The cache wrapper provenance limitation remains inherited. |
 | Independent data | [Identity-only provenance audit](further_research/round2/independent_data/README.md) found all 27,031 released source stability pairs in the canonical corpus. Strict donor/canonical exclusions leave only 129 potential rows across heterogeneous assay strata, insufficient for the planned confirmation endpoint. External labels were not opened. Metadata, cross-length similarity and checkpoint provenance gaps remain. |
-| Complementarity | [Frozen protocol](further_research/round2/complementarity/protocol.json) covers R2/R4 ridge blends and strongly regularized residuals against the exact original reference, with baseline-only options and fresh nested stacking ancestry. The additional local graph contains 2,140 actual fits; execution started at 07:19:50 UTC in the same local controller after the completed main report. |
-| Transfer | [Auxiliary manifest](further_research/round2/transfer/protocol.json) freezes 35 HLA sequence groups, five HLA folds and all 25 joint intersections. Coverage and nearest-sequence distances are recorded before transfer outcomes. The main completion audit has passed; the dated post-main amendment below nominates R4 ridge and R5 MLP before transfer fitting. This is not a transfer result. The reviewed [local implementation](further_research/round2/transfer/implementation_readiness.md) supports the original reference, a separately named bounded MLP sequence selector, and one or two explicitly nominated R2–R5 ridge/MLP procedures with unchanged main grids. All 30 cells require 10,440 sequence fits plus 750 per ridge or 2,340 per neural nominee. The earlier empty-nominee draft remains a preparation record. The dated amendment records the reduced comparator, exact nominees and 13,530-fit graph; elapsed-runtime feasibility remains a timing gate before the remaining 28 cells. |
+| Complementarity | [Frozen protocol](further_research/round2/complementarity/protocol.json) covers R2/R4 ridge blends and strongly regularized residuals against the exact original reference, with baseline-only options and fresh nested stacking ancestry. All five folds and the [report](further_research/round2/complementarity/results/REPORT.md) completed by 07:54 UTC. The [completion audit](further_research/round2/resources/complementarity_completion_audit.json) passed identities, clean ancestry, all choices, exact zero endpoints and both panels' arithmetic. The recorded graph contains 2,140 logical model fits including compatible cache reuse; this is not an independent count of equally many new hardware executions. |
+| Transfer | [Auxiliary manifest](further_research/round2/transfer/protocol.json) freezes 35 HLA sequence groups, five HLA folds and all 25 joint intersections. Coverage and nearest-sequence distances are recorded before transfer outcomes. The main completion audit has passed; the dated post-main amendment below nominates R4 ridge and R5 MLP before transfer fitting. This is not a transfer result. The reviewed [local implementation](further_research/round2/transfer/implementation_readiness.md) supports the original reference, a separately named bounded MLP sequence selector, and one or two explicitly nominated R2–R5 ridge/MLP procedures with unchanged main grids. All 30 cells require 10,440 sequence fits plus 750 per ridge or 2,340 per neural nominee. The earlier empty-nominee draft remains a preparation record. The dated amendment records the reduced comparator, exact nominees and 13,530-fit graph; both deterministic timing cells passed and the remaining 28 cells launched at 07:58 UTC with three local workers. The frozen total remains 13,530 fits. |
 | Confirmation | [Bounded acquisition design](further_research/round2/independent_data/design/README.md) completed 108 synthetic scenarios, 162,000 endpoint draws and 3,240 exact paired-bootstrap diagnostics. Balanced 12×200/400/800 panels and a separate 20% independent-replicate subset are options for quotes; rates are conditional planning sensitivity, not a guaranteed real-world power result. No assay quote, reserved adequately powered cohort or confirmatory result exists. Performance claims remain development-only. |
 
 ### Completed sequence development finding
@@ -410,6 +410,42 @@ about selection reproducibility, transfer repeats, cross-platform equality or
 assay noise. The [repeat audit](further_research/round2/resources/embedding_repeat_completion_audit.json)
 records exact float32 cache/CSV reconstruction and distinguishes decimal
 serialization rounding from execution differences.
+
+### Completed complementarity development finding
+
+The [audited complementarity report](further_research/round2/complementarity/results/REPORT.md)
+retains all eight procedures and all 16 declared contrasts on both panels.
+R4 blend scores **0.723789** on the primary panel, with difference **+0.056948
+[0.042591, 0.083811]** against the competitive sequence selector, **+0.062268
+[0.044337, 0.083869]** against the original reference, and **+0.039279
+[0.022009, 0.056708]** against R4 ridge alone. The 50-row differences are
+**+0.059101 [0.042081, 0.081825]**, **+0.062522 [0.044237, 0.081917]** and
+**+0.040167 [0.024428, 0.056107]** respectively. The weight 0.5 was chosen
+independently within each fitting fold.
+
+R4 residual correction also improves these conditional endpoints: its primary
+difference versus competitive sequence is **+0.044588 [0.030379, 0.067056]**,
+and versus R4 ridge alone **+0.026919 [0.001338, 0.046971]**. Both sequence
+comparisons and the embedding-alone comparison retain positive intervals in
+the 50-row sensitivity. R2 blend and residual intervals cross zero against
+both sequence references in both panels. Their large improvements over the
+weak R2 ridge alone do not establish improvement over sequence.
+
+No complementarity lower bound exceeds 0.05 against either sequence reference.
+These secondary contrasts condition on fitted predictions and do not include
+multiplicity/search uncertainty, execution variation or independent confirmation.
+No direct R4-blend-versus-R5 or main-embedding-selector contrast was declared;
+the point scores cannot establish that comparison. Complementarity procedures
+are not added to the already frozen transfer nominations.
+
+The audit checked the 2,140-member logical graph, all 30 nested ridge choices,
+20 blend/correction choices and three exact zero endpoints. It recomputed all
+pooled/per-allele/fold scores and 32 paired interval rows, checked every saved
+reference-bootstrap row against the main report, and checked three fresh draws
+for all eight arms and both panels. All 224 evidence hashes match, including
+bootstrap/matched-prediction/report files omitted from the original report
+manifest's seven-table output map. No frozen generator or numerical output was
+rewritten. The inherited cache provenance limitation remains explicit.
 
 ### Declared implementation amendments
 
@@ -497,7 +533,30 @@ from numerical repeatability.
 The amended transfer protocol froze at 07:37 UTC, after the main audit and
 before any transfer fitting. The independently reviewed controller passed
 37 mocked authorization/failure tests, including cleanup when status writes
-fail. Its one-worker timing phase launched at 07:42 UTC; no remaining-phase
-launch is authorized yet. [Timing authorization](further_research/round2/transfer/timing_authorization.json)
+fail. Its one-worker timing phase launched at 07:42 UTC; that authorization
+covered only the two timing cells. [Timing authorization](further_research/round2/transfer/timing_authorization.json)
 and [launch receipt](further_research/round2/transfer/controller/timing_controller_launch.json)
 bind exact controller/protocol hashes and the two fixed cells.
+
+Both deterministic transfer timing cells completed successfully: 226 HLA fits
+in 485.8 seconds and 496 joint fits in 300.6 seconds of observed cell wall time.
+A [timing-only forecast](further_research/round2/transfer/timing_forecast.json)
+uses row-count scaling, a 2× timing contingency and a separate 15-minute report
+allowance; it is a scheduling estimate rather than a guaranteed deadline.
+All remaining 28 cells (12,808 fits) launched at 07:58 UTC under the
+[immutable remaining authorization](further_research/round2/transfer/remaining_authorization.json),
+with three workers and no new Modal work. The previous main local pipeline and
+timing controller have exited. Transfer outcomes have not been used to alter
+the scope. The 11 AM London checkpoint remains an honest progress report if
+any fitting or final reporting is unfinished.
+
+The [resource summary](further_research/round2/resources/runtime_cost_summary.json)
+records shared extraction, fitting and reporting costs from 337 hashed sources.
+The full cache's $66.8431 conservative accounting is shared across arms, about
+$0.00339 per cached training row. Its recorded synchronized extraction span
+averages 7.21 seconds per case; aggregate parallel wall time and those per-case
+spans are different quantities. Cached MSAs and checkpoint reuse, startup,
+storage and downstream head prediction prevent interpreting this as a measured
+end-to-end latency or price for a new input. No isolated serving benchmark or
+live credit balance is claimed. Recorded model-training timings and logical
+cache-reused fits are explicitly separated from inference and new hardware work.

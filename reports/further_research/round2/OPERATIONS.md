@@ -69,7 +69,7 @@ captures its case log until the shard returns.
 | First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Completed 256/256 cases; app `ap-CTPosnxjWl1PutPuL6XHcK` stopped. Saved charge $0.8734; measured full-cache forecast plus 10% is $73.99. |
 | Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` completed all 19,716 rows/78 shards and stopped at 06:46:25 UTC. Settled runtime accounting $66.8431 against $80; zero unresolved reservations and no preemptions. See `resources/cache_completion_audit.json`. |
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | Complete: five primary folds and both fixed-setting repeats passed audits (19,716 rows; 2,100 primary + 420 repeat members). App `ap-vgwn2eHeZngfofbxH6SMsf` stopped normally at 03:14 UTC; all 900 calls settled, no reservations. [Validated report](results/sequence/REPORT.md) and [cost closeout](resources/sequence_cost_closeout.json): $7.9957 conservative estimate including preemptions, against $18. |
-| Main local pipeline | `pipeline/status.json` | All five embedding folds and the main report completed by 07:19 UTC and passed the completion audit. The same controller is running the five complementarity folds and their report at three local workers. No cloud spend. |
+| Main local pipeline | `pipeline/status.json` | All five embedding folds and the main report completed by 07:19 UTC and passed the completion audit. All five complementarity folds and their report also completed by 07:54 UTC and passed the separate completion audit. Controller 13236 and its helper have exited; see resources/local_pipeline_closeout.json. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
 | Independent spending watchdog | `resources/runtime_guard/status.json` | Stopped deliberately at 06:56 UTC after both cloud scopes were terminal and settled. `resources/runtime_guard/shutdown.json` preserves exact identity and shutdown evidence; no deadline or study-ledger change. |
 
@@ -238,3 +238,46 @@ See [launch receipt](transfer/controller/timing_controller_launch.json) and
 phase receipts before any recovery. The remaining phase is still gated on
 successful timing completion and its own immutable authorization. Preserve
 controller source unchanged across both phases.
+
+## Local completion and remaining transfer phase, 07:58 UTC
+
+The main local pipeline is complete; [process closeout](resources/local_pipeline_closeout.json)
+records all 12 child exits as zero and no remaining controller/helper process.
+The [complementarity audit](resources/complementarity_completion_audit.json)
+passed all five folds, 2,140 logical members, ancestry, selections and both
+panels' arithmetic. This logical graph includes compatible fit-cache reuse and
+must not be described as an independent count of fresh hardware executions.
+All completed complementarity evidence is ready for commit. Do not rerun the
+main pipeline or regenerate main outputs bound by the transfer/repeat freezes.
+
+Timing exited successfully at 07:55 UTC, and controller 27679, helper 27681
+and both children were verified absent before the 07:57 timing forecast.
+The two cells took 485.8 seconds (HLA) and 300.6 seconds (joint). Their completed
+markers, artifact hashes and exact 226/496 member counts passed the timing
+gate. Only timing, completion and grouping metadata informed scheduling.
+The [forecast](transfer/timing_forecast.json) estimates 53.3 minutes for the
+remaining fit schedule at three workers; its 2× contingency plus 15-minute
+report allowance is about two hours, not a guaranteed completion deadline.
+
+The [remaining authorization](transfer/remaining_authorization.json) binds the
+same controller/protocol source, both timing completion hashes, exact other
+28 cells and three workers. [Launch receipt](transfer/controller/remaining_controller_launch.json):
+**07:58:03 UTC, PID/PGID 30808, keep-awake PID 30809**. Inspect
+`transfer/controller/remaining_status.json`, per-cell progress and exact live
+processes; never create a duplicate controller or blindly retry a partial cell.
+All 30 cells and the successful remaining exit receipt are required before
+running `scripts/round2_transfer_report.py`. First verify no report process is
+already active, then run it once and audit every required comparison, both
+panels, all peptide/HLA/crossed intervals and every group-deletion sensitivity.
+
+After validated transfer reporting, produce a consolidated development-only
+`REPORT.md` here, retaining the cache wrapper provenance limitation, reduced
+transfer sequence comparator, secondary-contrast/search uncertainty and open
+independent-confirmation gate. The heartbeat stays active through that work;
+the user receives a current 11 AM London report even if a stage is incomplete.
+
+The [resource summary](resources/runtime_cost_summary.json) binds 337 evidence
+sources and distinguishes shared cache cost, recorded member work, parallel
+wall intervals, cache reuse and unmeasured serving latency. It is a completed
+scopes plus timing-phase snapshot; do not rewrite it as the final actual transfer
+runtime. Record transfer completion timing separately after the remaining phase.
