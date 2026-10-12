@@ -714,3 +714,14 @@ requires successful transfer closure. Finish these experiments and interpretatio
 without expanding either the model grid or the execution framework.
 See the [continuation](finalization/cloud/CONTINUATION.md) and
 [reviewed amendment](finalization/cloud/implementation_amendment.json).
+
+### Transfer completion on Modal — 12 October 18:35 UTC
+
+Disk cleanup removed the active local environment and interrupted recovery
+after 25 complete cells. Preserve those 8,830 fits; the final five cells run
+unchanged on Modal under a separate $10 cap. Two zero-fit startup failures
+were reconciled before the current launch. The existing $35 finalization
+envelope and the user's $100 additional ceiling remain unchanged. Exact
+ownership and fixed deadlines are in the [recovery operations](finalization/RECOVERY_OPERATIONS.md).
+This is an operational amendment only; finish the frozen scientific comparisons
+without expanding the experiment grid or orchestration framework.

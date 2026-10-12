@@ -159,13 +159,14 @@ validation. Ranking outcomes do not widen that scope.
 [Frozen specification](transfer_controls/SPECIFICATION.md) and
 [protocol](transfer_controls/protocol.json).
 
-Eighteen of30 extension cells, representing6,030 fits, have passed the full
-semantic audit. The original cloud scope is stopped. Two local process
-interruptions left1,785 recorded completed partial fits that are discarded;
-twelve original remote attempts remain uncertain and fully carried in the
-closed accounting. A one-time local recovery with complete-call checkpoints
-is running for the remaining12 cells and4,800 fits under the unchanged
-deadline. These partial counts are operational progress, not extension results.
+Twenty-five of 30 extension cells have completed, preserving 8,830 fits. The
+original 18 have passed the full semantic audit; the final combined audit remains
+pending. Cleanup of the active local Python environment interrupted the next
+worker. Two unfinished cells added 794 discarded completed fits, bringing the
+known discarded count to 2,579; twelve original remote attempts remain uncertain.
+A bounded Modal recovery was released for the five unfinished cells, adding 2,000 fresh
+fits with unchanged recipes and the original deadline. These counts are progress,
+not extension results. The complete 25 cells are preserved byte-for-byte.
 [Recovery operations](RECOVERY_OPERATIONS.md).
 
 ## Newly authorized hybrid follow-up
@@ -238,8 +239,10 @@ The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
 additional ceiling. Its stopped transfer scope carries $5.179382 conservatively,
-including uncertain calls and preemptions; the local recovery and hybrid phases
-currently allocate no further cloud spend. This new-phase liability is separate
+including uncertain calls and preemptions. Completing the five unfinished
+transfer cells has a separate $10 cap; the remaining reporting and hybrid
+envelope stays at most $35. The combined maximum commitment is $50.289382,
+within the user's $100 new-phase ceiling. This new-phase liability is separate
 from the old accounting and is not a live balance.
 [New-phase closure](resources/transfer_main/interruption_20261012/closure.json)
 and [prior resource closeout](../further_research/round2/resources/runtime_cost_summary.json).
