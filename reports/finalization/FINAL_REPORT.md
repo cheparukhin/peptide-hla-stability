@@ -1,7 +1,7 @@
 # Finalisation readout: peptide–HLA stability
 
 12 October 2026. **Portable inference, matched ranking loss and stronger transfer
-controls are complete; the 480-fit hybrid study is running.** This report combines the closed
+controls are complete; the 480-fit hybrid study awaits its final audit.** This report combines the closed
 round-two record with completed finalisation deliverables. It does not replace
 the frozen protocols or historical reports.
 
@@ -237,11 +237,12 @@ All six fitted components are evaluated even if the inner selector rejects
 them. The study has 480 scientific fits and a separate 12-fit unscored runtime
 pilot; pilot models never enter the comparison. Secondary intervals are
 exploratory, and every result remains development evidence. The separate 12-fit unscored pilot and saved-model replay passed on Modal.
-Its runtime and memory measurements alone set a four-hour main window. The
-480 scientific fits launched once at 20:51 UTC on 12 October with two workers,
-two numerical threads each and four Modal CPUs. The fixed work stop is
-13 October 00:55 UTC; completion is not guaranteed. No main outcome is claimed
-until the saved-model, ancestry and statistical report passes. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
+Its runtime and memory measurements alone set a four-hour main window. All 480 scientific fits completed successfully in ten jobs, with two workers
+and four Modal CPUs, after 3,132.5 seconds of fitting. All 1,620 output files
+were downloaded and hash-verified. Independent inventory checks confirm 16
+complete prediction arms and separate unscored pilot fits. The final saved-model,
+ancestry and statistical report launched once on Modal at 22:40 UTC; no scored
+hybrid outcome is claimed until it passes. See the [scientific specification](hybrids_cloud_v1/SPECIFICATION.md)
 and [operational continuation](cloud/CONTINUATION.md).
 
 The existing MLP already standardizes features using gradient-fitting rows
@@ -285,13 +286,14 @@ ranking audit do not repair that historical gap.
 The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
-additional ceiling. Its closed compute scopes carry $6.809382 conservatively, including uncertain
+additional ceiling. Its closed compute scopes carry $8.009382 conservatively, including uncertain
 calls, preemptions, startup diagnostics and the completed recovery. The recovery
 provider snapshot is $0.878851; $1 is retained conservatively for that run.
-The completed pilot and transfer report carry $0.10 and $0.15 within the shared
-$35 finalization envelope. Remaining main/report caps are $20/$5, plus $3
-reserved for storage, egress and build overhead. The combined current maximum
-commitment is $34.809382,
+The completed pilot, transfer report and hybrid main carry $0.10, $0.15 and
+$1.20 within the shared $35 finalization envelope. The main provider snapshot
+is $1.03656227. Remaining reservations are $5 for the final hybrid report and
+$3 for storage, egress and build overhead. Current maximum commitment is
+$16.009382,
 within the user's $100 new-phase ceiling. This new-phase liability is separate
 from the old accounting and is not a live balance.
 [New-phase closure](resources/transfer_main/interruption_20261012/closure.json)
@@ -312,5 +314,5 @@ python3 site/round2-build.py --check
 The ranking [report exit receipt](ranking/report.exit.json) records the single
 frozen report invocation; its completion audit retains independent arithmetic
 and artifact checks. Completed expensive scopes must not be blindly relaunched.
-This readout remains provisional for the running hybrid comparison and
+This readout remains provisional for the hybrid saved-model/statistical audit and
 independent confirmation. The transfer extension is complete.

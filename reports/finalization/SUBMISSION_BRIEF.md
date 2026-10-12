@@ -1,7 +1,7 @@
 # Peptide–HLA stability: submission brief
 
 Prepared 12 October 2026. Local draft for the completed development findings;
-the stronger transfer extension is complete; hybrid comparisons are running.
+the stronger transfer extension is complete; hybrid fitting is complete and final audit is running.
 Not submitted externally.
 
 ## Project in one paragraph
@@ -55,7 +55,7 @@ to structure or independent confirmation.
    demonstration rows. State that these are training-cache examples, with no
    accuracy claim attached to the demonstration.
 4. Show the evidence boundaries: original test preserved, stronger transfer
-   controls completed, hybrid comparisons running, and an independent assay
+   controls completed, hybrid audit running, and an independent assay
    cohort still needed.
 
 The measured warm cached-head median is 1.56 ms for ridge and 2.40 ms for the
@@ -76,8 +76,8 @@ mechanism or establish an advantage for the designated contact map.
 was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
-**What is next?** Finish the running 480-fit Boltz tree/ranking, tree–MLP blend
-and preprocessing comparison, then freeze candidates before independent assay
+**What is next?** Finish the saved-model and statistical audit of the completed 480-fit
+Boltz tree/ranking, tree–MLP blend and preprocessing comparison, then freeze candidates before independent assay
 outcomes. The separate 12-fit engineering pilot passed; its fits never enter
 scientific assessment. No hybrid outcome is claimed yet.
 

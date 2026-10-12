@@ -25,7 +25,7 @@ deployment selector retained MSE in all five R5 folds.
   main, transfer, complementarity, reproducibility and resource findings.
 - [Combined finalisation readout](reports/finalization/FINAL_REPORT.md): completed
   portable inference, ranking follow-up and stronger transfer controls; hybrid
-  fitting is running.
+  fitting is complete and its final audit is running.
 - [Matched ranking-loss report](reports/finalization/ranking/REPORT.md): frozen
   outcome, source tables and the completed artifact/arithmetic audit.
 - [Project page](site/index.html): locally updated evidence and a clearly dated
@@ -140,9 +140,9 @@ are **complete and audited**. See its [specification](reports/finalization/trans
 The [combined report](reports/finalization/FINAL_REPORT.md) distinguishes these
 completed deliverables from pending hybrid evidence and independent assays.
 The separately frozen Boltz tree/ranking, tree–MLP blend, tree-leaf, quantile
-and PCA comparisons are running on Modal: 480 scientific fits, two workers
-and four CPUs, after a separate 12-fit unscored pilot passed. No hybrid result
-is claimed before its saved-model and statistical audit completes. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
+and PCA comparisons completed all 480 scientific fits on Modal after the
+separate 12-fit unscored pilot passed. The final saved-model and statistical
+audit is running; no hybrid outcome is claimed before it completes. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
 records the preserved cells, interrupted attempts and current execution gates.
 
 The completed round-two phase conservatively accounted for $76.84 of its $100

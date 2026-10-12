@@ -744,3 +744,17 @@ four Modal CPUs / 16 GiB and a $20 cap. Exact ownership and the fixed 13 October
 00:55 UTC work stop are in RECOVERY_OPERATIONS.md and the phase manifest.
 No hybrid result is claimed until its full saved-model/statistical audit passes.
 The completed transfer report and pilot are stopped, downloaded and storage-closed.
+
+### Hybrid fitting complete; final scientific audit running — 12 October 22:40 UTC
+
+All 480 hybrid scientific fits and ten jobs completed successfully. The full
+1,620-file output was downloaded and hash-verified; independent inventory
+checks found all 16 prediction arms with complete held-row coverage. Pilot
+fits remain unscored and separate. Main compute/storage are closed with a
+$1.20 conservative carry against $1.03656227 provider metering.
+
+The unchanged final saved-model/ancestry/statistical report is now running once
+on Modal at two CPU / 8 GiB under its $5 cap. No hybrid outcome is claimed until
+that report passes. Exact ownership and the fixed 13 October 06:45 UTC work
+stop are in the current recovery operations. The scientific protocol, primary
+contrast, candidate set and original-test exclusion remain unchanged.

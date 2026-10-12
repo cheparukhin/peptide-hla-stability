@@ -1,11 +1,11 @@
 # Hackathon finalisation — authorized 12 October 2026
 
-**Current, 12 October 21:00 UTC:** transfer fitting/reporting and the separate
-unscored hybrid pilot are complete and closed. The frozen 480-fit hybrid main
-is running on Modal with two workers/four CPUs. The latest dated section below
-and RECOVERY_OPERATIONS.md record current ownership and remaining reporting.
-Future heavy work stays on Modal; earlier local-first plans are historical.
-Prioritize the scientific results and interpretation over more infrastructure.
+**Current, 12 October 22:40 UTC:** all frozen model fitting is complete.
+The 480-fit hybrid main and separate unscored pilot are downloaded and closed.
+The final saved-model/ancestry/statistical audit is now running once on Modal;
+no scored hybrid result is claimed until that report passes. Current ownership
+and fixed deadlines are in RECOVERY_OPERATIONS.md. Future heavy work stays on
+Modal; earlier local-first plans are historical. Prioritize scientific results.
 
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;

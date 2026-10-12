@@ -225,7 +225,7 @@ def build():
       <p>The expanded sequence selector changes the original by {interval(extension_sequence[0])} in HLA and {interval(extension_sequence[1])} in joint holdout. It underperforms the original in joint holdout, so presenting only the expanded comparator would exaggerate the advantage. Outer outcomes do not select a replacement procedure.</p>
     </details>
     <details class="evidence-detail"><summary>Scope and uncertainty</summary><p>The extension adds sequence regression/centred trees, a fixed ranker and matched R0 ridge/MLP heads. Inner selection, stopping and scaling obey each holdout regime. Its 264 comparison rows cover both panels and three uncertainty modes; all 12 bootstrap tables have 2,000 draws, and 3,080 rows cover every group-deletion contrast.</p><p>Intervals condition on fitted predictions and selections; group deletion does not retrain. Crossed resampling is a dependence sensitivity, not independent confirmation. HLA sequence groups are not validated functional distance. The ranker retains an inner-to-final scale-transport limitation. These transfer findings do not retrospectively change the main worthwhile-gain criterion.</p></details>
-    <p class="note"><b>Hybrid fitting is running.</b> The separate Boltz tree/ranking, tree–MLP blend and preprocessing study contains 480 scientific fits on four Modal CPUs after a 12-fit unscored pilot passed. Its primary comparison is the R5 hybrid selector minus the matched two-member R5 standard MLP. No hybrid outcome is claimed yet.</p>
+    <p class="note"><b>Hybrid fitting is complete; final audit is running.</b> The separate Boltz tree/ranking, tree–MLP blend and preprocessing study completed 480 scientific fits on four Modal CPUs after a 12-fit unscored pilot passed. Its primary comparison is the R5 hybrid selector minus the matched two-member R5 standard MLP. No hybrid outcome is claimed yet.</p>
     <p class="source-line">{path_link(extension_base + "REPORT.md", "Complete stronger-transfer report")} · {path_link(extension_base + "comparisons.csv", "All comparisons")} · {path_link(extension_base + "coverage_audit.json", "Independent coverage audit")} · {link("transfer/results/README.md", "Historical narrower assessment")}</p>
   </section>
 
@@ -265,7 +265,7 @@ def build():
                "transfer_extension_status": "complete; independently audited; development only",
                "transfer_extension": {"matched_heads": [{"label": label, "comparison": row} for label, row in extension_matched],
                                       "both_sequence_references": extension_references, "expanded_minus_original": extension_sequence},
-               "hybrid_status": "480-fit scientific assessment running on Modal; pilot complete; no outcome claimed",
+               "hybrid_status": "480 scientific fits complete; saved-model/statistical audit running on Modal; no outcome claimed",
                "cost_accounting": {k: v for k, v in costs.items() if k != "interpretation"},
                "source_sha256": dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"

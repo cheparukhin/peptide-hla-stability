@@ -1,59 +1,62 @@
 # Continuation after the 12 October process interruption
 
-**Current, 12 October 21:00 UTC:** transfer fitting and statistical reporting
-are complete and independently audited. Both recovery and report compute/storage
-are closed. All 30 cells / 10,830 retained fits passed; the full report covers
-264 comparisons and 3,080 group-deletion rows. Read
-[the transfer readout](transfer_cloud_recovery/results/REPORT.md). Matched R5−R0
-MLP gains are +0.406234 in HLA and +0.373784 in joint holdout on the minimum-20
-panel, with positive crossed intervals. Report original and expanded sequence
-references together; the expanded selector underperforms the original in joint.
-These remain conditional development findings, not independent confirmation.
+**Current, 12 October 22:40 UTC:** all 480 hybrid scientific fits are complete.
+All ten jobs exited successfully at 21:56:50 UTC, after 3,132.5 seconds of fitting.
+The 1,620 output files (527,984,061 bytes) were downloaded and hash-verified.
+Independent inventory review found 80 bundles / 480 fits and all 16 arms with
+19,716 unique outer-held rows each. The unscored 12-fit pilot remains separate.
+These are fitting/inventory milestones; saved-model and statistical audit is pending.
 
-The 12-fit unscored hybrid pilot and saved-model replay passed. Its App/Volume
-are closed. **One hybrid main is running**, released once at 20:51 UTC:
+The main Sandbox returned 0; its App is stopped, Volume deleted and all three
+launchd registrations removed. Exact certificate and closure are in
+`resources/cloud_sandboxes/hybrid-main-20261012-2050/`, committed with the frozen
+report plan in `802b4d6`. Metered main compute is $1.03656227; carry $1.20.
+Do not rerun the fitting or completed download.
 
-- Directory: `resources/cloud_sandboxes/hybrid-main-20261012-2050`.
-- Sandbox `sb-01M4RY4YCXH56DDWFCZGN6Y7KX`; App
-  `ap-wmOBffnJfZWFATGFardDin`; Volume `vo-NlgR5DEpQf5cc0Ta3tZRKg`.
-- Watchdog PID 40012; launcher 40066 exited 0 after release. Labels are
-  `org.pepstab.hybrid-main-{watch,launch,awake}-20261012-2050`.
-- Exactly 480 scientific fits in ten jobs, two workers / two numerical threads,
-  four physical CPU / 16 GiB. The pilot models are never reused scientifically.
+**One final hybrid report is running**, released once at 22:40 UTC:
+
+- Directory: `resources/cloud_sandboxes/hybrid-report-20261012-2240`.
+- Sandbox `sb-01M4S4C9MERKK9QCX47E74XE2H`; App
+  `ap-i2lNOkyEV6agaShswBHHyi`; Volume `vo-B3aQeMNIW9UAWUW2LjKfSx`.
+- Watchdog PID 95134; launcher 95169 exited 0 after release. Labels are
+  `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2240`.
+- Two physical CPU / 8 GiB / two numerical threads, one report process, zero
+  new fits. The unchanged report replays saved models, ancestry and inner
+  choices before computing the frozen paired bootstrap statistics.
 - Authorization SHA256
-  `8562ad472f4563106ba39312c730716c11d3a290e7fc9e02f8407308a807490c`.
-  Runtime-only forecast and frozen plan are committed in `85bf5df`.
-- Fixed work stop **13 October 00:55 UTC**, provider stop **00:57 UTC**;
-  $20 cap. Never extend, duplicate or retry blindly. Do not modify live sources.
+  `04e42d79a1619da900d432bc1941c50153bab4f13b7057edb22fc391c6a979ea`.
+- Fixed work stop **13 October 06:45 UTC**, provider stop **06:47 UTC**;
+  at most eight work hours, $5 cap. Never extend, duplicate or retry blindly.
+  Keep the independent watcher fresh and do not modify live pinned sources.
 
-Verify fresh watcher leases and exact provider ownership. The main forecast
-uses only pilot runtime, memory and saved-model replay: 13,888.7 seconds rounded
-to a four-hour fit window. It is not a completion guarantee. The output root is
-`hybrids_cloud_v1`, with the unchanged scientific protocol. The primary contrast
-is R5 hybrid selector minus the matched two-member R5 standard MLP at minimum 20.
-Historical thirty-member heads are descriptive; all secondary outcomes exploratory.
+Inputs include both successful pilot/main certificates, canonical training
+labels and the existing scientific entry. The initial 3.04 GB verification may
+take minutes. Scope is still `hybrids_cloud_v1` and the original frozen scientific
+protocol. Primary contrast: R5 hybrid selector minus matched two-member R5
+standard MLP at minimum 20. Historical thirty-member heads are descriptive;
+all secondary outcomes are exploratory. No scored hybrid outcome is claimed yet.
 
-After actual provider exit 0, real successful remote exit/cleanup, complete
-artifact download and a verified phase certificate, delete this Volume and stop
-this App; remove only the exact exited launchd registrations. Run the frozen
-hybrid saved-model/ancestry/statistical report once, on Modal, with the real
-pilot and main certificates: 2 CPU / 8 GiB, two threads, $5 cap and at most eight
-hours. Provider stop must be at least 120 seconds after work stop and no later
-than 14 October 14:15:17 UTC. Check no report process/receipt before launching.
-Use canonical training-target artifacts and the existing entry in every phase.
+After actual provider exit 0, real successful report exit/cleanup and verified
+output download, issue the phase certificate, delete this Volume, stop this App
+and remove the exact exited registrations. Inspect every frozen comparison,
+selection/fallback and uncertainty diagnostic before final interpretation.
+Then finish FINAL_REPORT, README, submission brief and local site, regenerate
+the source snapshot and commit completed validated artifacts. Do not add more
+orchestration or reopen the original test. Independent assay confirmation stays open.
 
-Closed conservative compute carry is $6.809382, including $0.10 pilot and $0.15
-transfer-report carry within the shared $35 finalization envelope. Main/report
-pending caps are $20/$5 plus $3 overhead, giving current maximum commitment
-$34.809382 within the unchanged $100 additional ceiling. This is not a live
-balance or invoice. At most two containers / six cores / 24 GiB and two temporary
-Volumes are allowed by the parallel amendment; currently only main is running.
-Check bytes/disk before transfers; storage cleanup by 15 October 14:15 UTC.
+Closed conservative compute is $8.009382, including $1.45 settled within the
+shared $35 finalization envelope. Only the $5 report cap and $3 overhead remain
+reserved: current maximum commitment $16.009382 inside the unchanged $100
+additional ceiling. These are conservative allocations, not a live balance.
+Storage cleanup remains due by 15 October 14:15 UTC; keep at most two temporary
+Volumes and 8 GiB per download. All earlier failed/uncertain charges remain carried.
 
-Finish interpretation and the final report, README, submission brief and local
-source-backed site. Do not add orchestration features. Independent assay
-confirmation stays open. Preserve interrupted attempt evidence and never rerun
-completed studies. All older running-owner paragraphs below are historical.
+The stronger transfer study/report is complete and committed in `9f07ea9`:
+30 cells / 10,830 retained fits, 264 comparisons, 3,080 group deletions. Matched
+R5−R0 MLP gains remain positive in HLA and joint holdout. Show both original and
+expanded sequence references; expanded underperforms original in joint. All
+findings remain conditional development evidence and do not revise the original
+worthwhile-gain criterion. Earlier ownership paragraphs below are historical.
 
 **Historical recovery launch, 12 October 19:19 UTC:** the five unfinished transfer cells are
 released to one Modal Sandbox, `sb-01M4RRW8TNY5H1WRJN30PXVJF7`, in App
