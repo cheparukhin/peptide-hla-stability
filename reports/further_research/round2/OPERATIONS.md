@@ -36,8 +36,11 @@ continuously from the recorded start of paid work, add the prior pilot/smoke
 debit, and leave a further $1/$0.50 shutdown/overlap allowance. These are latest
 stop deadlines, not completion forecasts, and must not be extended automatically.
 
-`resources/runtime_guard/status.json` must remain fresh; the launch receipt
-records its PID and keep-awake helper. The single-owner watchdog verifies exact
+While authorized cloud work is active, `resources/runtime_guard/status.json`
+must remain fresh; the launch receipt records its PID and keep-awake helper.
+All authorized cloud work is now complete, and the verified watchdog shutdown
+is recorded in `resources/runtime_guard/shutdown.json`. Its final status remains
+a historical snapshot; do not restart it for the local-only assessment. The single-owner watchdog verifies exact
 process commands and process groups, persists stop intent, freezes submissions,
 stops only the two authorized app IDs, then terminates the matching local
 controllers. For cache, it targets Modal child PID 16698 rather than its wrapper
@@ -63,11 +66,11 @@ captures its case log until the shard returns.
 | Scope | Durable state | Behavior |
 |---|---|---|
 | First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Completed 256/256 cases; app `ap-CTPosnxjWl1PutPuL6XHcK` stopped. Saved charge $0.8734; measured full-cache forecast plus 10% is $73.99. |
-| Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` is running; one continuation only, with the unchanged $80 reservation ceiling. |
+| Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` completed all 19,716 rows/78 shards and stopped at 06:46:25 UTC. Settled runtime accounting $66.8431 against $80; zero unresolved reservations and no preemptions. See `resources/cache_completion_audit.json`. |
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | Complete: five primary folds and both fixed-setting repeats passed audits (19,716 rows; 2,100 primary + 420 repeat members). App `ap-vgwn2eHeZngfofbxH6SMsf` stopped normally at 03:14 UTC; all 900 calls settled, no reservations. [Validated report](results/sequence/REPORT.md) and [cost closeout](resources/sequence_cost_closeout.json): $7.9957 conservative estimate including preemptions, against $18. |
-| Main local pipeline | `pipeline/status.json` | Waits up to 12 hours for the complete 19,716-row cache and all sequence markers, then runs embedding folds, main report, complementarity folds and report at three local workers. No cloud spend. |
+| Main local pipeline | `pipeline/status.json` | Complete input gate passed; embedding folds 0–2 started at 06:46:38 UTC. The same controller continues all five folds, main report, complementarity folds and report at three local workers. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
-| Independent spending watchdog | `resources/runtime_guard/status.json` | Adds lost-attempt reservations and fixed wall deadlines; launches no cloud work and preserves study ledgers. |
+| Independent spending watchdog | `resources/runtime_guard/status.json` | Stopped deliberately at 06:56 UTC after both cloud scopes were terminal and settled. `resources/runtime_guard/shutdown.json` preserves exact identity and shutdown evidence; no deadline or study-ledger change. |
 
 Launch authorizations bind the exact code/protocol/source hashes. Do not edit
 active sequence or extraction implementation files. An implementation repair
@@ -105,7 +108,7 @@ An unresolved reservation is not free budget. First inspect the corresponding
 Modal app and local controller; stop only this study's orphaned work if needed,
 then reconcile against saved receipts and provider usage. Preserve failure
 records. Never erase reservations or rerun an uncertain shard automatically.
-Stopped Modal apps can age out of the CLI listing. The sequence [terminal-state receipt](resources/sequence_cost_closeout.json) preserves the provider-observed normal stop and zero tasks. An absent old app is not evidence of a restart. Once cache also completes and its app/controller shutdown is verified, stop the local watchdog after validating its exact launch PID/command; its current implementation requires both stopped apps to remain visible together before self-exiting. Do not alter its active deadlines or relaunch a completed sequence scope.
+Stopped Modal apps can age out of the CLI listing. The sequence [terminal-state receipt](resources/sequence_cost_closeout.json) preserves the provider-observed normal stop and zero tasks. An absent old app is not evidence of a restart. After sequence aged out, the watchdog's unchanged deadline caused redundant stop calls; the provider replied that it had already stopped at 03:14 UTC. Cache protection remained active. Both scopes are now terminal, all reservations settled and cloud controllers absent. The orchestrator verified and stopped only watchdog PID 25226 after cache completed; its keep-awake helper exited too. The [shutdown receipt](resources/runtime_guard/shutdown.json) preserves this evidence. Do not relaunch a completed cloud scope or the retired watchdog.
 
 The fanout controller persists launch intent before starting its child and
 refuses an automatic second attempt. The local pipeline stops its own remaining
@@ -115,6 +118,33 @@ A forecast can be wrong: the $18 sequence ledger may stop before all fits
 finish. If that happens, report the incomplete procedure honestly, diagnose
 runtime and decide scope with the remaining total allocation before any new
 spending. Do not publish a silently truncated arm.
+
+## Cloud closeout, 06:56 UTC
+
+The [closeout receipt](resources/cloud_closeout.json) combines $66.8431 cache
+accounting, $7.9957 sequence accounting including lost-attempt reserves, and the
+full $2 engineering allowance: **$76.8388 against $100**. Retaining the full
+engineering allowance does not claim it was spent. No unused scope allocation
+is reassigned and no new cloud work is queued. Retained-volume storage remains
+separate.
+
+The final audit found that the saved fanout wrapper's current SHA-256 does
+not match `controller_sha256` in its authorization. The mismatch already
+exists in the first implementation commit; no archived wrapper source matching
+the recorded digest has been established. The wrapper does not validate its
+own recorded digest. All four extraction source hashes and the frozen cohort,
+feature protocol and cache fingerprint still match. The audit preserves both
+wrapper digests as an unresolved launch-provenance limitation; it does not
+rewrite the authorization or infer the exact launch-time wrapper bytes from
+completed output. Strict local cache validation remains required before
+acceptance; this discrepancy alone is not evidence of different extracted
+features and does not justify a paid rerun.
+
+The [provider snapshot](resources/modal_billing_20261012T065508Z.json) records
+$70.2872 in named study apps and a $73.4426 monthly account increase since the
+before snapshot. These differently timed metering views do not exactly
+reconcile; the $3.1554 difference remains unattributed. Metering can lag, and
+neither figure is a remaining-credit balance or a final invoice.
 
 ## Remaining scientific gates
 

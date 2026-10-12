@@ -1,0 +1,52 @@
+{
+  "authorization_sha256": "a9c2be37eb664f6358c7fd8781fcaae60c09530e5840e9f5f37aa6625688a9c6",
+  "errors": [],
+  "guard_pid": 25226,
+  "phase": "degraded",
+  "schema": "round2_runtime_guard.1",
+  "studies": {
+    "cache": {
+      "app_state": "stopped",
+      "app_stopped": true,
+      "controller_state": "done",
+      "effective_commitment_usd": 66.84310340712061,
+      "errors": [],
+      "ordinary_commitment_usd": 66.84310340712061,
+      "preemption_count": 0,
+      "preemptions_by_log": {
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_controller/child.log": 0
+      },
+      "seen_app": true,
+      "stop_intent": null,
+      "stop_result": null
+    },
+    "sequence": {
+      "app_state": "unobserved",
+      "app_stopped": false,
+      "controller_state": "done",
+      "effective_commitment_usd": 7.995705467500606,
+      "errors": [],
+      "ordinary_commitment_usd": 7.734276467500607,
+      "preemption_count": 7,
+      "preemptions_by_log": {
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/sequence/execution.log": 7
+      },
+      "seen_app": true,
+      "stop_intent": {
+        "app_id": "ap-vgwn2eHeZngfofbxH6SMsf",
+        "controller_pid": 13198,
+        "reason": "immutable_wall_deadline",
+        "time": 1791783748.0137012
+      },
+      "stop_result": {
+        "app_stop_succeeded": false,
+        "errors": [
+          "app stop: App is already stopped. (Finished at 2026-10-12 04:14:15+01:00)."
+        ],
+        "frozen": false,
+        "terminated": false
+      }
+    }
+  },
+  "updated_at_utc": "2026-10-12T06:55:42.278842+00:00"
+}

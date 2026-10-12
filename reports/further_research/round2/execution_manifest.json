@@ -12,7 +12,7 @@
   "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
   "independent_confirmation": "not yet available; external labels reserved",
   "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
-  "updated_at_utc": "2026-10-12T04:00:38.694409+00:00",
+  "updated_at_utc": "2026-10-12T06:59:00.293881+00:00",
   "branch": "codex/round2-research",
   "allocations_usd": {
     "cache": 80,
@@ -39,7 +39,7 @@
   },
   "operations": "OPERATIONS.md",
   "cache_fanout": {
-    "status_at_recording": "running",
+    "status_at_recording": "complete",
     "app_id": "ap-wYa6yW8KQunK4VNxPInsPd",
     "pilot_gate": "extractor/full_training/production_pilot_gate.json",
     "forecast_with_contingency_usd": 73.99009822360709
@@ -81,5 +81,31 @@
     "real_transfer_fits_launched": false,
     "remaining_gate": "Complete audited main screen; document bounded sequence comparator limitation and scope amendment; nominate and freeze existing full grids; validate scheduling using first HLA/joint timing-only telemetry.",
     "validation": "32 focused tests before integrity fix; four focused agent regressions and five independently rerun freeze/nomination tests after fix; all 30 real split preflight cells passed."
+  },
+  "cache_completion": {
+    "status": "complete",
+    "n_rows": 19716,
+    "n_shards": 78,
+    "n_clusters": 3587,
+    "n_alleles": 75,
+    "app_stopped_at_utc": "2026-10-12T06:46:25Z",
+    "unresolved_reservations": 0,
+    "preemptions": 0,
+    "runtime_budget_accounting_usd": 66.84310340712061,
+    "audit": "resources/cache_completion_audit.json"
+  },
+  "cloud_closeout": {
+    "status": "all_authorized_cloud_compute_stopped",
+    "receipt": "resources/cloud_closeout.json",
+    "conservative_total_including_full_engineering_allowance_usd": 76.83880887462121,
+    "watchdog_shutdown": "resources/runtime_guard/shutdown.json",
+    "new_cloud_work_queued": false
+  },
+  "local_assessment": {
+    "status_at_recording": "embedding_folds_running",
+    "stage_started_at_utc": "2026-10-12T06:46:38Z",
+    "controller_pid": 13236,
+    "workers": 3,
+    "durable_status": "pipeline/status.json"
   }
 }
