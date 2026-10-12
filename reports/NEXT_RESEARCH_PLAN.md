@@ -676,3 +676,18 @@ The main transfer extension launched once at 13:32 UTC on 12 October under the f
 ### User-authorized hybrid follow-up
 
 The user subsequently asked to orchestrate all proposed Boltz tree/ranking, tree–MLP blend, tree-leaf preprocessing and alternative preprocessing experiments. Their status is now authorized for bounded design and execution under a separate frozen protocol and runtime gate, replacing the earlier unexecuted-only proposal status. The active transfer scope is unchanged. The phase still has the same $100 incremental Modal ceiling: $65 reserved for transfer and at most $35 additional for hybrids. Prefer queued local execution after current fitting exits. See [hybrid authorization](finalization/hybrids/user_authorization.json) and the phase plan.
+
+### Operational interruption and recovery amendment — 12 October
+
+The transfer controller, watchdog and waiting hybrid queue disappeared without
+exit receipts at about14:36 UTC; the cause is unknown. The cloud app was
+confirmed stopped at14:39:08 UTC, with zero tasks. Eighteen complete transfer
+cells are preserved. The [reviewed amendment](finalization/resources/transfer_main/interruption_20261012/implementation_amendment.json)
+permits one separately tested local recovery of the twelve unfinished cells,
+using unchanged scientific recipes and the original absolute deadline, with
+zero additional cloud spend. All partial attempts remain archived and their
+discarded/uncertain fit counts must be reported. The hybrid scientific design
+is unchanged; its operational gate must explicitly bind the interrupted-scope
+closure and successful recovered30-cell assessment, without fabricating
+missing original success receipts. See the dated recovery section of the
+[phase plan](finalization/PLAN.md).

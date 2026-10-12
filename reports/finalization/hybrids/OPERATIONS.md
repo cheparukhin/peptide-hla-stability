@@ -1,5 +1,14 @@
 # Hybrid experiment execution
 
+**Historical launch record:** this queue disappeared without an exit receipt
+at about14:36 UTC on12 October, before any fitting gate or real hybrid fit.
+Do not restart PID11628's attempt or satisfy its old predecessor gate with a
+fabricated success receipt. The dated interruption amendment and current
+execution manifest supersede the release instructions below. A separately
+versioned operational gate and output directory are being prepared after
+review of the all-local transfer recovery; the scientific480+12-fit scope is
+unchanged.
+
 The implementation and data protocol were frozen on 12 October 2026 after 37
 synthetic, integration and artifact-replay checks and an Astra scientific review.
 Protocol: `c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955`.

@@ -124,3 +124,33 @@ fitting has started at this checkpoint. Both phases are local with zero cloud
 allocation. The main phase requires a separate runtime-only gate after the
 pilot. See [hybrid operations](hybrids/OPERATIONS.md) for durable ownership,
 deadlines and autonomous continuation steps.
+
+### Interrupted local processes and bounded recovery — 12 October
+
+At about 14:36 UTC the transfer controller, independent watchdog and waiting
+hybrid queue disappeared without exit receipts. The cause is unknown. Modal
+confirmed the exact transfer app stopped at 14:39:08 UTC with zero tasks. The
+original journals, attempts, source and incomplete receipts remain unchanged.
+The [closure record](resources/transfer_main/interruption_20261012/closure.json)
+carries **$5.179382** conservatively, including all twelve uncertain remote
+reservations, both preemption charges, the earlier pilot carry and a maximum
+concurrency allowance through the observed app stop. Provider metering is
+lower and may lag; it is not the remaining balance.
+
+Astra reviewed the [dated recovery amendment](resources/transfer_main/interruption_20261012/implementation_amendment.json).
+Preserve the18 completed cells and6,030 fits byte-for-byte. Keep the three
+partial attempts as discarded work:699 recorded completed fits, including30
+remote results, cannot provide complete local prediction artifacts. Complete
+the12 unfinished cells with4,800 fresh local fits using the unchanged existing
+recipes and ranker backend. This adds no cloud spend, changes no scientific
+grid, and retains the original13 October15:32:19 UTC deadline. The final
+scientific dataset still comprises10,830 fits over30 cells; report11,529 known
+completed fits including discarded work, plus twelve uncertain remote attempts
+and any interrupted local fit whose completion cannot be established.
+
+The additive recovery controller, runtime forecast and source-bound single
+attempt authorization must pass checks before launch. The old hybrid queue
+must not be restarted or marked successful. A versioned operational gate in a
+separate output directory will require both the interrupted-cloud closure and
+successful completion of all30 recovered transfer cells. Its scientific
+480-fit assessment and12-fit unscored pilot remain unchanged.
