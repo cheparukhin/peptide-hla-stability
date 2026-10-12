@@ -239,9 +239,10 @@ The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
 additional ceiling. Its stopped transfer scope carries $5.179382 conservatively,
-including uncertain calls and preemptions. Completing the five unfinished
+including uncertain calls and preemptions. The closed zero-fit cloud startups
+and diagnostics add a conservative $0.38. Completing the five unfinished
 transfer cells has a separate $10 cap; the remaining reporting and hybrid
-envelope stays at most $35. The combined maximum commitment is $50.289382,
+envelope stays at most $35. The combined maximum commitment is $50.559382,
 within the user's $100 new-phase ceiling. This new-phase liability is separate
 from the old accounting and is not a live balance.
 [New-phase closure](resources/transfer_main/interruption_20261012/closure.json)

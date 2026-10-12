@@ -1,26 +1,27 @@
 # Continuation after the 12 October process interruption
 
-**Latest, 12 October 18:35 UTC:** the five unfinished transfer cells are
-released to one Modal Sandbox, `sb-01M4RPBV4S79S665WJQ1N85ZM7`, in App
-`ap-VscycuTMnHPJipKWIH9xta`. Exact status and receipts are under
-`resources/cloud_sandboxes/transfer-recovery-20261012-1836/`. Independent
-watchdog PID 16757 runs through launchd. Do not launch another controller.
+**Latest, 12 October 19:19 UTC:** the five unfinished transfer cells are
+released to one Modal Sandbox, `sb-01M4RRW8TNY5H1WRJN30PXVJF7`, in App
+`ap-GwmNX2i77HHXKL8r20lzM9`. Exact status and receipts are under
+`resources/cloud_sandboxes/transfer-recovery-20261012-1920/`. Independent
+watchdog PID 23909 runs through launchd. Do not launch another controller.
 The fixed work stop is 12 October 23:58 UTC; provider stop is 13 October
 00:00 UTC. Neither deadline may slide. The source and authorization are in
-commit `6a6e327`; image `im-Epc3H2RdNAgJSwtXBYMCfy` has the frozen packages.
+commit `23e9e3e`; image `im-Epc3H2RdNAgJSwtXBYMCfy` has the frozen packages.
 
 Local recovery PID 59308 failed at 17:26:54 UTC when user-authorized disk
 cleanup removed its active virtual environment. All local workers exited and
 both registrations were removed. Preserve 25 complete cells / 8,830 fits.
 Exactly joint/h4_p0 through h4_p4 receive 2,000 fresh fits on Modal, at two
 workers with two threads each in 4 CPU / 16 GiB. Partial checkpoints are not
-reused. Two later cloud startups failed before any fit (cached image mismatch,
-then an overly strict check of Modal's valid volume alias); both are closed,
-their Volumes deleted and Apps stopped. Their conservative carry is $0.11.
+reused. Three later cloud attempts failed before any fit: cached image mismatch,
+a valid volume alias rejected, then one Linux log1p target differing by one
+floating-point bit. All are closed, their Volumes deleted and Apps stopped.
+Their cumulative conservative carry is $0.38, including diagnostics.
 
 The recovery has a $10 cap; the subsequent four phases retain their inclusive
 $35 envelope. With prior conservative liability, maximum commitment is
-$50.289382 within the user's $100 ceiling. The image build reserves $0.25
+$50.559382 within the user's $100 ceiling. The image build reserves $0.25
 inside that existing $35 envelope. These are reservations, not invoiced spend.
 Known discarded completed fits are 2,579; eventual retained fits are 10,830
 and known completed fits 13,409, excluding engineering and uncertain attempts.
@@ -33,6 +34,19 @@ stays on Modal. Do not create fabricated success evidence for older attempts.
 The historical operating instructions below are superseded by this paragraph
 and the exact current authorization. Finish the science; add no general harness
 features.
+
+Canonical target portability is now committed in `23e9e3e`. The cloud entry
+restores the exact 19,716 frozen training targets after checking raw values,
+IDs and splits; all original scientific hashes still apply. Every subsequent
+phase must bind `canonical_targets` in its authorization, include the JSON/NPZ
+artifacts under `cloud/` in its input manifest, and bind
+`pepstab/final_cloud_targets.py` plus `scripts/final_cloud_scientific_entry.py`.
+Use the existing phase runner so all fitting, report and audit children receive
+that entry. Input verification took 13 minutes on the previous cold Volume;
+continued guard leases during that time are expected. No fits started in the
+failed attempt. Its read-only diagnostic established only one ULP difference
+in one target; all other columns were identical. The current phase is released,
+not yet a completed scientific result.
 
 **New execution preference — 12 October:** the user requests that future
 compute-heavy jobs run on Modal so the Mac is not overwhelmed. This supersedes
