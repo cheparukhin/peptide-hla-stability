@@ -13,25 +13,33 @@ launchd registrations removed. Exact certificate and closure are in
 report plan in `802b4d6`. Metered main compute is $1.03656227; carry $1.20.
 Do not rerun the fitting or completed download.
 
-**One final hybrid report is running**, released once at 22:40 UTC:
+**Report-only recovery is running**, released once at 23:23 UTC on 12 October.
+The first report failed before main replay/statistics when a pilot stopping-MSE
+recomputation differed by one float32 ULP. Its App/Volume and registrations are
+closed; authentic receipts remain in `hybrid-report-20261012-2240`. Carry $0.10.
+The reviewed amendment changes only that recomputed scalar comparison; saved
+curve decisions and every held-prediction equality check remain exact. No fits,
+model choices or statistics changed. See [numerical amendment](cloud/STOPPING_MSE_REPLAY.md).
 
-- Directory: `resources/cloud_sandboxes/hybrid-report-20261012-2240`.
-- Sandbox `sb-01M4S4C9MERKK9QCX47E74XE2H`; App
-  `ap-i2lNOkyEV6agaShswBHHyi`; Volume `vo-B3aQeMNIW9UAWUW2LjKfSx`.
-- Watchdog PID 95134; launcher 95169 exited 0 after release. Labels are
-  `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2240`.
+- Directory: `resources/cloud_sandboxes/hybrid-report-20261012-2320`.
+- Sandbox `sb-01M4S6V5S2HAVBCCAR3MR9Z37K`; App
+  `ap-s6KYerBFivGn7WuTmBNVuM`; Volume `vo-4mrvdhw2Wb3LmEKHGib6q1`.
+- Watchdog PID 4035; launcher 4097 exited 0 after release. Labels are
+  `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2320`.
 - Two physical CPU / 8 GiB / two numerical threads, one report process, zero
-  new fits. The unchanged report replays saved models, ancestry and inner
-  choices before computing the frozen paired bootstrap statistics.
+  new fits. Source/amendment commit `4774f50`; 69 lightweight checks passed.
 - Authorization SHA256
-  `04e42d79a1619da900d432bc1941c50153bab4f13b7057edb22fc391c6a979ea`.
-- Fixed work stop **13 October 06:45 UTC**, provider stop **06:47 UTC**;
-  at most eight work hours, $5 cap. Never extend, duplicate or retry blindly.
-  Keep the independent watcher fresh and do not modify live pinned sources.
+  `8ca687d2b9c9bdd567df29283542919cd6916fe05ae337816dd9bbf2c9e32c61`.
+- Original work stop **13 October 06:45 UTC**, provider stop **06:47 UTC**;
+  $5 cap. Neither deadline was extended. Never duplicate or retry blindly.
+  Keep the watcher fresh and do not modify live pinned sources.
+- Reject any stopping-MSE difference above one float32 ULP or any changed held
+  prediction; no automatic widening. The completed report must retain all 328
+  scalar replay diagnostics and disclose the amendment.
 
 Inputs include both successful pilot/main certificates, canonical training
 labels and the existing scientific entry. The initial 3.04 GB verification may
-take minutes. Scope is still `hybrids_cloud_v1` and the original frozen scientific
+take minutes. The contract, launcher, supervisor and original 35 transfer / 23 hybrid scientific sources remain unchanged. Scope is still `hybrids_cloud_v1` and the original frozen scientific
 protocol. Primary contrast: R5 hybrid selector minus matched two-member R5
 standard MLP at minimum 20. Historical thirty-member heads are descriptive;
 all secondary outcomes are exploratory. No scored hybrid outcome is claimed yet.
@@ -44,9 +52,9 @@ Then finish FINAL_REPORT, README, submission brief and local site, regenerate
 the source snapshot and commit completed validated artifacts. Do not add more
 orchestration or reopen the original test. Independent assay confirmation stays open.
 
-Closed conservative compute is $8.009382, including $1.45 settled within the
+Closed conservative compute is $8.109382, including $1.55 settled within the
 shared $35 finalization envelope. Only the $5 report cap and $3 overhead remain
-reserved: current maximum commitment $16.009382 inside the unchanged $100
+reserved: current maximum commitment $16.109382 inside the unchanged $100
 additional ceiling. These are conservative allocations, not a live balance.
 Storage cleanup remains due by 15 October 14:15 UTC; keep at most two temporary
 Volumes and 8 GiB per download. All earlier failed/uncertain charges remain carried.
