@@ -1,0 +1,41 @@
+{
+  "candidate": {
+    "id": "R3_pooled_ridge_10000",
+    "representation": "R3_pooled",
+    "learner": "ridge",
+    "regularization": 10000.0
+  },
+  "scores": [
+    {
+      "candidate": "R3_pooled_ridge_10000",
+      "fold_scores": [
+        0.00823978913745802,
+        0.023354119944235596,
+        0.04124624082051177
+      ],
+      "mean": 0.024280049967401796,
+      "se": 0.009539382806420462
+    },
+    {
+      "candidate": "R3_pooled_ridge_100",
+      "fold_scores": [
+        0.0025302894723530597,
+        0.01976792560751846,
+        0.04787722278997838
+      ],
+      "mean": 0.023391812623283298,
+      "se": 0.01321533841357031
+    },
+    {
+      "candidate": "R3_pooled_ridge_1",
+      "fold_scores": [
+        0.0025302894723530597,
+        0.019799323324422226,
+        0.04747296776625066
+      ],
+      "mean": 0.023267526854341983,
+      "se": 0.013089211968269955
+    }
+  ],
+  "rule": "first in frozen parsimony order within 1 fold-SE of best"
+}

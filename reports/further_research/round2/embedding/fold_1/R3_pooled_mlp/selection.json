@@ -1,0 +1,41 @@
+{
+  "candidate": {
+    "id": "R3_pooled_mlp_1",
+    "representation": "R3_pooled",
+    "learner": "mlp",
+    "regularization": 1.0
+  },
+  "scores": [
+    {
+      "candidate": "R3_pooled_mlp_1",
+      "fold_scores": [
+        0.07417687058518271,
+        0.0564502692283852,
+        0.0017512225502612645
+      ],
+      "mean": 0.04412612078794306,
+      "se": 0.021796651879024295
+    },
+    {
+      "candidate": "R3_pooled_mlp_0.01",
+      "fold_scores": [
+        0.043846477782601104,
+        0.03833398834361215,
+        0.07796169413110228
+      ],
+      "mean": 0.05338072008577185,
+      "se": 0.012393077351444336
+    },
+    {
+      "candidate": "R3_pooled_mlp_0.0001",
+      "fold_scores": [
+        0.06270249051541152,
+        0.023060474721227187,
+        0.04636115511333564
+      ],
+      "mean": 0.04404137344999145,
+      "se": 0.011502295340217693
+    }
+  ],
+  "rule": "first in frozen parsimony order within 1 fold-SE of best"
+}

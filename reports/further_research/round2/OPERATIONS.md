@@ -52,8 +52,9 @@ The [01:43 UTC provider snapshot](resources/modal_billing_20261012T014323Z.json)
 shows $10.8964 additional metered ephemeral-app usage against the pre-study
 snapshot; this can lag actual activity and is not a remaining-credit balance.
 Provider metering and live app state must be reconciled before any recovery.
-Deadline enforcement depends on the local watcher remaining alive and the
-provider accepting shutdown, so check both on every heartbeat.
+While cloud work is active, deadline enforcement depends on the local watcher
+remaining alive and the provider accepting shutdown; check both on each
+heartbeat in that state. Both cloud scopes are now closed.
 
 References: [Modal preemption behavior](https://modal.com/docs/guide/preemption)
 and [resource billing](https://modal.com/pricing).
@@ -68,7 +69,7 @@ captures its case log until the shard returns.
 | First production shard | `extractor/full_training/controller_launch.json`, `extraction_budget_ledger.json` | Completed 256/256 cases; app `ap-CTPosnxjWl1PutPuL6XHcK` stopped. Saved charge $0.8734; measured full-cache forecast plus 10% is $73.99. |
 | Conditional cache continuation | `extractor/full_training/fanout_controller/status.json` | Pilot/hash/cost gate passed. Eight-worker app `ap-wYa6yW8KQunK4VNxPInsPd` completed all 19,716 rows/78 shards and stopped at 06:46:25 UTC. Settled runtime accounting $66.8431 against $80; zero unresolved reservations and no preemptions. See `resources/cache_completion_audit.json`. |
 | Full sequence assessment | `sequence/controller_launch.json`, `modal_budget.jsonl`, `fold_*/completed.json`, `fold_*/repeats_completed.json` | Complete: five primary folds and both fixed-setting repeats passed audits (19,716 rows; 2,100 primary + 420 repeat members). App `ap-vgwn2eHeZngfofbxH6SMsf` stopped normally at 03:14 UTC; all 900 calls settled, no reservations. [Validated report](results/sequence/REPORT.md) and [cost closeout](resources/sequence_cost_closeout.json): $7.9957 conservative estimate including preemptions, against $18. |
-| Main local pipeline | `pipeline/status.json` | Complete input gate passed; embedding folds 0–2 started at 06:46:38 UTC. The same controller continues all five folds, main report, complementarity folds and report at three local workers. No cloud spend. |
+| Main local pipeline | `pipeline/status.json` | All five embedding folds and the main report completed by 07:19 UTC and passed the completion audit. The same controller is running the five complementarity folds and their report at three local workers. No cloud spend. |
 | Chat continuation | Codex heartbeat `continue-round-two-research` | Every 30 minutes; quiet while unchanged. Diagnose failures, complete remaining gated work, report meaningful milestones and commit validated results. |
 | Independent spending watchdog | `resources/runtime_guard/status.json` | Stopped deliberately at 06:56 UTC after both cloud scopes were terminal and settled. `resources/runtime_guard/shutdown.json` preserves exact identity and shutdown evidence; no deadline or study-ledger change. |
 
@@ -162,40 +163,78 @@ reserved. Do not turn a planning simulation, historical test or sparse external
 stratum into a confirmation result. Optional calibration and encoder adaptation
 remain behind the core gates and are not part of automatic scope expansion.
 
-Implementation readiness for the next continuation:
+## Frozen transfer and local repeat execution
 
-- `reproducibility/embedding_execution_protocol_draft.md` gives the two exact
-  freeze/execute commands for locked embedding-selector repeats. Maximum 300
-  fresh local fits; selected original-reference branches reuse the already
-  budgeted sequence execution repeats. All main folds and feature/provenance
-  checks must pass first. No repeat fitting has run yet.
-- `transfer/assessment_protocol_draft.json` is a refreshed, unfrozen draft with
-  no Boltz nominees. The reviewed implementation supports original and centred
-  MLP sequence families plus one or two explicitly nominated existing R2–R5
-  ridge/MLP procedures, retaining their full main regularization grids. See
-  [implementation readiness](transfer/implementation_readiness.md) for the
-  member recipes, tests, review and limitations. No transfer fits have run.
-- The separately named `bounded_MLP_sequence_selector` chooses between original
-  and centred MLP using regime-matched inner assessment. It excludes trees and
-  PairLogit from the full main sequence selector. After the complete main report,
-  review this comparator limitation, document a scope amendment in the canonical
-  plan, then nominate and freeze before any transfer outcomes. Do not imply that
-  the bounded comparisons establish superiority over the full sequence selector.
-  The embedding selector includes both already fitted sequence families as
-  fallback candidates, without extra fits.
-- All five HLA and 25 joint cells require 10,440 sequence fits, plus 750 for each
-  nominated ridge procedure or 2,340 for each neural feature procedure; repeats
-  are additional. The draft currently records only the sequence component.
-  Split feasibility passes all 30 cells and their deeper stopping schedules.
-  Total elapsed runtime is not established by fit counts or historical profile
-  extrapolations. Use timing-only telemetry from deterministic first HLA/joint
-  cells to validate scheduling after the scope gate. Preserve all 30 cells and
-  never nominate or discard cells using their held outcomes.
+The complete [main audit](resources/embedding_completion_audit.json) passed all
+100 component procedures, 2,900 member fits, identity/ancestry/scaler/selection
+replay and saved numerical report checks. All 658 evidence hashes were checked
+again by the orchestrator. The inherited cache wrapper provenance limitation
+remains explicit. Main results and source files are now bindings for the
+transfer and repeat protocols; do not regenerate or change them during these
+runs.
 
-The bounded implementation passed 32 focused tests and an independent complex
-review. A saved-specification integrity issue found in that review was fixed:
-validation and existing-freeze reuse require the actual saved content to match
-its digest and regenerated specification. Four focused agent regressions and
-five independently rerun freeze/nomination checks passed afterward. The current
-unfrozen draft was regenerated through the CLI and has empty nominations; a
-real freeze requires one or two nominees and complete audited main evidence.
+The [dated canonical amendment](../../NEXT_RESEARCH_PLAN.md#transfer-scope-amendment--12-october-2026-after-the-main-screen)
+and [nomination record](transfer/nomination_decision.json) nominate R4 ridge and
+R5 MLP using the two realised main inner-selector branches. The actual
+[assessment protocol](transfer/assessment_protocol.json) froze at 07:37 UTC,
+before any transfer fitting or outcome access. Its specification hash is
+`1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4`.
+The empty-nominee draft remains a historical preparation artifact.
+
+All five HLA and all 25 joint cells remain required: 13,530 fits with unchanged
+nominee grids. The primary comparison is the bounded embedding-or-MLP selector
+against `bounded_MLP_sequence_selector`. Original and centred MLP are the
+sequence families; trees and PairLogit are excluded. Preserve this limitation
+and the regime-specific selection/stopping amendment in all result claims.
+Both panels and all declared uncertainty modes/group deletions are required.
+
+The separate local controller `scripts/round2_transfer_pipeline.py` requires
+an immutable authorization JSON passed as `--approved`. It verifies the exact
+source, frozen protocol, phase, cell list and worker count; a single owner lock
+covers both phases. Timing executes `hla/h0`, then `joint/h0_p0`, at one worker.
+Use only successful completion/runtime telemetry to forecast the remaining 28
+cells. Before their launch, record a second authorization binding both timing
+completion hashes and at most three workers. Do not inspect held outcomes to
+change this frozen scope. No report runs automatically and no failed or
+uncertain phase retries automatically.
+
+Controller state, launch intents, child commands/PIDs/logs and terminal receipts
+live under `transfer/controller/`. A child exit of zero requires a valid
+completion marker and all five artifact hashes. Ordinary failure stops queued
+launches and lets already-running siblings settle; controller interruption
+stops its children and records uncertainty. Any partial cell or existing phase
+intent bars automatic re-execution. Reconcile exact processes and durable
+receipts before a documented recovery. This controller is independent of the
+main local pipeline; never start a duplicate of either.
+
+The [embedding-repeat protocol](reproducibility/embedding_selector/protocol.json)
+locks two fresh executions of every chosen main selector recipe: R5 MLP in
+folds 0, 1, 2 and 4, R4 ridge in fold 3. Exactly 242 new local fits are required;
+its hash is `a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba`.
+The durable [launch receipt](reproducibility/embedding_selector/launch_receipt.json)
+records the 07:27 UTC start and exact PID/command. All ten fold/repeat cells
+and the report completed by 07:39 UTC. The [repeat audit](resources/embedding_repeat_completion_audit.json)
+passed; both complete-cohort repeats exactly match primary predictions and all
+reported metric deltas are zero. PID 26167 and its helper were verified absent
+at 07:41:59 UTC. Do not rerun these completed repeats. It measures locked-recipe
+execution only; it does not repeat selection or all transfer procedures and
+cannot measure assay noise. The sequence reference repeats are already complete.
+
+The transfer scientific implementation passed 32 focused tests and independent
+complex review, followed by four agent regressions and five orchestrator
+freeze/nomination checks after the saved-specification integrity repair.
+The controller has separate mocked failure/authorization tests and review;
+validation details are recorded with its timing authorization before launch.
+
+The controller passed **37 mocked tests** (2.48 seconds), compilation and
+independent review after the write-failure cleanup repair. Frozen source SHA-256
+is `ebd1175080ffc049dcaa256d3539c9e72cdea378a9013e7b8cf0899a1a7f1e20`.
+The [timing authorization](transfer/timing_authorization.json) binds that hash,
+the frozen specification, both fixed cells and one worker. Timing launched at
+**07:42:01 UTC**, controller PID/PGID **27679**, keep-awake helper **27681**;
+first child `hla/h0` PID **27690** passed its controller gate at 07:42:03 UTC.
+See [launch receipt](transfer/controller/timing_controller_launch.json) and
+`transfer/controller/timing_status.json`. Reconcile these exact processes and
+phase receipts before any recovery. The remaining phase is still gated on
+successful timing completion and its own immutable authorization. Preserve
+controller source unchanged across both phases.

@@ -1,0 +1,414 @@
+{
+  "schema": "round2_embedding_repeat_completion_audit.1",
+  "generated_at_utc": "2026-10-12T07:41:34.114345+00:00",
+  "status": "passed",
+  "scope": "all five locked per-outer-fold embedding_selector decisions; final refits only, no reselection or outer-best winner",
+  "population": {
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "n_alleles": 75
+  },
+  "protocol_hash": "a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba",
+  "fit_bound": {
+    "absolute_upper_bound": 300,
+    "locked_additional_model_fits": 242,
+    "selection_fits": 0,
+    "sequence_reference_new_fits": 0
+  },
+  "actual_new_model_fits": 242,
+  "fold_repeat_completions": 10,
+  "fresh_cache_namespaces": 10,
+  "bound_main_source_hashes_checked": 630,
+  "comparison_metric_tolerance": 1e-12,
+  "cache_prediction_precision_validation": "Exact float32 reconstruction from decimal CSV; JSON cache values are exactly float32-representable. Distinct mean orders for seed/stop grouping use an 8-float32-epsilon scaled rounding bound. Initial float64-versus-decimal cache assertion was corrected after proving bitwise float32 equality, without changing outputs/protocol or refitting.",
+  "execution_differences": [
+    {
+      "baseline": "primary",
+      "candidate": "repeat1",
+      "panel_min_rows": 20,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    },
+    {
+      "baseline": "primary",
+      "candidate": "repeat2",
+      "panel_min_rows": 20,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    },
+    {
+      "baseline": "repeat1",
+      "candidate": "repeat2",
+      "panel_min_rows": 20,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    },
+    {
+      "baseline": "primary",
+      "candidate": "repeat1",
+      "panel_min_rows": 50,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    },
+    {
+      "baseline": "primary",
+      "candidate": "repeat2",
+      "panel_min_rows": 50,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    },
+    {
+      "baseline": "repeat1",
+      "candidate": "repeat2",
+      "panel_min_rows": 50,
+      "comparison_kind": "identical_setting_execution_repeat",
+      "n_rows": 19716,
+      "max_abs_prediction_difference": 0.0,
+      "mean_abs_prediction_difference": 0.0,
+      "delta_median_per_allele_spearman": 0.0,
+      "delta_mae_log1p": 0.0,
+      "delta_pooled_spearman": 0.0,
+      "delta_pooled_pearson_log1p": 0.0,
+      "delta_median_precision_at_10": 0.0
+    }
+  ],
+  "folds": [
+    {
+      "outer_fold": 0,
+      "repeat": 1,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3944,
+      "new_model_fits": 30,
+      "fit_seconds": 78.37374441919383,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "096c8027f95222101b4d44c03edd1cc82dd8bb27b773e79cfdc1eb4727bc9bab",
+      "runtime_manifest_sha256": "869ff41d1908e60bb2e72334c18c0b52968a327438ab1f9f4d7cfcac09f1ee70",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_0/repeat_1/ad7495426b9c4fd2a51f0fc969aad9ca/a4581e901a238801b32c928ee7e656ff90050915ac0bea440d2173452e821a7d.json": "a8cdac05e7ed972ba767742c3702ca2d78b0047159b147b3bdf8a3cd3ce1755c"
+      }
+    },
+    {
+      "outer_fold": 0,
+      "repeat": 2,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3944,
+      "new_model_fits": 30,
+      "fit_seconds": 93.90931858413387,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "065c06da2c6b65853eaf062f6d420a0b852c07f0539036906e29bc177e24fa86",
+      "runtime_manifest_sha256": "a59e3d7a2abe26cfe8b847f306f94989fc1edf2bd02399b946c9fc17e12b1f0c",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_0/repeat_2/4bfbc46c7f8e48dfbdb9a972ab501ec7/a4581e901a238801b32c928ee7e656ff90050915ac0bea440d2173452e821a7d.json": "4f9313986c911ff0e4667b3cec26b1903930a483f4075b6dbdc5156ffd6f2d08"
+      }
+    },
+    {
+      "outer_fold": 1,
+      "repeat": 1,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 112.31420095800422,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "33b6748af299feebb178f9af8d099e0f18c68458361399f119dcd2077df68e4c",
+      "runtime_manifest_sha256": "09c0a7e6e4bca830f86cda7ab1529902759d0ca19358ac393de60d9f3a1f6b6a",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_1/repeat_1/69b3834c205845c7b5fe8c5d6c08b23e/9a92447272081af082f26a63a62cb803f0e34ce4af729c661f2a3b40d8039bb8.json": "7394a7cb493134aee4a16e06264da725109647519c7f3dbdb0d6eb8149e2c31a"
+      }
+    },
+    {
+      "outer_fold": 1,
+      "repeat": 2,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 87.3430934578646,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "f71f45ee6cf1aedd663861c2f81e7e43fd031808e62de7f4ba31d49d53ed7d1e",
+      "runtime_manifest_sha256": "e5e637b222b5d294e27af091b546209324a9e7dfcc5160b452d917d2ba314664",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_1/repeat_2/c6461058d74f46b0a4133c246ee906d5/9a92447272081af082f26a63a62cb803f0e34ce4af729c661f2a3b40d8039bb8.json": "c1a0f076ea9ca7ddeeff500127855108233b2902a34777980b3cb2deb9f99237"
+      }
+    },
+    {
+      "outer_fold": 2,
+      "repeat": 1,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 94.73085533606354,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "a6583b31e803cfad6edc0aef2eff08251c9ae21e82f98db2cef85e8cbc683778",
+      "runtime_manifest_sha256": "a2baa55e268242b514d7518878bb9a6018b001fb0268b2189848ae88be5c5e7a",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_2/repeat_1/ea4154217d044d239fbe6b174cf7000a/3a6250aa658d9e7b2ef47832d7b795b74983e8a0f2092a4b8f93cec074d5d21e.json": "cd04b01cd1d9cf0a32c62cba79386fef2eee762621372b7b5edbf60c98d24792"
+      }
+    },
+    {
+      "outer_fold": 2,
+      "repeat": 2,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 93.76256287330762,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "47e16592086161feefbd7080e81955afe9d0fa86961c17efb081c017450219f8",
+      "runtime_manifest_sha256": "98c5101298bc4db1ec356df789d8c511145fd6e81e2a8a80a00ef110e5ae9394",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_2/repeat_2/5c0c0637ac284642be3255ada4be2938/3a6250aa658d9e7b2ef47832d7b795b74983e8a0f2092a4b8f93cec074d5d21e.json": "db070bc2295f35b4c12bedad2244d963485a79836081b1ea7b0e42b88258047f"
+      }
+    },
+    {
+      "outer_fold": 3,
+      "repeat": 1,
+      "selected_arm": "R4_ridge",
+      "candidate": {
+        "id": "R4_ridge_100",
+        "representation": "R4",
+        "learner": "ridge",
+        "regularization": 100.0
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 1,
+      "fit_seconds": 4.699523542076349,
+      "ancestry_audit": {
+        "records": 1,
+        "rowsets": 2,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "d98cd469f7df0bd58b658b87713bbc758ba01d87a49823ee2b0f830f672f5f7a",
+      "runtime_manifest_sha256": "ebacacccfbd049a2875c4e970a0010094c6480d2e567d9622b0c7759db9e3a54",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_3/repeat_1/f7114f7dee71477cbe8ce21cbd9e11a1/b497f312a920f69e03853f0aecd095b51e59c32558675bf30628fbb9f908b3fd.json": "bf7f0835289cf751bf3d08e6f6ed35c27c3be2948af1543864e0fc886b84d906"
+      }
+    },
+    {
+      "outer_fold": 3,
+      "repeat": 2,
+      "selected_arm": "R4_ridge",
+      "candidate": {
+        "id": "R4_ridge_100",
+        "representation": "R4",
+        "learner": "ridge",
+        "regularization": 100.0
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 1,
+      "fit_seconds": 5.03078375000041,
+      "ancestry_audit": {
+        "records": 1,
+        "rowsets": 2,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "8604fd4bdca2b9a080cbd7efc440a86777a707c49022427ee24c0a44bdba4262",
+      "runtime_manifest_sha256": "c32c1bf41e83a89abb2a18905d9b19afbf74f0742457860d1942219ec317278b",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_3/repeat_2/ceb020ebb24145cdba4b93ce00925180/b497f312a920f69e03853f0aecd095b51e59c32558675bf30628fbb9f908b3fd.json": "b0c112a7062e2e509f2ff05a89bad45b794081e6542449a0d8816f42085760d4"
+      }
+    },
+    {
+      "outer_fold": 4,
+      "repeat": 1,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 49.46146271144971,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "53b0e876fc47d36d168fb8d2d6cf82675dca2472cc24c8c7eb82c0a838c4ff15",
+      "runtime_manifest_sha256": "b76f0720d3f10904685a8355df30b0de3ef0ae69e02b72aabc73d149f8edadf1",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_4/repeat_1/3e505f6c1b9044c492832fe5f981394b/911ad82c09a5163e1d8b3e98735e23f267b472083f1cd6468953ce746b974588.json": "d743f3251c0f9b493a5cd3b60a209c6c21dc8774d5597af8215ede5c446dc9db"
+      }
+    },
+    {
+      "outer_fold": 4,
+      "repeat": 2,
+      "selected_arm": "R5_mlp",
+      "candidate": {
+        "id": "R5_mlp_0.01",
+        "representation": "R5",
+        "learner": "mlp",
+        "regularization": 0.01
+      },
+      "n_predictions": 3943,
+      "new_model_fits": 30,
+      "fit_seconds": 41.61623583105393,
+      "ancestry_audit": {
+        "records": 30,
+        "rowsets": 11,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      },
+      "completion_sha256": "7b7d20e87ba147131e3ddd09a99ebb8ed4c3b4fd09bcfefd40a2a4a6a454fcbd",
+      "runtime_manifest_sha256": "9d4caddfd02c355a58c0cb9b3f60b8eb576eaefa88e59dfc51df908a469e5f3a",
+      "fit_cache_hashes": {
+        "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_4/repeat_2/2d4d0e608b684407a8396c8e28384b96/911ad82c09a5163e1d8b3e98735e23f267b472083f1cd6468953ce746b974588.json": "c1480474e4d8dcdd99cc30fad05789cb71bdbeb3f05074bb7e4735bc3708204c"
+      }
+    }
+  ],
+  "verified_checks": [
+    "Frozen specification digest and all 630 bound main scientific, implementation, ancestry, prediction and feature provenance sources match before and after audit.",
+    "All ten atomic markers bind output/cache hashes and the repeat protocol; every repeat covers its exact held rows and all three prediction sets cover 19,716 rows.",
+    "All 242 fresh members match saved candidate/context recipes; neural members have five stopping folds and seeds 0\u20135, epochs at most 200, and exact primary partition/scaler ancestry.",
+    "Each fold/repeat uses a distinct fresh ignored cache namespace created after launch; cache ancestry/member count/predictions match persisted outputs.",
+    "Runtime manifests record CPU, zero cloud spend, two threads and precision/library manifests; the receipt identifies a single durable controller and keep-awake helper.",
+    "Six pooled metric rows and six execution comparisons reproduce on the frozen 20/50-row allele panels within 1e-12 from complete prediction arrays.",
+    "No outer-outcome winner, reselection, transfer fit, new sequence reference fit or original test rescoring was performed."
+  ],
+  "limitations": [
+    "Measures final execution of the selector's locked decisions; selection is not refitted",
+    "All five selected branches are included without choosing an outer-outcome winner",
+    "Within-machine identical settings; no cross-platform equivalence or assay-noise claim",
+    "Different-seed diagnostics are separate and are not used here"
+  ],
+  "artifact_hashes": {
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_0/repeat_1/ad7495426b9c4fd2a51f0fc969aad9ca/a4581e901a238801b32c928ee7e656ff90050915ac0bea440d2173452e821a7d.json": "a8cdac05e7ed972ba767742c3702ca2d78b0047159b147b3bdf8a3cd3ce1755c",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_0/repeat_1/completed.json": "096c8027f95222101b4d44c03edd1cc82dd8bb27b773e79cfdc1eb4727bc9bab",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_0/repeat_2/4bfbc46c7f8e48dfbdb9a972ab501ec7/a4581e901a238801b32c928ee7e656ff90050915ac0bea440d2173452e821a7d.json": "4f9313986c911ff0e4667b3cec26b1903930a483f4075b6dbdc5156ffd6f2d08",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_0/repeat_2/completed.json": "065c06da2c6b65853eaf062f6d420a0b852c07f0539036906e29bc177e24fa86",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_1/repeat_1/69b3834c205845c7b5fe8c5d6c08b23e/9a92447272081af082f26a63a62cb803f0e34ce4af729c661f2a3b40d8039bb8.json": "7394a7cb493134aee4a16e06264da725109647519c7f3dbdb0d6eb8149e2c31a",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_1/repeat_1/completed.json": "33b6748af299feebb178f9af8d099e0f18c68458361399f119dcd2077df68e4c",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_1/repeat_2/c6461058d74f46b0a4133c246ee906d5/9a92447272081af082f26a63a62cb803f0e34ce4af729c661f2a3b40d8039bb8.json": "c1a0f076ea9ca7ddeeff500127855108233b2902a34777980b3cb2deb9f99237",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_1/repeat_2/completed.json": "f71f45ee6cf1aedd663861c2f81e7e43fd031808e62de7f4ba31d49d53ed7d1e",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_2/repeat_1/ea4154217d044d239fbe6b174cf7000a/3a6250aa658d9e7b2ef47832d7b795b74983e8a0f2092a4b8f93cec074d5d21e.json": "cd04b01cd1d9cf0a32c62cba79386fef2eee762621372b7b5edbf60c98d24792",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_2/repeat_1/completed.json": "a6583b31e803cfad6edc0aef2eff08251c9ae21e82f98db2cef85e8cbc683778",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_2/repeat_2/5c0c0637ac284642be3255ada4be2938/3a6250aa658d9e7b2ef47832d7b795b74983e8a0f2092a4b8f93cec074d5d21e.json": "db070bc2295f35b4c12bedad2244d963485a79836081b1ea7b0e42b88258047f",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_2/repeat_2/completed.json": "47e16592086161feefbd7080e81955afe9d0fa86961c17efb081c017450219f8",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_3/repeat_1/f7114f7dee71477cbe8ce21cbd9e11a1/b497f312a920f69e03853f0aecd095b51e59c32558675bf30628fbb9f908b3fd.json": "bf7f0835289cf751bf3d08e6f6ed35c27c3be2948af1543864e0fc886b84d906",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_3/repeat_1/completed.json": "d98cd469f7df0bd58b658b87713bbc758ba01d87a49823ee2b0f830f672f5f7a",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_3/repeat_2/ceb020ebb24145cdba4b93ce00925180/b497f312a920f69e03853f0aecd095b51e59c32558675bf30628fbb9f908b3fd.json": "b0c112a7062e2e509f2ff05a89bad45b794081e6542449a0d8816f42085760d4",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_3/repeat_2/completed.json": "8604fd4bdca2b9a080cbd7efc440a86777a707c49022427ee24c0a44bdba4262",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_4/repeat_1/3e505f6c1b9044c492832fe5f981394b/911ad82c09a5163e1d8b3e98735e23f267b472083f1cd6468953ce746b974588.json": "d743f3251c0f9b493a5cd3b60a209c6c21dc8774d5597af8215ede5c446dc9db",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_4/repeat_1/completed.json": "53b0e876fc47d36d168fb8d2d6cf82675dca2472cc24c8c7eb82c0a838c4ff15",
+    "/Users/cheparukhin/ai_science_hack/runs/round2_embedding_repeats/a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba/fold_4/repeat_2/2d4d0e608b684407a8396c8e28384b96/911ad82c09a5163e1d8b3e98735e23f267b472083f1cd6468953ce746b974588.json": "c1480474e4d8dcdd99cc30fad05789cb71bdbeb3f05074bb7e4735bc3708204c",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/fold_4/repeat_2/completed.json": "7b7d20e87ba147131e3ddd09a99ebb8ed4c3b4fd09bcfefd40a2a4a6a454fcbd",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/protocol.json": "cd933acd7203f7b5bcb87166e317aa3c5fbbd06791b4978b2a8814cab9ef876c",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/launch_receipt.json": "dd1df21c7fa2a4e5b798a314026c27d59ce45394a8f63d45d1f8f7d65d0f68df",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/completed.json": "d958e42a9554274270ab59b5d740b7647a7871adab550c562960754002c10bb9",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/predictions.csv": "eafff64c61931cbe74ff49ca059bab6d108690656fdb453e39c96a6dee219ca3",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/pooled_metrics.csv": "3a1c54794a67bd2b7a292cc947301ae98e16ee87603b8e24133580eef5606161",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/execution_differences.csv": "1a6e698bed0c9ce3ae095528ac8beca27859d30a21845ed8d79fd2c2334a9e6d",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/README.md": "a3dcdceadf91b2e971448e3ccfa920a839f830ea4b0206ca5183ddf91a2ab50e"
+  },
+  "execution_closeout": {
+    "verified_at_utc": "2026-10-12T07:41:59.591624+00:00",
+    "controller_pid": 26167,
+    "keep_awake_pid": 26168,
+    "recorded_processes_absent": true,
+    "all_ten_markers_and_full_report_complete": true,
+    "no_relaunch": true
+  }
+}

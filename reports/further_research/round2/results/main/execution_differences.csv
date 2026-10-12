@@ -1,0 +1,25 @@
+baseline,candidate,comparison_kind,interpretation,n_rows,mean_absolute_prediction_difference,maximum_absolute_prediction_difference,prediction_rms_difference
+mlp_log__seed0,mlp_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.12620041013634653,0.7912691831588745,0.1640774252697718
+mlp_centred__seed0,mlp_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.12922417023656405,0.8776733040809637,0.16817320136009045
+tree_log__seed0,tree_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.04633484626295896,0.3345692101899287,0.05924223790374699
+tree_centred__seed0,tree_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.0468029813025343,0.28852150292679823,0.05986258992275355
+pairlogit__seed0,pairlogit__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.14629545265850413,0.9715584196554539,0.18729016418202662
+mlp_log,mlp_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+mlp_log,mlp_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+mlp_log__repeat1,mlp_log__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0
+tree_log,tree_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+tree_log,tree_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+tree_log__repeat1,tree_log__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0
+pairlogit,pairlogit__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+pairlogit,pairlogit__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+pairlogit__repeat1,pairlogit__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0
+R0_mlp__seed0,R0_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.20938547326788445,1.89849945,0.265568624367586
+R1_mlp__seed0,R1_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.2015378288894627,2.9924365,0.25510622827141743
+R2_mlp__seed0,R2_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.25377021460663063,1.4534223,0.3207635431260652
+R3_mlp__seed0,R3_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.22989083137610047,1.4129903000000001,0.2910492076101455
+R4_mlp__seed0,R4_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.16171280026038545,0.9537497500000001,0.20429624008866568
+R5_mlp__seed0,R5_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.14979397898326147,0.92145364,0.1893822146695795
+R5_shuffled_mlp__seed0,R5_shuffled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.1496735014185477,0.8361785999999998,0.18834559100060919
+R5_position9x34_mlp__seed0,R5_position9x34_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.170514842294815,1.003486,0.21645507569767275
+R3_pooled_mlp__seed0,R3_pooled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.07813171312051126,0.6525827,0.10364066155416797
+R5_position9x34_pooled_mlp__seed0,R5_position9x34_pooled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise",19716,0.15179848698118378,0.9034052,0.19128225760279402

@@ -1,0 +1,80 @@
+{
+  "schema": "round2_transfer_nomination_decision.1",
+  "at_utc": "2026-10-12T07:38:02.323620+00:00",
+  "status": "frozen_before_any_transfer_fit",
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "amendment_heading": "Transfer scope amendment \u2014 12 October 2026, after the main screen",
+  "amendment_text": "\nThe complete main report was generated at 07:19 UTC. Subject to its independent\ncompletion audit passing, nominate **R4 ridge and R5 MLP** for the bounded\ntransfer assessment. They are the two procedures actually chosen by the frozen\nmain inner selector: R5 MLP in folds 0, 1, 2 and 4, and R4 ridge in fold 3. This\npreserves every realised selector branch and both linear and neural heads.\nIt is a post-main, development-selected shortlist, not a prospectively\nindependent finalist selection or the two largest pooled outer scores.\nR4 MLP is omitted to keep the two-procedure bound, not because it was shown\ninferior in transfer. The full 9\u00d734 secondary control is outside the main\nprimary selector and is not promoted into transfer after viewing its score.\n\nRetain each nominee's **entire frozen main regularization grid**: ridge alpha\n{10000, 100, 1} and neural L2 {1, 0.01, 0.0001}. Reselect inside each transfer\nfitting partition; do not carry a favourable main-fold regularization into a\nnew regime. All five HLA folds and all 25 joint intersections remain required.\nThe complete graph is **13,530 local fits**: 10,440 sequence fits, 750 R4 ridge\nfits and 2,340 R5 neural fits. No cloud work, feature recomputation or grid\nexpansion is added.\n\nThe transfer primary comparison is the **bounded embedding-or-MLP selector\nversus the bounded MLP sequence selector**, separately in HLA and joint\nholdout. The latter chooses between the original reference and centred MLP\nwith k {100, 20}. It excludes both tree regressors and PairLogit from the\nfull main sequence selector. This retains the two sequence families actually\nselected in the main screen, but does **not** establish equivalence to the\nfull sequence selector or superiority over that full selector on unseen HLAs.\nThe transfer embedding selector may choose either sequence family or either\nnominee. This differs from the main embedding selector's original-only\nfallback and is explicitly part of this bounded transfer procedure.\n\nUse regime-matched inner holdout, stopping, gradient-only centring and feature\nscaling. Choose by pooled inner per-allele median Spearman with frozen\nparsimony order for exact ties. This replaces the main mean-fold/one-SE rule\nbecause sparse joint inner cells may lack adequate per-cell panels. Joint\ngradient rows exclude both held dimensions and cross-quadrants; the five\ndiagonal stopping intersections do not cover every fitting row, a retained\nlimitation. Publish every component and both selectors against the original\nreference, both 20/50-row panels, all declared peptide/HLA/crossed uncertainty\nand every HLA-group deletion sensitivity. Do not drop an unfavourable cell,\npanel or uncertainty mode.\n\nBefore any transfer fitting, freeze the amended specification and source,\ndata, feature and main-completion hashes. Authorize a deterministic timing\nphase consisting of **HLA h0, then joint h0_p0, with one worker**. These cells\nare chosen by index, before any transfer outcome. Inspect only runtime and\ncompletion telemetry to forecast the remaining 28 cells. A separate immutable\nauthorization must bind the frozen protocol, controller source, successful\ntiming-cell markers, exact remaining cells and at most three workers. The\ntiming phase and remaining phase share a single owner lock; failed or uncertain\nattempts require diagnosis rather than automatic retries. The user receives\nan honest 11 AM London checkpoint even if local fitting is still running.\n\nThe main selector's two identical-setting execution repeats are separately\nfrozen at **242 fresh local fits**, replaying its locked per-fold decisions.\nThey measure execution of those fitted recipes, not reproducibility of\nselection, every standalone nominee on every fold, the centred comparator in\nevery regime, or the new transfer procedures. Sequence reference repeats were\nalready completed. No assay-repeat or independent-confirmation claim follows\nfrom numerical repeatability.\n",
+  "amendment_text_sha256": "30f6731fdcf145fb9c0147af48ae09b19f3af2d7962206fd6b60939545186cb2",
+  "nominations": [
+    "R4_ridge",
+    "R5_mlp"
+  ],
+  "selection_basis": "Every realized inner-selected main embedding branch, preserving ridge/MLP head diversity within two nominees; post-main development-selected shortlist, not top-two outer score selection.",
+  "selector_choices": [
+    {
+      "fold": 0,
+      "embedding_arm": "R5_mlp",
+      "sequence_family": "mlp_centred"
+    },
+    {
+      "fold": 1,
+      "embedding_arm": "R5_mlp",
+      "sequence_family": "mlp_centred"
+    },
+    {
+      "fold": 2,
+      "embedding_arm": "R5_mlp",
+      "sequence_family": "mlp_log"
+    },
+    {
+      "fold": 3,
+      "embedding_arm": "R4_ridge",
+      "sequence_family": "mlp_log"
+    },
+    {
+      "fold": 4,
+      "embedding_arm": "R5_mlp",
+      "sequence_family": "mlp_centred"
+    }
+  ],
+  "fit_graph": {
+    "regimes": {
+      "hla": {
+        "outer_cells": 5,
+        "inner_cells": 3,
+        "sequence_mlp_fits": 168,
+        "embedding_mlp_fits": 48,
+        "deterministic_ridge_fits": 10,
+        "fits_per_cell": 226,
+        "total_fits": 1130
+      },
+      "joint": {
+        "outer_cells": 25,
+        "inner_cells": 9,
+        "sequence_mlp_fits": 384,
+        "embedding_mlp_fits": 84,
+        "deterministic_ridge_fits": 28,
+        "fits_per_cell": 496,
+        "total_fits": 12400
+      }
+    },
+    "total_fits": 13530,
+    "sequence_mlp_fits": 10440,
+    "embedding_mlp_fits": 2340,
+    "deterministic_ridge_fits": 750,
+    "selector_extra_fits": 0,
+    "cloud_spend_usd": 0,
+    "repeats": "excluded; locked execution repeats separate"
+  },
+  "frozen_protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
+  "source_sha256": {
+    "transfer/assessment_protocol.json": "a5c623104553f8cf3794993633849ef035e6cc2502b7045019fde312176cbf97",
+    "resources/embedding_completion_audit.json": "a5c1802544c994838eb8376c56b0bf09a4ea9f85236f213acb08b1e2a0ce444b",
+    "results/main/manifest.json": "fa635174761599d39e1a6210ea5ccd065f0971e54dfbfd199c674342f2e3327b"
+  },
+  "original_test_accessed": false,
+  "transfer_outcomes_accessed": false,
+  "primary": "bounded embedding-or-MLP selector versus bounded_MLP_sequence_selector, separately for all five HLA and all25 joint cells; full main five-family sequence selector excluded",
+  "interpretation": "Conditional development evidence only; no independent confirmation cohort."
+}
