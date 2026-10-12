@@ -1,0 +1,174 @@
+{
+  "at_utc": "2026-10-12T02:55:53.619336+00:00",
+  "summary": {
+    "start": "2026-10-01 00:00:00+00:00",
+    "end": "2026-11-01 00:00:00+00:00",
+    "metered_cost": "149.11399924",
+    "metered_cost_breakdown": {
+      "Volumes": "1.36252072",
+      "Ephemeral Apps": "147.75155024",
+      "LLM Tokens": "0E-8"
+    },
+    "adjustments": {
+      "Credits": "-147.73000000",
+      "Plan Cost": "0E-8",
+      "Network Egress Allowance": "-0.02147852",
+      "Free Storage": "-1.36252072",
+      "Reservation Adjustment": "-0E-8"
+    },
+    "billed_cost": "0E-8"
+  },
+  "study_rows": [
+    {
+      "object_id": "ap-3VYp2CIyTqqTgvl5EMh8cA",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.02243634",
+      "cost_by_resource": {
+        "Memory": "0.00567111",
+        "CPU": "0.01676523"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-CTPosnxjWl1PutPuL6XHcK",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.76281920",
+      "cost_by_resource": {
+        "Memory": "0.09888000",
+        "CPU": "0.09743921",
+        "A10G": "0.56649999"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-CTPosnxjWl1PutPuL6XHcK",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "0.08804906",
+      "cost_by_resource": {
+        "Memory": "0.01141333",
+        "CPU": "0.01124688",
+        "A10G": "0.06538885"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-LWIdYOzFfzkVvT0pU8o7zp",
+      "description": "pepstab-round2-boltz-audit",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.16292828",
+      "cost_by_resource": {
+        "Memory": "0.02111952",
+        "CPU": "0.02081152",
+        "A10G": "0.12099724"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-WHLUeJrzgbYWR9L13OtuqF",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.01520352",
+      "cost_by_resource": {
+        "Memory": "0.00384167",
+        "CPU": "0.01136185"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-ailqSkkRms7DNOJe0S66Qa",
+      "description": "pepstab-round2-boltz-audit",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.23699170",
+      "cost_by_resource": {
+        "Memory": "0.03071996",
+        "CPU": "0.03027196",
+        "A10G": "0.17599978"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-laQ27F2Bw9zPsqjIJs50gD",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 00:00:00+00:00",
+      "cost": "0.00121681",
+      "cost_by_resource": {
+        "Network Egress": "0.00002057",
+        "Memory": "0.00008334",
+        "CPU": "0.00111290"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-vgwn2eHeZngfofbxH6SMsf",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "1.59496906",
+      "cost_by_resource": {
+        "Memory": "0.40243355",
+        "CPU": "1.19253552"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-vgwn2eHeZngfofbxH6SMsf",
+      "description": "pepstab-round2-sequence",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 02:00:00+00:00",
+      "cost": "2.58690948",
+      "cost_by_resource": {
+        "Memory": "0.65255862",
+        "CPU": "1.93435086"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 01:00:00+00:00",
+      "cost": "11.06621981",
+      "cost_by_resource": {
+        "Memory": "1.43445327",
+        "CPU": "1.41354466",
+        "A10G": "8.21822188"
+      },
+      "tags": {}
+    },
+    {
+      "object_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+      "description": "pepstab-round2-boltz-extraction",
+      "environment_name": "main",
+      "interval_start": "2026-10-12 02:00:00+00:00",
+      "cost": "10.98708294",
+      "cost_by_resource": {
+        "Memory": "1.42419533",
+        "CPU": "1.40343517",
+        "A10G": "8.15945244"
+      },
+      "tags": {}
+    }
+  ],
+  "study_apps_metered_usd": {
+    "ap-3VYp2CIyTqqTgvl5EMh8cA": 0.02243634,
+    "ap-CTPosnxjWl1PutPuL6XHcK": 0.85086826,
+    "ap-LWIdYOzFfzkVvT0pU8o7zp": 0.16292828,
+    "ap-WHLUeJrzgbYWR9L13OtuqF": 0.01520352,
+    "ap-ailqSkkRms7DNOJe0S66Qa": 0.2369917,
+    "ap-laQ27F2Bw9zPsqjIJs50gD": 0.00121681,
+    "ap-vgwn2eHeZngfofbxH6SMsf": 4.18187854,
+    "ap-wYa6yW8KQunK4VNxPInsPd": 22.05330275
+  },
+  "interpretation": "Lagging provider metering snapshot, not remaining credits; live apps continue.",
+  "ephemeral_apps_delta_since_before_usd": 31.103846899999994
+}

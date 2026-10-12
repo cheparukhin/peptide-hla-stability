@@ -1,0 +1,153 @@
+{
+  "mlp_log": {
+    "candidate": {
+      "id": "mlp_log",
+      "learner": "mlp",
+      "target": "log"
+    },
+    "scores": [
+      {
+        "candidate": "mlp_log",
+        "fold_scores": [
+          0.5713372900004314,
+          0.5860657572883472,
+          0.5910580526362608
+        ],
+        "mean": 0.5828203666416798,
+        "se": 0.005919643572372349
+      }
+    ],
+    "rule": "first in frozen parsimony order within 1 fold-SE of best"
+  },
+  "mlp_centred": {
+    "candidate": {
+      "id": "mlp_centred_k20",
+      "learner": "mlp",
+      "target": "centred",
+      "k": 20
+    },
+    "scores": [
+      {
+        "candidate": "mlp_centred_k100",
+        "fold_scores": [
+          0.5759876759988831,
+          0.5879098762657811,
+          0.5899787519742108
+        ],
+        "mean": 0.5846254347462917,
+        "se": 0.00435997778312601
+      },
+      {
+        "candidate": "mlp_centred_k20",
+        "fold_scores": [
+          0.5950947565331443,
+          0.5828773157596013,
+          0.6041854237244673
+        ],
+        "mean": 0.5940524986724043,
+        "se": 0.006173156738298525
+      }
+    ],
+    "rule": "first in frozen parsimony order within 1 fold-SE of best"
+  },
+  "tree_log": {
+    "candidate": {
+      "id": "tree_log_d8",
+      "learner": "tree",
+      "target": "log",
+      "depth": 8,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10
+    },
+    "scores": [
+      {
+        "candidate": "tree_log_d4",
+        "fold_scores": [
+          0.47510230034251644,
+          0.532513979814041,
+          0.5484171610588408
+        ],
+        "mean": 0.5186778137384661,
+        "se": 0.022266168800946104
+      },
+      {
+        "candidate": "tree_log_d8",
+        "fold_scores": [
+          0.5382186426092207,
+          0.5824849569704749,
+          0.6088370396941789
+        ],
+        "mean": 0.5765135464246248,
+        "se": 0.02060325871994141
+      }
+    ],
+    "rule": "first in frozen parsimony order within 1 fold-SE of best"
+  },
+  "tree_centred": {
+    "candidate": {
+      "id": "tree_centred_d8",
+      "learner": "tree",
+      "target": "centred",
+      "depth": 8,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10,
+      "k": 20
+    },
+    "scores": [
+      {
+        "candidate": "tree_centred_d4",
+        "fold_scores": [
+          0.4846411566322487,
+          0.5254813677842662,
+          0.5441015380826129
+        ],
+        "mean": 0.5180746874997093,
+        "se": 0.017559692719254665
+      },
+      {
+        "candidate": "tree_centred_d8",
+        "fold_scores": [
+          0.5189698041592766,
+          0.5881317295880639,
+          0.5931959752401471
+        ],
+        "mean": 0.5667658363291626,
+        "se": 0.02394268965950943
+      }
+    ],
+    "rule": "first in frozen parsimony order within 1 fold-SE of best"
+  },
+  "pairlogit": {
+    "candidate": {
+      "id": "pairlogit_d8",
+      "learner": "pairlogit",
+      "target": "log",
+      "depth": 8,
+      "learning_rate": 0.06,
+      "l2_leaf_reg": 10
+    },
+    "scores": [
+      {
+        "candidate": "pairlogit_d4",
+        "fold_scores": [
+          0.5009551509051486,
+          0.5720922571305926,
+          0.5937517873515505
+        ],
+        "mean": 0.5555997317957639,
+        "se": 0.02802859538567352
+      },
+      {
+        "candidate": "pairlogit_d8",
+        "fold_scores": [
+          0.5436800321400186,
+          0.5917840643677652,
+          0.599105887890091
+        ],
+        "mean": 0.5781899947992916,
+        "se": 0.01738395253273676
+      }
+    ],
+    "rule": "first in frozen parsimony order within 1 fold-SE of best"
+  }
+}

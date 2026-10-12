@@ -1,0 +1,107 @@
+{
+  "slope": 0.7581066569837385,
+  "intercept": 1.1616923980648612,
+  "minimum_slope": 1e-08,
+  "n_rows": 15773,
+  "crossfit_selections": [
+    {
+      "fold": 0,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.5266796987047213,
+            0.4583214249789192,
+            0.506285414156703
+          ],
+          "mean": 0.4970955126134478,
+          "se": 0.02026124473367785
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.5634063287923593,
+            0.5167919394874381,
+            0.5482413603195588
+          ],
+          "mean": 0.5428132095331187,
+          "se": 0.013727392788240799
+        }
+      ]
+    },
+    {
+      "fold": 1,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.4907619435046857,
+            0.5180412577900877,
+            0.46947702759133686
+          ],
+          "mean": 0.4927600762953701,
+          "se": 0.014054839198489866
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.520831695211907,
+            0.552063736540002,
+            0.48958132530237725
+          ],
+          "mean": 0.520825585684762,
+          "se": 0.018037118732506904
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.5107314129456936,
+            0.4991339199581346,
+            0.5016002949161683
+          ],
+          "mean": 0.5038218759399987,
+          "se": 0.0035273704834811797
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.49242597207033,
+            0.5367579333652073,
+            0.5427324173347021
+          ],
+          "mean": 0.5239721075900798,
+          "se": 0.01586707927700466
+        }
+      ]
+    }
+  ]
+}
