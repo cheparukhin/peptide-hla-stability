@@ -1,0 +1,76 @@
+{
+  "schema": "final_cloud_hybrid_runtime_forecast.1",
+  "at_utc": "2026-10-12T20:44:52.541182+00:00",
+  "held_scores_used": false,
+  "saved_model_replay_passed": true,
+  "pilot_certificate_sha256": "9938d7cf8defe1f5c367eecbb0ae7ee04899536d5a87f82a14028219d903212a",
+  "pilot_certificate": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/phase_certificate.json",
+    "sha256": "9938d7cf8defe1f5c367eecbb0ae7ee04899536d5a87f82a14028219d903212a"
+  },
+  "task_manifest": {
+    "path": "reports/finalization/hybrids_cloud_v1/task_manifest.json",
+    "sha256": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766"
+  },
+  "pilot_completed": {
+    "R0": {
+      "path": "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R0/completed.json",
+      "sha256": "faca8601a65079d9ac2c274790a31ca7e4ab0724e3265d5c8bd99222066dc413"
+    },
+    "R5": {
+      "path": "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R5/completed.json",
+      "sha256": "79a0e4ef2b1202fbd9691b4efabb82320b06921d67be9301b8101abb1bf53a56"
+    }
+  },
+  "observations": {
+    "R0": {
+      "n_fits": 6,
+      "fit_seconds": 76.38778549799997,
+      "max_rss_mib": 2542.890625,
+      "held_scores_computed": false
+    },
+    "R5": {
+      "n_fits": 6,
+      "fit_seconds": 109.853387269,
+      "max_rss_mib": 2584.0,
+      "held_scores_computed": false
+    }
+  },
+  "method": "For each frozen6-fit bundle, scale its matching representation pilot time by the square of the largest gradient/stopping/held row-count ratio (minimum1). Bound two-worker list scheduling by total/2 plus largest complete job; multiply by2 for timing variability and add1800seconds for setup/audit, then round up to15minutes.",
+  "row_scaled_job_seconds": {
+    "R0/fold0": 802.2533855491924,
+    "R0/fold1": 802.3623811956982,
+    "R0/fold2": 802.3623811956982,
+    "R0/fold3": 802.3623811956982,
+    "R0/fold4": 802.3623811956982,
+    "R5/fold0": 1153.7217799422829,
+    "R5/fold1": 1153.8785267426797,
+    "R5/fold2": 1153.8785267426797,
+    "R5/fold3": 1153.8785267426797,
+    "R5/fold4": 1153.8785267426797
+  },
+  "total_row_scaled_serial_seconds": 9780.938797244988,
+  "largest_job_seconds": 1153.8785267426797,
+  "max_row_scale": 1.5002377555872564,
+  "timing_safety_factor": 2,
+  "setup_audit_allowance_seconds": 1800,
+  "forecast_seconds": 13888.695850730346,
+  "fit_wall_seconds": 14400,
+  "max_workers": 2,
+  "numerical_threads": 2,
+  "n_scientific_fits": 480,
+  "n_jobs": 10,
+  "n_bundles": 80,
+  "pilot_fits_reused": 0,
+  "memory_forecast_mib": 9801.22872087494,
+  "memory_method": "Two times observed maximum RSS times maximum row-count growth, plus2048MiB fixed headroom. An engineering estimate, not a memory guarantee.",
+  "resources": {
+    "cpu_cores": 4,
+    "memory_mib": 16384,
+    "numerical_threads": 2,
+    "max_workers": 2
+  },
+  "estimated_continuous_resource_upper_usd": 4.5443,
+  "phase_cap_usd": 20,
+  "interpretation": "Runtime and memory engineering forecast only; no held scores used, no model/grid changes, no completion guarantee."
+}
