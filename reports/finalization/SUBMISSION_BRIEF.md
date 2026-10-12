@@ -71,8 +71,8 @@ was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
 **What is next?** Finish the existing transfer extension, then freeze candidates
-before independent assay outcomes. Boltz tree ranking and clean tree/MLP blends
-are unexecuted research proposals, not completed project results.
+before independent assay outcomes. The user has authorized bounded Boltz tree ranking, tree/MLP blends and
+preprocessing comparisons; these remain unexecuted and have no results yet.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance

@@ -159,18 +159,20 @@ validation. Ranking outcomes do not widen that scope.
 [Frozen specification](transfer_controls/SPECIFICATION.md) and
 [protocol](transfer_controls/protocol.json).
 
-## Unexecuted ideas beyond the frozen scope
+## Newly authorized hybrid follow-up
 
-**No Boltz tree experiment has been executed or authorized by this report.**
+**The user has now authorized bounded execution of the hybrid experiments; no Boltz tree result is available yet.**
 The pending transfer trees and ranker consume sequence features; they do not
 test boosted trees or tree ranking on Boltz embeddings. The small, uncertain
 MLP ranking result does not rule out a benefit from a different learner.
 
-The next proposed order is matched Boltz boosted-tree regression and ranking
-heads, followed by a leakage-safe prediction blend with the MLP, then
-tree-leaf features as MLP inputs if that question remains useful. Each needs
-a separate protocol, fixed comparison, complete fit graph and resource gate.
-These proposals do not amend the current transfer scope or launch new fits.
+The new protocol covers matched Boltz boosted-tree regression and ranking
+heads, a leakage-safe prediction blend with the MLP, tree-leaf features as MLP
+inputs, and quantile/PCA preprocessing. Every family has a bounded comparison
+and fit graph; execution requires frozen tested sources and a runtime gate.
+The current transfer scope stays unchanged. New local fitting is queued until
+that controller exits, with at most $35 additional cloud allocation inside
+the unchanged $100 new-phase ceiling. See [hybrid authorization](hybrids/user_authorization.json).
 
 The existing MLP already standardizes features using gradient-fitting rows
 only. Additional normalization or tree-derived preprocessing is a separate

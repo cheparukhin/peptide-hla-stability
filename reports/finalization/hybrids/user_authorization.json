@@ -1,0 +1,24 @@
+{
+  "schema": "hybrid_followup_user_authorization.1",
+  "at_utc": "2026-10-12T13:44:03.039998+00:00",
+  "user_request": "Please orchestrate all these experiments",
+  "scope": [
+    "Boltz embeddings with boosted-tree regression and within-allele ranking",
+    "tree and MLP prediction blending",
+    "tree-derived leaf features into MLP",
+    "alternative preprocessing: quantile transformation and dimensionality reduction"
+  ],
+  "status": "design_and_implementation_authorized_execution_requires_frozen_protocol_and_runtime_gate",
+  "new_phase_total_cloud_ceiling_usd": 100,
+  "existing_transfer_allocation_including_pilot_usd": 65,
+  "additional_hybrid_cloud_allocation_max_usd": 35,
+  "preferred_execution": "Reuse existing embeddings; queue local scientific fitting until existing transfer local controller exits. No unbounded grid.",
+  "constraints": [
+    "Preserve existing running source/protocol/deadlines and no duplicatecontrollers",
+    "Original-training development only; original test excluded",
+    "Fit and select preprocessing/blending within allowed fittingpartitions",
+    "Freeze candidates/fitgraph/source before outcomes; no automatic postresult expansion",
+    "Pilot and independent budget/watchdog gate for any additional cloud; no blindretry",
+    "Existingcompleted ranking experiments reused only after audit, never restarted"
+  ]
+}
