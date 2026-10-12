@@ -472,3 +472,46 @@ def test_recovery_phase_preserves_original_deadline_and_separate_35_reserve(plan
     assert d.validate_plan(path)[1]['phase']=='transfer_recovery'
     plan['provider_stop_deadline_utc']='2026-10-13T15:32:20+00:00';rewrite(path,plan)
     with pytest.raises(ValueError,match='deadline'):d.validate_plan(path)
+
+
+@pytest.mark.parametrize('observed_code',[0,7,None])
+def test_shutdown_notfound_requires_fresh_exact_provider_terminal(planned,provider,monkeypatch,observed_code):
+    path,*_=planned;counters,state,wire,ready,directory=provider
+    asyncio.run(d.create(path));(directory/'watchdog_attempt.json').unlink()
+    class NotFoundError(Exception):pass
+    monkeypatch.setattr(sys.modules['modal'],'exception',SimpleNamespace(NotFoundError=NotFoundError),raising=False)
+    sandbox=state['active'][0];original_tags=sandbox.get_tags.aio;calls=[0]
+    async def racing_tags():
+        calls[0]+=1
+        if calls[0]>1:
+            state['returncode']=observed_code
+            raise NotFoundError('exact Sandbox already shut down during tag read')
+        return await original_tags()
+    sandbox.get_tags.aio=racing_tags
+    async def next_loop(*_):pass
+    monkeypatch.setattr(d.asyncio,'sleep',next_loop)
+    result=asyncio.run(d.watch(path,interval=0))
+    if observed_code is not None:
+        assert result['status']=='terminal_observed' and result['returncode']==observed_code
+        assert counters['terminate']==0 and counters['from_id']==2
+        assert 'NotFoundError' in result['shutdown_race_error']
+        assert result['shutdown_terminal_observation']['sandbox_id']=='sb-exact'
+        assert result['shutdown_terminal_observation']['returncode']==observed_code
+        assert result['stop_results']=={}
+    else:
+        assert result['status']=='failed_stop_observed' and counters['terminate']==1
+        assert 'shutdown_terminal_observation' not in result
+        assert 'NotFoundError' in result['reason']
+    assert not wire and 'scientific_complete' not in result
+
+
+def test_notfound_without_verified_owner_does_not_infer_completion(planned,provider,monkeypatch):
+    path,*_=planned;counters,state,wire,ready,directory=provider
+    asyncio.run(d.create(path));(directory/'watchdog_attempt.json').unlink()
+    class NotFoundError(Exception):pass
+    monkeypatch.setattr(sys.modules['modal'],'exception',SimpleNamespace(NotFoundError=NotFoundError),raising=False)
+    async def absent_tags():raise NotFoundError('not verified')
+    state['active'][0].get_tags.aio=absent_tags
+    result=asyncio.run(d.watch(path,interval=0))
+    assert result['status']=='failed_stop_observed' and counters['terminate']==1
+    assert 'shutdown_terminal_observation' not in result and not wire

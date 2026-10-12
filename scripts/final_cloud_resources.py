@@ -48,9 +48,11 @@ def validate(path, *, verify_inputs=True):
     cleanup = c.timestamp(plan['storage_cleanup_deadline_utc'])
     if not c.timestamp(auth['deadline_utc']) < cleanup <= c.timestamp('2026-10-15T14:15:17.567539+00:00'):
         raise ValueError('bounded storage cleanup deadline required')
-    if (type(plan.get('max_upload_bytes')) is not int or not 0 < plan['max_upload_bytes'] <= 20 * 1024**3
+    slots = plan.get('simultaneously_retained_volumes')
+    if (type(slots) is not int or slots not in (1, 2)
+            or type(plan.get('max_upload_bytes')) is not int or not 0 < plan['max_upload_bytes'] <= 20 * 1024**3
             or type(plan.get('max_download_bytes')) is not int or not 0 < plan['max_download_bytes'] <= 20 * 1024**3
-            or plan.get('overhead_envelope_usd') != 3 or plan.get('simultaneously_retained_volumes') != 1):
+            or plan.get('overhead_envelope_usd') != 3):
         raise ValueError('finite storage/egress caps required')
     manifest_path = c.bound(auth['input_manifest'])
     manifest = c.read(manifest_path)
@@ -59,7 +61,7 @@ def validate(path, *, verify_inputs=True):
     if total > plan['max_upload_bytes']:
         raise ValueError('exact upload manifest exceeds byte reservation')
     gib = 1024**3
-    storage = (plan['max_upload_bytes'] + plan['max_download_bytes']) / gib * .09 * (cleanup-now) / (30*86400)
+    storage = slots * (plan['max_upload_bytes'] + plan['max_download_bytes']) / gib * .09 * (cleanup-now) / (30*86400)
     # Recovery plus four finalization downloads, with no free-tier assumption.
     downloads = 5 if auth.get('phase') == 'transfer_recovery' else 4
     egress = downloads * plan['max_download_bytes'] / gib * .04

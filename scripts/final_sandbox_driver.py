@@ -224,6 +224,7 @@ async def watch(plan_path, *, interval=5):
     active_id = None; started = time.monotonic(); terminal = None; owned_ids = set()
     lease_sequence=0;last_lease_monotonic=-math.inf;lease_expiry=None
     sandbox=None;stdin_writer=None;release_delivered=False;release_digest=None
+    verified_id=None;shutdown_race_error=None;shutdown_terminal_observation=None;shutdown_terminal_probe_error=None
     base = dict(pid=os.getpid(), authorization_sha256=pinned_auth, plan_sha256=pinned_plan)
     reason = 'provider_terminal'
     loop=asyncio.get_running_loop();task=asyncio.current_task()
@@ -267,7 +268,7 @@ async def watch(plan_path, *, interval=5):
                 remote_tags = await asyncio.wait_for(sandbox.get_tags.aio(), 20)
                 if any(remote_tags.get(k) != v for k, v in tags(auth, auth_path).items()):
                     raise ValueError('provider tags differ from owned phase')
-                owned_ids.add(active_id)
+                owned_ids.add(active_id);verified_id=active_id
                 terminal = await asyncio.wait_for(sandbox.poll.aio(), 20)
                 if terminal is not None: break
                 if time.time() >= stamp(auth['deadline_utc']):
@@ -315,9 +316,29 @@ async def watch(plan_path, *, interval=5):
         reason = repr(error)
         for sig in previous:
             loop.remove_signal_handler(sig);signal.signal(sig,signal.SIG_IGN)
-        stops = await asyncio.gather(*[_stop_owned(modal, sid) for sid in sorted(owned_ids)])
-        stop_results = {item['sandbox_id']: item for item in stops}
-        terminal = stop_results.get(active_id, {}).get('returncode')
+        not_found=getattr(getattr(modal,'exception',None),'NotFoundError',())
+        if isinstance(error,not_found) and verified_id==active_id and active_id is not None and owned_ids=={active_id}:
+            # Shutdown can race a stream/tag read. Observe this exact owner afresh;
+            # neither NotFound nor a termination request is a successful exit.
+            try:
+                created=read(directory/'created.json')
+                if (sha(plan_path)!=pinned_plan or sha(auth_path)!=pinned_auth
+                        or created.get('sandbox_id')!=active_id or created.get('app_id')!=plan['app_id']
+                        or created.get('authorization_sha256')!=pinned_auth or created.get('plan_sha256')!=pinned_plan):
+                    raise ValueError('owned identity changed during shutdown observation')
+                fresh=await asyncio.wait_for(modal.Sandbox.from_id.aio(active_id),20)
+                if fresh.object_id!=active_id:raise ValueError('fresh Sandbox identity differs')
+                observed=await asyncio.wait_for(fresh.poll.aio(),20)
+                if type(observed) is int:
+                    terminal=observed;shutdown_race_error=repr(error);reason='provider_terminal'
+                    shutdown_terminal_observation=dict(sandbox_id=active_id,returncode=observed,at_utc=now())
+            except Exception as probe_error:
+                shutdown_terminal_probe_error=repr(probe_error)
+        if shutdown_terminal_observation is None:
+            stops = await asyncio.gather(*[_stop_owned(modal, sid) for sid in sorted(owned_ids)])
+            stop_results = {item['sandbox_id']: item for item in stops}
+            terminal = stop_results.get(active_id, {}).get('returncode')
+        else:stop_results={}
     else:
         stop_results = {}
     finally:
@@ -329,6 +350,9 @@ async def watch(plan_path, *, interval=5):
                   sandbox_id=active_id, returncode=terminal, reason=reason, at_utc=now(),
                   owned_sandbox_ids=sorted(owned_ids), stop_results=stop_results,
                   reservation_retained_usd=auth['phase_cap_usd'] * max(1,len(owned_ids)))
+    if shutdown_terminal_observation is not None:
+        result.update(shutdown_race_error=shutdown_race_error,shutdown_terminal_observation=shutdown_terminal_observation)
+    if shutdown_terminal_probe_error is not None:result['shutdown_terminal_probe_error']=shutdown_terminal_probe_error
     status_write(directory / 'watchdog_status.json', result)
     write_once(directory / 'watchdog_exit.json', result)
     return result

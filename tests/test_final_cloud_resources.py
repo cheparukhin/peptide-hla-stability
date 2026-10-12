@@ -30,7 +30,7 @@ def fixture(tmp_path, monkeypatch):
         directory='reports/finalization/resources/cloud_sandboxes/report-20261012-test',
         sources=copy.deepcopy(auth['sources']),created_at_utc='2026-10-12T17:00:00+00:00',
         storage_cleanup_deadline_utc='2026-10-15T14:15:17.567539+00:00',
-        max_upload_bytes=3*1024**3,max_download_bytes=10*1024**3,
+        max_upload_bytes=3*1024**3,max_download_bytes=8*1024**3,
         overhead_envelope_usd=3,simultaneously_retained_volumes=1)
     path=tmp_path/'plan.json';path.write_text(json.dumps(plan))
     return path,plan,auth
@@ -46,7 +46,9 @@ def test_valid_preparation_has_no_provider_import(tmp_path,monkeypatch):
     ('volume_name','shared-volume'),('directory','elsewhere'),('sources',{}),
     ('created_at_utc','2026-10-12T16:00:00+00:00'),('created_at_utc','2026-10-12T18:00:00+00:00'),
     ('max_upload_bytes',1),('max_download_bytes',21*1024**3),('max_download_bytes',20*1024**3),
-    ('overhead_envelope_usd',4),('simultaneously_retained_volumes',2),
+    ('overhead_envelope_usd',4),('simultaneously_retained_volumes',3),
+    ('simultaneously_retained_volumes',True),('simultaneously_retained_volumes',1.0),
+    ('simultaneously_retained_volumes',2.0),('simultaneously_retained_volumes',0),
     ('storage_cleanup_deadline_utc','2026-10-16T00:00:00+00:00'),
     ('storage_cleanup_deadline_utc','2026-10-12T18:00:00+00:00')])
 def test_invalid_resource_admission(tmp_path,monkeypatch,field,value):
@@ -103,4 +105,20 @@ def test_recovery_resource_budget_counts_fifth_download(tmp_path,monkeypatch):
     # With five downloads this cap exhausts the $3 overhead reservation;
     # accepting the old four-download arithmetic would incorrectly pass.
     plan['max_download_bytes']=12*1024**3;path.write_text(json.dumps(plan))
+    with pytest.raises(ValueError,match='overhead'):r.validate(path)
+
+
+@pytest.mark.parametrize('slots',[1,2])
+def test_one_or_two_retained_volumes_with_eight_gib_results(tmp_path,monkeypatch,slots):
+    path,plan,_=fixture(tmp_path,monkeypatch)
+    plan['simultaneously_retained_volumes']=slots;path.write_text(json.dumps(plan))
+    assert r.validate(path)[0]==plan
+
+
+def test_storage_upper_bound_counts_both_retained_volumes(tmp_path,monkeypatch):
+    path,plan,_=fixture(tmp_path,monkeypatch)
+    plan['max_download_bytes']=14*1024**3
+    path.write_text(json.dumps(plan))
+    assert r.validate(path)[0]==plan
+    plan['simultaneously_retained_volumes']=2;path.write_text(json.dumps(plan))
     with pytest.raises(ValueError,match='overhead'):r.validate(path)
