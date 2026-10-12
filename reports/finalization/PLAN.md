@@ -62,3 +62,31 @@ threads each; packaging must share that limit with new research.
 Execution state and reservations live in [execution_manifest.json](execution_manifest.json).
 The current chat heartbeat continues the task quietly while jobs are healthy
 and pauses only after all achievable authorized deliverables are complete.
+
+## Bounded implementation decisions, before new outcomes
+
+The ranking screen uses R0 positional one-hot sequence features and R5 Boltz
+features with the same 64-unit network, three L2 values, MSE stopping and member
+schedule. Positive mixed-loss weights are 0.1, 0.3 and 1.0. The screen contains
+840 new scientific fits. Two separately authorized lambda-zero checks must
+establish compatibility before reusing 480 historical logical MSE fits. The
+primary contrast is R5 mixed ranking loss minus R5 MSE; the paired interaction
+with the corresponding R0 contrast distinguishes a general loss effect from
+added value specific to this representation. No new extraction is needed.
+
+The transfer extension is bounded to the existing 30 cells: ordinary and
+centred-target trees at depths 4/8, matched R0 ridge and MLP grids, and a single
+fixed depth-8 PairLogit procedure. The proposed new count is 10,830 fits,
+including 1,620 ranker members. The fixed ranker uses its own clean inner
+out-of-fold predictions for a positive affine map fitted within the outer
+fitting partition; this is a different procedure from the earlier nested
+ranker and requires a scale-transport limitation. Raw inner rankings select
+procedures; assessment outcomes do not change the scope. The exact executable
+protocol and pilot remain gates, not implied by this implementation decision.
+
+Local ranking uses at most two workers. Transfer fitting may use at most three
+workers only after the ranking controller has exited. Packaging is complete.
+The proposed cloud allocation is $65 including the smoke allowance, within the
+new $100 ceiling; it is not yet a launch authorization. Current rates give a
+$61.85 full per-call timeout accounting bound before additional preemption
+charges. The independent watchdog must preserve room for those and shutdown.

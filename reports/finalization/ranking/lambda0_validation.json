@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "protocol_hash": "32d3f8f1908bd5bb3df81ed205c61771b567d2e349f92ebfa199da8111b0ef8d",
+  "members": [
+    {
+      "representation": "R0",
+      "source_path": "runs/round2_embedding/2251f3e6db0ff8f106f2a0050e7d8930cff5b3054196a40561f10ff42dc5b013/fold_0/R0_mlp/83008a60451ab2051f20059667c23f56800ba47e0fc1a2de1d8cb999f4f2b879.json",
+      "source_sha256": "f9495ca699d4c7592ff641e3a587c8f188913173511e77c071c2715bd7bafb91",
+      "gradient_rows": "e10427283f45983fbcff11f98f785470c7b75bf5084b21d80e62eb534609db9d",
+      "stopping_rows": "1f38cc9a6cc7034a73479d1f786bace40dc4de1ec6e47e343f11f38e3f4d2c04",
+      "prediction_rows": "808a68a1dc4f810e0bb54fa301e7e2e18609a0e90ee0703c8574bf93ff12a8de",
+      "scaler_rows": "e10427283f45983fbcff11f98f785470c7b75bf5084b21d80e62eb534609db9d",
+      "source_member": {
+        "context": "outer/0/R0_mlp/select/R0_mlp_0.01/0",
+        "candidate": "R0_mlp_0.01",
+        "learner": "mlp",
+        "fit_seconds": 1.6529717079829425,
+        "n_fit": 8411,
+        "n_stop": 2103,
+        "n_features": 860,
+        "seed": 0,
+        "stop_fold": 0,
+        "best_epoch": 33,
+        "epochs": 48
+      },
+      "max_abs_difference": 0.0,
+      "tolerance_rtol": 2e-05,
+      "tolerance_atol": 2e-05,
+      "best_epoch": 33,
+      "epochs": 48,
+      "seconds": 0.6322057080687955,
+      "threads": [
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 2,
+          "prefix": "libomp",
+          "filepath": "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+          "version": null
+        }
+      ]
+    },
+    {
+      "representation": "R5",
+      "source_path": "runs/round2_embedding/2251f3e6db0ff8f106f2a0050e7d8930cff5b3054196a40561f10ff42dc5b013/fold_0/R5_mlp/898de3c46eaee2ad475a54cc38e838e876fe79a253c97c674dba783b352741b0.json",
+      "source_sha256": "9c5cdef426573f3b81a1d193473c26a5794bd37e64a0b509d98da839d12263bf",
+      "gradient_rows": "e10427283f45983fbcff11f98f785470c7b75bf5084b21d80e62eb534609db9d",
+      "stopping_rows": "1f38cc9a6cc7034a73479d1f786bace40dc4de1ec6e47e343f11f38e3f4d2c04",
+      "prediction_rows": "808a68a1dc4f810e0bb54fa301e7e2e18609a0e90ee0703c8574bf93ff12a8de",
+      "scaler_rows": "e10427283f45983fbcff11f98f785470c7b75bf5084b21d80e62eb534609db9d",
+      "source_member": {
+        "context": "outer/0/R5_mlp/select/R5_mlp_0.01/0",
+        "candidate": "R5_mlp_0.01",
+        "learner": "mlp",
+        "fit_seconds": 0.7378518339246511,
+        "n_fit": 8411,
+        "n_stop": 2103,
+        "n_features": 1024,
+        "seed": 0,
+        "stop_fold": 0,
+        "best_epoch": 33,
+        "epochs": 48
+      },
+      "max_abs_difference": 0.0,
+      "tolerance_rtol": 2e-05,
+      "tolerance_atol": 2e-05,
+      "best_epoch": 33,
+      "epochs": 48,
+      "seconds": 0.714771541999653,
+      "threads": [
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 2,
+          "prefix": "libomp",
+          "filepath": "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+          "version": null
+        }
+      ]
+    }
+  ]
+}
