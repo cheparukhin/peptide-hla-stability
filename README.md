@@ -128,6 +128,10 @@ comparators and matched learners; **its results remain pending** in this
 readout. See its [specification](reports/finalization/transfer_controls/SPECIFICATION.md).
 The [combined report](reports/finalization/FINAL_REPORT.md) distinguishes these
 completed deliverables from pending transfer evidence and independent assays.
+The separately frozen Boltz tree/ranking, tree–MLP blend, tree-leaf, quantile
+and PCA comparisons are also authorized and unfinished; no hybrid result is
+claimed. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
+records the preserved cells, interrupted attempts and current execution gates.
 
 The completed round-two phase conservatively accounted for $76.84 of its $100
 ceiling, including a retained engineering allowance. Its cloud jobs are stopped.

@@ -1,0 +1,63 @@
+gui/501/org.pepstab.durable-smoke-20261012 = {
+	active count = 0
+	path = /Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/smoke.plist
+	type = LaunchAgent
+	state = not running
+
+	program = /Users/cheparukhin/ai_science_hack/.venv/bin/python
+	arguments = {
+		/Users/cheparukhin/ai_science_hack/.venv/bin/python
+		/Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/launchd_smoke.py
+	}
+
+	working directory = /Users/cheparukhin/ai_science_hack
+
+	stdout path = /Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/stdout.log
+	stderr path = /Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/stderr.log
+	inherited environment = {
+		SSH_AUTH_SOCK => /var/run/com.apple.launchd.Q4ZQgQyoTl/Listeners
+	}
+
+	default environment = {
+		PATH => /usr/bin:/bin:/usr/sbin:/sbin
+	}
+
+	environment = {
+		OSLogRateLimit => 64
+		XPC_SERVICE_NAME => org.pepstab.durable-smoke-20261012
+	}
+
+	domain = gui/501 [100019]
+	asid = 100019
+	minimum runtime = 10
+	exit timeout = 15
+	runs = 1
+	last exit code = 7
+
+	resource coalition = {
+		ID = 84545
+		type = resource
+		state = active
+		active count = 1
+		name = org.pepstab.durable-smoke-20261012
+	}
+
+	jetsam coalition = {
+		ID = 84546
+		type = jetsam
+		state = active
+		active count = 1
+		name = org.pepstab.durable-smoke-20261012
+	}
+
+	spawn type = daemon (3)
+	jetsam priority = 40
+	jetsam memory limit (active) = (unlimited)
+	jetsam memory limit (inactive) = (unlimited)
+	jetsamproperties category = daemon
+	jetsam thread limit = 32
+	cpumon = default
+	sanitizer flags = 0x0
+
+	properties = runatload | inferred program
+}

@@ -1,7 +1,7 @@
 # Finalisation readout: peptide–HLA stability
 
 12 October 2026. **Completed portable inference and matched ranking-loss follow-up;
-stronger transfer controls remain pending.** This report combines the closed
+stronger transfer controls and hybrid comparisons remain pending.** This report combines the closed
 round-two record with completed finalisation deliverables. It does not replace
 the frozen protocols or historical reports.
 
@@ -159,6 +159,15 @@ validation. Ranking outcomes do not widen that scope.
 [Frozen specification](transfer_controls/SPECIFICATION.md) and
 [protocol](transfer_controls/protocol.json).
 
+Eighteen of30 extension cells, representing6,030 fits, have passed the full
+semantic audit. The original cloud scope is stopped. Two local process
+interruptions left1,785 recorded completed partial fits that are discarded;
+twelve original remote attempts remain uncertain and fully carried in the
+closed accounting. A one-time local recovery with complete-call checkpoints
+is being prepared for the remaining12 cells and4,800 fits under the unchanged
+deadline. These partial counts are operational progress, not extension results.
+[Recovery operations](RECOVERY_OPERATIONS.md).
+
 ## Newly authorized hybrid follow-up
 
 **The user has now authorized bounded execution of the hybrid experiments; no Boltz tree result is available yet.**
@@ -170,9 +179,12 @@ The new protocol covers matched Boltz boosted-tree regression and ranking
 heads, a leakage-safe prediction blend with the MLP, tree-leaf features as MLP
 inputs, and quantile/PCA preprocessing. Every family has a bounded comparison
 and fit graph; execution requires frozen tested sources and a runtime gate.
-The current transfer scope stays unchanged. New local fitting is queued until
-that controller exits, with at most $35 additional cloud allocation inside
-the unchanged $100 new-phase ceiling. See [hybrid authorization](hybrids/user_authorization.json).
+The current transfer scope stays unchanged. Both former waiting queues stopped
+before any hybrid fit. The replacement operational gate must verify successful
+completion and audit of all30 transfer cells. The hybrid protocol contains
+12 unscored engineering fits followed by480 scientific fits; its current cloud
+allocation is zero. See [hybrid authorization](hybrids/user_authorization.json)
+and [recovery operations](RECOVERY_OPERATIONS.md).
 
 The existing MLP already standardizes features using gradient-fitting rows
 only. Additional normalization or tree-derived preprocessing is a separate
@@ -213,8 +225,12 @@ ranking audit do not repair that historical gap.
 The closed round-two phase conservatively accounted for $76.8388 against its
 $100 ceiling, including the retained $2 engineering allowance. This is not a
 provider invoice or live balance. Finalisation has a separately authorized
-additional ceiling; its pending transfer cost closeout is not included in the
-old accounting. [Prior resource closeout](../further_research/round2/resources/runtime_cost_summary.json).
+additional ceiling. Its stopped transfer scope carries $5.179382 conservatively,
+including uncertain calls and preemptions; the local recovery and hybrid phases
+currently allocate no further cloud spend. This new-phase liability is separate
+from the old accounting and is not a live balance.
+[New-phase closure](resources/transfer_main/interruption_20261012/closure.json)
+and [prior resource closeout](../further_research/round2/resources/runtime_cost_summary.json).
 
 ## Local delivery and verification
 
@@ -231,5 +247,5 @@ python3 site/round2-build.py --check
 The ranking [report exit receipt](ranking/report.exit.json) records the single
 frozen report invocation; its completion audit retains independent arithmetic
 and artifact checks. Completed expensive scopes must not be blindly relaunched.
-This readout remains provisional for the explicitly pending transfer extension
-and independent confirmation.
+This readout remains provisional for the explicitly pending transfer extension,
+hybrid comparisons and independent confirmation.

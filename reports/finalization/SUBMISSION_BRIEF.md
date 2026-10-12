@@ -1,7 +1,8 @@
 # Peptide–HLA stability: submission brief
 
 Prepared 12 October 2026. Local draft for the completed development findings;
-the stronger transfer extension is still running. Not submitted externally.
+the stronger transfer extension and hybrid comparisons remain unfinished.
+Not submitted externally.
 
 ## Project in one paragraph
 

@@ -10,13 +10,48 @@ The second closure and dated amendment are under
 `resources/transfer_recovery/interruption_20261012_153054/`. Root is preparing
 a one-time operating-system-managed local run and complete-call checkpoints
 before another attempt. The deadline and scientific recipes remain unchanged.
-The ownership details below describe the now-interrupted launch history.
+The user confirmed restarting/updating Codex. The ownership details below
+describe the now-interrupted launch history; no scientific job is currently
+running at this checkpoint.
+
+## Durable recovery preparation — 12 October 15:55 UTC
+
+The new additive controller is `scripts/final_transfer_durable.py`, with
+33 passing safety tests. Its separate destination is `transfer_recovery_v2/`.
+It binds both interruption closures, the true failed local exit and the
+unchanged original protocol. Checkpoint worker validation and a separate
+source-bound authorization remain required before launch. Preserve all old
+attempts. Retained scientific scope is10,830 fits; discarded completed fits
+are1,785, making12,615 known completed fits after eventual success, plus the
+twelve uncertain remote attempts and any unrecorded interrupted local fits.
+
+The one-time launchd engineering test passed, with parent PID1, exactly one
+run and intentional exit7. Its registration was removed and absence checked.
+Evidence is in `resources/durable_engineering/audit.json`. Use an explicit
+plist with `RunAtLoad: true`, `KeepAlive: false`, and no recurring triggers;
+do **not** use `launchctl submit`, which enables restart after failure.
+Store the plist inside this repository, not in an automatic login directory.
+Record the actual job label, PID, source and authorization before releasing
+dependent work. Remove its registration after verified exit. A keep-awake
+helper, if needed, must be bound to the exact live controller and stop with it.
+
+The deadline remains13 October15:32:19.924192 UTC, with at most three local
+workers and two numerical threads each. No new cloud allocation is authorized
+by this recovery. Complete-call checkpoints may only replay exact validated
+completed calls; an incomplete call requires reconciliation and never triggers
+an automatic retry. Host shutdown or SIGKILL can still interrupt execution.
+
+Hybrid operational version3 is being prepared in a separate output root. Its
+scientific480+12-fit protocol remains unchanged. Neither historical pilot gate
+may be released: version2 binds failed PID37822. Version3 must require both
+closures, the exact new durable attempt, all30 audited artifacts and successful
+exit with controller absence. No hybrid fitting has started.
 
 The user cancelled the proposed handoff and schedule stop. Continue in the
 current chat. The existing heartbeat remains active; do not create another
 thread or another recurring schedule for this work.
 
-Current ownership: local transfer recovery **PID37822**, keep-awake helper
+Historical ownership: local transfer recovery **PID37822**, keep-awake helper
 **37823**, launched12 October15:13:27 UTC. The new hybrid pilot waiting queue
 is **PID44698**, helper **44699**, launched15:23:52 UTC. Never duplicate these
 controllers. Inspect their exact process commands and durable state before

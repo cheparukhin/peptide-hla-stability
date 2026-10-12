@@ -1,0 +1,27 @@
+{
+  "schema": "one_shot_launchd_engineering_audit.1",
+  "status": "passed",
+  "at_utc": "2026-10-12T15:53:35.290047+00:00",
+  "label": "org.pepstab.durable-smoke-20261012",
+  "domain": "gui/501",
+  "pid": 52592,
+  "ppid": 1,
+  "runs": 1,
+  "intentional_exit_code": 7,
+  "launchctl_bootstrap_exit_code": 0,
+  "launchctl_bootout_exit_code": 0,
+  "post_bootout_print_exit_code": 113,
+  "post_bootout_service_absent": true,
+  "model_fits": 0,
+  "cloud_spend_usd": 0,
+  "automatic_restart": false,
+  "no_recurring_trigger": true,
+  "launchctl_submit_not_used": "Local man page states it enables failure restart; explicit plist KeepAlive=false used instead.",
+  "evidence_sha256": {
+    "smoke.plist": "449f619499c178c0362f5484deb8f51af0fe2b0cd20878ae0a20e11b75ba0e24",
+    "launchd_smoke.py": "8ac0eb8a67b0b0e4e2851e910f420253f28ef237245e5e341241a38469abecd5",
+    "smoke_events.jsonl": "2d76882f98b445e48b9ad2aace1b8078c410f2b33fced8dcb0a2f563a82039e1",
+    "smoke_exit.json": "7a2ac09d1921a4e77f306f4b7dd38f836ce5bcbaef064dd11f68ebda41502243",
+    "observed_exit.txt": "cd66580c0b5b08b5e1043dbce8835f558e2eed74feb9dc949453e7e00ac04b51"
+  }
+}

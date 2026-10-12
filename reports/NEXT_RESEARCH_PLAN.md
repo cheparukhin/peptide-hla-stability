@@ -691,3 +691,13 @@ is unchanged; its operational gate must explicitly bind the interrupted-scope
 closure and successful recovered30-cell assessment, without fabricating
 missing original success receipts. See the dated recovery section of the
 [phase plan](finalization/PLAN.md).
+
+The local recovery subsequently received SIGTERM at15:30:54 UTC during a
+confirmed Codex restart/update. It cleaned up its workers and recorded a failed
+exit; no fresh cell completed. An additional1,086 completed partial fits are
+discarded, bringing the known discarded count to1,785. The separately recorded
+second amendment requires a one-time operating-system-managed controller and
+validated complete-call checkpoints before another attempt. Scientific scope,
+original deadline and zero additional cloud allocation remain unchanged.
+Both hybrid waiting queues stopped before fitting. Current recovery ownership
+and its revised gates are recorded in the phase manifest and recovery operations.
