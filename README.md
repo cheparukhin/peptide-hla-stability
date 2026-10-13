@@ -38,6 +38,17 @@ diagnostic exposure of test rows and aggregate outcomes.
 - [Canonical research plan](reports/NEXT_RESEARCH_PLAN.md) and
   [finalisation status](reports/finalization/execution_manifest.json): frozen
   decisions, remaining work and spending controls.
+- [Third follow-up protocol](reports/followup3/PROTOCOL.md): frozen ProteinMPNN
+  context-complementarity and few-shot HLA adaptation studies. A
+  [pre-efficacy amendment](reports/followup3/THIRD_PRIMARY_AMENDMENT.md) adds
+  conditional repaired-energy complementarity, with three-primary family control.
+  The [few-shot result](reports/followup3/REPORT.md#completed-few-shot-result)
+  is complete and audited. ProteinMPNN context augmentation is audited and
+  inconclusive beyond the matched Boltz head, as is repaired-descriptor
+  complementarity. One selected full-cohort ProteinMPNN extension is pending.
+- [Independent metadata/methods audit](reports/followup3/independent_data/PROVENANCE.md):
+  preserved 129 candidates, heterogeneous protocols and unresolved construct/
+  measurement mapping; external candidate outcomes remain reserved.
 - [Independent assay brief](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md):
   concrete, unsent acquisition requirements and remaining confirmation gaps.
 - [Original 4 October report](reports/REPORT.md): preserved historical study,
@@ -90,6 +101,43 @@ scientific fits and the separate 12-fit unscored pilot passed saved-model replay
 the [table audit](reports/finalization/hybrids_cloud_v1/coverage_audit.json)
 verified all 16 prediction arms and 50 comparison rows. These matched recipes
 are distinct from the competitive main-study sequence selector.
+
+The [audited few-shot HLA adaptation study](reports/followup3/REPORT.md#completed-few-shot-result)
+raises R5 ridge from **0.529583 to 0.576337** with 20 target labels per allele:
+**+0.046754 [0.022657,0.103467]**, with the **98.333333% three-primary family
+interval [0.014042,0.119457]**. Three fixed support draws are averaged as
+scores, with 1,360 target measurements per draw across 68 alleles and no target
+tuning/stopping. Source stopping labels count, and target HLA groups plus
+support/query families are excluded from source fitting. The ≥20 and ≥50
+panels are identical. All 450 source fits and 9,180 adapters pass cloud exact
+saved-state replay and independent numerical/ancestry checks. Its reduced
+sequence anchor and strict joint exclusions differ from the main assessment;
+no prospective assay savings or independent confirmation is established.
+
+The [audited ProteinMPNN study](reports/followup3/REPORT.md#completed-proteinmpnn-result)
+on the balanced 4,449-pair panel finds an inconclusive MLP context increment:
+**R5+P+C minus R5+P = +0.023960 [−0.014736,0.058359]**; its required
+**98.333333% family interval is [−0.021942,0.065942]**. The net increment
+over R5 is **+0.018816 [−0.016250,0.056637]**, from 0.600708 to 0.619524.
+All six arms, 600 MLP members and 300 ridge fits passed arithmetic/ancestry
+and parser-recovery audits; fitted-weight replay is not claimed. R0 controls
+are positive exploratory comparisons, while R5 ridge increments remain
+inconclusive. This does not establish equivalence or replace the main result.
+
+The [audited repaired-descriptor study](reports/followup3/REPORT.md#completed-repaired-descriptor-result)
+finds **R5+E minus R5 = +0.014991 [−0.043512,0.036368]**, with
+**98.333333% family interval [−0.052436,0.045026]**. Ridge and ≥50-panel
+sensitivities are also inconclusive. All 4,449 descriptors and 300 new fits
+pass independent recovery, matrix and assessment audits; R0/R5 baselines are
+reused exactly. The [comparison figure](reports/followup3/figures/descriptor_comparison.svg)
+shows all eight balanced-panel MLP arms and both descriptor family intervals.
+Few-shot adaptation is the only positive primary in the original family.
+
+After both descriptor audits, the [frozen decision](reports/followup3/FULL_COHORT_DECISION.json)
+admits one final 19,716-pair ProteinMPNN extension with three R5/P/PC arms,
+300 MLP members and 150 ridge fits, capped at $40. Results are pending.
+This selected development check is not independent confirmation or a fourth
+original-family primary; no full FoldX expansion or additional grid is admitted.
 
 Intervals throughout condition on fitted predictions and inner choices;
 they omit repeated fitting/selection and independent assay variation.
@@ -155,7 +203,9 @@ Boltz−sequence MLP gap grows by **+0.1615 [0.1333,0.2041]**. Both models worse
 but Boltz loses less performance. The fixed recipes, label-blind subsets and
 counted stopping labels support relative robustness; they do not establish
 prospective assay savings or a gain against the main competitive selector.
-All authorized computational work and temporary cloud resources are closed.
+The finalization computational work and its temporary cloud resources are
+closed. The separately authorized third follow-up tranche is in progress,
+with a $139 inclusive ceiling; this is a limit, not a spending target.
 
 
 The completed round-two phase conservatively accounted for $76.84 of its $100

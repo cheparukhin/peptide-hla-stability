@@ -1,0 +1,134 @@
+{
+  "schema": "inverse_fulltrain_cohort_metadata_comparison.1",
+  "created_at_utc": "2026-10-13T17:41:51.498031+00:00",
+  "scope": "descriptive metadata, not new efficacy",
+  "inputs_read": [
+    "identity metadata CSV only"
+  ],
+  "numeric_labels_predictions_mpnn_scores_read": false,
+  "sources": {
+    "reports/followup3/inverse_execution_v2/panel.csv": "0e78d19b306269865fad388ff45dcb53605746ad91c6cb5e6c3bae1df9f5d8a5",
+    "reports/followup3/inverse_fulltrain_candidate/panel.csv": "0d506f2dac89f21ced439a6756e687ed2e2ee5ac3158436c887c48a5692e1f86"
+  },
+  "counts": {
+    "balanced_rows": 4449,
+    "full_rows": 19716,
+    "additional_rows": 15267,
+    "row_expansion_factor": 4.431557653405259,
+    "balanced_alleles": 75,
+    "full_alleles": 75,
+    "newly_covered_alleles": 0,
+    "balanced_clusters": 2082,
+    "full_clusters": 3587,
+    "newly_covered_clusters": 1505,
+    "cluster_expansion_factor": 1.7228626320845342,
+    "balanced_share_of_full_rows": 0.22565429093122338,
+    "balanced_share_of_full_clusters": 0.580429328129356
+  },
+  "containment": {
+    "all_balanced_natural_keys_in_full": true,
+    "natural_key": "allele,peptide",
+    "cluster_id_outer_fold_complex_folder_exact": true,
+    "all_balanced_clusters_in_full": true,
+    "whole_cluster_fold_assignment_in_each_cohort": true,
+    "no_fold_reassignment_on_shared_queries": true
+  },
+  "row_density": {
+    "definition": "number of allele/peptide identity rows per inherited peptide cluster; descriptive counts, not effective independent observations",
+    "balanced_rows_per_cluster": {
+      "min": 1,
+      "p25": 1.0,
+      "median": 2.0,
+      "p75": 3.0,
+      "p90": 4.0,
+      "p95": 5.0,
+      "max": 42,
+      "mean": 2.136887608069164,
+      "singletons": 948
+    },
+    "full_rows_per_cluster": {
+      "min": 1,
+      "p25": 1.0,
+      "median": 4.0,
+      "p75": 7.0,
+      "p90": 11.0,
+      "p95": 15.0,
+      "max": 157,
+      "mean": 5.4965151937552275,
+      "singletons": 1033
+    },
+    "full_rows_per_previously_covered_cluster": {
+      "min": 1,
+      "p25": 4.0,
+      "median": 7.0,
+      "p75": 10.0,
+      "p90": 14.0,
+      "p95": 18.0,
+      "max": 157,
+      "mean": 7.735350624399616,
+      "singletons": 153
+    },
+    "full_rows_per_newly_covered_cluster": {
+      "min": 1,
+      "p25": 1.0,
+      "median": 1.0,
+      "p75": 3.0,
+      "p90": 6.0,
+      "p95": 7.0,
+      "max": 18,
+      "mean": 2.3993355481727576,
+      "singletons": 880
+    },
+    "balanced_rows_per_allele": {
+      "min": 5,
+      "p25": 64.0,
+      "median": 64.0,
+      "p75": 64.0,
+      "p90": 64.0,
+      "p95": 64.0,
+      "max": 64,
+      "mean": 59.32,
+      "singletons": 0
+    },
+    "full_rows_per_allele": {
+      "min": 5,
+      "p25": 247.5,
+      "median": 258.0,
+      "p75": 269.5,
+      "p90": 378.4000000000003,
+      "p95": 473.0,
+      "max": 727,
+      "mean": 262.88,
+      "singletons": 0
+    },
+    "additional_rows_in_previously_covered_clusters": 11656,
+    "rows_in_newly_covered_clusters": 3611,
+    "previously_covered_clusters_with_increased_density": 1915,
+    "previously_covered_clusters_with_same_density": 167
+  },
+  "row_count_thresholds_only": {
+    "20": {
+      "balanced_alleles_at_least_rows": 69,
+      "full_alleles_at_least_rows": 69
+    },
+    "50": {
+      "balanced_alleles_at_least_rows": 68,
+      "full_alleles_at_least_rows": 68
+    }
+  },
+  "interpretation": [
+    "Both cohorts cover all75alleles; additional coverage concerns peptide clusters and extra rows within covered clusters.",
+    "The row and cluster expansion factors differ; 4.4xrows is not4.4xindependent clusters. Peptide clusters remain related within alleles, so cluster counts are not effective sample size.",
+    "The full study changes source/query composition and fitting density together; descriptive metadata cannot identify a causal density effect.",
+    "Row-count thresholds are not assay-eligible panels: eligibility additionally needs observed target rankability/nonconstant labels. No labels were read and eligible assay membership is not asserted.",
+    "No new significance test, primary hypothesis, model fit, cloud job or inference is introduced."
+  ],
+  "count_table_sha256": {
+    "per_allele_counts.csv": "bed02b24ea7aae95d728dc5ee646f3c09bd40ae53fe38b93529f278c02edb181",
+    "per_outer_fold_counts.csv": "83896081a0a753165238e207dfb645da8657e2d4cf4f9f8bbec02689c7d5594f"
+  },
+  "count_table_notes": {
+    "globally_new_cluster_ids_for_allele": "cluster IDs absent from the entire old subset; a cluster may occur in multiple alleles, so per-allele counts do not sum to global1505",
+    "additional_cluster_ids_for_allele": "full-minus-balanced distinct cluster IDs within each allele; may already have been covered through another allele"
+  }
+}

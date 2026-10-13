@@ -1,10 +1,43 @@
 # Project review and prioritised research plan
 
+**13 October 2026 update:** the user authorized a focused follow-up tranche
+with an inclusive $139 Modal-credit ceiling. Few-shot HLA adaptation completed
+and passed independent numerical/ancestry review: the Boltz-based ridge improves
+from 0.529583 to 0.576337 with 20 support measurements per allele, a +0.046754
+change with a three-question 98.333333% interval [0.014042, 0.119457]. This is
+conditional development evidence under joint HLA/peptide exclusions; it does
+not establish prospective assay savings. ProteinMPNN completed its audited
+4,449-pair matched assessment: the neural context increment is +0.023960
+with a three-question interval [-0.021942, 0.065942], and its net increment
+over Boltz is +0.018816 with nominal 95% interval [-0.016250, 0.056637].
+Ridge disagrees; added predictive value is not established. FoldX also completed
+its independently audited 4,449-pair comparison after one reviewed recovery of
+73 provider-preempted cases. Its neural R5 increment is +0.014991 with a
+three-question interval [-0.052436, 0.045026]; ridge is likewise inconclusive.
+That third question was added before the new efficacy
+results were inspected; see [the amendment](followup3/THIRD_PRIMARY_AMENDMENT.md).
+
+Root selected one final [full-cohort ProteinMPNN extension](followup3/FULL_COHORT_DECISION.json)
+after both descriptor audits. It retains all 19,716 original-training complexes,
+reuses 4,449 native scores, and evaluates freshly fitted R5/R5+P/R5+P+C heads
+plus a fixed-query descriptive comparison. Four disjoint scoring batches are
+running under a combined $34 extraction cap; the entire extension is bounded
+at $40. This is selected development work, not an independent confirmation or
+a fourth original-tranche primary. No full FoldX expansion, combined-feature
+search or additional tuning grid is planned.
+
+The metadata-only audit retained 129 candidate external rows as reserved;
+measurement lineage and assay compatibility remain insufficient for confirmation.
+The [follow-up report](followup3/REPORT.md), [frozen protocol](followup3/PROTOCOL.md),
+[review](followup3/SCIENCE_REVIEW.md) and [execution record](followup3/EXECUTION.md)
+carry detailed evidence and current status. Completed historical studies below
+remain immutable; their grids and original test assessment are not reopened.
+
 Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **bounded round-two development execution complete: evaluation repair, extraction, sequence/representation screens, complementarity, locked execution repeats and all 30 transfer cells with full reporting; independent confirmation remains open**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
 
 This is the **single current source of truth for project status, research priorities and execution gates**. It consolidates the original follow-up plan, completed Phase A–D findings, the [8 October Boltz strategy](archive/plans/boltz-strategy-2026-10-08.md), and the remaining hackathon proposals. Superseded proposals are in the [plan archive](archive/plans/README.md). Stage reports, saved tables and dated prespecifications remain evidence about completed work; they are not additional work queues. The frozen [original evaluation contract](../EVALUATION.md) remains unchanged. Section 11 records the reconciliation decisions.
 
-**Current decision after execution:** frozen Boltz procedures improve the specified development comparisons, including the bounded HLA/joint transfer comparisons below. The main peptide comparison does not establish the original 0.05 worthwhile-gain bar; transfer exceeds that bar only for its narrower, conditional comparison. Independent half-life confirmation is the outstanding evidence gate. Keep calibration/adaptation separate; no additional fitting or cloud scope is authorized automatically. No assay noise ceiling is established. The original sequencing rationale below is retained as the study design history.
+**12 October decision after round-two execution (historical scope):** frozen Boltz procedures improve the specified development comparisons, including the bounded HLA/joint transfer comparisons below. The main peptide comparison does not establish the original 0.05 worthwhile-gain bar; transfer exceeds that bar only for its narrower, conditional comparison. Independent half-life confirmation is the outstanding evidence gate. Keep calibration/adaptation separate; no additional fitting or cloud scope is authorized automatically. No assay noise ceiling is established. The original sequencing rationale below is retained as the study design history.
 
 Maintain priorities and completion status here only. New experiment protocols may specify a milestone's implementation, but must link back here and cannot silently change its scope, comparator or gate. Record amendments and their evidence in this document; archive superseded proposals instead of keeping parallel plans.
 

@@ -1,23 +1,38 @@
 # site
 
-Local static submission view for the **audited round-two development assessment,
-12 October 2026**. The primary finding, methods, bounded transfer, complementarity,
-execution repeats, provenance gap, cost accounting and open independent confirmation
-are backed by [the current round-two assessment](../reports/further_research/round2/REPORT.md).
-The completed [matched ranking-loss follow-up](../reports/finalization/ranking/REPORT.md)
-and [portable inference package](../reports/finalization/inference/README.md) now
-have their own source-backed sections. Ranking intervals cross zero and the R5
-deployment selector retained MSE in all five folds. Stronger transfer controls
-remain explicitly pending in the [combined readout](../reports/finalization/FINAL_REPORT.md).
-The original October 3–4 film, approaches and held-out test are retained in a clearly
-dated, collapsed archive. Their original numeric results are unchanged.
+Local static submission view for the **audited development assessment and
+completed finalization studies, updated 13 October 2026**. Main, stronger
+transfer, complementarity, ranking, hybrid, label-budget and portable-inference
+results are backed by the [combined readout](../reports/finalization/FINAL_REPORT.md)
+and linked saved artifacts. The subsequently authorized ProteinMPNN/few-shot
+tranche has a [frozen protocol](../reports/followup3/PROTOCOL.md). Its
+[pre-efficacy amendment](../reports/followup3/THIRD_PRIMARY_AMENDMENT.md) adds
+conditional repaired-energy complementarity and three-primary family control.
+Few-shot fitting, exact saved-state replay and independent numerical/ancestry
+audit are complete. Its gain is positive under both individual 95% and
+three-primary 98.333333% intervals; see the generated absolute learning curves.
+ProteinMPNN extraction and all 900 head fits are complete and independently
+audited. Context augmentation remains inconclusive beyond Boltz. Repaired-
+descriptor extraction, 300 new head fits and independent recovery/matrix/
+assessment audits are complete; its R5 increment remains inconclusive.
+The balanced-panel figure shows all eight MLP arms and both descriptor family
+intervals. Few-shot is the sole positive original-family primary. One selected
+19,716-pair ProteinMPNN extension is admitted, with results pending.
+The [completed independent-data metadata/methods audit](../reports/followup3/independent_data/PROVENANCE.md)
+preserves all 129 candidates and their external candidate outcome reservation,
+while exposing
+heterogeneous endpoints and unresolved physical constructs/measurement lineage.
+The original October 3–4 film, approaches and held-out test are retained in a
+clearly dated, collapsed archive. Their original numeric results are unchanged.
 
-The current result is development evidence on the original training rows, not a
-new independent confirmation. The lower bound of the peptide-held-out selector gain
-is positive but below the prespecified 0.05 criterion. Transfer comparisons concern
-complete procedures against narrow sequence comparators. Budget accounting is
-**$76.8388 conservatively allocated against $100**, including the full retained $2
-engineering allowance; it is not a final invoice or live credit balance.
+All later performance assessments are conditional development evidence on the
+original training rows. The main gain is positive but its lower bound is below
+the prespecified +0.05 worthwhile-gain criterion. Ranking and hybrid primary
+intervals span zero. Matched transfer heads support representation utility;
+they do not establish structural causality or independent confirmation.
+Historical round-two and finalization cost records are separate from the new
+tranche's $139 inclusive ceiling; these are conservative accounting records,
+not final invoices or a live credit balance.
 
 The page uses static generated HTML, system-font fallbacks, and local film assets.
 The current results work without JavaScript, a backend, or network access. Evidence
@@ -35,8 +50,10 @@ the built-in "/docs folder" source.
 | File | What it is |
 |---|---|
 | `index.html` | The page. Inline CSS, system fonts, offline-readable result sections. |
-| `round2-build.py` | Standard-library evidence builder/checker; writes only the marked current section and payload. |
+| `round2-build.py` | Standard-library evidence builder/checker; writes the marked current section/payload and copies verified figure assets. |
 | `round2-data.json` | Selected saved comparisons, procedure scores, cohort, conservative accounting and SHA-256 source hashes. |
+| `figures/fewshot_curves.svg` / `.png` | Copied source-backed few-shot curves and primary family interval; scientific exports originate in `reports/followup3/figures/`. |
+| `figures/descriptor_comparison.svg` / `.png` | All eight balanced-panel MLP scores and both descriptor primary family intervals, with portable glyph paths and a source-hash manifest. |
 | `film/` | Generated — the submission film as a static page. Do not hand-edit. |
 | `intro/` | Generated — the original 30-second animation, live. Do not hand-edit. |
 | `intro.mp4` | The intro animation, re-encoded for web: 1280×720, **H.264 Constrained Baseline, level 3.0**, yuv420p, faststart, no audio track (2.9 MB). The 20 MB source is `pMHC Intro v2.mp4` in the repo root. |
@@ -67,7 +84,10 @@ The historical live film requires JavaScript; the MP4 is its fallback.
 The builder validates unique selected CSV rows, finite scores, delta consistency,
 point/interval agreement, the authored primary-criterion interpretation, the budget
 ceiling, zero locked-repeat differences, completed ranking audit and MSE fallback,
-ranking interval interpretation, and exact model-export completion. `--check` compares the generated HTML
+ranking interval interpretation, and exact model-export completion. Few-shot
+checks require passed cloud/independent audits, frozen fit coverage, primary
+arithmetic, shared-panel identity, target/source budgets, exact plotted figure rows/asset hashes, positive group-deletion
+points and the family interval's saved-draw/amendment hashes. `--check` compares the generated HTML
 and JSON against current saved inputs and fails on stale content or source hashes.
 It never executes models, reads the original test for selection, edits saved research
 evidence, accesses the network or launches paid compute.
@@ -79,8 +99,33 @@ narratives are hash-bound too. New results require reviewing the authored prose 
 regenerating; the builder does not infer new scientific claims from a higher score.
 The current follow-up also binds ranking comparisons/scores/selections and audit,
 the portable distribution manifest, the unsent assay brief, the combined report,
-and the pending transfer specification. Updating the combined report after transfer
-completion requires regenerating the snapshot and reviewing its pending-state copy.
+and the historical transfer specification. It also binds the independent-data
+metadata manifest, publication metadata, method-status inventory and provenance
+report. The new follow-up sources bind the shared protocol, pre-efficacy
+third-primary amendment, FoldX technical receipt, few-shot curves/comparisons,
+source/target budgets, independent audit and reproducible audit script. The
+completed inverse study also binds all 24 score rows/28 contrasts, its current
+three-primary interval, 900-fit independent audit, parser-recovery receipt and
+full-cohort decision framework. Completed energy tables, recovery/matrix and
+assessment audits, the descriptor figure and selected full-cohort decision are
+also bound and validated. The
+subordinate offset diagnostic is explicitly post-hoc; its nominal intervals,
+rank/arithmetic audit, source ancestry and unchanged primary family are checked
+and hash-bound too. Any
+combined-report, submission-brief or saved-source change requires regeneration.
+
+An opt-in presentation gate is prepared for the selected full-cohort extension:
+
+```bash
+python3 site/round2-build.py --check-full-cohort
+```
+
+It requires complete and passed independent audits before reading outcomes,
+checks all three absolute arms for both learners/panels, the 12 conditional
+95% contrasts, and all 24 fixed-query descriptive entries. Missing or unaudited
+results are rejected. This command never writes a snapshot; the default draft
+continues to show pending status until the audited readout is integrated.
+No full-cohort metric, fit or bootstrap is generated by this presentation path.
 
 The generated section lies between `ROUND2 GENERATED START` and `ROUND2 GENERATED END`
 in `index.html`. Change its template in `round2-build.py`, then rebuild. Other parts

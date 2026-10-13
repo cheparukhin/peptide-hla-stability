@@ -1,7 +1,15 @@
 # Peptide–HLA stability: submission brief
 
 Prepared 13 October 2026. Local draft covering completed development, ranking,
-transfer, hybrid and label-budget studies. Not submitted externally.
+transfer, hybrid and label-budget studies, and the independent-data metadata
+audit. The few-shot result is complete and independently audited;
+ProteinMPNN is complete with an inconclusive context increment beyond Boltz;
+repaired-descriptor assessment is also complete and inconclusive beyond R5.
+Few-shot adaptation is the sole positive primary in the original family. One
+selected full-cohort ProteinMPNN extension is admitted, with results pending. The
+[pre-efficacy amendment](../followup3/THIRD_PRIMARY_AMENDMENT.md) declares three
+primaries and 98.333333% family intervals.
+Not submitted externally.
 
 ## Project in one paragraph
 
@@ -13,6 +21,13 @@ embedding procedure improves median within-allele Spearman correlation from
 controlled grouped assessments, representation controls, execution repeats,
 auditable predictions, and portable ridge and neural prediction heads. These
 are development findings; independent experimental confirmation remains open.
+
+The supplied kinetic-stability dataset is attributed to **Rasmussen et al.
+(2016)**, *Pan-Specific Prediction of Peptide–MHC Class I Complex Stability,
+a Correlate of T Cell Immunogenicity*, *The Journal of Immunology* 197(4),
+1517–1524. [DOI: 10.4049/jimmunol.1600582](https://doi.org/10.4049/jimmunol.1600582)
+([PubMed record](https://pubmed.ncbi.nlm.nih.gov/27402703/)). Later assessments
+retain the supplied original-training partition and frozen grouping identities.
 
 ## What we built
 
@@ -64,10 +79,62 @@ less performance. Stopping labels count and subset scores are averaged. This
 fixed-recipe sensitivity does not estimate prospective assay savings or replace
 the stronger main-study sequence comparison. [Complete results](label_efficiency/REPORT.md).
 
+The completed [few-shot follow-up](../followup3/REPORT.md#completed-few-shot-result)
+adds a distinct finding: 20 target measurements per allele raise R5 ridge
+ranking from 0.529583 to 0.576337, a **+0.046754 [0.022657,0.103467]** gain
+with a **98.333333% family interval [0.014042,0.119457]**. Three support draws
+are averaged as scores; target HLA groups and support/query peptide families
+stay outside source fitting. All 450 source fits and 9,180 adapters pass cloud
+saved-state replay and a separate independent numerical/ancestry audit. The
+≥20 and ≥50 panels are the same 68 alleles. Per draw, k=20 uses 1,360 target
+labels with no target tuning/stopping; source stopping labels count. The
+sequence comparator is a reduced historical four-member anchor. These are
+conditional development findings with different source/query/label access
+from the main study, not prospective assay savings or independent confirmation.
+
+A subordinate [post-hoc offset diagnostic](../followup3/fewshot_offset/REPORT.md),
+chosen after the positive few-shot primary, finds full adaptation adds
+**+0.044350 [0.016478,0.092778]** beyond the saved scalar-offset control.
+Offset-only minus zero-shot is **+0.002404 [−0.006172,0.023880]**. These are
+nominal unadjusted 95% intervals: the feature term adds ranking beyond this
+control on saved predictions, while offset-only benefit is unresolved. No new
+fits or labels are used; it is exploratory and leaves the three-primary family
+unchanged.
+
+The [completed ProteinMPNN follow-up](../followup3/REPORT.md#completed-proteinmpnn-result)
+has an inconclusive context increment beyond Boltz: **+0.023960
+[−0.014736,0.058359]**, with a **98.333333% family interval
+[−0.021942,0.065942]**. The net R5+P+C minus R5 gain is **+0.018816
+[−0.016250,0.056637]** under its exploratory interval, from 0.600708 to
+0.619524. All six arms and 900 fits on the balanced 4,449-pair panel pass
+independent prediction/selection/ancestry and parser-recovery audits;
+fitted-weight replay is not claimed. R0 controls are exploratory, and the
+R5 ridge sensitivities remain inconclusive. This is not equivalence or a
+replacement for the main assessment.
+
+[Post-hoc descriptive influence checks](../followup3/inverse_execution_v2/exploratory_influence/summary.json)
+keep the MLP's net point positive after removing any one allele or outer-held
+prediction fold under fixed original eligibility. Ridge disagreement remains;
+these checks add no confidence interval or inference upgrade and leave the
+original MLP uncertainty inconclusive.
+
+The [completed repaired-descriptor study](../followup3/REPORT.md#completed-repaired-descriptor-result)
+finds MLP R5+E minus R5 **+0.014991 [−0.043512,0.036368]**, with a
+**98.333333% family interval [−0.052436,0.045026]**. Scores are 0.600708
+and 0.615698; ridge adds +0.006510 [−0.023760,0.020296]. Both learners
+and the ≥50-panel sensitivities remain inconclusive. A positive exploratory
+R0 ridge increment does not establish additional incumbent R5 value. All
+4,449 descriptors, 200 new MLP members and 100 ridge fits pass independent
+audits, preserving the 4,376 inherited successes and recovering 73 interrupted
+attempts. R0/R5 baselines are reused exactly with no refits; fitted-weight replay
+is not claimed. The [comparison figure](../followup3/figures/descriptor_comparison.svg)
+shows every balanced-panel MLP arm and both descriptor primary family intervals.
+
 ## Three-minute demonstration
 
 1. Open the [project page](../../site/index.html). Show the main development
-   comparison, then the uncertain ranking and hybrid gains with their frozen
+   comparison, then the positive few-shot adaptation result and its label
+   budget. Show the uncertain ranking and hybrid gains with their frozen
    inner-selection fallbacks.
 2. Show the [portable model contract](../../docs/ROUND2_INFERENCE.md) and inspect
    one saved head. Its files contain weights, scalers, configuration and hashes.
@@ -88,7 +155,13 @@ Boltz extraction and startup. Novel sequence-to-prediction latency is unmeasured
 training cohort for development. The historical test report is separate and
 was not reopened for the follow-ups. Its [original report](../REPORT.md#2-data-and-evaluation)
 discloses earlier diagnostic exposure of test rows and aggregate outcomes.
-No adequate reserved independent assay cohort is available.
+No adequate reserved independent assay cohort is available. A
+[metadata/methods audit](../followup3/independent_data/PROVENANCE.md) preserves
+129 candidates, but verifies materially different methods and unresolved
+construct/measurement mappings. The largest single-study/allele stratum has
+23 rows and remains gated; even a valid narrow assessment would not provide
+representative multi-allele confirmation. External candidate outcomes remain reserved;
+incidental public-result visibility during literature retrieval is disclosed.
 
 **Does structure cause the improvement?** The controls support useful
 position-aware learned features. They do not identify a causal structural
@@ -98,14 +171,48 @@ mechanism or establish an advantage for the designated contact map.
 was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
-**What is next?** Freeze candidate procedures before opening independent assay
-outcomes. All authorized computational studies are complete; an adequate
-independent assay cohort is the remaining scientific requirement.
+**What is next?** After both descriptor audits, the
+[frozen decision](../followup3/FULL_COHORT_DECISION.json) selects one final
+ProteinMPNN development extension over all 19,716 original-training pairs,
+with R5, R5+P and R5+P+C, 300 MLP members and 150 ridge fits. Its main
+comparison is R5+P+C minus R5; results are pending. Old/new predictions on
+the original 4,449 query rows are compared descriptively, with no extra fit or
+interval; changes in source coverage, inner selection and stopping do not
+isolate a causal sample-size effect. The [label-free cohort comparison](../followup3/inverse_fulltrain_metadata/cohort_metadata_comparison.json)
+shows the same 75 alleles, with 4.43× rows but only 1.72× inherited peptide
+clusters; this is coverage/density, not 4.43× independent evidence. The $40 cap sits within
+the authorized tranche ceiling. This evidence-selected extension is not
+independent confirmation or a fourth original-family primary. No full FoldX
+extension or additional grid is admitted. Freeze candidate procedures before
+opening independent assay outcomes; an adequate independent cohort remains
+the stronger scientific requirement.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance
 gap. Portable heads require compatible verified feature caches and output
 uncalibrated log-scale predictions rather than validated physical half-lives.
+
+## Method references
+
+- ProteinMPNN: [Dauparas et al., 2022](https://doi.org/10.1126/science.add2187)
+  and [official implementation](https://github.com/dauparas/ProteinMPNN);
+  full-backbone vanilla `v_48_020.pt`, with zero inference coordinate noise.
+- FoldX: [Delgado et al., 2019, FoldX 5.0](https://doi.org/10.1093/bioinformatics/btz184),
+  [Guerois et al., 2002, original force field](https://doi.org/10.1016/S0022-2836(02)00442-4),
+  and [Schymkowitz et al., 2005, complex-analysis methods](https://doi.org/10.1093/nar/gki387).
+  The recorded Linux binary is hash-pinned; repaired E contains 29 energy and
+  interface/clash/residue descriptors.
+- Boltz-2: [Passaro et al., 2025, technical preprint](https://doi.org/10.1101/2025.06.14.659707)
+  and [official implementation](https://github.com/jwohlwend/boltz). Reused
+  features use inference package `boltz==2.1.1`, with a separately pinned
+  checkpoint revision and checksum.
+
+The [follow-up report](../followup3/REPORT.md#primary-methods-and-pinned-artifacts)
+gives exact artifact provenance. These upstream methods do not establish that
+sequence likelihood or equilibrium energy predicts kinetic half-life. The
+[pre-results implementation audit](../followup3/ASSESSMENT_PRECHECK.md) passed;
+all three balanced/few-shot studies now have completed independent audits.
+The selected full-cohort extension requires its own completed-output audit.
 
 ## Evidence and delivery
 
