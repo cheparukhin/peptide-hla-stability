@@ -1,76 +1,56 @@
-# Continuation after the 12 October process interruption
+# Completed autonomous scientific finalisation
 
-**Current, 13 October 01:00 UTC:** the full hybrid study is audited and closed.
-One frozen label-budget study is running on Modal. Finish its science and the
-concise final write-up; do not add another experiment or execution framework.
-The original test remains closed and independent assay confirmation stays open.
+**Current, 13 October 2026:** all achievable authorized computational experiments
+and scientific audits are complete. No controller, download, training or report
+job is active. No additional launch or retry is authorized by old receipts.
+Final local presentation/source checks passed. Commit the final evidence, then
+pause the heartbeat.
+The original test was not reopened. Independent assay confirmation remains open.
 
-## Only active scope
+## Final label-budget study
 
-- Directory `resources/cloud_sandboxes/label-efficiency-20261013-0055`.
-- Sandbox `sb-01M4SC2YAXV4Z96XY8M5Z3AVF8`; App `ap-PlSRglCk86O6RZPcvN43hG`;
-  Volume `vo-AvRCgkVpPihf94kxbJ29lz`.
-- Released once at 00:55 UTC; watcher PID 38348; launcher 38399 exited 0.
-  Labels `org.pepstab.label-efficiency-{watch,launch,awake}-20261013-0055`.
-- Authorization SHA `d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6`.
-- One worker, two physical CPU / 8 GiB / two numerical threads; exactly 120 new
-  small-budget MLP fits and 20 identity-matched audited full-budget members.
-- **Fixed work stop 13 October 01:55 UTC; provider stop 01:57 UTC. Never extend.**
-  Inclusive cap $10 within the same $100 ceiling. No duplicate fit or download.
-- Fresh provider observation at 00:59 UTC: still running, exact authorization tags,
-  child started, independent watcher renewing leases. Never replace its writer.
-- Sources, subsets and runtime-only forecast were frozen before fitting. Do not
-  edit pinned sources or use outcomes to change scope. See
-  [specification](label_efficiency/SPECIFICATION.md) and protocol/task manifest.
-- After authentic provider exit 0, successful remote cleanup and no existing
-  download, use the existing bounded transport once. Require 491 verified output
-  files and a true phase certificate, then delete its Volume, stop its App and
-  remove exact exited registrations. Review all saved tables and subset/reuse
-  checks before interpreting the primary contrast. No heavy local audit.
+The single 120-fit study and 20 audited baseline-member reuse completed on Modal
+at 01:01 UTC. All 491 output files (74,821,701 bytes) were downloaded and hashed.
+The independent coverage audit passed: member/target/subset ancestry, nested
+label budgets, both stopping assignments, 28 scores, all four comparisons and
+shared bootstrap arithmetic. Full-budget scores match the earlier hybrid standard
+scores exactly. Tiny CSV parsing differences preserve every within-allele rank
+and are disclosed in the audit; no model output or tolerance changed.
 
-The 00:50 prelaunch allocation was closed before any Sandbox or fit: the real
-launcher found an old budget-envelope validation rule. Its narrowly corrected
-$10 rule passed 58 tests; a new authorization/nonce was frozen for 00:55. The old
-App is stopped and Volume deleted; its $0.01 storage carry is inside overhead.
-No historical receipt was overwritten.
+- Phase: `resources/cloud_sandboxes/label-efficiency-20261013-0055`.
+- Sandbox `sb-01M4SC2YAXV4Z96XY8M5Z3AVF8` exited 0 with real cleanup complete.
+- App `ap-PlSRglCk86O6RZPcvN43hG` stopped; Volume `vo-AvRCgkVpPihf94kxbJ29lz` deleted.
+- Watcher 38348 / launcher 38399 absent. All three exact launchd labels removed.
+- Certificate SHA `523a6e110d76a814e411eeae5d1be0d90cfba1ddc4da8ff5b9ca7f0516b8ec22`.
+- Audit SHA `b607c19ab53fbaf8ea0f386ef98955fe0fe5d3efc64e038289817430c379714f`.
+- Fixed deadlines were respected; no duplicate fitting or transfer occurred.
+- Actual provider snapshot $0.05160619; conservative carry $0.10.
 
-## Completed hybrid science
+Primary increase in the R5−R0 gap at 25% versus 100% fitting-cluster budget is
++0.161536 [0.133321,0.204142]. Both models worsen with fewer labels, but R5 loses
+less performance. The 50% budget and minimum-50 panel agree. These fixed-recipe,
+fixed-subset development results do not establish prospective assay savings or
+independent confirmation. See `label_efficiency/REPORT.md` and `coverage_audit.json`.
 
-All 480 scientific fits, the separate 12-fit unscored pilot and full replay /
-statistical report are complete. Report phase `hybrid-report-20261013-0020`
-finished 00:29 UTC; all 12 outputs (22,337,669 bytes) were verified. Its App and
-Volume are closed and registrations removed. Certificate SHA
-`131d74b63cf5335c4493e161cfa1b34c2d48a3789616bc56d77bd5ccfd459da1`.
-Independent table audit covers all 16 arms, 50 contrasts and shared 2,000 draws.
-Primary R5 hybrid-selector gain is +0.004384 [−0.005541,+0.009984]; retain the
-simpler standard head. Standard wins selection in three folds; a 25% tree blend
-wins two. Secondary frozen recipes do not establish a general impossibility.
+## Closed resources and final delivery
 
-All saved held predictions and 328 stopping-MSE checks reproduced exactly with
-the recorded two-thread SkylakeX backend; no scalar slack was used. Three earlier
-report failures and scalar/ensemble/backend amendments remain preserved in
-`cloud/STOPPING_MSE_REPLAY.md`, `ENSEMBLE_REPLAY.md`, `BACKEND_REPLAY.md` and their
-closed phase records. No fitting or saved prediction changed. The earlier
-unlogged-backend mismatch's cause remains unproven. Never rerun completed fits.
+[Final cloud closeout](resources/final_cloud_closeout.json) records all stopped
+Apps and removal of temporary finalization Volumes. Historical durable feature,
+structure, weight and MSA caches were retained; no claim of zero future storage
+cost is made. Closed conservative compute is $8.609382 plus a retained $3 global
+overhead allowance, within the same $100 additional ceiling. No paid work remains
+reserved. These are conservative figures, not an invoice or live account balance.
 
-## Budget and delivery
+The main, ranking, transfer and hybrid findings remain complete and immutable.
+All hybrid held predictions and 328 stopping-MSE scalars replayed exactly under
+the recorded backend. Earlier report failures/amendments remain in their phase
+records and `cloud/STOPPING_MSE_REPLAY.md`, `ENSEMBLE_REPLAY.md`, `BACKEND_REPLAY.md`.
+No rerun or reinterpretation repairs the historical extraction-wrapper source gap.
 
-Closed conservative compute is $8.509382, with $10 label scope + $3 shared
-overhead reserved: maximum $21.509382 inside the unchanged $100 ceiling. This
-is not an invoice or live balance. At most two containers / six CPU / 24 GiB;
-only this one scope is active. Storage cleanup is due 15 October 14:15 UTC.
-
-Label-budget primary: mean subset-score R5−R0 gap at 25% minus the full-budget
-gap, minimum-20 panel. Average replicate scores, not predictions. Count both
-fitting and stopping labels; show absolute curves, actual budgets, min50 and all
-shared bootstrap draws. This is conditional on full-data-nominated recipes, not
-prospective assay savings or economic break-even. No further scope expansion.
-
-Finish FINAL_REPORT, README, submission brief and source-backed local site.
-Regenerate the source snapshot, verify the local page, commit completed work.
-Keep the existing heartbeat active until this study and final delivery are
-finished and all compute/storage is closed, then pause it. No external messages,
-public deployment or submission. Heavy work stays on Modal.
+The concise final report, README, submission brief, model setup instructions and
+source-backed local site now include the final results. Preserve both historical
+and development evidence boundaries. No external messages, deployment, submission
+or assay purchase. Commit validated files only; preserve unrelated/partial artifacts.
 
 ## Earlier completed transfer record
 

@@ -1,8 +1,7 @@
 # Do protein foundation models help predict peptide–HLA stability?
 
-13 October 2026. Core studies are complete; the bounded label-budget follow-up
-is running. This report summarizes the evidence; linked protocols and tables
-retain the full methods and every frozen comparison.
+13 October 2026. All authorized computational studies are complete. Linked
+protocols and tables retain the methods and every frozen comparison.
 
 **Boltz interface embeddings improve ranking on the examined development data.
 Adding ranking loss, trees or preprocessing has not established a further gain.**
@@ -80,27 +79,32 @@ matched two-member R5 MLP: **+0.0044 [−0.0055,0.0100]**. The ≥50-row result 
 also inconclusive. It selects the standard MLP in three folds and a 25% tree
 blend in two. Selector and blend predictions coincide; they are one finding.
 
-| Frozen R5 challenger versus standard MLP, ≥20 | Difference [95% interval] |
-|---|---:|
-| Regression tree | −0.0571 [−0.0862,−0.0373] |
-| Ranking tree | −0.0500 [−0.0761,−0.0251] |
-| Tree-leaf MLP | −0.1343 [−0.1606,−0.1055] |
-| PCA MLP | −0.0520 [−0.0660,−0.0252] |
-| Quantile MLP | −0.0093 [−0.0159,0.0168] |
-
-Both panels show the same pattern; secondary intervals are exploratory and
-unadjusted. These findings concern the frozen recipes, not all possible trees
+Regression/ranking trees, tree-leaf preprocessing and PCA reduce R5 scores in
+both panels; quantile preprocessing is inconclusive. Secondary intervals are
+exploratory and unadjusted. These findings concern the frozen recipes, not all possible trees
 or preprocessing methods. Trees consumed about 95% of summed learner fitting
 time. The fixed two-member sequence head is weaker than the main study's
 competitive selector, so the hybrid representation contrast must not replace
 the main comparison. [All hybrid results](hybrids_cloud_v1/REPORT.md),
 [coverage audit](hybrids_cloud_v1/coverage_audit.json).
 
-A separate, fixed 120-fit study is assessing how the R5−R0 gap changes with
-25%, 50% and 100% of fitting peptide clusters. Its subsets and recipes are
-frozen, stopping labels count, and the full-budget models are reused only after
-exact identity checks. No result is available yet. It cannot establish
-prospective assay savings. [Protocol](label_efficiency/SPECIFICATION.md).
+## What changes when fewer labels are available?
+
+The 120-fit label-budget study shows a larger matched Boltz advantage at lower
+budgets. Three predetermined nested subsets were averaged **as scores**, with
+stopping labels included. Full-budget members were reused after identity checks.
+
+| Outer-fitting peptide-cluster budget | Sequence MLP | Boltz MLP | Gap |
+|---|---:|---:|---:|
+| 25% | 0.2640 | 0.5877 | +0.3237 |
+| 50% | 0.4010 | 0.6504 | +0.2494 |
+| 100% | 0.5373 | 0.6995 | +0.1622 |
+
+The primary increase in the gap at 25% versus 100% is **+0.1615 [0.1333,0.2041]**;
+the 50% budget and ≥50-row sensitivity agree. Both procedures worsen with fewer
+labels, but R5 loses less performance. This supports relative robustness under
+previously nominated fixed recipes, not prospective assay savings or a comparison
+against the stronger main sequence selector. [Label-budget results and protocol](label_efficiency/REPORT.md).
 
 ## Cost, reproducibility and remaining evidence
 
@@ -111,9 +115,9 @@ or calibrated physical half-life guarantees. [Model guide](../../docs/ROUND2_INF
 
 The original full-cohort folding cost was **$212.71 derived from container-hours**,
 not a reconciled invoice. Later round-two cloud work carries **$76.84**
-conservatively. Finalization's closed compute currently carries **$8.51**, with
-$3 overhead reserved and a separate inclusive $10 label-study cap, all within
-the unchanged $100 additional ceiling. Cached-feature experiments are cheap
+conservatively. Finalization's closed compute carries **$8.61**, plus a retained
+$3 overhead allowance within the additional $100 ceiling. All compute and
+temporary finalization storage are closed; historical caches remain. Cached-feature experiments are cheap
 relative to obtaining representations for new pairs. [Original costs](../REPORT.md#6-compute-cost)
 and [current accounting](execution_manifest.json).
 
@@ -124,8 +128,8 @@ wrapper has a separate launch-source provenance gap. [Replay details](cloud/BACK
 and [round-two provenance](../further_research/round2/REPORT.md).
 
 Intervals use 2,000 paired cluster draws; transfer also crosses peptide and HLA
-groups. They condition on fitted models and selection, excluding refitting,
-selection repetition and independent assay variability. No adequate reserved
+groups. They condition on fitted models, selections and fixed label subsets,
+excluding refitting, subset/selection repetition and independent assay variability. No adequate reserved
 independent half-life cohort or assay-noise ceiling is available. The
 [unsent assay brief](INDEPENDENT_ASSAY_BRIEF.md) specifies what confirmation
 requires. The evidence warrants further controlled evaluation of interface

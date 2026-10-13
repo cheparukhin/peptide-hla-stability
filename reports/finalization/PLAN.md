@@ -1,15 +1,18 @@
 # Hackathon finalisation — authorized 12 October 2026
 
-**Current, 13 October 01:00 UTC:** the frozen hybrid study is fully audited and
-closed. Its primary gain is +0.004384 [−0.005541,+0.009984], so added complexity
-has not established an improvement over the matched standard R5 MLP. Saved
-models, predictions and selections replay exactly under the recorded backend.
+**Current, 13 October 2026:** all achievable authorized computational work and
+scientific audits are complete. Ranking loss and hybrids have no established
+incremental gain; the simpler embedding head remains the practical choice.
+The completed label-budget sensitivity shows a larger matched Boltz advantage
+with fewer labels: +0.161536 [0.133321,0.204142] for the 25%-versus-100% gap change.
+This is conditional fixed-recipe development evidence, not prospective assay savings.
 
-One frozen 120-fit label-budget study is running on Modal, released at 00:55 UTC.
-It tests the same R0/R5 heads at 25/50/100% training-cluster budgets, with a $10
-inclusive cap and fixed 01:55 UTC work stop. No outcome is claimed yet. Current
-ownership and closure instructions are in RECOVERY_OPERATIONS.md. Finish this
-bounded scientific question and the final write-up without expanding scope.
+All compute and temporary finalization cloud storage are closed. Historical
+feature/weight caches remain. Conservative finalization compute is $8.609382 plus
+a retained $3 overhead allowance within the unchanged $100 additional ceiling.
+Independent assay confirmation is open. Local presentation verification and
+source checks passed. Commit the final evidence and pause the existing heartbeat;
+do not launch new work.
 
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;

@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "n_fits": 1,
+  "task_sha256": "01b03d38e3c9a8b2d61fe9af07d0071d257f560c5a2c5506524f6ee2fd9baf09",
+  "config": {
+    "hidden": [
+      64
+    ],
+    "l2": 0.01,
+    "lr": 0.001,
+    "batch_size": 256,
+    "max_epochs": 200,
+    "patience": 15,
+    "seed": 0
+  },
+  "feature_hashes": {
+    "gradient": "4e47950a5b98b01a992d2819300dac1f5fa56db41283e967249fa8e58c3dddaf",
+    "stopping": "d1a0e77bc5ac097c9b8f8262a724fbde5afde97fd2e976f484d2ad1462404daf",
+    "held": "1126fc1f162ae550e428cc416b78626fcfac157b51a5b0ee57ab5a6392c2159f"
+  },
+  "gradient_labels_sha256": "f3343185df560dc17f949b4ef64bf4b83d6338a9fd0f2b9cca25f3fdd5c6e580",
+  "stopping_labels_sha256": "3bdbc58bff92cbe00ed4afa1700e4b54bf9af24c9fa2e7d233596fd4100ff813",
+  "epochs": 43,
+  "best_epoch": 28,
+  "fit_seconds": 1.0693639999999505,
+  "payload_sha256": {
+    "arrays.npz": "30c875d018d1bd15b1411e031a73e5be2438f965a63dd7e4cb92025718deaeac",
+    "predictions.csv": "17592622d7dc0aa81d7194fcc7d53e898510f7ca50aa1013954c548c13ee3cd9"
+  },
+  "saved_model_predictions_replayed_exactly": true,
+  "replayed_prediction_sha256": "14cc4b0bfff0e270390d30aa0afe6fdcf236e66baa3351eec657c2a7733eb0cc"
+}

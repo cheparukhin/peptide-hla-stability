@@ -12,6 +12,34 @@ follow-up outer outcomes and neither is designated a global winner. These
 exports are fit only to the original training partition. They provide a usable
 artifact, not independent confirmation or a new held-out accuracy estimate.
 
+## Environment setup
+
+From the repository root on Linux or macOS, use **Python 3.12.12** and recreate
+the local environment used by the commands below. The core pins match the
+[saved head metadata](../models/finalization/R5_mlp_0.01/model.json) and
+[recorded runtime](../reports/finalization/transfer_controls/local_timing/runtime.json);
+supporting dependency pins come from the recorded environment package inventory.
+
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -c 'import sys; assert sys.version_info[:3] == (3, 12, 12)'
+.venv/bin/python -m pip install \
+  numpy==2.5.3 pandas==3.0.6 scipy==1.18.1 scikit-learn==1.9.1 \
+  threadpoolctl==3.7.0 joblib==1.6.0 python-dateutil==2.9.0.post0 six==1.17.0
+
+# Optional: the synthetic verification suite documented below.
+.venv/bin/python -m pip install \
+  pytest==9.1.1 iniconfig==2.3.0 packaging==26.3 pluggy==1.6.0 pygments==2.21.0
+```
+
+This setup covers the cached-head CLI and its synthetic checks. Feature
+extraction uses separate pinned Boltz/ESM runtimes. Large feature caches remain
+external to Git and must be supplied as verified compact bundles; installing
+packages does not recreate them. Keep local work to lightweight inspection and
+checks; run refits or large inference jobs on Modal within an explicitly
+authorized resource and credit budget. Matching package versions alone does
+not guarantee identical numerical results across platforms or BLAS libraries.
+
 ## Input contract
 
 Use a compact bundle directory containing `complete.json`, its content-addressed

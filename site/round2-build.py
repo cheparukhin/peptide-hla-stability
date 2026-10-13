@@ -136,6 +136,27 @@ def build():
     hybrid_rows = [(label,one(hybrid_comparisons,contrast=f"R5_{arm}-R5_standard",min_rows=20)) for label,arm in
         (("Regression tree","tree_rmse"),("Ranking tree","tree_rank"),("Tree-leaf MLP","leaf_mlp"),("PCA MLP","pca_mlp"),("Quantile MLP","quantile_mlp"))]
     hybrid_html = "\n".join(f'<tr><th scope="row">{label}</th><td class="num">{interval(row)}</td></tr>' for label,row in hybrid_rows)
+    label_base = "reports/finalization/label_efficiency/"
+    label_curves = read_path(label_base + "absolute_curves.csv", "csv")
+    label_comparisons = read_path(label_base + "comparisons.csv", "csv")
+    label_audit = read_path(label_base + "coverage_audit.json")
+    read_path(label_base + "REPORT.md", "text")
+    read_path(label_base + "reporting_metadata.json")
+    final_cost = read_path("reports/finalization/resources/final_cloud_closeout.json")
+    if label_audit["status"] != "passed":
+        raise ValueError("Completed label-budget audit required")
+    label_primary = one(label_comparisons, role="primary", min_rows=20, fraction=25)
+    label_sensitivity = one(label_comparisons, min_rows=50, fraction=25)
+    label_rows = []
+    for fraction in (25, 50, 100):
+        r0 = float(one(label_curves, min_rows=20, fraction=fraction, representation="R0")["mean_score"])
+        r5 = float(one(label_curves, min_rows=20, fraction=fraction, representation="R5")["mean_score"])
+        label_rows.append((fraction,r0,r5,r5-r0))
+    if not math.isclose(label_rows[0][3]-label_rows[2][3],float(label_primary["delta"]),abs_tol=1e-12):
+        raise ValueError("Label-budget primary arithmetic mismatch")
+    if float(label_primary["ci_low"]) <= 0 or not (label_rows[0][1]<label_rows[2][1] and label_rows[0][2]<label_rows[2][2]):
+        raise ValueError("Label-budget interpretation requires review")
+    label_html = "\n".join(f'<tr><th scope="row">{fraction}%</th><td class="num">{fmt(r0)}</td><td class="num">{fmt(r5)}</td><td class="num">{fmt(gap,True)}</td></tr>' for fraction,r0,r5,gap in label_rows)
     read_path(ranking_base + "protocol.json")
     read_path(ranking_base + "REPORT.md", "text")
     inference = read_path("reports/finalization/inference/distribution_manifest.json")
@@ -256,8 +277,16 @@ def build():
     <p class="col">The inner-selected R5 hybrid scores <b>{fmt(hybrid_selected["median_spearman"])}</b> versus <b>{fmt(hybrid_standard["median_spearman"])}</b>: <b>{interval(hybrid_primary)}</b>. Its ≥50-row sensitivity is {interval(hybrid_sensitivity)}. Both are inconclusive, not equivalence tests.</p>
     <p class="note">The selector keeps the standard head in three folds and a 25% regression-tree blend in two. Selector and blend predictions coincide; they are one finding. Both arms use two members; historical 30-member heads and the stronger main sequence selector are descriptive references, not these matched controls.</p>
     <div class="scroller" tabindex="0" role="region" aria-label="R5 hybrid component comparisons"><table><caption>R5 challenger minus standard MLP · ≥20 panel · exploratory paired 95% intervals</caption><thead><tr><th scope="col">Challenger</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody>{hybrid_html}</tbody></table></div>
-    <p class="note">These results concern the frozen recipes, not all possible trees or preprocessing methods. All saved held predictions and 328 stopping-MSE checks replayed exactly under the recorded numerical backend. The separate 12-fit pilot was unscored. A bounded label-budget follow-up is running; independent assay confirmation remains open.</p>
+    <p class="note">These results concern the frozen recipes, not all possible trees or preprocessing methods. All saved held predictions and 328 stopping-MSE checks replayed exactly under the recorded numerical backend. The separate 12-fit pilot was unscored. Independent assay confirmation remains open.</p>
     <p class="source-line">{path_link(hybrid_base + "REPORT.md", "Full hybrid study")} · {path_link(hybrid_base + "comparisons.csv", "Every frozen comparison")} · {path_link(hybrid_base + "coverage_audit.json", "Independent coverage audit")} · {path_link("reports/finalization/cloud/BACKEND_REPLAY.md", "Numerical replay disclosure")}</p>
+  </section>
+
+  <section id="label-budget" aria-labelledby="label-budget-title">
+    <div class="shead"><p class="eyebrow">Completed label-budget sensitivity · 120 new fits</p><h2 class="title" id="label-budget-title">Boltz loses less performance when labels shrink.</h2><p class="lede">Under the same fixed MLP recipe, the representation advantage grows at lower training-label budgets. Both models still worsen.</p></div>
+    <div class="scroller" tabindex="0" role="region" aria-label="Label-budget results"><table><caption>Mean subset scores · ≥20 panel · stopping labels included</caption><thead><tr><th scope="col">Fitting-cluster budget</th><th scope="col">Sequence MLP</th><th scope="col">Boltz MLP</th><th scope="col">Gap</th></tr></thead><tbody>{label_html}</tbody></table></div>
+    <p class="col">The primary increase in the gap at 25% versus 100% is <b>{interval(label_primary)}</b>. The ≥50-row sensitivity is {interval(label_sensitivity)}. The 50% budget agrees.</p>
+    <p class="note">Three predetermined nested subsets are averaged as scores, never as prediction ensembles. Budgets count peptide clusters and include both fitting and stopping labels. Intervals condition on fixed models and subsets; recipes were nominated using earlier full-data development. This is relative robustness, not prospective assay savings or a comparison with the stronger main sequence selector.</p>
+    <p class="source-line">{path_link(label_base + "REPORT.md", "Label-budget report")} · {path_link(label_base + "absolute_curves.csv", "All absolute scores and intervals")} · {path_link(label_base + "comparisons.csv", "Paired gap comparisons")} · {path_link(label_base + "coverage_audit.json", "Independent table and subset audit")}</p>
   </section>
 
   <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
@@ -270,7 +299,8 @@ def build():
   <section id="round2-provenance" aria-labelledby="round2-provenance-title">
     <div class="shead"><p class="eyebrow">Reproducibility, provenance and resources</p><h2 class="title" id="round2-provenance-title">Audited artifacts, with a disclosed launch-source gap.</h2></div>
     <div class="note"><p><b>Locked repeats matched exactly on the recorded platform.</b> Two fresh identical-setting embedding-selector repeats used {repeats["actual_new_model_fits"]} local fits and distinct caches. Prediction and metric differences were zero over all {cohort["n_rows"]:,} rows. This is execution reproducibility, not cross-platform equivalence or an assay-noise ceiling.</p><p><b>The cache fanout wrapper has an inherited provenance gap.</b> Current/committed and launch-authorization SHA-256 digests differ; exact launch-time wrapper bytes cannot be certified. Both digests are preserved in the {link("resources/cache_completion_audit.json", "cache audit")}. The four extraction fingerprint sources, cohort, protocol and local artifact checks match; the discrepancy itself is not evidence of changed features.</p></div>
-    <div class="budget-box"><p class="eyebrow">Conservative incremental accounting</p><p class="budget-total">${total:.4f} <span>against the ${costs["incremental_limit_usd"]:.0f} ceiling</span></p><p>Shared cache ${costs["cache_runtime_budget_accounting_usd"]:.4f} + sequence ${costs["sequence_conservative_accounting_including_preemptions_usd"]:.4f} + retained engineering allowance ${costs["engineering_full_allowance_retained_usd"]:.2f}.</p><p><b>Not a final invoice or live credit balance.</b> Retaining the engineering allowance does not mean it was spent. Provider snapshots lag and differ, leaving ${costs["metering_difference_unattributed_usd"]:.4f} unattributed; storage is separate. These assessment costs do not establish new-case end-to-end latency. A subsequent portable package measures cached-head latency separately; see the repository inference guide.</p></div>
+    <div class="budget-box"><p class="eyebrow">Closed round-two accounting</p><p class="budget-total">${total:.4f} <span>against the ${costs["incremental_limit_usd"]:.0f} ceiling</span></p><p>Shared cache ${costs["cache_runtime_budget_accounting_usd"]:.4f} + sequence ${costs["sequence_conservative_accounting_including_preemptions_usd"]:.4f} + retained engineering allowance ${costs["engineering_full_allowance_retained_usd"]:.2f}.</p><p><b>Not a final invoice or live credit balance.</b> Retaining the engineering allowance does not mean it was spent. Provider snapshots lag and differ, leaving ${costs["metering_difference_unattributed_usd"]:.4f} unattributed; storage is separate. These assessment costs do not establish new-case end-to-end latency. A subsequent portable package measures cached-head latency separately; see the repository inference guide.</p></div>
+    <p class="note">The separate finalization phase carries <b>${final_cost["closed_conservative_compute_usd"]:.2f}</b> in conservative closed compute plus a retained <b>${final_cost["overhead_allowance_retained_usd"]:.0f}</b> overhead allowance, within its additional $100 ceiling. All compute and temporary finalization Volumes are closed. Existing durable feature and weight caches remain. {path_link("reports/finalization/resources/final_cloud_closeout.json", "Final resource closeout")}</p>
     <p class="source-line">{link("resources/embedding_repeat_completion_audit.json", "Embedding repeat audit")} · {link("resources/sequence_repeat_completion_audit.json", "Sequence repeat audit")} · {link("resources/runtime_cost_summary.json", "Runtime/cost accounting")} · {link("resources/transfer_runtime_closeout.json", "Local transfer closeout")}</p>
   </section>
 
@@ -300,6 +330,8 @@ def build():
                "hybrid_followup": {"primary": hybrid_primary, "sensitivity": hybrid_sensitivity,
                                     "scores": hybrid_scores, "comparisons": hybrid_comparisons,
                                     "selections": hybrid_selections, "audit_status": hybrid_audit["status"]},
+               "label_budget": {"primary": label_primary, "sensitivity": label_sensitivity, "curves": label_curves, "comparisons": label_comparisons, "audit_status": label_audit["status"]},
+               "finalization_cost_accounting": final_cost,
                "cost_accounting": {k: v for k, v in costs.items() if k != "interpretation"},
                "source_sha256": dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"

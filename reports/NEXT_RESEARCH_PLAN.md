@@ -800,3 +800,25 @@ The inclusive $10 cap is inside the same $100 ceiling, with one two-core Modal
 worker and a fixed 13 October 01:55 UTC work stop. See the
 [specification](finalization/label_efficiency/SPECIFICATION.md) and current
 [operations](finalization/RECOVERY_OPERATIONS.md).
+
+### Completed label-budget sensitivity and finalisation — 13 October 2026
+
+All 120 new fits, exact reuse of 20 audited full-budget members and the frozen
+statistical report completed. The independent saved-table/subset audit passed.
+At 25%/50%/100% cluster budgets, mean sequence/Boltz scores are
+0.2640/0.5877, 0.4010/0.6504 and 0.5373/0.6995. The primary increase in the
+matched R5−R0 gap at 25% versus 100% is +0.161536 [0.133321,0.204142]; both
+sensitivities agree. Both procedures lose performance with fewer labels; R5
+loses less. Stopping labels count, subsets are fixed and nested, and scores
+—not predictions—are averaged over subset draws. This supports relative
+robustness under nominated recipes, not prospective assay savings or independent
+confirmation. No candidate or outcome was dropped and no test was reopened.
+
+All authorized computational studies and temporary finalization cloud resources
+are closed. The final write-up and local project page summarize positive and
+negative findings with full linked evidence. Conservative finalization compute
+is $8.609382 plus $3 retained overhead within the same $100 additional ceiling.
+Historical feature/weight caches remain; independent assay confirmation remains
+open. See the [final scientific report](finalization/FINAL_REPORT.md),
+[label audit](finalization/label_efficiency/coverage_audit.json) and
+[cloud closeout](finalization/resources/final_cloud_closeout.json).

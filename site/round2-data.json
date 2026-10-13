@@ -1971,6 +1971,215 @@
     ],
     "audit_status": "passed"
   },
+  "label_budget": {
+    "primary": {
+      "role": "primary",
+      "fraction": "25",
+      "min_rows": "20",
+      "delta": "0.16153640250604268",
+      "ci_low": "0.13332145858099087",
+      "ci_high": "0.20414174294783105",
+      "bootstrap_mean_minus_point": "0.007180198069863392",
+      "conditional_on_fixed_fits_and_subsets": "True"
+    },
+    "sensitivity": {
+      "role": "sensitivity",
+      "fraction": "25",
+      "min_rows": "50",
+      "delta": "0.16148498838068948",
+      "ci_low": "0.13384920609587167",
+      "ci_high": "0.20167754069559504",
+      "bootstrap_mean_minus_point": "0.006823277220787349",
+      "conditional_on_fixed_fits_and_subsets": "True"
+    },
+    "curves": [
+      {
+        "min_rows": "20",
+        "fraction": "25",
+        "representation": "R0",
+        "mean_score": "0.26398917848498693",
+        "ci_low": "0.24346632335008495",
+        "ci_high": "0.28965773499029923",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "25",
+        "representation": "R5",
+        "mean_score": "0.5877122067686175",
+        "ci_low": "0.572273951087284",
+        "ci_high": "0.612078577299146",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "50",
+        "representation": "R0",
+        "mean_score": "0.4010496267616687",
+        "ci_low": "0.37640241933149937",
+        "ci_high": "0.4260769091694735",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "50",
+        "representation": "R5",
+        "mean_score": "0.6504165059657729",
+        "ci_low": "0.6313067214944016",
+        "ci_high": "0.6690913041954939",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "100",
+        "representation": "R0",
+        "mean_score": "0.5372917624614432",
+        "ci_low": "0.5109935352557833",
+        "ci_high": "0.5678370530659691",
+        "n_subset_draws": "1"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "100",
+        "representation": "R5",
+        "mean_score": "0.699478388239031",
+        "ci_low": "0.6756850376297431",
+        "ci_high": "0.7173879265677718",
+        "n_subset_draws": "1"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "25",
+        "representation": "R0",
+        "mean_score": "0.2609371338449504",
+        "ci_low": "0.24196249559547492",
+        "ci_high": "0.28742062427161374",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "25",
+        "representation": "R5",
+        "mean_score": "0.5856381926835833",
+        "ci_low": "0.5708927139015583",
+        "ci_high": "0.6099027947525937",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "50",
+        "representation": "R0",
+        "mean_score": "0.3942543887479802",
+        "ci_low": "0.3739678578995324",
+        "ci_high": "0.4234371054963926",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "50",
+        "representation": "R5",
+        "mean_score": "0.6484953662345031",
+        "ci_low": "0.6294421326335914",
+        "ci_high": "0.6670723699149056",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "100",
+        "representation": "R0",
+        "mean_score": "0.5353107867059521",
+        "ci_low": "0.5113786544534854",
+        "ci_high": "0.5649698238081798",
+        "n_subset_draws": "1"
+      },
+      {
+        "min_rows": "50",
+        "fraction": "100",
+        "representation": "R5",
+        "mean_score": "0.6985268571638956",
+        "ci_low": "0.6746804168734003",
+        "ci_high": "0.7153471003673854",
+        "n_subset_draws": "1"
+      }
+    ],
+    "comparisons": [
+      {
+        "role": "primary",
+        "fraction": "25",
+        "min_rows": "20",
+        "delta": "0.16153640250604268",
+        "ci_low": "0.13332145858099087",
+        "ci_high": "0.20414174294783105",
+        "bootstrap_mean_minus_point": "0.007180198069863392",
+        "conditional_on_fixed_fits_and_subsets": "True"
+      },
+      {
+        "role": "sensitivity",
+        "fraction": "50",
+        "min_rows": "20",
+        "delta": "0.08718025342651645",
+        "ci_low": "0.06269157000148586",
+        "ci_high": "0.12395790236992434",
+        "bootstrap_mean_minus_point": "0.004948478035860501",
+        "conditional_on_fixed_fits_and_subsets": "True"
+      },
+      {
+        "role": "sensitivity",
+        "fraction": "25",
+        "min_rows": "50",
+        "delta": "0.16148498838068948",
+        "ci_low": "0.13384920609587167",
+        "ci_high": "0.20167754069559504",
+        "bootstrap_mean_minus_point": "0.006823277220787349",
+        "conditional_on_fixed_fits_and_subsets": "True"
+      },
+      {
+        "role": "sensitivity",
+        "fraction": "50",
+        "min_rows": "50",
+        "delta": "0.0910249070285794",
+        "ci_low": "0.06525994804851004",
+        "ci_high": "0.12270153501062621",
+        "bootstrap_mean_minus_point": "0.0011798503660117171",
+        "conditional_on_fixed_fits_and_subsets": "True"
+      }
+    ],
+    "audit_status": "passed"
+  },
+  "finalization_cost_accounting": {
+    "schema": "finalization_cloud_closeout.1",
+    "at_utc": "2026-10-13T01:14:36.243579+00:00",
+    "status": "all_compute_and_temporary_finalization_storage_closed",
+    "closed_conservative_compute_usd": 8.60938200305646,
+    "overhead_allowance_retained_usd": 3,
+    "maximum_conservative_accounting_usd": 11.60938200305646,
+    "pending_compute_reservations_usd": 0,
+    "additional_user_ceiling_usd": 100,
+    "not_invoice_or_live_balance": true,
+    "label_phase": {
+      "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/closeout.json",
+      "sha256": "4df73ff3acc3d03ba64c2c69f75fb23aec1c0cbf65aac39b0a7fa68400767c9f"
+    },
+    "provider_apps": {
+      "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/provider_apps_closeout.json",
+      "sha256": "cebbd95a8ac39a2fb96e201da0ce048e2b9c03d76bf37651025d9fe3d4eec936"
+    },
+    "provider_volumes": {
+      "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/provider_volumes_closeout.json",
+      "sha256": "a072006fedfdb906cd78d7720a3982c6280ac99c4b3e4982f16c04a402b17b1b"
+    },
+    "retained_historical_volume_names": [
+      "pepstab-round2-boltz-embeddings",
+      "pepstab-phasea-esm-payload",
+      "pepstab-mint-features",
+      "pepstab-mint-weights",
+      "pepstab-esmfold2-weights",
+      "pepstab-structures",
+      "pepstab-boltz-weights",
+      "pepstab-hla-msa"
+    ],
+    "historical_storage_scope": "Existing durable feature/structure/weight/MSA caches retained; not temporary finalization resources and not a claim of zero future storage cost."
+  },
   "cost_accounting": {
     "at_utc": "2026-10-12T06:57:36.433746+00:00",
     "cache_runtime_budget_accounting_usd": 66.84310340712061,
@@ -1983,8 +2192,8 @@
     "metering_difference_unattributed_usd": 3.155427009999997
   },
   "source_sha256": {
-    "docs/ROUND2_INFERENCE.md": "9a7e47ba3e14d038a8c6e0e67b2bfc268be7eb7dc3dd7be6568a31dcf580dfb8",
-    "reports/finalization/FINAL_REPORT.md": "51b9ddcd19a36327719a231ee9b0c27a1676d88587b521c2a63c1a76b6ff9281",
+    "docs/ROUND2_INFERENCE.md": "86b49080cbef0ab2b247432409f33d08d8edcb66caf6df7e6a4eb1c075d5dfb0",
+    "reports/finalization/FINAL_REPORT.md": "8db61c8dabfbf897da6f99853fa39ebae9de79eec1948fccb1695f56a7a4e4db",
     "reports/finalization/INDEPENDENT_ASSAY_BRIEF.md": "b3a4ca07447b8abca4f4c9f7d48665001cda15d8ff51d4f47d08d1dba6726108",
     "reports/finalization/hybrids_cloud_v1/REPORT.md": "9433789494540445e552adfe88dd0172eb83fc057a3232a74f50f29cb0bce4ea",
     "reports/finalization/hybrids_cloud_v1/audit.json": "aa9713c064ae1ac1299e1704036f0af27967c772d9f544dc2c87a71fec1b10f7",
@@ -1994,12 +2203,18 @@
     "reports/finalization/hybrids_cloud_v1/selections.csv": "ac8a8c6cf16e3861c033e38ed1eaf5a4efd9b168e01d923cbde775853881897d",
     "reports/finalization/inference/README.md": "cb36cd69c9f5d8ec74c47b08c33ac4716d0a2125c611ab39e11e44ff85a7732b",
     "reports/finalization/inference/distribution_manifest.json": "d1f47bdd30c4c51d93cea84d6d2ded544a72f9c19d41fc103a44e406408a0d46",
+    "reports/finalization/label_efficiency/REPORT.md": "7e6c38856b56df5a12c6e7a869744dc5c79ea960971fc440277f66d9cbd20805",
+    "reports/finalization/label_efficiency/absolute_curves.csv": "520026f8261191a705ec1487365eeee158037ed4d04e1c04948b66abc7df6470",
+    "reports/finalization/label_efficiency/comparisons.csv": "0c13b87c4113b1f2a194cf719480eb5c96fcea6beb876b17cc0d357e32431396",
+    "reports/finalization/label_efficiency/coverage_audit.json": "b607c19ab53fbaf8ea0f386ef98955fe0fe5d3efc64e038289817430c379714f",
+    "reports/finalization/label_efficiency/reporting_metadata.json": "e241da97c29efa60f84b55f4514b04c38b26efe535e0d5920d1ca01a586b8d97",
     "reports/finalization/ranking/REPORT.md": "07e1bd56d545bc364dabc55291fd8d68622beb082a3b4d9750712d1cc8d57b7c",
     "reports/finalization/ranking/comparisons.csv": "0a27b5d7c705cd2db489eef9fbb3cf24f78623b7fb9f8c2b05212b6317ae480b",
     "reports/finalization/ranking/completion_audit.json": "a163faa9ae6d73767febe96f7a6c36ad2612df6f8544cb2cdbe0e650cb56e8b2",
     "reports/finalization/ranking/protocol.json": "cd6e437404915640281d8e8367cd722b126fa3badd0aa2084af0b305835412c0",
     "reports/finalization/ranking/scores.csv": "ab85f71f09ad97f9c9bd58a5d4351a6cb26c510e5473512222b837d7ea0513c3",
     "reports/finalization/ranking/selections.csv": "6312efb053344d9bb5dbd93eeb64a23f4a808e97d180d06b1f717befb17497cf",
+    "reports/finalization/resources/final_cloud_closeout.json": "7cdccff74a791c0af63666135e1f7359bd145fbc0c8ca501e473c19a06c8d27b",
     "reports/finalization/transfer_cloud_recovery/results/REPORT.md": "e9b53e3df6ac5a43685c3b8c4674b2c384c1efda7b6ebbadb89e1850231d7f2a",
     "reports/finalization/transfer_cloud_recovery/results/comparisons.csv": "91c030233385f6f90819fe99edf49490c6bef7b828c447250286fbb753da125c",
     "reports/finalization/transfer_cloud_recovery/results/coverage_audit.json": "0e4af2dc1acdc5189e6b85751e9a20123145c5f4912b1850e449c3cbf2dc7753",

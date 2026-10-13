@@ -1,7 +1,7 @@
 # Peptide–HLA stability: submission brief
 
 Prepared 13 October 2026. Local draft covering completed development, ranking,
-transfer and hybrid studies. Not submitted externally.
+transfer, hybrid and label-budget studies. Not submitted externally.
 
 ## Project in one paragraph
 
@@ -57,6 +57,13 @@ fixed recipes do not replace the stronger competitive sequence comparator used
 for the main +0.0543 result. See the [hybrid report](hybrids_cloud_v1/REPORT.md)
 and [independent saved-table audit](hybrids_cloud_v1/coverage_audit.json).
 
+The final **120-fit label-budget study** finds a larger matched Boltz advantage
+with fewer labels: the R5−R0 gap increases by **+0.1615 [0.1333,0.2041]** at
+25% versus 100% of fitting peptide clusters. Both procedures worsen; R5 loses
+less performance. Stopping labels count and subset scores are averaged. This
+fixed-recipe sensitivity does not estimate prospective assay savings or replace
+the stronger main-study sequence comparison. [Complete results](label_efficiency/REPORT.md).
+
 ## Three-minute demonstration
 
 1. Open the [project page](../../site/index.html). Show the main development
@@ -92,8 +99,8 @@ was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
 **What is next?** Freeze candidate procedures before opening independent assay
-outcomes. A separately frozen [120-fit label-budget study](label_efficiency/SPECIFICATION.md)
-is running on Modal and has no outcomes yet.
+outcomes. All authorized computational studies are complete; an adequate
+independent assay cohort is the remaining scientific requirement.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance

@@ -21,10 +21,12 @@ diagnostic exposure of test rows and aggregate outcomes.
 - [Current research report](reports/further_research/round2/REPORT.md): complete
   main, transfer, complementarity, reproducibility and resource findings.
 - [Combined finalisation readout](reports/finalization/FINAL_REPORT.md): completed
-  portable inference, ranking, stronger transfer controls and the audited hybrid
-  follow-up.
+  portable inference, ranking, stronger transfer controls, hybrids and label-budget
+  sensitivity.
 - [Matched ranking-loss report](reports/finalization/ranking/REPORT.md): frozen
   outcome, source tables and the completed artifact/arithmetic audit.
+- [Label-budget report](reports/finalization/label_efficiency/REPORT.md): fixed-head
+  response to fewer training labels, with shared subsets and uncertainty.
 - [Hybrid report](reports/finalization/hybrids_cloud_v1/REPORT.md): matched tree,
   blending and preprocessing comparisons, with saved-model replay and an
   [independent table audit](reports/finalization/hybrids_cloud_v1/coverage_audit.json).
@@ -101,6 +103,9 @@ not measure assay reproducibility or independent model-selection reproducibility
 
 ## Use the trained heads
 
+Create the documented [Python environment](docs/ROUND2_INFERENCE.md#environment-setup)
+before running the commands below.
+
 Two locked demonstration recipes are included under `models/finalization/`:
 R4 ridge with alpha 100 and a 30-member R5 MLP with L2 0.01. They were refit on
 original training rows only and are not designated universal winners. Portable
@@ -144,8 +149,14 @@ cannot be certified. No new result repairs that historical provenance gap.
 Portable inference, ranking loss, stronger transfer controls and the hybrid
 study are complete and audited. Their uncertain ranking/hybrid gains do not
 authorize changing the completed candidate grids or stopping rules.
-A separately frozen [120-fit label-budget study](reports/finalization/label_efficiency/SPECIFICATION.md)
-is running on Modal and has no outcomes yet.
+The [120-fit label-budget study](reports/finalization/label_efficiency/REPORT.md)
+also passed. At 25% versus 100% of outer-fitting peptide clusters, the matched
+Boltz−sequence MLP gap grows by **+0.1615 [0.1333,0.2041]**. Both models worsen,
+but Boltz loses less performance. The fixed recipes, label-blind subsets and
+counted stopping labels support relative robustness; they do not establish
+prospective assay savings or a gain against the main competitive selector.
+All authorized computational work and temporary cloud resources are closed.
+
 
 The completed round-two phase conservatively accounted for $76.84 of its $100
 ceiling, including a retained engineering allowance. Its cloud jobs are stopped.

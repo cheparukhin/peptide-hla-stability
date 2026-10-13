@@ -1,0 +1,34 @@
+{
+  "schema": "finalization_cloud_closeout.1",
+  "at_utc": "2026-10-13T01:14:36.243579+00:00",
+  "status": "all_compute_and_temporary_finalization_storage_closed",
+  "closed_conservative_compute_usd": 8.60938200305646,
+  "overhead_allowance_retained_usd": 3,
+  "maximum_conservative_accounting_usd": 11.60938200305646,
+  "pending_compute_reservations_usd": 0,
+  "additional_user_ceiling_usd": 100,
+  "not_invoice_or_live_balance": true,
+  "label_phase": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/closeout.json",
+    "sha256": "4df73ff3acc3d03ba64c2c69f75fb23aec1c0cbf65aac39b0a7fa68400767c9f"
+  },
+  "provider_apps": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/provider_apps_closeout.json",
+    "sha256": "cebbd95a8ac39a2fb96e201da0ce048e2b9c03d76bf37651025d9fe3d4eec936"
+  },
+  "provider_volumes": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/provider_volumes_closeout.json",
+    "sha256": "a072006fedfdb906cd78d7720a3982c6280ac99c4b3e4982f16c04a402b17b1b"
+  },
+  "retained_historical_volume_names": [
+    "pepstab-round2-boltz-embeddings",
+    "pepstab-phasea-esm-payload",
+    "pepstab-mint-features",
+    "pepstab-mint-weights",
+    "pepstab-esmfold2-weights",
+    "pepstab-structures",
+    "pepstab-boltz-weights",
+    "pepstab-hla-msa"
+  ],
+  "historical_storage_scope": "Existing durable feature/structure/weight/MSA caches retained; not temporary finalization resources and not a claim of zero future storage cost."
+}
