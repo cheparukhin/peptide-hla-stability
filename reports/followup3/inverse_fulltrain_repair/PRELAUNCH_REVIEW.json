@@ -1,0 +1,21 @@
+{
+  "status": "passed_prelaunch_repair_review",
+  "reviewed_at_utc": "2026-10-13T19:01:47.561493+00:00",
+  "manifest_hash": "c0c467b3cfff97906b185b80e7df16853cfc4da5e588f9fef9971d833871dfd8",
+  "manifest_file_sha256": "eeb2770bc2249101e6016db125a6ecf927e4c3bf48cfc8c9b1b77641098a14b0",
+  "source_sha256": {
+    "scripts/followup3_inverse_fulltrain_repair.py": "214a06ac1e33e841f9f543a55b3e3106454ee56be340e28ade5260a364744ddd",
+    "tests/test_followup3_fulltrain_repair.py": "f90082b8482364b56325f862409d1b80d94c8d8d26a1902fc4612f351f623d5f"
+  },
+  "independent_diagnosis": "All eight started children fail at metadata validation before any fit; last two never started; no assessment artifacts.",
+  "real_data_parity": "Original19716-row table equals guarded-adapter output from unchanged validator with exact values, dtypes, columns and row order.",
+  "tests": {
+    "passed": 6,
+    "seconds": 0.81,
+    "packaging_cli_help_passed_after_root_path_addition": true
+  },
+  "frozen_scientific_sources_and_inputs_verified": true,
+  "prior_fits": 0,
+  "blocking_findings": [],
+  "paid_launch_authorized_by_review": false
+}
