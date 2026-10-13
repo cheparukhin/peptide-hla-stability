@@ -1,0 +1,38 @@
+{
+  "status": "passed_prelaunch_source_review",
+  "reviewed_at_utc": "2026-10-13T12:51:18.617211+00:00",
+  "source_sha256": {
+    "pepstab/followup3_energy.py": "7bf8d28fab1f4577b805ecb881638235052eba656063ff964d759934a52b3dc6",
+    "scripts/followup3_energy.py": "e8cc32cd8425392b14f47740b0b58980d34a5b9daa326a9c2bda03050adfde02",
+    "modal_app/followup3_energy.py": "fe9d98608f139cab79c7e9935963c0d277e384a890ac1578d3868d84d092bc87",
+    "scripts/followup3_energy_guard.py": "8c2f2f8332e724123fccd6fad415766c5c8665cf65f121eb296edfc7026075bd",
+    "tests/test_followup3_energy.py": "26d4cb0897f3f09537bc6e27e17af1caa8e90a3ab0d374715ea0af8dfb472d54",
+    "reports/followup3/energy/SPECIFICATION.md": "f0bdb78bc90fe4dbc2064f99a12914e5154fd11e4e670161f75dcdac32e976e0"
+  },
+  "scientific_scope": "same 4449 panel; only R0_E/R5_E; exact matched inverse R0/R5 baseline reuse; 200 new MLP and 100 ridge fits",
+  "repairs_verified": [
+    "float64 ridge scaler/LSQR matches reused baseline",
+    "round-trip CSV baseline preservation",
+    "pose parser dependency bound before imports",
+    "shared access rejection blocks subsequent commands",
+    "guard rate pinned/recomputed",
+    "guard exception attempts stop and requires reconciliation"
+  ],
+  "resource_limits": {
+    "cpu_hard": 1,
+    "memory_hard_mib": 2048,
+    "max_containers": 100,
+    "function_timeout_s": 660,
+    "case_timeout_s": 600,
+    "global_max_hours": 5,
+    "requested_retries": 0
+  },
+  "tests": "8 synthetic tests passed in 1.01 seconds; compilation passed",
+  "conditions": [
+    "root exact source-bound freeze and ledger admission",
+    "root independent guard started and bound before dispatch",
+    "no mixing protocol versions or changed active source bytes",
+    "complete panel or failed comparison; no complete-case fallback"
+  ],
+  "paid_launch_performed_by_reviewer": false
+}
