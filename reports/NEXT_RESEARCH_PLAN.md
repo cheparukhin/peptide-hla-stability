@@ -758,3 +758,28 @@ on Modal at two CPU / 8 GiB under its $5 cap. No hybrid outcome is claimed until
 that report passes. Exact ownership and the fixed 13 October 06:45 UTC work
 stop are in the current recovery operations. The scientific protocol, primary
 contrast, candidate set and original-test exclusion remain unchanged.
+
+### Completed hybrid comparison — 13 October 2026
+
+All 480 scientific fits and the separate 12-fit unscored pilot passed saved-model,
+transform, ancestry and selection replay. The primary R5 hybrid selector versus
+matched two-member standard MLP difference is **+0.004384** with paired 95%
+interval **[−0.005541,+0.009984]**; the ≥50-row sensitivity is also inconclusive.
+The selector retains the standard head in three folds and a 25% regression-tree
+blend in two. Tree regression/ranking, tree-leaf preprocessing and PCA MLP are
+worse than the standard R5 head in the frozen exploratory comparisons; quantile
+preprocessing is inconclusive. The study supports retaining the simpler standard
+head, without establishing equivalence or ruling out other tree recipes.
+
+The matched standard-head R5−R0 gain is against a fixed two-member sequence MLP,
+not the stronger selected sequence reference from the main study. It must not
+replace the original competitive-comparator claim. All findings remain
+conditional development evidence; no test was reopened. See the
+[hybrid report](finalization/hybrids_cloud_v1/REPORT.md) and its complete tables.
+
+Three failed report attempts and their numerical implementation amendments are
+preserved. The successful report matched the recorded two-thread SkylakeX
+backend: held predictions and all 328 stopping-MSE checks reproduced exactly.
+No permitted scalar slack was used. Saved predictions and fitting procedures
+were unchanged. The prior unlogged-container mismatch's cause remains unproven.
+Cloud compute and temporary storage for this study are closed.

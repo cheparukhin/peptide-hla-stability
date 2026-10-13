@@ -1,0 +1,263 @@
+{
+  "schema": "final_hybrid_saved_table_coverage_audit.1",
+  "status": "passed",
+  "checked_at_utc": "2026-10-13T00:39:11.490251+00:00",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "phase_certificate": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/phase_certificate.json",
+    "sha256": "131d74b63cf5335c4493e161cfa1b34c2d48a3789616bc56d77bd5ccfd459da1"
+  },
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/hybrid-report-20261013-0020/output_manifest.json",
+    "sha256": "0efbb2ef079a8cf99f6f0d15f12913a3699af7da7f4be1608516265d7933e13a"
+  },
+  "output_sha256": {
+    "reports/finalization/hybrids_cloud_v1/REPORT.md": "9433789494540445e552adfe88dd0172eb83fc057a3232a74f50f29cb0bce4ea",
+    "reports/finalization/hybrids_cloud_v1/audit.json": "aa9713c064ae1ac1299e1704036f0af27967c772d9f544dc2c87a71fec1b10f7",
+    "reports/finalization/hybrids_cloud_v1/bootstrap_min20.csv": "e2b7180593bac6b7f6c387305586411c0b85beafaa598c490ae8716576ff6c04",
+    "reports/finalization/hybrids_cloud_v1/bootstrap_min50.csv": "e9350a3fdc662cbf77fe0073f4b3d77cc2f07f5900d9b4e7c734502a5199a970",
+    "reports/finalization/hybrids_cloud_v1/comparisons.csv": "766197207dd5c439f42859e0bb60b6bb9cf1ee5dea56e7e04dd9a30c172636ec",
+    "reports/finalization/hybrids_cloud_v1/historical_descriptive_scores.csv": "2d0a865fb0da247aabc0f72347d0b3ec8d792fc2586e4d0be348bcc55813d6d8",
+    "reports/finalization/hybrids_cloud_v1/per_allele_scores.csv": "d51e27b8dbfd817552ec34522c1d4619a2d7b5a15325aff7591e57b3007dfd1e",
+    "reports/finalization/hybrids_cloud_v1/per_fold_scores.csv": "e17dd2b301b7066d4cc6e3b44a96330f9ee6f8b94c484220a5fe5bcfb35ff58b",
+    "reports/finalization/hybrids_cloud_v1/predictions.csv": "a14bbef9f9311dc17acbc2af66dbdeacd114f63ebee1292fd4af3fb10ec1ca1c",
+    "reports/finalization/hybrids_cloud_v1/runtime_summary.json": "c0a627a4c9184fdd0e3290b50e4b2cf1aba7134d6ed3dfb6260ac4bff331dfb6",
+    "reports/finalization/hybrids_cloud_v1/scores.csv": "163a735d4764b6d162550d30229b4d5550d820dec66358ef33647266aca3b3c4",
+    "reports/finalization/hybrids_cloud_v1/selections.csv": "ac8a8c6cf16e3861c033e38ed1eaf5a4efd9b168e01d923cbde775853881897d"
+  },
+  "report_binding": {
+    "path": "reports/finalization/hybrids_cloud_v1/REPORT.md",
+    "sha256": "9433789494540445e552adfe88dd0172eb83fc057a3232a74f50f29cb0bce4ea"
+  },
+  "canonical_training_targets": {
+    "path": "reports/finalization/cloud/canonical_training_targets.json",
+    "sha256": "f5a609a98fb7dc607242bcbe7b31db503f19a673c62a7de6398cd30b33df0b70"
+  },
+  "checks": {
+    "output_hashes_verified": 12,
+    "unique_arms": 16,
+    "unique_original_training_rows_per_arm": 19716,
+    "total_prediction_rows": 315456,
+    "clusters": 3587,
+    "alleles": 75,
+    "all_arm_metadata_and_outer_folds_match": true,
+    "no_cross_outer_fold_peptide_clusters": true,
+    "panels": {
+      "20": {
+        "n_alleles": 69,
+        "n_rows_eligible": 19647,
+        "bootstrap_rows": 2000,
+        "contrasts": 25
+      },
+      "50": {
+        "n_alleles": 68,
+        "n_rows_eligible": 19619,
+        "bootstrap_rows": 2000,
+        "contrasts": 25
+      }
+    },
+    "score_rows": 32,
+    "ordinary_contrasts_per_panel": 24,
+    "interaction_rows": 2,
+    "comparison_rows": 50,
+    "per_fold_rows": 160,
+    "all_comparison_point_interval_bias_and_role_arithmetic_passed": true,
+    "maximum_saved_summary_arithmetic_difference": 0.0,
+    "shared_bootstrap_table_per_panel": true,
+    "selection_rows": 10,
+    "inner_three_fold_mean_se_and_first_one_se_order_passed": true,
+    "selected_component_and_blend_saved_outer_prediction_arithmetic_passed": true,
+    "scientific_bundles": 80,
+    "scientific_fits_reported": 480,
+    "separate_engineering_bundles": 2,
+    "separate_engineering_fits_reported": 12,
+    "scalar_checks": 328,
+    "scalar_contexts": 82,
+    "persisted_curve_best_scalar_identity_exact": true,
+    "maximum_float32_ulp": 0,
+    "nonzero_scalar_differences": 0,
+    "held_replay_exact_requirement_and_success_flags_verified": true,
+    "backend_identity_and_two_thread_flags_verified": true,
+    "scientific_arithmetic_report_replay_target_sources_match_report_authorization": true
+  },
+  "selections": [
+    {
+      "representation": "R0",
+      "outer_fold": 0,
+      "blend_weight": 0.25,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R0",
+      "outer_fold": 1,
+      "blend_weight": 0.5,
+      "hybrid_component": "blend",
+      "standard_fallback": false
+    },
+    {
+      "representation": "R0",
+      "outer_fold": 2,
+      "blend_weight": 0.25,
+      "hybrid_component": "blend",
+      "standard_fallback": false
+    },
+    {
+      "representation": "R0",
+      "outer_fold": 3,
+      "blend_weight": 0.0,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R0",
+      "outer_fold": 4,
+      "blend_weight": 0.0,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R5",
+      "outer_fold": 0,
+      "blend_weight": 0.0,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R5",
+      "outer_fold": 1,
+      "blend_weight": 0.0,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R5",
+      "outer_fold": 2,
+      "blend_weight": 0.25,
+      "hybrid_component": "blend",
+      "standard_fallback": false
+    },
+    {
+      "representation": "R5",
+      "outer_fold": 3,
+      "blend_weight": 0.0,
+      "hybrid_component": "standard",
+      "standard_fallback": true
+    },
+    {
+      "representation": "R5",
+      "outer_fold": 4,
+      "blend_weight": 0.25,
+      "hybrid_component": "blend",
+      "standard_fallback": false
+    }
+  ],
+  "scope_limits": [
+    "Saved tables, metadata, curves and certificate/file bindings checked independently.",
+    "No model inference, fitting, feature reconstruction, bootstrap generation or resampling performed.",
+    "Exact model-held replay is evidenced by the authenticated successful cloud audit; it was not repeated locally.",
+    "Shared draw generation is evidenced by one 2000-row all-arm table and bound source/metadata per panel; sampled cluster indices were not regenerated.",
+    "Backend library identities are authenticated recorded cloud values; no local Linux library comparison was attempted."
+  ],
+  "report_authorization": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/authorization.json",
+    "sha256": "dac98e3de1ea5ba62046b37045283a038dcc5f90a5a8b69e56dcae982ecd8695"
+  },
+  "checked_source_sha256": {
+    "pepstab/final_hybrid_reporting.py": "d6e84748677d0b949938dfbf4234f56578c25401d3ef5ed6790fc3cb58636766",
+    "scripts/final_hybrids_cloud_report.py": "9d6499521c0b471f54034619792b700f9c071940eed798c19a317c5082de3116",
+    "pepstab/final_hybrid_replay.py": "e4d1199bd7d30a7191bd06a14aabf1da04f6fa707ff4797e51fe0c3fc5d1d367",
+    "pepstab/final_cloud_targets.py": "2ed5778238570c8bad1a599b6e8fe3552c6d54ed9437d62fc5821539b34670a2"
+  },
+  "operational_verifier": {
+    "path": "pepstab/final_cloud_protocol.py",
+    "report_execution_sha256": "ade6f60a46bc31afb1c98a94e7b5b6a72ab696d876201f783b6ebcb9d6a9649b",
+    "coverage_check_current_sha256": "c289ed591929e861e4e054bfbed1a038d8810e730c7d761282ef84efd45c081a",
+    "current_differs_from_execution": true,
+    "note": "Current operational verifier has changed since the completed report; no equality of these source versions is claimed. Scientific arithmetic/report/replay/target sources still match the report authorization."
+  },
+  "checked_member_completion_sha256": {
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_2/stop_0_seed_0/completed.json": "205754cc46561717f513e2398b6de93456d8b332950e8d8fbbcedf0deacc4f67",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_2/stop_1_seed_1/completed.json": "0c5779790a3af9302112d0fe9601ef403844e67e3e8df1c9893017850bd83bd2",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/final/stop_0_seed_0/completed.json": "0c95280f2fcb96efc80bdd752d17ceaec8617da0ef1d2e2fb00edd25b6dd4657",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/final/stop_1_seed_1/completed.json": "c4aae2f1070ecdc7b5018fa25de15488c2c3d2ee28b83ba6d697bbeedfdba649",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_0/stop_0_seed_0/completed.json": "0393a88b72c38475fd90fa6bff49b9d68143824057e526c69c1572e7756f3e30",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_0/stop_1_seed_1/completed.json": "4600dfad7b8f04a0a0fe39bcba4d76ec8d2f360895b25904d6e3f4b93fad5af1",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_1/stop_0_seed_0/completed.json": "0400531f8c2b67806f5746197f57d108e469226b755ce1dcd236ba483a8456cf",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R0/bundles/inner_1/stop_1_seed_1/completed.json": "996e5db7d3f12f43f9fbcdaa55a2829acac260f14e93f08c54a2c2778a37bc71",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_2/stop_0_seed_0/completed.json": "8b9549edf0261a9502300b24c3acf578b89192f6afbe2cc8e1033c2821be4fae",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_2/stop_1_seed_1/completed.json": "feac147df4380d3c6ed00f7144cda814b6b9de954aac0582902439903c0f5d72",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/final/stop_0_seed_0/completed.json": "80b49fcb8de673158613384319d3d18058a06dd1c1f9472141b689dc9e31d593",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/final/stop_1_seed_1/completed.json": "2c53fec01455360972319d1e0690e6aabb55431b077f528fe539f73464f400c8",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_0/stop_0_seed_0/completed.json": "0119dcd54bd73ddf306d640c57675a680784d9e349fe348db4ae5ad9b69b5ecf",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_0/stop_1_seed_1/completed.json": "4ff719d7f2218fd2aeea0b00cd62f33fd725b5a6f86e5206956f1d5f8a8aa5ca",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_1/stop_0_seed_0/completed.json": "0faf95a493a09577203654afaea1fbf6f823d5cec6e53271f62bf154d09aa52e",
+    "reports/finalization/hybrids_cloud_v1/fold_4/R5/bundles/inner_1/stop_1_seed_1/completed.json": "edb31b105b87870b5ea72091ba77d2d5df815a6a7b77e189f1e2b2df7c4f4ae3",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_2/stop_0_seed_0/completed.json": "6788c9fa4c843d049176936f67299971461ea1fe5b90c3ea09bb83d22b224e7e",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_2/stop_1_seed_1/completed.json": "943364fc4796acce11fa7f47dddba723e85bad76c70adc71ee197d113a9eadb4",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/final/stop_0_seed_0/completed.json": "ca32140c0d7b182953dfd41e78b197bce46f97c9ec701f8f696a97f6ca4c96de",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/final/stop_1_seed_1/completed.json": "e13c312e22c77bd47e0cf130ec259e29ef7553ca06ef7bc83125e9665a112973",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_0/stop_0_seed_0/completed.json": "a8052dc3fd9480c28d1d57ead990c4238c5421e6ab3ed7febde4dd2300e5ce9e",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_0/stop_1_seed_1/completed.json": "6c6625d1d761846f689fcf570f44792bfab208239ef10e713eff1496e563ea9a",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_1/stop_0_seed_0/completed.json": "3a14b4fd7db1b3d58bff6ef8646af9b4f08ce4b1991178d3614c52d412d82b57",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R0/bundles/inner_1/stop_1_seed_1/completed.json": "b84f68b7d29733789528874a49914e2e45cb1ceff42251ffb147fea429da4090",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_2/stop_0_seed_0/completed.json": "06e69e3854429df3ca01441b2ef98bb6878cbf76f5b8751403d4b94e7600de52",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_2/stop_1_seed_1/completed.json": "3efc55854dcafce56e85af33d623092aa6fe7eb3078c74adfaa909568af44bd1",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/final/stop_0_seed_0/completed.json": "ab5d728e9824e59460099d39a89c5f4c012fb37647f6333e597be1e116b41dce",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/final/stop_1_seed_1/completed.json": "de353b1bfb1d3bbd5f1760790257c3ec0064ee4e9083446120ea15699bca837b",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_0/stop_0_seed_0/completed.json": "0a55916da27dcd6a32c18feb9a84774cc2ea4ba3246b75d0d673b61b127b2e72",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_0/stop_1_seed_1/completed.json": "b0180b20f986a2f25d3471ae739fa3e34c8eed1564522e7ae99ce4c965bdccbb",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_1/stop_0_seed_0/completed.json": "fb14a091a19ff563537a3868fd9e49b37850a2f40a1ce4a702d77cb41e03c47e",
+    "reports/finalization/hybrids_cloud_v1/fold_3/R5/bundles/inner_1/stop_1_seed_1/completed.json": "a3930c89f32fee2e689929025bfebc341dd8f7c039a3bc52b1677fe8b10c9849",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_2/stop_0_seed_0/completed.json": "31cb924f221f725f0bfe1a3960380bac75834c33579b7614dffb599e647dfb23",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_2/stop_1_seed_1/completed.json": "310d2c1b0c063976e7954b97e27483e466df683d5d595a1be918ed51cf8208a5",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/final/stop_0_seed_0/completed.json": "927c73b3985a26813e89639461e80959c955fdcac7e3235fca1a3a6271abbedd",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/final/stop_1_seed_1/completed.json": "101670cb52bc04097b366e668b2ac9398c18e7811755b4667386d84b50123fdd",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_0/stop_0_seed_0/completed.json": "4c56cfb9f352235c613bfc394aa255f3bc888f147420758bb58dd1f7f64942eb",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_0/stop_1_seed_1/completed.json": "6842edd830c163bab9c320b634d7d89235e488780fd36bf8600673d4c8732753",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_1/stop_0_seed_0/completed.json": "22bd9413d65d0c107becb3958a71b379de48e8bca3268a51be965202d7da3381",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R0/bundles/inner_1/stop_1_seed_1/completed.json": "29a0ce21434ee5deb7a44f373e46951d1b46db77b3e7897f2330e0de9aa40cd7",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_2/stop_0_seed_0/completed.json": "f1b74e0aec62eaff0fb0c9f12a823c5562c7548c47db79c86e035648102dac94",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_2/stop_1_seed_1/completed.json": "f8bfe4ce2b61d5581874a9f5f5f9d3f6223d03673e221db112927649f56db8f0",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/final/stop_0_seed_0/completed.json": "d80a079eb3aad7b7f172035255e94ccc40486179c64b5825a86e986ed785db73",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/final/stop_1_seed_1/completed.json": "6e0addf8cf9189ce847288187e395fde4d38031e1d1294f77e1933946224f105",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_0/stop_0_seed_0/completed.json": "4f215fb2abee9d86cc8ad0ac12d829dcbf4af6ca743ff0cb601745f20e9258e5",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_0/stop_1_seed_1/completed.json": "40743fcc80860f2ce00222a96c1befaa8617582b2cbfbcf2b50c215941eff5fa",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_1/stop_0_seed_0/completed.json": "924882874835c91921de52523c5c86b5a92a8d301c0658dd9f02a7b42acee743",
+    "reports/finalization/hybrids_cloud_v1/fold_2/R5/bundles/inner_1/stop_1_seed_1/completed.json": "8fcee7fae03e1d4eaae6b940871b301b64888b483bbe080d9e76b0bd6b679a38",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_2/stop_0_seed_0/completed.json": "e38441f4ebaf6999a2842dffb4f1dffb1091f57a8a88d778bc1ab27924d3b8a2",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_2/stop_1_seed_1/completed.json": "5b2c72cabdec951e74195e6c68b953dd5f4902cf46527fde74fa26878f337ee1",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/final/stop_0_seed_0/completed.json": "64fe121146a9448cc022e347c86751e053eeb0a47c47a945065def16b70e5e78",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/final/stop_1_seed_1/completed.json": "3a61ef2a0b8ea29315d7cb2944e202b3dac0180dd4575d908891a5f7cc013878",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_0/stop_0_seed_0/completed.json": "0be764d9512a379b690a36d723bae31f6cedb79c23e91383a87e859c99544181",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_0/stop_1_seed_1/completed.json": "d60fbbde748d05e2379de3d33b9dd2b851e59c9b3d52e32571ffa48b0d155ff6",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_1/stop_0_seed_0/completed.json": "b2a738ec1b77d8ece61eb57668760b5b762c04f405e1ee1d0275d026247c9199",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R0/bundles/inner_1/stop_1_seed_1/completed.json": "775e981ec3b2219e48da6506439b30f47c43c8efbe0754ebd80364834ec869f0",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_2/stop_0_seed_0/completed.json": "e3aa97ff2291f8533d35d2d64f98d7e55b9dbc205e9d770a2f5fd8d3704503c1",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_2/stop_1_seed_1/completed.json": "029cdd35e3a9ab7409decc89863ea2a7936be5ded511a05ce738bf63724904fc",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/final/stop_0_seed_0/completed.json": "7531aa53c7e98629513fa7003c61c5126aa3d377a51ffc5f10129ee26c9e0934",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/final/stop_1_seed_1/completed.json": "8d14efea7df510a84e865fe451d7161be2fc12a64f0190707498ded0b733de09",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_0/stop_0_seed_0/completed.json": "88a7293622b53897ebd418ab57f964fe7bfd935fbd0e935dc764ab959c47d7a7",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_0/stop_1_seed_1/completed.json": "37e1e31701510ad9fb3cc3139868cb52ea74ea6f0c3777908d6c660737b4ec62",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_1/stop_0_seed_0/completed.json": "61f7c10ce8f954bb3da77b280411b71620f39014d0d58aa4e26eed0d185273db",
+    "reports/finalization/hybrids_cloud_v1/fold_0/R5/bundles/inner_1/stop_1_seed_1/completed.json": "080a47cd54d55ae85a1e6082fb7258f8c74576a6561d5513234acf541fce1a91",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_2/stop_0_seed_0/completed.json": "cbaf13128cd06118a6e99918f47c2bca05e1db610ec7bd01d295decca8153609",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_2/stop_1_seed_1/completed.json": "528135c8c65a7e108d19063efd55dadef3c3d33a82a9c28300bb9b0f3a5c8e01",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/final/stop_0_seed_0/completed.json": "35ff43c22d16ad547bcaf626982d3e938587f89c21ff2ebae6558e7b467c1cac",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/final/stop_1_seed_1/completed.json": "738c32594a9c13569bf20621fa5a0abe63e5adb0b0a2e593f36d67b22b8b5c48",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_0/stop_0_seed_0/completed.json": "50e4d99dcf3a0c984b1d308304a24c84a5314806bde86cd08342f801b3410ace",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_0/stop_1_seed_1/completed.json": "4ae59f3b7622517d18d582d3af354bf966dbd3094db79f0ff35711b664551d15",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_1/stop_0_seed_0/completed.json": "02575227f58bb3e2e12878b72eb735e24d5fffaf7e8b986368c1f9e17b223f07",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R0/bundles/inner_1/stop_1_seed_1/completed.json": "ed50e2fff64af4173d606f38dda71174ba871b4179b881db30d3881a07375c7f",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_2/stop_0_seed_0/completed.json": "2fafafc03033f0090125ee21fa4b84382472f88a34a51ccdb3527991ff9bfacb",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_2/stop_1_seed_1/completed.json": "cff2b017c3429c92a6c337f627ac1f17756f5323015cd32d324661837f93884b",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/final/stop_0_seed_0/completed.json": "24814b479d58eb159c99785ad58561d109ca915bd8f2e98c2fd22ff5fbf80ba9",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/final/stop_1_seed_1/completed.json": "19fbbab6f1cf86699cc065d56f2b2c1d833a9c5b0119e98302c322b2162df8bd",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_0/stop_0_seed_0/completed.json": "72aa756e563abc93bb409878b96b7fce4db72ca17c8d261d2559acb103a541de",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_0/stop_1_seed_1/completed.json": "029d91473bb39ce470730d5cb4ae1c9f825d4f9eb803c58a090c4f2bc1fa3ba8",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_1/stop_0_seed_0/completed.json": "afd65e68f81c99d7aefe826fd356467317c4d89389b33e5021ecc4a622c3b456",
+    "reports/finalization/hybrids_cloud_v1/fold_1/R5/bundles/inner_1/stop_1_seed_1/completed.json": "79c43aa4bed99890555078f6f3e04707fc11065f60fa43e7c31a24a4316b0d9d",
+    "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R0/bundles/inner_0/stop_0_seed_0/completed.json": "17c18e3a11dc61b49fadd914f512f7bd1ae593a2854a4f868cf3fda826c52834",
+    "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R5/bundles/inner_0/stop_0_seed_0/completed.json": "7b1c3e4900fd7456bc3ea346d1b117432e3f147976d070158af90abf64a12fe2"
+  }
+}

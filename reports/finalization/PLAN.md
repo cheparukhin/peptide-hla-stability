@@ -1,11 +1,16 @@
 # Hackathon finalisation — authorized 12 October 2026
 
-**Current, 12 October 22:40 UTC:** all frozen model fitting is complete.
-The 480-fit hybrid main and separate unscored pilot are downloaded and closed.
-The final saved-model/ancestry/statistical audit is now running once on Modal;
-no scored hybrid result is claimed until that report passes. Current ownership
-and fixed deadlines are in RECOVERY_OPERATIONS.md. Future heavy work stays on
-Modal; earlier local-first plans are historical. Prioritize scientific results.
+**Current, 13 October 00:39 UTC:** the frozen hybrid study is fully audited and
+closed. Its primary gain is +0.004384 [−0.005541,+0.009984], so added complexity
+has not established an improvement over the matched standard R5 MLP. The
+original training predictions, all saved models and selections replay exactly
+under the recorded numerical backend. All cloud compute/storage is closed.
+
+The user authorized further work only if scientifically worthwhile. A bounded
+120-fit fixed-head label-budget study is independently reviewed but not yet
+frozen or launched. It asks a separate question about dependence on available
+labels, within $10 inclusive and the same $100 total ceiling. Current ownership
+and gates are in RECOVERY_OPERATIONS.md; heavy work stays on Modal.
 
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;
