@@ -1,0 +1,29 @@
+{
+  "schema": "followup3_budget.1",
+  "user_reported_remaining_usd": 139.0,
+  "inclusive_new_tranche_ceiling_usd": 139.0,
+  "planned_commitment_limit_usd": 120.0,
+  "operational_cushion_usd": 19.0,
+  "conservative_closed_usd": 1.5187327314416568,
+  "reserved_usd": 0,
+  "provider_profile": "a-cheparukhin",
+  "charges_are_not_provider_invoices": true,
+  "jobs": [
+    {
+      "name": "features-prepare-20261013",
+      "plan_sha256": "ab0b22388fa5a23cc685098be030fc3952c004e335aebb3be328048e5f518881",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5105240864473979,
+      "provider_exit": "reports/followup3/resources/features_prepare/provider_exit.json"
+    },
+    {
+      "name": "runtime-prepare-20261013",
+      "plan_sha256": "8aca4ea549409d300a72b82c7259d859f25f6841b170c80e89825d39e2de5a33",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 1.0082086449942589,
+      "provider_exit": "reports/followup3/resources/runtime_prepare/provider_exit.json"
+    }
+  ]
+}
