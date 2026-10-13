@@ -1,0 +1,77 @@
+{
+  "schema": "followup3_full_cohort_root_decision.1",
+  "at_utc": "2026-10-13T16:59:39.642304+00:00",
+  "approve_fulltrain_inverse": true,
+  "energy_final_audit_complete": true,
+  "candidate_draft_sha256": "6a4c705bdd6c1acc6aeb3db0cf1514838f1ac93a0cf01fddd5e84e18831470d2",
+  "selected_study": "four_batch_complete_ORIGINAL_train_ProteinMPNN",
+  "full_energy_approved": false,
+  "evidence_sha256": {
+    "reports/followup3/FULL_COHORT_DECISION_FRAMEWORK.md": "9c90b690d4156991cf255b1f2550787480bbd77cd03c25af778ca9c89488a2e5",
+    "reports/followup3/inverse_execution_v2/independent_audit.json": "33c98ceecd013629e63f788bb95e362599d602b8de64ba01ae8ea9d0717f98b7",
+    "reports/followup3/inverse_execution_v2/exploratory_influence/summary.json": "0b6289cc760ab3e18c19e81407692ae9c188d8523cff0a036345b07db5b45635",
+    "reports/followup3/energy_execution_v2/independent_audit.json": "3200594fbc02e2854620cb411e3dc90879daf8f70afe215428073f0581034f47",
+    "reports/followup3/energy_execution_v2/primary_family3_interval.json": "9f497bce04f7225221dcf7def9f4196f53ba10c6fda26f2281a7206e0f86b3fc",
+    "reports/followup3/energy_recovery_v3/independent_feature_audit.json": "4b20fec376a14911aa1733a43f9d34465727326425cdd9a490fb6cad1ee5823a",
+    "reports/followup3/energy_recovery_v3/independent_recovery_audit.json": "c88df44b92d769ccc79e1066ee07177cae889c924fb87a1026dc7cda903790ee",
+    "reports/followup3/inverse_fulltrain_candidate/FOUR_BATCH_PRELAUNCH_REVIEW.json": "52c042fd5fb187dc7098f71a9f181c2470b5c813450a809fc8a9e31b3f030f14",
+    "reports/followup3/inverse_fulltrain_candidate/RESOURCE_AMENDMENT_FOUR_BATCHES.md": "7c824333b76475bb12ff230316f5521c50d9a76116c29037b5705db17598c0b2",
+    "reports/followup3/inverse_fulltrain_forecast/FEASIBILITY_FORECAST.json": "55814be3658a9b1d3177c8d31f67684107073230fec832f74b13166f4655a6c6",
+    "reports/followup3/resources/rates.json": "56125a91baf10e3d84209a959a575076e1fce564239d1df78a2c1b0b558330aa"
+  },
+  "reasoning": [
+    "Balanced ProteinMPNN net neural increment +0.018816 has nominal95%[-0.016250,+0.056637], so benefit is not established.",
+    "Its positive net point persists under every fixed-eligibility allele/fold deletion; ridge disagrees and remains a mandatory sensitivity.",
+    "Energy neural increment +0.014991 has family98.333%[-0.052436,+0.045026]; ridge increment +0.006510 is also inconclusive. This does not earn its substantially higher full-cohort cost.",
+    "The cap64 panel constrains source coverage and fitting density. One final complete-training-cohort assessment plus the fixed-query descriptive comparison is scientifically useful at the bounded cost, even if it resolves to no gain.",
+    "This selection follows the balanced outcomes; it is neither independent confirmation nor a fourth frozen-tranche primary.",
+    "Keep the reviewed CPU scoring recipe and immutable cache. A GPU change would need new kernel/image/parity studies and is not justified here."
+  ],
+  "scope": {
+    "rows": 19716,
+    "cached_native_scores": 4449,
+    "new_native_scores": 15267,
+    "arms": [
+      "R5",
+      "R5_P",
+      "R5_PC"
+    ],
+    "mlp_fits": 300,
+    "ridge_fits": 150,
+    "main_comparison": "MLP R5_PC minus R5",
+    "sensitivity": "ridge; min50",
+    "fixed_query_rows": 4449,
+    "additional_ci_or_fit_for_fixed_queries": false,
+    "original_validation_test_reopened": false,
+    "reserved_external_outcomes_opened": false,
+    "additional_grid_blend_or_feature_search": false,
+    "all_19716_required_before_assessment": true
+  },
+  "resources": {
+    "extraction_jobs": 4,
+    "batch_rows": [
+      3817,
+      3817,
+      3817,
+      3816
+    ],
+    "cpu_hard_each": 16,
+    "memory_gib_hard_each": 32,
+    "spawn_workers_each": 8,
+    "numerical_threads_each": 2,
+    "hard_seconds_each": 9000,
+    "reservation_usd_each": 8.5,
+    "overhead_usd_each": 0.5,
+    "extraction_total_cap_usd": 34.0,
+    "staging_fitting_reporting_allowance_usd": 6.0,
+    "full_study_maximum_usd": 40.0,
+    "conservative_already_closed_usd": 46.57178068285775,
+    "maximum_commitment_with_extension_usd": 86.57178068285775,
+    "planned_commitment_limit_usd": 120.0,
+    "user_ceiling_usd": 139.0,
+    "charges_are_not_invoices": true,
+    "sandbox_quota_verified": false,
+    "capacity_or_deadline_failure": "preserve partials; no incomplete-panel analysis or automatic extension"
+  },
+  "stop_rule": "This is the one selected full-cohort extension. Preserve and report every frozen result. No additional model search or second descriptor expansion follows its outcomes."
+}
