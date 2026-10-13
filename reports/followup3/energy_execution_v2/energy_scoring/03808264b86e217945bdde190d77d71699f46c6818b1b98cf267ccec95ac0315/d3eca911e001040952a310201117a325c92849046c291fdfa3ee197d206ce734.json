@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:17",
+  "peptide": "IARISALGF",
+  "cluster_id": 1578,
+  "outer_fold": 0,
+  "complex_id": "B1517_IARISALGF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_17/B1517_IARISALGF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1517_IARISALGF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_xz6rywn3/input",
+        "--output-dir=/tmp/energy_repaired_xz6rywn3/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 229.42827741400015
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1517_IARISALGF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_xz6rywn3/output",
+        "--output-dir=/tmp/energy_repaired_xz6rywn3/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1395415110000613
+    }
+  ],
+  "metadata_sha256": "185384b70a1bb133ae8b7066f443ee5a0c8455bcc246af91a26ed5a2331a3707",
+  "structure_sha256": "001620da64e90e37fe08879d31f2b0a7a4a64c2ed05e580815254ac911c63712",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.612272,
+    "foldx_intraclashesgroup2": 10.8489,
+    "foldx_interaction_energy": -16.3241,
+    "foldx_backbone_hbond": -5.71912,
+    "foldx_sidechain_hbond": -6.13081,
+    "foldx_van_der_waals": -18.4284,
+    "foldx_electrostatics": -3.88374,
+    "foldx_solvation_polar": 26.7849,
+    "foldx_solvation_hydrophobic": -23.2388,
+    "foldx_van_der_waals_clashes": 3.59796,
+    "foldx_entropy_sidechain": 6.61969,
+    "foldx_entropy_mainchain": 3.9469,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.538495,
+    "foldx_backbone_clash": 0.418656,
+    "foldx_helix_dipole": 0.0228262,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.458101,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0241051,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "095040948108c86754c6be6293d2bfc252a1866129c7ff63672260c856125fbe",
+  "repaired_pdb_sha256": "c2452324c4330b3ef3cbf82616d1bd3059440448592224a9ecae8be8795c69d8",
+  "conversion_validation": {
+    "n_atoms": 3141,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0004999935626983643,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "IARISALGF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 236.0772513339998,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

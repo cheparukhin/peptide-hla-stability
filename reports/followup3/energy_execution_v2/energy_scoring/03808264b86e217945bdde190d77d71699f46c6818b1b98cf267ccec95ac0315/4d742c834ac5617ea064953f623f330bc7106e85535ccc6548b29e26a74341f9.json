@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*80:01",
+  "peptide": "LLAAVASSY",
+  "cluster_id": 2400,
+  "outer_fold": 3,
+  "complex_id": "A8001_LLAAVASSY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_80_01/A8001_LLAAVASSY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A8001_LLAAVASSY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gv1048qo/input",
+        "--output-dir=/tmp/energy_repaired_gv1048qo/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 172.04165089699927
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A8001_LLAAVASSY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gv1048qo/output",
+        "--output-dir=/tmp/energy_repaired_gv1048qo/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.974155704999248
+    }
+  ],
+  "metadata_sha256": "1d04048074ab409b66d2b6f4eb231b34ec314f492ac517ee337707ddf76029e6",
+  "structure_sha256": "68b0e2d102623c8ed6d88a9cb26998c6b5ef87680876ae22eaa4cfee024d9ce9",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0897054,
+    "foldx_intraclashesgroup2": 11.4071,
+    "foldx_interaction_energy": -20.9455,
+    "foldx_backbone_hbond": -5.60923,
+    "foldx_sidechain_hbond": -9.43488,
+    "foldx_van_der_waals": -17.1997,
+    "foldx_electrostatics": -1.18375,
+    "foldx_solvation_polar": 24.553,
+    "foldx_solvation_hydrophobic": -22.8795,
+    "foldx_van_der_waals_clashes": 1.65374,
+    "foldx_entropy_sidechain": 6.34921,
+    "foldx_entropy_mainchain": 3.20543,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0577994,
+    "foldx_backbone_clash": 0.96761,
+    "foldx_helix_dipole": 0.00130546,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.540278,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0813291,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "7367524a81f72c4a9f727307dda5268a0278afb0fb7b7fc1f2fd8651e5fb8631",
+  "repaired_pdb_sha256": "c0f2ed21315d8a514056ac082bf2f1cfff177e2e613df42eadee964c03632a7a",
+  "conversion_validation": {
+    "n_atoms": 3128,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "LLAAVASSY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 175.49082867800007,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

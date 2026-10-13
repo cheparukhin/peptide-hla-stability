@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:02",
+  "peptide": "CYPGYFADY",
+  "cluster_id": 437,
+  "outer_fold": 1,
+  "complex_id": "A2402_CYPGYFADY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_02/A2402_CYPGYFADY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2402_CYPGYFADY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_9igps8cd/input",
+        "--output-dir=/tmp/energy_repaired_9igps8cd/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 274.3854389989999
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2402_CYPGYFADY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_9igps8cd/output",
+        "--output-dir=/tmp/energy_repaired_9igps8cd/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.8494682230000308
+    }
+  ],
+  "metadata_sha256": "196ce70aa1f485281ff2feec92a88da8b602499b9369be0b5775018c057193e8",
+  "structure_sha256": "c20ce63f8bc3daa1f92a02daca4f3258d67dbd38769700bd93136811a3798cff",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.237932,
+    "foldx_intraclashesgroup2": 12.1095,
+    "foldx_interaction_energy": -23.7812,
+    "foldx_backbone_hbond": -5.2504,
+    "foldx_sidechain_hbond": -8.15907,
+    "foldx_van_der_waals": -18.3339,
+    "foldx_electrostatics": -0.546447,
+    "foldx_solvation_polar": 21.8829,
+    "foldx_solvation_hydrophobic": -25.5145,
+    "foldx_van_der_waals_clashes": 3.2762,
+    "foldx_entropy_sidechain": 5.37219,
+    "foldx_entropy_mainchain": 3.75322,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0270898,
+    "foldx_backbone_clash": 0.880528,
+    "foldx_helix_dipole": 0.00326786,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 8.88178e-16,
+    "foldx_electrostatic_kon": -0.344429,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.052659,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "0b17d79aec892efc3bf25057ded83bb58c0524a892a83fe88309fd30d2ed3b0f",
+  "repaired_pdb_sha256": "6be88ce0acb4e7366901cfdefe5be810bceea9f80c485ad978a33b016548fe85",
+  "conversion_validation": {
+    "n_atoms": 3135,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "CYPGYFADY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 280.3634266680001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

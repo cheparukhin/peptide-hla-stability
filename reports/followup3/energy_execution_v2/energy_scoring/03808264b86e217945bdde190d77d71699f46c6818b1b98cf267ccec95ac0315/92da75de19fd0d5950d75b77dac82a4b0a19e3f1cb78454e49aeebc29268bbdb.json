@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*66:01",
+  "peptide": "YVIRDLAAM",
+  "cluster_id": 5082,
+  "outer_fold": 4,
+  "complex_id": "A6601_YVIRDLAAM",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_66_01/A6601_YVIRDLAAM",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A6601_YVIRDLAAM.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gkid3gnn/input",
+        "--output-dir=/tmp/energy_repaired_gkid3gnn/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 192.15209756600007
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A6601_YVIRDLAAM_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gkid3gnn/output",
+        "--output-dir=/tmp/energy_repaired_gkid3gnn/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.062066742000752
+    }
+  ],
+  "metadata_sha256": "b4066ed1b0640d02ac573f05d485768858ae50de79d8d520ca6eafcd2f63683d",
+  "structure_sha256": "b6309a8b8087cbf46230a9bb76040e3ecd29c236dd66f53f97883d736c4bf91d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.177344,
+    "foldx_intraclashesgroup2": 10.1648,
+    "foldx_interaction_energy": -13.6591,
+    "foldx_backbone_hbond": -5.71246,
+    "foldx_sidechain_hbond": -8.42787,
+    "foldx_van_der_waals": -20.1413,
+    "foldx_electrostatics": -1.00671,
+    "foldx_solvation_polar": 29.063,
+    "foldx_solvation_hydrophobic": -27.4776,
+    "foldx_van_der_waals_clashes": 4.29895,
+    "foldx_entropy_sidechain": 9.33901,
+    "foldx_entropy_mainchain": 5.69113,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0899137,
+    "foldx_backbone_clash": 1.33239,
+    "foldx_helix_dipole": -0.00580688,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": 0.630649,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 1.0,
+    "foldx_interface_residues_vdw_clashing": 1.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "1bb5fdbccaeea5136bd842a2899218e38232bfeeb5457d5b859a82c652174445",
+  "repaired_pdb_sha256": "fede9f860c0f8a31c2395027d14b351cce726436695de83760d3609a332d27c6",
+  "conversion_validation": {
+    "n_atoms": 3155,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005000010132789612,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "YVIRDLAAM"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 195.6667253249998,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

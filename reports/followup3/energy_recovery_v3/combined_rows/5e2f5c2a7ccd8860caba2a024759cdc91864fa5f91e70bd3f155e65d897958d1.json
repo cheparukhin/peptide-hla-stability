@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*32:07",
+  "peptide": "RLIWSHHHI",
+  "cluster_id": 3349,
+  "outer_fold": 0,
+  "complex_id": "A3207_RLIWSHHHI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_32_07/A3207_RLIWSHHHI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3207_RLIWSHHHI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_walfcuma/input",
+        "--output-dir=/tmp/energy_repaired_walfcuma/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 209.1998677620004
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3207_RLIWSHHHI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_walfcuma/output",
+        "--output-dir=/tmp/energy_repaired_walfcuma/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.561127487000249
+    }
+  ],
+  "metadata_sha256": "0846dd378e7b2e8198b0e717ac01bc6f65832ba5eaa9bfa339e543e940354106",
+  "structure_sha256": "adcddd2de650c617c8434cb4c532aad674b58e4d75fa4595de5f4c2e818bb721",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.55895,
+    "foldx_intraclashesgroup2": 14.1794,
+    "foldx_interaction_energy": -20.5416,
+    "foldx_backbone_hbond": -6.16912,
+    "foldx_sidechain_hbond": -8.70684,
+    "foldx_van_der_waals": -20.2332,
+    "foldx_electrostatics": -2.95439,
+    "foldx_solvation_polar": 28.0621,
+    "foldx_solvation_hydrophobic": -27.6917,
+    "foldx_van_der_waals_clashes": 1.91875,
+    "foldx_entropy_sidechain": 11.0932,
+    "foldx_entropy_mainchain": 4.40261,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.36691,
+    "foldx_backbone_clash": 1.59909,
+    "foldx_helix_dipole": 0.0232399,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.902105,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.248789,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 52.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "7292d3ee99d00cda95ae63b3cd207181c6903638bc6a59b756bfb237d5bcc68e",
+  "repaired_pdb_sha256": "42f8b4453dda7b94efef98441c85bb4caba115a9766ad85cf4b6ce72a166a8b7",
+  "conversion_validation": {
+    "n_atoms": 3149,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005000010132789612,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RLIWSHHHI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 216.64199766000002,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

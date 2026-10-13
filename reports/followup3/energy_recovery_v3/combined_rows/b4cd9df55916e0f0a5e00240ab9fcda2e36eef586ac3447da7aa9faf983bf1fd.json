@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:02",
+  "peptide": "VLSDINAVF",
+  "cluster_id": 4388,
+  "outer_fold": 4,
+  "complex_id": "B1502_VLSDINAVF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_02/B1502_VLSDINAVF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1502_VLSDINAVF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_mq2wo0rs/input",
+        "--output-dir=/tmp/energy_repaired_mq2wo0rs/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 236.27709396800037
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1502_VLSDINAVF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_mq2wo0rs/output",
+        "--output-dir=/tmp/energy_repaired_mq2wo0rs/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.41024809099963
+    }
+  ],
+  "metadata_sha256": "8f37981a754486ca9c2e1daed32254b289cffe8155cb667a2eff9ead77cc372a",
+  "structure_sha256": "26ca2eff89f50cf5e4c87a6494dea89f4b7f03bf1d3a46541719b77ef02e2041",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.290274,
+    "foldx_intraclashesgroup2": 15.705,
+    "foldx_interaction_energy": -20.9416,
+    "foldx_backbone_hbond": -6.29473,
+    "foldx_sidechain_hbond": -8.92663,
+    "foldx_van_der_waals": -20.4838,
+    "foldx_electrostatics": -1.6775,
+    "foldx_solvation_polar": 27.3037,
+    "foldx_solvation_hydrophobic": -28.534,
+    "foldx_van_der_waals_clashes": 5.64679,
+    "foldx_entropy_sidechain": 8.29618,
+    "foldx_entropy_mainchain": 3.75125,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.287746,
+    "foldx_backbone_clash": 0.825638,
+    "foldx_helix_dipole": -0.01177,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.298925,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "6b576591a09dcf6f9fc8aa5cdcb8b753e55185f8ec45b69b95648bf6f0bfa6d5",
+  "repaired_pdb_sha256": "c77add9299e16baf4b051de77518b01765a9dfbee730716c56b34dcce711af8a",
+  "conversion_validation": {
+    "n_atoms": 3138,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VLSDINAVF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 240.3785629820004,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

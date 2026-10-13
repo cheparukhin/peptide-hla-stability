@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*11:01",
+  "peptide": "KIGEVIGPK",
+  "cluster_id": 1967,
+  "outer_fold": 0,
+  "complex_id": "A1101_KIGEVIGPK",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_11_01/A1101_KIGEVIGPK",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A1101_KIGEVIGPK.pdb",
+        "--pdb-dir=/tmp/energy_repaired_1lw1u1e5/input",
+        "--output-dir=/tmp/energy_repaired_1lw1u1e5/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 246.61215000100015
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A1101_KIGEVIGPK_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_1lw1u1e5/output",
+        "--output-dir=/tmp/energy_repaired_1lw1u1e5/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.402762337000013
+    }
+  ],
+  "metadata_sha256": "9325b3240c74818b20b58a4876bc2a2399acd1755392f44ec7cd7e468c2135dc",
+  "structure_sha256": "cb8a078b8a686ec3249a9952d113e74b5fa4c18d2b544d8e301e0d03748ad8a9",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0682993,
+    "foldx_intraclashesgroup2": 10.2012,
+    "foldx_interaction_energy": -15.0865,
+    "foldx_backbone_hbond": -6.85572,
+    "foldx_sidechain_hbond": -8.21891,
+    "foldx_van_der_waals": -18.913,
+    "foldx_electrostatics": -3.47703,
+    "foldx_solvation_polar": 31.4256,
+    "foldx_solvation_hydrophobic": -24.8862,
+    "foldx_van_der_waals_clashes": 2.58238,
+    "foldx_entropy_sidechain": 9.6181,
+    "foldx_entropy_mainchain": 4.37994,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0214705,
+    "foldx_backbone_clash": 1.45582,
+    "foldx_helix_dipole": 0.0125477,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.775665,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "cc5622ef9e8e21f7cbb180a1070f2c6bfdedc8fa96fbfaa568c15288bd41f09e",
+  "repaired_pdb_sha256": "f50781a9c99113cf4f17b349d6d0d91ddacada75fd7a2f85ffff2701c3ad7a94",
+  "conversion_validation": {
+    "n_atoms": 3137,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "KIGEVIGPK"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 251.54650532799997,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

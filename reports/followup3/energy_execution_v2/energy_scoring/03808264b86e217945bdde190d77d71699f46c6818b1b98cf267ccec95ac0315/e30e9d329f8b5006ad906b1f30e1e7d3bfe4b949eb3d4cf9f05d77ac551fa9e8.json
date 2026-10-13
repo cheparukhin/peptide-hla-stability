@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*26:02",
+  "peptide": "EVHYSGINY",
+  "cluster_id": 696,
+  "outer_fold": 0,
+  "complex_id": "A2602_EVHYSGINY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_26_02/A2602_EVHYSGINY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2602_EVHYSGINY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rmz4kydx/input",
+        "--output-dir=/tmp/energy_repaired_rmz4kydx/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 170.18827161399986
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2602_EVHYSGINY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rmz4kydx/output",
+        "--output-dir=/tmp/energy_repaired_rmz4kydx/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.1142025569997713
+    }
+  ],
+  "metadata_sha256": "68c9e321e89cfa563ef1fd32c6f1e17b3c943468e525d69c69ac055a896d946d",
+  "structure_sha256": "573def05d447a1a21d9dc0fde7305c660772a597b40d59938c51927be827ee03",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.147599,
+    "foldx_intraclashesgroup2": 14.8406,
+    "foldx_interaction_energy": -20.651,
+    "foldx_backbone_hbond": -5.14459,
+    "foldx_sidechain_hbond": -16.1788,
+    "foldx_van_der_waals": -21.2651,
+    "foldx_electrostatics": -2.59821,
+    "foldx_solvation_polar": 31.2748,
+    "foldx_solvation_hydrophobic": -26.3095,
+    "foldx_van_der_waals_clashes": 5.03033,
+    "foldx_entropy_sidechain": 9.31781,
+    "foldx_entropy_mainchain": 5.44575,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.105687,
+    "foldx_backbone_clash": 0.844793,
+    "foldx_helix_dipole": -0.029282,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.504102,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.204112,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "ddb47509e53a866bdfb21c3a1e1daf7a343f39b1e6bbf5510e8c824775911856",
+  "repaired_pdb_sha256": "7cb6072eba13eecbbe54bedf97393b50ef2c6955bc1fd1e88afe6bc6bef26449",
+  "conversion_validation": {
+    "n_atoms": 3158,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "EVHYSGINY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 173.76593472500008,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*27:02",
+  "peptide": "FRYEFTAPF",
+  "cluster_id": 1042,
+  "outer_fold": 2,
+  "complex_id": "B2702_FRYEFTAPF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_27_02/B2702_FRYEFTAPF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B2702_FRYEFTAPF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ew9q3h_1/input",
+        "--output-dir=/tmp/energy_repaired_ew9q3h_1/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 181.29463551499998
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B2702_FRYEFTAPF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ew9q3h_1/output",
+        "--output-dir=/tmp/energy_repaired_ew9q3h_1/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.1744880460000786
+    }
+  ],
+  "metadata_sha256": "a012312fa14e1f45fa761af146d12ccf116c3831966b341e8437f2a4fcd19d73",
+  "structure_sha256": "b6c12cbb9d0ea345f37e76e36c0e591515a9ccd89c8e9e3cd350a994f1cce821",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.752796,
+    "foldx_intraclashesgroup2": 14.5929,
+    "foldx_interaction_energy": -36.427,
+    "foldx_backbone_hbond": -6.83933,
+    "foldx_sidechain_hbond": -13.7992,
+    "foldx_van_der_waals": -21.7104,
+    "foldx_electrostatics": -9.60691,
+    "foldx_solvation_polar": 27.9329,
+    "foldx_solvation_hydrophobic": -28.2611,
+    "foldx_van_der_waals_clashes": 2.30593,
+    "foldx_entropy_sidechain": 10.6433,
+    "foldx_entropy_mainchain": 3.57503,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.125224,
+    "foldx_backbone_clash": 0.936985,
+    "foldx_helix_dipole": -0.00506952,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.813787,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.026434,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 51.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "fda0332dce294f6af62acf3f1b7ac63322beed21d21b10dc8923b5b5f9610f71",
+  "repaired_pdb_sha256": "152d33c3165612c82ffa0f4c38c87c526c53a0e6471981416b55ffebc4d4d2bf",
+  "conversion_validation": {
+    "n_atoms": 3154,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FRYEFTAPF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 185.1148307829999,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*07:02",
+  "peptide": "NPVTVINEY",
+  "cluster_id": 3022,
+  "outer_fold": 3,
+  "complex_id": "B0702_NPVTVINEY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_07_02/B0702_NPVTVINEY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B0702_NPVTVINEY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5tm9d9zt/input",
+        "--output-dir=/tmp/energy_repaired_5tm9d9zt/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 203.19715468599998
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B0702_NPVTVINEY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5tm9d9zt/output",
+        "--output-dir=/tmp/energy_repaired_5tm9d9zt/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.8615070289999949
+    }
+  ],
+  "metadata_sha256": "6eab5e02f9ba6b8739851af8bc34860366a10377ca9b53e6f48323a9060df2ee",
+  "structure_sha256": "e0633579ebd6052c200912ce5da34a51d6d72c6f3138b4d471ae9517ac04d6be",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.365366,
+    "foldx_intraclashesgroup2": 15.001,
+    "foldx_interaction_energy": -18.4059,
+    "foldx_backbone_hbond": -5.18945,
+    "foldx_sidechain_hbond": -9.7578,
+    "foldx_van_der_waals": -20.185,
+    "foldx_electrostatics": -0.931167,
+    "foldx_solvation_polar": 28.2076,
+    "foldx_solvation_hydrophobic": -26.3637,
+    "foldx_van_der_waals_clashes": 3.82739,
+    "foldx_entropy_sidechain": 8.09051,
+    "foldx_entropy_mainchain": 3.98683,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.306791,
+    "foldx_backbone_clash": 0.362674,
+    "foldx_helix_dipole": -0.00355832,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.394383,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "65c48c72193f81f987d0def69adff2c746ea92a3de8520e2c100e7592486ddc9",
+  "repaired_pdb_sha256": "9c5c6b59ec74872e72c14ebef910d014f84475a99bba36826c34312e8527d530",
+  "conversion_validation": {
+    "n_atoms": 3156,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "NPVTVINEY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 206.69648847299993,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*41:01",
+  "peptide": "TEAKIISLL",
+  "cluster_id": 4066,
+  "outer_fold": 2,
+  "complex_id": "B4101_TEAKIISLL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_41_01/B4101_TEAKIISLL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4101_TEAKIISLL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_s6tliy6f/input",
+        "--output-dir=/tmp/energy_repaired_s6tliy6f/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 255.40257846900022
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4101_TEAKIISLL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_s6tliy6f/output",
+        "--output-dir=/tmp/energy_repaired_s6tliy6f/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.2682278049996967
+    }
+  ],
+  "metadata_sha256": "9a114f9a2355b722c2c6c94e90e511a257d8bdbe41f39d45a49cd4ca0f3b1b38",
+  "structure_sha256": "857a7bd2237819e3758673ad60a74ed3566a64b1e1a59ba56055359ebf6fd0d0",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.100945,
+    "foldx_intraclashesgroup2": 19.351,
+    "foldx_interaction_energy": -21.7689,
+    "foldx_backbone_hbond": -4.99226,
+    "foldx_sidechain_hbond": -11.9005,
+    "foldx_van_der_waals": -17.7605,
+    "foldx_electrostatics": -4.96159,
+    "foldx_solvation_polar": 27.9196,
+    "foldx_solvation_hydrophobic": -23.8357,
+    "foldx_van_der_waals_clashes": 2.73613,
+    "foldx_entropy_sidechain": 7.64257,
+    "foldx_entropy_mainchain": 3.85959,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0890869,
+    "foldx_backbone_clash": 0.347753,
+    "foldx_helix_dipole": -0.0013449,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.720831,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.15705,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "d44a641e7bcd32e0f277aa4e7ab6614886073a43beeb5ee285ea3cdd894f510e",
+  "repaired_pdb_sha256": "cd6c34ba9be363489e6fb67a3a3e7a2e59c6f5049ea4442385333b6582cd6af0",
+  "conversion_validation": {
+    "n_atoms": 3155,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "TEAKIISLL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 262.0635212540001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

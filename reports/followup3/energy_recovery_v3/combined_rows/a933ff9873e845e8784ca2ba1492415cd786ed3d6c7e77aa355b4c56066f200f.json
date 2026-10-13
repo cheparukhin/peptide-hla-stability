@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:10",
+  "peptide": "YEFLGELAL",
+  "cluster_id": 4730,
+  "outer_fold": 3,
+  "complex_id": "B1510_YEFLGELAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_10/B1510_YEFLGELAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1510_YEFLGELAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_q5xg4ium/input",
+        "--output-dir=/tmp/energy_repaired_q5xg4ium/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 255.81262724199996
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1510_YEFLGELAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_q5xg4ium/output",
+        "--output-dir=/tmp/energy_repaired_q5xg4ium/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4160376920000317
+    }
+  ],
+  "metadata_sha256": "a51a8a4deedff25eb8921920a399baa8ba0189bc76509fbeb0ab2282933cbbc5",
+  "structure_sha256": "f0a7a601ac35ad6d7813179e34435dfd9d151ba9e60b1b127aac75b5ad40c87e",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0642059,
+    "foldx_intraclashesgroup2": 12.3921,
+    "foldx_interaction_energy": -24.1496,
+    "foldx_backbone_hbond": -6.2096,
+    "foldx_sidechain_hbond": -10.0044,
+    "foldx_van_der_waals": -18.9213,
+    "foldx_electrostatics": -3.0101,
+    "foldx_solvation_polar": 24.4992,
+    "foldx_solvation_hydrophobic": -26.5175,
+    "foldx_van_der_waals_clashes": 3.09451,
+    "foldx_entropy_sidechain": 9.08151,
+    "foldx_entropy_mainchain": 3.83025,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0836337,
+    "foldx_backbone_clash": 0.722861,
+    "foldx_helix_dipole": -0.00987832,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.0659857,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "92c773eccf3549a937c516d1d20c75b9b228f0fc12bdd21078905bd14630dccb",
+  "repaired_pdb_sha256": "3a231cef70150e84e9d94f241ced1a7f2710cefd9139ca7f951ca468485bf904",
+  "conversion_validation": {
+    "n_atoms": 3153,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "YEFLGELAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 267.479864989,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

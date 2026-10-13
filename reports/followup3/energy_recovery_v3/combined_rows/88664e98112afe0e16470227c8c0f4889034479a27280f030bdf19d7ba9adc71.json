@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:07",
+  "peptide": "YWARATVEL",
+  "cluster_id": 5094,
+  "outer_fold": 0,
+  "complex_id": "A2407_YWARATVEL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_07/A2407_YWARATVEL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2407_YWARATVEL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_vsvu9fgv/input",
+        "--output-dir=/tmp/energy_repaired_vsvu9fgv/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 262.8609236510001
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2407_YWARATVEL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_vsvu9fgv/output",
+        "--output-dir=/tmp/energy_repaired_vsvu9fgv/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.206454440000016
+    }
+  ],
+  "metadata_sha256": "0d08f5803148ef4b5d7e29c190b959690bc530601186b822d585c5a411c25e0a",
+  "structure_sha256": "4b87649008f71cda756e111f2e4e29dc8f1c54b3d4456dada43a582410a47fb7",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.266377,
+    "foldx_intraclashesgroup2": 16.4523,
+    "foldx_interaction_energy": -26.6906,
+    "foldx_backbone_hbond": -6.83866,
+    "foldx_sidechain_hbond": -6.01497,
+    "foldx_van_der_waals": -19.5966,
+    "foldx_electrostatics": -3.37564,
+    "foldx_solvation_polar": 26.4296,
+    "foldx_solvation_hydrophobic": -28.0825,
+    "foldx_van_der_waals_clashes": 0.784752,
+    "foldx_entropy_sidechain": 6.41641,
+    "foldx_entropy_mainchain": 4.44352,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0613865,
+    "foldx_backbone_clash": 0.963231,
+    "foldx_helix_dipole": 0.00763086,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.925439,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 2.22045e-16,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 52.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "16fb381c927b22d9e7f1269651b5f0941c41186b2b00cb151e49210b46bf4f5d",
+  "repaired_pdb_sha256": "acd8d2b922fc8d5c9c79b47165d29d6fc8e5ac3a62a9fff32a5b4ba529147dfd",
+  "conversion_validation": {
+    "n_atoms": 3135,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "YWARATVEL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 272.77131674099974,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

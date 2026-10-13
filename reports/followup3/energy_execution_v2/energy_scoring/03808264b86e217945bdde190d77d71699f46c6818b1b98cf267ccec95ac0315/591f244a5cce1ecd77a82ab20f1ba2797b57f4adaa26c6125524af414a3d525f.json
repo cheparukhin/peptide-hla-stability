@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*25:01",
+  "peptide": "MTIGMANLI",
+  "cluster_id": 2896,
+  "outer_fold": 1,
+  "complex_id": "A2501_MTIGMANLI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_25_01/A2501_MTIGMANLI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2501_MTIGMANLI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_8c25xf_a/input",
+        "--output-dir=/tmp/energy_repaired_8c25xf_a/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 238.40993719800008
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2501_MTIGMANLI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_8c25xf_a/output",
+        "--output-dir=/tmp/energy_repaired_8c25xf_a/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4703342379998503
+    }
+  ],
+  "metadata_sha256": "02291f71ddb9cae4f31776255c1b6ccfe9b719c20060e3b0fb99603b71b7eb1b",
+  "structure_sha256": "b8630777d10518eec404d728966e126a888b1029f4fe24fe796a613185eed5f0",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0634276,
+    "foldx_intraclashesgroup2": 13.4307,
+    "foldx_interaction_energy": -15.6801,
+    "foldx_backbone_hbond": -5.77491,
+    "foldx_sidechain_hbond": -7.46301,
+    "foldx_van_der_waals": -20.4909,
+    "foldx_electrostatics": -0.00655411,
+    "foldx_solvation_polar": 28.183,
+    "foldx_solvation_hydrophobic": -27.431,
+    "foldx_van_der_waals_clashes": 3.11801,
+    "foldx_entropy_sidechain": 8.79677,
+    "foldx_entropy_mainchain": 5.16411,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0869402,
+    "foldx_backbone_clash": 1.7365,
+    "foldx_helix_dipole": -0.00573716,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": 0.0526,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0905917,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "43a5cf8bec8d8273b0f45ae19b6a456189e680b8b293491a9a8c7b878119dc3e",
+  "repaired_pdb_sha256": "010cac16c90bf33f50db2549eb5d32d18f3ebd190cacb0b61174952735a94bee",
+  "conversion_validation": {
+    "n_atoms": 3157,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "MTIGMANLI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 242.56358375800028,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*31:01",
+  "peptide": "IINAHRIPK",
+  "cluster_id": 1632,
+  "outer_fold": 4,
+  "complex_id": "A3101_IINAHRIPK",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_31_01/A3101_IINAHRIPK",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3101_IINAHRIPK.pdb",
+        "--pdb-dir=/tmp/energy_repaired_p2wu6zef/input",
+        "--output-dir=/tmp/energy_repaired_p2wu6zef/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 195.1043057390002
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3101_IINAHRIPK_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_p2wu6zef/output",
+        "--output-dir=/tmp/energy_repaired_p2wu6zef/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.1378077479998865
+    }
+  ],
+  "metadata_sha256": "04384ea71cfaa9037c56d788c0d4100d794426af9dc8d48a18ddd5ef63a8b5b5",
+  "structure_sha256": "2ccef7489302aa04c76145b40f11be133293f1a3d642f2d769a6a39af4080fec",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.118994,
+    "foldx_intraclashesgroup2": 8.29898,
+    "foldx_interaction_energy": -23.0402,
+    "foldx_backbone_hbond": -6.36151,
+    "foldx_sidechain_hbond": -7.80864,
+    "foldx_van_der_waals": -19.7221,
+    "foldx_electrostatics": -5.57042,
+    "foldx_solvation_polar": 29.1658,
+    "foldx_solvation_hydrophobic": -26.5297,
+    "foldx_van_der_waals_clashes": 0.489317,
+    "foldx_entropy_sidechain": 9.93867,
+    "foldx_entropy_mainchain": 4.44996,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0774595,
+    "foldx_backbone_clash": 0.564883,
+    "foldx_helix_dipole": 0.00657802,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -1.3038,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.128204,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "a7ee3a03bbf0ec74429ea81b20f8050f9155e7a4563d1f82dbd67e8e5642ac47",
+  "repaired_pdb_sha256": "5fd23a13a477772a103bf50fba05970c56b1e640237c6e3dfb4f96a693a8db2f",
+  "conversion_validation": {
+    "n_atoms": 3142,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "IINAHRIPK"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 200.10143320199995,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

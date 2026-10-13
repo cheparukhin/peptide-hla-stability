@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:07",
+  "peptide": "RYEFTAPFI",
+  "cluster_id": 3698,
+  "outer_fold": 3,
+  "complex_id": "A2407_RYEFTAPFI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_07/A2407_RYEFTAPFI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2407_RYEFTAPFI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_nwp4f3h4/input",
+        "--output-dir=/tmp/energy_repaired_nwp4f3h4/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 179.43697583199992
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2407_RYEFTAPFI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_nwp4f3h4/output",
+        "--output-dir=/tmp/energy_repaired_nwp4f3h4/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.8060436290002144
+    }
+  ],
+  "metadata_sha256": "783e22991bf3dc69e961662ad9fa76c9bfe445f6b383ec5bba9602495584babe",
+  "structure_sha256": "3dde914aec199bb2e7d77abc451f2620b7305e500575958700e61bb1250d6282",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.453521,
+    "foldx_intraclashesgroup2": 12.7223,
+    "foldx_interaction_energy": -23.7735,
+    "foldx_backbone_hbond": -5.46627,
+    "foldx_sidechain_hbond": -9.58731,
+    "foldx_van_der_waals": -19.654,
+    "foldx_electrostatics": -3.22668,
+    "foldx_solvation_polar": 27.4307,
+    "foldx_solvation_hydrophobic": -26.7822,
+    "foldx_van_der_waals_clashes": 3.09838,
+    "foldx_entropy_sidechain": 6.32182,
+    "foldx_entropy_mainchain": 4.37468,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.397357,
+    "foldx_backbone_clash": 0.963982,
+    "foldx_helix_dipole": 0.0179558,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.749823,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0518775,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "160a3073b5f192ebc54700886f4e38babc0fbc8f8a5db7d854d3013486ab2a09",
+  "repaired_pdb_sha256": "c0ddc31e55623c28c5b4372add6fbdb1cfb2b8f9069189cc3053589e5dff82bd",
+  "conversion_validation": {
+    "n_atoms": 3138,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RYEFTAPFI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 183.01313679299983,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

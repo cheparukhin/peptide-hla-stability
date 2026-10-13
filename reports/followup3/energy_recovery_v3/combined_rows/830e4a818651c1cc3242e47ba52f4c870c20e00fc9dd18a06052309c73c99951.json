@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:03",
+  "peptide": "LYDAVAALF",
+  "cluster_id": 1777,
+  "outer_fold": 3,
+  "complex_id": "A2403_LYDAVAALF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_03/A2403_LYDAVAALF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2403_LYDAVAALF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_85_i7har/input",
+        "--output-dir=/tmp/energy_repaired_85_i7har/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 253.38164847000007
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2403_LYDAVAALF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_85_i7har/output",
+        "--output-dir=/tmp/energy_repaired_85_i7har/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.841170264000084
+    }
+  ],
+  "metadata_sha256": "06d0d85d14c953f498df53e89dba73ac50797d302da713c2e569d566d584f426",
+  "structure_sha256": "cb6425aeb1b9225fdcf6ed9c13fab6725f3bcf5d248e376bb006c6fbce8e18d4",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0788145,
+    "foldx_intraclashesgroup2": 10.0358,
+    "foldx_interaction_energy": -26.7926,
+    "foldx_backbone_hbond": -6.15014,
+    "foldx_sidechain_hbond": -8.84719,
+    "foldx_van_der_waals": -20.2219,
+    "foldx_electrostatics": -2.57964,
+    "foldx_solvation_polar": 26.3233,
+    "foldx_solvation_hydrophobic": -29.0624,
+    "foldx_van_der_waals_clashes": 1.58613,
+    "foldx_entropy_sidechain": 7.77924,
+    "foldx_entropy_mainchain": 4.58274,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0923791,
+    "foldx_backbone_clash": 0.828923,
+    "foldx_helix_dipole": -0.0115326,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.29383,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0103353,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "f9028c46c003cda8cc5f23c1b9723cef9b2367f5e3107a2382bfe1c8d61ad075",
+  "repaired_pdb_sha256": "ff68b6e0c08a71626bbe0deb26bd816ba0438b27fd0f79d463d48218f21223c5",
+  "conversion_validation": {
+    "n_atoms": 3138,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "LYDAVAALF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 259.17327553400014,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

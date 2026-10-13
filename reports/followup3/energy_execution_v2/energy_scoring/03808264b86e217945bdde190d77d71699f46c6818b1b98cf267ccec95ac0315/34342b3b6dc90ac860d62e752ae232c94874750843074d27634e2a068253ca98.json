@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*68:01",
+  "peptide": "HLTELYFEK",
+  "cluster_id": 1479,
+  "outer_fold": 4,
+  "complex_id": "A6801_HLTELYFEK",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_68_01/A6801_HLTELYFEK",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A6801_HLTELYFEK.pdb",
+        "--pdb-dir=/tmp/energy_repaired_zk4rrvde/input",
+        "--output-dir=/tmp/energy_repaired_zk4rrvde/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 190.587427124
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A6801_HLTELYFEK_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_zk4rrvde/output",
+        "--output-dir=/tmp/energy_repaired_zk4rrvde/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.063707723999869
+    }
+  ],
+  "metadata_sha256": "2a39ffa13f20dabdeb4f70715df9a7fd1a1532e22bcf67e5b06b35e0fbd82666",
+  "structure_sha256": "5e3702a49fbdd59a8b3ac50ed4de617963da933b08cad7f07b28af840d5c342d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.114525,
+    "foldx_intraclashesgroup2": 10.9041,
+    "foldx_interaction_energy": -24.4811,
+    "foldx_backbone_hbond": -5.55208,
+    "foldx_sidechain_hbond": -10.8891,
+    "foldx_van_der_waals": -21.2862,
+    "foldx_electrostatics": -2.26203,
+    "foldx_solvation_polar": 29.0803,
+    "foldx_solvation_hydrophobic": -29.1072,
+    "foldx_van_der_waals_clashes": 3.73883,
+    "foldx_entropy_sidechain": 10.0575,
+    "foldx_entropy_mainchain": 2.35629,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0467245,
+    "foldx_backbone_clash": 1.99419,
+    "foldx_helix_dipole": -0.00429605,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.716237,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0563845,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 51.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "2d11bf9cee9f410d34320360522c7f168ed16ee60f450fa73c496c184a4adbc6",
+  "repaired_pdb_sha256": "f34f2720ac582de3487588a868486c8bedfec32bf0281d9df10bc69026650926",
+  "conversion_validation": {
+    "n_atoms": 3153,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005000010132789612,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "HLTELYFEK"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 193.89906142499967,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:03",
+  "peptide": "SAWESFWRI",
+  "cluster_id": 3735,
+  "outer_fold": 0,
+  "complex_id": "A2403_SAWESFWRI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_03/A2403_SAWESFWRI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2403_SAWESFWRI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_7ee46m2n/input",
+        "--output-dir=/tmp/energy_repaired_7ee46m2n/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 190.763169458
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2403_SAWESFWRI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_7ee46m2n/output",
+        "--output-dir=/tmp/energy_repaired_7ee46m2n/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.159546644999864
+    }
+  ],
+  "metadata_sha256": "f029e099f81f50add0011080173a9e14d5d2c5c7b5381935f94ca0a8c229e4bb",
+  "structure_sha256": "11805a8d73e27a54f1cd70b06cbe078b175f17ad55d74d8a206f6fd638a5d037",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.634844,
+    "foldx_intraclashesgroup2": 11.2829,
+    "foldx_interaction_energy": -24.671,
+    "foldx_backbone_hbond": -5.14843,
+    "foldx_sidechain_hbond": -8.3128,
+    "foldx_van_der_waals": -18.2026,
+    "foldx_electrostatics": -4.25822,
+    "foldx_solvation_polar": 25.0357,
+    "foldx_solvation_hydrophobic": -26.0228,
+    "foldx_van_der_waals_clashes": 0.466842,
+    "foldx_entropy_sidechain": 7.66545,
+    "foldx_entropy_mainchain": 4.0972,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.255708,
+    "foldx_backbone_clash": 1.11135,
+    "foldx_helix_dipole": -0.0121107,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 8.88178e-16,
+    "foldx_electrostatic_kon": -0.482379,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.247519,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "b10f3efb89ae0fec5aaa9a7757159854766a060acdd3ee6a694aa03dce1804c3",
+  "repaired_pdb_sha256": "5ea7c183f20ade291b7f2d596c5e774ccabc508de695300f9c0ba9b64322536d",
+  "conversion_validation": {
+    "n_atoms": 3153,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SAWESFWRI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 194.23214503299982,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

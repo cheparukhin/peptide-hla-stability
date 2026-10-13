@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*45:01",
+  "peptide": "NEIRINIGA",
+  "cluster_id": 2967,
+  "outer_fold": 1,
+  "complex_id": "B4501_NEIRINIGA",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_45_01/B4501_NEIRINIGA",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4501_NEIRINIGA.pdb",
+        "--pdb-dir=/tmp/energy_repaired_hz_rn9m0/input",
+        "--output-dir=/tmp/energy_repaired_hz_rn9m0/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 251.93649921500037
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4501_NEIRINIGA_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_hz_rn9m0/output",
+        "--output-dir=/tmp/energy_repaired_hz_rn9m0/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.8293345590009267
+    }
+  ],
+  "metadata_sha256": "71705946476f32220c0f376b6dc27d49311f2d5eb2e8f7df6e6db4724c113896",
+  "structure_sha256": "919c1316a4452b483b11f321a5c67ea99bb04eac3f957450e56c7fbca87f2c48",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.199514,
+    "foldx_intraclashesgroup2": 11.9095,
+    "foldx_interaction_energy": -24.934,
+    "foldx_backbone_hbond": -6.04988,
+    "foldx_sidechain_hbond": -13.3303,
+    "foldx_van_der_waals": -17.0951,
+    "foldx_electrostatics": -4.68151,
+    "foldx_solvation_polar": 27.927,
+    "foldx_solvation_hydrophobic": -22.2981,
+    "foldx_van_der_waals_clashes": 0.248035,
+    "foldx_entropy_sidechain": 6.94597,
+    "foldx_entropy_mainchain": 3.82179,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0741672,
+    "foldx_backbone_clash": 0.886916,
+    "foldx_helix_dipole": 0.00687388,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.531018,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0279938,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "f719ec0f307b141aef1e7750ac34de6a03bdce350043b49fa51f280158749d51",
+  "repaired_pdb_sha256": "c052ed56b346b68846c43d10baf211f01738d16e9ec9070819a7d3a2945d50d6",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "NEIRINIGA"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 257.3429295139995,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*45:01",
+  "peptide": "GELESAIGL",
+  "cluster_id": 1173,
+  "outer_fold": 0,
+  "complex_id": "B4501_GELESAIGL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_45_01/B4501_GELESAIGL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4501_GELESAIGL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_agpv4xtt/input",
+        "--output-dir=/tmp/energy_repaired_agpv4xtt/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 243.1184185889997
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4501_GELESAIGL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_agpv4xtt/output",
+        "--output-dir=/tmp/energy_repaired_agpv4xtt/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.52995623499919
+    }
+  ],
+  "metadata_sha256": "b7e18abec8d729fed563ea8a178eebc9dc1ae97f91770304a44030b4d6f0076a",
+  "structure_sha256": "0c82bafb6b27789aad7a47e7b8e11315042088192b4a2faa2d649dbddd4679b8",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.212989,
+    "foldx_intraclashesgroup2": 15.0672,
+    "foldx_interaction_energy": -17.5409,
+    "foldx_backbone_hbond": -5.50684,
+    "foldx_sidechain_hbond": -9.09897,
+    "foldx_van_der_waals": -17.1501,
+    "foldx_electrostatics": -5.49071,
+    "foldx_solvation_polar": 26.5835,
+    "foldx_solvation_hydrophobic": -23.4852,
+    "foldx_van_der_waals_clashes": 6.38845,
+    "foldx_entropy_sidechain": 7.82538,
+    "foldx_entropy_mainchain": 3.05972,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0826834,
+    "foldx_backbone_clash": 0.808246,
+    "foldx_helix_dipole": -0.0067102,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.893418,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.151268,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "82f90f3ef90b51df157a60b6c90980f4f0b8e4a6b20a140ab8671a1d4c317b18",
+  "repaired_pdb_sha256": "e3625fdd2e5f961d663ad027433f2660a999d675de9ef397aa6e905b72a39492",
+  "conversion_validation": {
+    "n_atoms": 3136,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "GELESAIGL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 247.61748173500018,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

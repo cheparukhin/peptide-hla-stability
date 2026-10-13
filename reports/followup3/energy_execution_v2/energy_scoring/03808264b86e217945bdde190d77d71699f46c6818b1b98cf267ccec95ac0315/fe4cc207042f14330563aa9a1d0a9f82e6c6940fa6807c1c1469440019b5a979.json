@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*39:02",
+  "peptide": "TRIIGPVEL",
+  "cluster_id": 4200,
+  "outer_fold": 4,
+  "complex_id": "B3902_TRIIGPVEL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_39_02/B3902_TRIIGPVEL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B3902_TRIIGPVEL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o2bxcgu6/input",
+        "--output-dir=/tmp/energy_repaired_o2bxcgu6/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 212.8360018680005
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B3902_TRIIGPVEL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o2bxcgu6/output",
+        "--output-dir=/tmp/energy_repaired_o2bxcgu6/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.327729167999678
+    }
+  ],
+  "metadata_sha256": "2df6e25713b553b626a31171049c6dd0eb72144610cd49289a5563a4f28ade47",
+  "structure_sha256": "1428c869a5aa8a659890449dcb94b3b263632295a78aef7dc862067b46974f14",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.137859,
+    "foldx_intraclashesgroup2": 13.0013,
+    "foldx_interaction_energy": -27.7075,
+    "foldx_backbone_hbond": -6.10457,
+    "foldx_sidechain_hbond": -13.1479,
+    "foldx_van_der_waals": -20.0299,
+    "foldx_electrostatics": -3.92785,
+    "foldx_solvation_polar": 27.1336,
+    "foldx_solvation_hydrophobic": -26.4774,
+    "foldx_van_der_waals_clashes": 3.99088,
+    "foldx_entropy_sidechain": 7.85197,
+    "foldx_entropy_mainchain": 3.66386,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.164142,
+    "foldx_backbone_clash": 0.658762,
+    "foldx_helix_dipole": 0.00401777,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.828281,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "0b6b8f5cb1a3a6e180af543bf46224e1ab111921abb54ed8a546caba45262ef4",
+  "repaired_pdb_sha256": "dffdfa7088357408d594acf6c396fa501c2a5f4e15928d50b2fe021fb45c3053",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "TRIIGPVEL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 218.79695532299957,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

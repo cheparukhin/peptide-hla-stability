@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:07",
+  "peptide": "LYGLITEQF",
+  "cluster_id": 2661,
+  "outer_fold": 0,
+  "complex_id": "A2407_LYGLITEQF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_07/A2407_LYGLITEQF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2407_LYGLITEQF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_cog3ernz/input",
+        "--output-dir=/tmp/energy_repaired_cog3ernz/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 254.79036824299988
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2407_LYGLITEQF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_cog3ernz/output",
+        "--output-dir=/tmp/energy_repaired_cog3ernz/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4494408830000793
+    }
+  ],
+  "metadata_sha256": "bbcfb516d21da7fb1a87587337533ccfcc392db20d30b8501754a5e104546b10",
+  "structure_sha256": "08a730cd5add1a3e217c8fcbeab4904b3baaa441dc000c7517ba2f350795a6a3",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.101436,
+    "foldx_intraclashesgroup2": 13.5163,
+    "foldx_interaction_energy": -26.4926,
+    "foldx_backbone_hbond": -7.1996,
+    "foldx_sidechain_hbond": -7.90028,
+    "foldx_van_der_waals": -19.929,
+    "foldx_electrostatics": -2.00929,
+    "foldx_solvation_polar": 25.7351,
+    "foldx_solvation_hydrophobic": -28.1645,
+    "foldx_van_der_waals_clashes": 0.45077,
+    "foldx_entropy_sidechain": 8.20756,
+    "foldx_entropy_mainchain": 4.75285,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.085866,
+    "foldx_backbone_clash": 1.34614,
+    "foldx_helix_dipole": 0.000644565,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.528498,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.00584559,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "35442fea451455f090cca876d38f7d0f2f3554bdc5237b8d9ef08f2b6ab5774a",
+  "repaired_pdb_sha256": "189aa24174090482e1972a9115db33af364f5915d0f26919d7b33dc5a571d91d",
+  "conversion_validation": {
+    "n_atoms": 3133,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "LYGLITEQF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 258.87306097300007,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

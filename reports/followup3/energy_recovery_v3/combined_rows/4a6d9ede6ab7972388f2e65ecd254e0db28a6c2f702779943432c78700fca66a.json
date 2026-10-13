@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*27:02",
+  "peptide": "SEWGWRIPF",
+  "cluster_id": 2884,
+  "outer_fold": 3,
+  "complex_id": "B2702_SEWGWRIPF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_27_02/B2702_SEWGWRIPF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B2702_SEWGWRIPF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_fet6441k/input",
+        "--output-dir=/tmp/energy_repaired_fet6441k/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 228.97092505599994
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B2702_SEWGWRIPF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_fet6441k/output",
+        "--output-dir=/tmp/energy_repaired_fet6441k/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.6045827939999526
+    }
+  ],
+  "metadata_sha256": "6214e30ce300f9033b6b6f3401eb3360366eec68eb8ab6a747ed0339e658e031",
+  "structure_sha256": "749560d11484b6e0e1b34492c6e8a9c69a9804eb4c8b292e1049b344c81fef65",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.32563,
+    "foldx_intraclashesgroup2": 12.354,
+    "foldx_interaction_energy": -24.313,
+    "foldx_backbone_hbond": -6.71389,
+    "foldx_sidechain_hbond": -12.7496,
+    "foldx_van_der_waals": -19.2388,
+    "foldx_electrostatics": -2.82028,
+    "foldx_solvation_polar": 26.931,
+    "foldx_solvation_hydrophobic": -25.7792,
+    "foldx_van_der_waals_clashes": 1.65572,
+    "foldx_entropy_sidechain": 11.3228,
+    "foldx_entropy_mainchain": 3.13632,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0776492,
+    "foldx_backbone_clash": 0.856597,
+    "foldx_helix_dipole": -0.00259818,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.25874,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.126568,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "b1a37d19f5410e81e58ac6b4bf8fe3b81db5b53cff313d99018b32858157c712",
+  "repaired_pdb_sha256": "22e3f3c03ad6f36be832cb129ada58a93565e8f114409d2c93304a298c0a7942",
+  "conversion_validation": {
+    "n_atoms": 3154,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SEWGWRIPF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 234.43944230800003,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

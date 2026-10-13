@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "protocol_hash": "07f72572772d8ff60f23d8029aa7779f6e8cf07aa3e0e79420c61b98e44fcea1",
+  "cells": 75,
+  "source_fits": 450,
+  "target_adapters": 9180,
+  "cell_payload_hashes_checked": 825,
+  "point_rows_checked": 72,
+  "comparison_rows_checked": 108,
+  "hla_deletion_rows_checked": 1260,
+  "available_source_rows_range": [
+    11213,
+    11950
+  ],
+  "sequence_consumed_source_rows_range": [
+    10213,
+    11055
+  ],
+  "source_mlp_epochs_range": [
+    16,
+    49
+  ],
+  "primary_three_study_family": {
+    "primary": "R5 adaptation20 minus zero-shot",
+    "point": 0.046753966008284076,
+    "interval_level": 0.9833333333333333,
+    "quantiles": [
+      0.008333333333333333,
+      0.9916666666666667
+    ],
+    "ci_low": 0.014041507931426792,
+    "ci_high": 0.11945684184362801,
+    "saved_draws_sha256": "a9ed858f51630cb7d93ae7ee7e300a72e895fa699d96fbc4ebbb01b03a791937",
+    "amendment_sha256": "dd09a9d31a1e5c655ec01550394c989c0207aa14fb55c83c337990234fc872c3",
+    "original_draws_reused": true
+  },
+  "independent_refits": 0,
+  "independent_bootstrap_regeneration": false,
+  "replay_scope": "Verified cloud exact-replay assertions, payload hashes, source predictions, target residual offsets and ancestry; no independent matrix replay or refitting.",
+  "audit_source_sha256": "ccecd81244fd35630d6e935cbe7910bd983c182cd18b08b1f024cc4a630a4612"
+}

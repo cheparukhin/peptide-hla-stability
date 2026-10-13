@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*68:23",
+  "peptide": "MIAVALAGL",
+  "cluster_id": 2737,
+  "outer_fold": 1,
+  "complex_id": "A6823_MIAVALAGL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_68_23/A6823_MIAVALAGL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A6823_MIAVALAGL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_uastjklh/input",
+        "--output-dir=/tmp/energy_repaired_uastjklh/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 245.56832176099942
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A6823_MIAVALAGL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_uastjklh/output",
+        "--output-dir=/tmp/energy_repaired_uastjklh/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.7208981699996
+    }
+  ],
+  "metadata_sha256": "82edfdca4d34c8bc710bbb711b289f7a30e5c5a88858b9c603d69bf7f25b29a0",
+  "structure_sha256": "afb172995c5e7181a817b25c7a4bd0117a3e72c964076cd6a20c1b31a3c55952",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0187216,
+    "foldx_intraclashesgroup2": 14.2475,
+    "foldx_interaction_energy": -18.3388,
+    "foldx_backbone_hbond": -5.57939,
+    "foldx_sidechain_hbond": -5.04556,
+    "foldx_van_der_waals": -16.649,
+    "foldx_electrostatics": -0.474988,
+    "foldx_solvation_polar": 22.2701,
+    "foldx_solvation_hydrophobic": -23.9443,
+    "foldx_van_der_waals_clashes": 1.73174,
+    "foldx_entropy_sidechain": 4.04688,
+    "foldx_entropy_mainchain": 5.21122,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0468417,
+    "foldx_backbone_clash": 0.865157,
+    "foldx_helix_dipole": 0.0105884,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": 0.0369539,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "4ecfa0a387fc06dc086d5e21e13699862d5b38b826e3e08c200868e78e1c2610",
+  "repaired_pdb_sha256": "37c51e26307579f7bf84ca7c1e192fdd7bdbaa00a24bd4199343949494057b64",
+  "conversion_validation": {
+    "n_atoms": 3131,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "MIAVALAGL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 251.60754393800016,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

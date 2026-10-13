@@ -128,3 +128,26 @@ def test_nontrain_assessment_rejected():
     arms = {a: np.zeros((len(frame), 1)) for a in study.ARMS}
     with pytest.raises(ValueError, match="original training"):
         study.nested_assessment(frame, arms)
+
+
+def test_single_worker_extract_runs_directly_without_pool(monkeypatch):
+    from scripts import followup3_inverse as cli
+    monkeypatch.setattr(cli, "_extract_one", lambda task: task * 2)
+    def forbidden_pool(**kwargs):
+        raise AssertionError("one-worker pilot must never create a process pool")
+    monkeypatch.setattr(cli, "ProcessPoolExecutor", forbidden_pool)
+    assert cli.run_extraction_tasks([1, 2], 1) == [2, 4]
+
+
+def test_parallel_extract_explicitly_uses_clean_spawn_context(monkeypatch):
+    from scripts import followup3_inverse as cli
+    observed = {}
+    class FakePool:
+        def __init__(self, *, max_workers, mp_context):
+            observed.update(workers=max_workers, method=mp_context.get_start_method())
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def map(self, function, tasks): return ["mock_result" for _ in tasks]
+    monkeypatch.setattr(cli, "ProcessPoolExecutor", FakePool)
+    assert cli.run_extraction_tasks([1, 2], 2) == ["mock_result", "mock_result"]
+    assert observed == dict(workers=2, method="spawn")

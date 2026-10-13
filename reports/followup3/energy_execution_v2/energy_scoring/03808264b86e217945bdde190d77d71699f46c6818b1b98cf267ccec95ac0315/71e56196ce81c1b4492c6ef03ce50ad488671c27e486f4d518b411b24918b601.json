@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:50",
+  "peptide": "DMWEHAFYL",
+  "cluster_id": 478,
+  "outer_fold": 0,
+  "complex_id": "A0250_DMWEHAFYL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_50/A0250_DMWEHAFYL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0250_DMWEHAFYL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_f2w0451s/input",
+        "--output-dir=/tmp/energy_repaired_f2w0451s/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 181.7060964929999
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0250_DMWEHAFYL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_f2w0451s/output",
+        "--output-dir=/tmp/energy_repaired_f2w0451s/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.3691322610000043
+    }
+  ],
+  "metadata_sha256": "d9e5090bcad73bdbceb8895376d13211e69993c3218db42e817f5cdd0fff58ce",
+  "structure_sha256": "737e6267720925bce50f3fbd5f3fcc3e4937bd4136d18daf6c96527a47ef2359",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.525763,
+    "foldx_intraclashesgroup2": 11.0618,
+    "foldx_interaction_energy": -23.1199,
+    "foldx_backbone_hbond": -6.98653,
+    "foldx_sidechain_hbond": -6.5604,
+    "foldx_van_der_waals": -20.7922,
+    "foldx_electrostatics": -3.32917,
+    "foldx_solvation_polar": 27.361,
+    "foldx_solvation_hydrophobic": -29.2871,
+    "foldx_van_der_waals_clashes": 4.17816,
+    "foldx_entropy_sidechain": 7.47569,
+    "foldx_entropy_mainchain": 4.99596,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0389306,
+    "foldx_backbone_clash": 1.53017,
+    "foldx_helix_dipole": -0.0377123,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.287015,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.110456,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "83915a068ece6b9f2634d12434ccb2400bb0be090313f0c6caff747a71fa0747",
+  "repaired_pdb_sha256": "7279eedabc0585af3f76e45b42d7ac19a694c864da5ed7874bbfb37152448c1d",
+  "conversion_validation": {
+    "n_atoms": 3158,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "DMWEHAFYL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 185.63312733399994,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

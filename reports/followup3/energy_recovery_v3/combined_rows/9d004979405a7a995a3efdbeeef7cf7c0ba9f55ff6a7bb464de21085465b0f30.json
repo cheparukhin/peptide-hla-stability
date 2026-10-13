@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*55:01",
+  "peptide": "HPFALLLVL",
+  "cluster_id": 202,
+  "outer_fold": 2,
+  "complex_id": "B5501_HPFALLLVL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_55_01/B5501_HPFALLLVL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5501_HPFALLLVL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_25nhhbtl/input",
+        "--output-dir=/tmp/energy_repaired_25nhhbtl/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 262.068538689
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5501_HPFALLLVL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_25nhhbtl/output",
+        "--output-dir=/tmp/energy_repaired_25nhhbtl/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.6324922460007656
+    }
+  ],
+  "metadata_sha256": "838c646558b7f6c7a894e54f5c91643bb9c6dacdf36efa4f6a42f1bc2ec5e7a0",
+  "structure_sha256": "fe54419f8787fc8a1c72fcac328410cc9d9d744f5741e9c4b2e525cacd6ccb2d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.262446,
+    "foldx_intraclashesgroup2": 16.5186,
+    "foldx_interaction_energy": -18.9892,
+    "foldx_backbone_hbond": -3.78077,
+    "foldx_sidechain_hbond": -5.30869,
+    "foldx_van_der_waals": -19.5387,
+    "foldx_electrostatics": -0.479029,
+    "foldx_solvation_polar": 22.8969,
+    "foldx_solvation_hydrophobic": -28.7513,
+    "foldx_van_der_waals_clashes": 5.29419,
+    "foldx_entropy_sidechain": 6.91467,
+    "foldx_entropy_mainchain": 3.86719,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.067502,
+    "foldx_backbone_clash": 1.25241,
+    "foldx_helix_dipole": 0.00216306,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.246206,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0728374,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "4c16876fbb04c2ebb6192ab3cd916772982b0e2f4f93777dce42902f1ea83e32",
+  "repaired_pdb_sha256": "c71377afd6e3f48f569681fd370071db1062d7e50900cb72d7c4bb51b7a6f9bc",
+  "conversion_validation": {
+    "n_atoms": 3147,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0004999935626983643,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "HPFALLLVL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 268.1311834139997,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

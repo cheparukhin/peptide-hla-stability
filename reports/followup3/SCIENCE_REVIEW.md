@@ -131,3 +131,42 @@ pilot must still establish real parser/model compatibility and runtime. This
 review does not certify cloud completion, measured costs or numerical results;
 those require the subsequent output audit. The cloud supervisor additionally
 verifies named remote artifacts and enables the explicit cloud-execution guard.
+
+## Technical pilot and replay amendment review
+
+The first few-shot cloud pilot stopped after one R0 ridge fit during saved
+scaler replay. The original fit used `StandardScaler.transform`; handwritten
+replay rounded float32 arithmetic differently from installed scikit-learn
+1.9.1. The reviewed operational amendment restores the fitted scaler and calls
+its authoritative transform, retaining exact assertions for source/query
+transforms and predictions. Original protocol and failed artifacts are preserved;
+the new protocol verifies unchanged population, support/query plan, panels and
+scientific sources apart from the reviewed serialization/replay script.
+This is an operational verification repair, not a preprocessing or efficacy
+change. The independent few-shot/FoldX synthetic run passed 10 tests.
+
+The FoldX implementation selects 32 distinct original-training alleles by
+identity alone and reads no assay outcomes. Each case has a cumulative
+1,200-second deadline for raw scoring, full repair and repaired scoring. At
+eight workers, one serial access/parser gate plus four waves of remaining
+cases requires a conservative **6,000 seconds**, plus startup and I/O allowance.
+At the recorded sandbox rates, a 6,600-second provider window costs at most
+$2.4332 for eight CPUs/8 GiB or $2.7852 for eight CPUs/16 GiB in compute, before
+explicit storage/egress/lifecycle allowances. Root must reserve the actual
+chosen plan; these are bounds under those rates, not measured invoices.
+
+The FoldX parser finding is repaired: the selected interaction row is checked
+for finite numeric components before the inherited filter, so a finite total
+cannot mask an invalid energy/clash term. Regression cases cover nonfinite
+numbers and strings, including the inherited parser's literal `nan` output.
+
+The separate inverse worker-start amendment also passes focused source review.
+`inverse_execution_v2` has exactly the original specification, panel and input
+digests; only the CLI source digest differs. Original protocol SHA256 remains
+`1953b6853882e06abf01c7b500832fe5243ca1cafb03a9a5c9e88f937fab9987`.
+One-worker extraction is serial and parallel extraction explicitly starts fresh
+spawn interpreters. Telemetry changes do not alter scoring or model recipes.
+Source hashes for both new frozen protocols match their reviewed files.
+The old zero-row stall's cause remains unproven, and a successful serial pilot
+would not by itself establish parallel throughput. Both bounded technical
+pilots may proceed after Root's resource admission.

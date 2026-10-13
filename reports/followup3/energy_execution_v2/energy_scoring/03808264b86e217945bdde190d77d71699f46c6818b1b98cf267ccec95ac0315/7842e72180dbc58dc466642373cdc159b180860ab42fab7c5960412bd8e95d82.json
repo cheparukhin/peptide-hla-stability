@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*07:02",
+  "peptide": "RANESATIL",
+  "cluster_id": 3226,
+  "outer_fold": 3,
+  "complex_id": "B0702_RANESATIL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_07_02/B0702_RANESATIL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B0702_RANESATIL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_0eowbyaz/input",
+        "--output-dir=/tmp/energy_repaired_0eowbyaz/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 229.3279749429994
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B0702_RANESATIL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_0eowbyaz/output",
+        "--output-dir=/tmp/energy_repaired_0eowbyaz/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.9975452810003844
+    }
+  ],
+  "metadata_sha256": "0f7c912465f95b672cff3a918e8c0a16dad6ed41c145b6bba6ae0695d997ec91",
+  "structure_sha256": "cee91286351e9e4974d34747804899ecc9aa725e6b38b476959a7486f99e1257",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.195786,
+    "foldx_intraclashesgroup2": 15.2224,
+    "foldx_interaction_energy": -18.1859,
+    "foldx_backbone_hbond": -6.39162,
+    "foldx_sidechain_hbond": -8.64153,
+    "foldx_van_der_waals": -18.6424,
+    "foldx_electrostatics": -3.89812,
+    "foldx_solvation_polar": 28.6495,
+    "foldx_solvation_hydrophobic": -23.4105,
+    "foldx_van_der_waals_clashes": 2.87012,
+    "foldx_entropy_sidechain": 7.80029,
+    "foldx_entropy_mainchain": 4.06121,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.220908,
+    "foldx_backbone_clash": 0.675886,
+    "foldx_helix_dipole": 0.0165437,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.820246,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "6097f770b8c79fa4780f1085108ef508a979c8639ae2f99cfb98dc163374ae4b",
+  "repaired_pdb_sha256": "a37c186cc69543f655e2329c5c2b5867792c5d4d3df940ee9c0b8ece72a41b20",
+  "conversion_validation": {
+    "n_atoms": 3150,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RANESATIL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 232.6276739369996,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

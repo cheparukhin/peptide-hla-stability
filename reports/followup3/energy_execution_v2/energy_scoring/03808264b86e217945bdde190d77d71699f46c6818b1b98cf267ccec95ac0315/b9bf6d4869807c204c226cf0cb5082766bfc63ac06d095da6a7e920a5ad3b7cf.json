@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:10",
+  "peptide": "FLYDRLAST",
+  "cluster_id": 913,
+  "outer_fold": 3,
+  "complex_id": "A0210_FLYDRLAST",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_10/A0210_FLYDRLAST",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0210_FLYDRLAST.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oclo5lff/input",
+        "--output-dir=/tmp/energy_repaired_oclo5lff/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 168.52936065700004
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0210_FLYDRLAST_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oclo5lff/output",
+        "--output-dir=/tmp/energy_repaired_oclo5lff/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.190932910000015
+    }
+  ],
+  "metadata_sha256": "ce714368f614333879a65e94e343cea2d13facf168a742f3e46d273c58623e62",
+  "structure_sha256": "39217ec3dd226d597b165003778477320096bf4547a168132f1f968255d41fc0",
+  "terms": {
+    "foldx_intraclashesgroup1": 1.11615,
+    "foldx_intraclashesgroup2": 10.6371,
+    "foldx_interaction_energy": -20.6008,
+    "foldx_backbone_hbond": -5.79156,
+    "foldx_sidechain_hbond": -6.41773,
+    "foldx_van_der_waals": -19.5697,
+    "foldx_electrostatics": -3.74844,
+    "foldx_solvation_polar": 28.2703,
+    "foldx_solvation_hydrophobic": -26.708,
+    "foldx_van_der_waals_clashes": 3.42883,
+    "foldx_entropy_sidechain": 6.57239,
+    "foldx_entropy_mainchain": 2.86342,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0659257,
+    "foldx_backbone_clash": 1.19189,
+    "foldx_helix_dipole": 0.00172059,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.134531,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.566567,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "640918fa47bb98539763ed838dd693659f36e4a9ff0f3a0244fad8b79de1f7b2",
+  "repaired_pdb_sha256": "c857db683f298bf59d276790994ff8c3e9a4865b64009fe8d10c56c61613fc1b",
+  "conversion_validation": {
+    "n_atoms": 3140,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FLYDRLAST"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 173.84678331400005,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*30:02",
+  "peptide": "LTAHYCFLY",
+  "cluster_id": 2610,
+  "outer_fold": 4,
+  "complex_id": "A3002_LTAHYCFLY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_30_02/A3002_LTAHYCFLY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3002_LTAHYCFLY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_nkwln8xf/input",
+        "--output-dir=/tmp/energy_repaired_nkwln8xf/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 240.85214072899998
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3002_LTAHYCFLY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_nkwln8xf/output",
+        "--output-dir=/tmp/energy_repaired_nkwln8xf/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.035955789000127
+    }
+  ],
+  "metadata_sha256": "c42bb67589a773a5644332a251e6c3f613593e969b07d2a291d2127f92017cc1",
+  "structure_sha256": "7ecb9de4d15cb454ae7767a6d6487ddac565ca1d764322014ae5f56da10eb88c",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.236462,
+    "foldx_intraclashesgroup2": 10.1055,
+    "foldx_interaction_energy": -23.8531,
+    "foldx_backbone_hbond": -6.46131,
+    "foldx_sidechain_hbond": -11.2485,
+    "foldx_van_der_waals": -20.1426,
+    "foldx_electrostatics": -1.54559,
+    "foldx_solvation_polar": 27.803,
+    "foldx_solvation_hydrophobic": -26.2215,
+    "foldx_van_der_waals_clashes": 1.81709,
+    "foldx_entropy_sidechain": 7.28409,
+    "foldx_entropy_mainchain": 4.75822,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.162536,
+    "foldx_backbone_clash": 1.65615,
+    "foldx_helix_dipole": 0.000960972,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.450329,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.390733,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "7b86367fcccda16a830769b04959770f5bcb080fc0faf4c862a2c4a5bc6415c0",
+  "repaired_pdb_sha256": "6bc11d880ca8474b2a8f55565ce811b4ca61d6791716f391ad3fec88114aa42b",
+  "conversion_validation": {
+    "n_atoms": 3148,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "LTAHYCFLY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 249.9864067909998,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:01",
+  "peptide": "ALFPIIWAL",
+  "cluster_id": 115,
+  "outer_fold": 0,
+  "complex_id": "A0201_ALFPIIWAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_01/A0201_ALFPIIWAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0201_ALFPIIWAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gg26q2d6/input",
+        "--output-dir=/tmp/energy_repaired_gg26q2d6/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 226.615795169
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0201_ALFPIIWAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gg26q2d6/output",
+        "--output-dir=/tmp/energy_repaired_gg26q2d6/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1290519019999863
+    }
+  ],
+  "metadata_sha256": "3a4b885de874a1928a1028ba1bbf6e178f427081ea10b49ce83a3adb1dfabbaa",
+  "structure_sha256": "1ec99014f319462c9a6ea3fe9238fb134200a54b7510eb502f240d822f405228",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.232508,
+    "foldx_intraclashesgroup2": 9.53143,
+    "foldx_interaction_energy": -25.8775,
+    "foldx_backbone_hbond": -7.80097,
+    "foldx_sidechain_hbond": -7.62146,
+    "foldx_van_der_waals": -19.8678,
+    "foldx_electrostatics": -0.696578,
+    "foldx_solvation_polar": 25.3323,
+    "foldx_solvation_hydrophobic": -29.3137,
+    "foldx_van_der_waals_clashes": 1.66483,
+    "foldx_entropy_sidechain": 8.48787,
+    "foldx_entropy_mainchain": 3.90473,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.104721,
+    "foldx_backbone_clash": 1.46763,
+    "foldx_helix_dipole": -0.00319312,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.143204,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0749954,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "790bff3b74b1f045b15d0af7dcd09407152e36472e8069baaf9a05992c7bd520",
+  "repaired_pdb_sha256": "d5e2446df3c082fe59f72a3a633b87dd2a0835f1cc9176a1049b6dc0f9da5f0b",
+  "conversion_validation": {
+    "n_atoms": 3148,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0004999935626983643,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "ALFPIIWAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 233.025693594,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

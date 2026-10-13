@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:16",
+  "peptide": "ALLENIHRV",
+  "cluster_id": 124,
+  "outer_fold": 2,
+  "complex_id": "A0216_ALLENIHRV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_16/A0216_ALLENIHRV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0216_ALLENIHRV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ard5cqcp/input",
+        "--output-dir=/tmp/energy_repaired_ard5cqcp/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 181.05976047799993
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0216_ALLENIHRV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ard5cqcp/output",
+        "--output-dir=/tmp/energy_repaired_ard5cqcp/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.3390629049999916
+    }
+  ],
+  "metadata_sha256": "b777c9c64c4f582154fe68cfe6a71d7e858e8e7b11723a1fde22d8a469118ef2",
+  "structure_sha256": "1242379323e16412d794ba706c1a43765bcf3ba99959242480e72cfbdd9d8aa1",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0632272,
+    "foldx_intraclashesgroup2": 12.8132,
+    "foldx_interaction_energy": -24.0755,
+    "foldx_backbone_hbond": -6.33789,
+    "foldx_sidechain_hbond": -9.65067,
+    "foldx_van_der_waals": -19.659,
+    "foldx_electrostatics": -2.8034,
+    "foldx_solvation_polar": 27.3499,
+    "foldx_solvation_hydrophobic": -27.9249,
+    "foldx_van_der_waals_clashes": 1.52846,
+    "foldx_entropy_sidechain": 9.3761,
+    "foldx_entropy_mainchain": 4.16132,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0829135,
+    "foldx_backbone_clash": 0.933934,
+    "foldx_helix_dipole": 0.00319895,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.323443,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.121899,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "304e82016079092bdec4722e0890c8d66d4f3facc55e0cdd8a6354db90d4723c",
+  "repaired_pdb_sha256": "a29ec87bc8b2ce6c2e2bbfdc86122b56a7e67f8045d84b280a36d2c2b44e8edc",
+  "conversion_validation": {
+    "n_atoms": 3150,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "ALLENIHRV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 184.68983969600004,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

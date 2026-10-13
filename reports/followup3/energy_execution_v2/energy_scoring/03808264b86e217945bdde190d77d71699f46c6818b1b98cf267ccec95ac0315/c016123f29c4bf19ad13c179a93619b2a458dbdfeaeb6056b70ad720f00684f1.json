@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*54:01",
+  "peptide": "RPAPPKIAM",
+  "cluster_id": 3418,
+  "outer_fold": 2,
+  "complex_id": "B5401_RPAPPKIAM",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_54_01/B5401_RPAPPKIAM",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5401_RPAPPKIAM.pdb",
+        "--pdb-dir=/tmp/energy_repaired_4v6lbikx/input",
+        "--output-dir=/tmp/energy_repaired_4v6lbikx/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 179.71884956300073
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5401_RPAPPKIAM_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_4v6lbikx/output",
+        "--output-dir=/tmp/energy_repaired_4v6lbikx/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.899183047000406
+    }
+  ],
+  "metadata_sha256": "3a417c3e59c003d86b1015c1cece5ded04c7024bdedf838076fe2a3c783fa71b",
+  "structure_sha256": "fc8fcc6dc282846b722d1f1a0814667f76e23018cb18b248891e0a72a30eab6e",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0982101,
+    "foldx_intraclashesgroup2": 15.9386,
+    "foldx_interaction_energy": -18.8328,
+    "foldx_backbone_hbond": -4.84035,
+    "foldx_sidechain_hbond": -6.33939,
+    "foldx_van_der_waals": -18.5346,
+    "foldx_electrostatics": -0.903519,
+    "foldx_solvation_polar": 23.563,
+    "foldx_solvation_hydrophobic": -26.8271,
+    "foldx_van_der_waals_clashes": 4.97141,
+    "foldx_entropy_sidechain": 7.58275,
+    "foldx_entropy_mainchain": 2.78742,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0931999,
+    "foldx_backbone_clash": 0.583438,
+    "foldx_helix_dipole": 0.0254498,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 8.88178e-16,
+    "foldx_electrostatic_kon": -0.411022,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 1.0,
+    "foldx_interface_residues_vdw_clashing": 1.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "2c672454bec4df355d28beb0b5ddcc6efe2dfc52f0d62e6c7dc247582dfd69fa",
+  "repaired_pdb_sha256": "b92b27f92550a0398015424ebab2d7d093b2efbc0d06ef67448bc153cb5723ec",
+  "conversion_validation": {
+    "n_atoms": 3134,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RPAPPKIAM"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 183.77843908200066,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

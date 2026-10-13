@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*45:01",
+  "peptide": "FENSCLETM",
+  "cluster_id": 763,
+  "outer_fold": 2,
+  "complex_id": "B4501_FENSCLETM",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_45_01/B4501_FENSCLETM",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4501_FENSCLETM.pdb",
+        "--pdb-dir=/tmp/energy_repaired_alq8t4e4/input",
+        "--output-dir=/tmp/energy_repaired_alq8t4e4/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 245.57154368100055
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4501_FENSCLETM_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_alq8t4e4/output",
+        "--output-dir=/tmp/energy_repaired_alq8t4e4/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.5999709030002123
+    }
+  ],
+  "metadata_sha256": "3c75fc1838166ea08758c5d22115eb1ac451d45b400aca91fcda79ec89a1533d",
+  "structure_sha256": "90b0e69ffeb9cf71d574c8fa7639a1280402496cdbe3758d7b264d80744826de",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0223029,
+    "foldx_intraclashesgroup2": 20.3338,
+    "foldx_interaction_energy": -26.3661,
+    "foldx_backbone_hbond": -5.46951,
+    "foldx_sidechain_hbond": -13.7091,
+    "foldx_van_der_waals": -19.9302,
+    "foldx_electrostatics": -4.73496,
+    "foldx_solvation_polar": 29.5133,
+    "foldx_solvation_hydrophobic": -26.3612,
+    "foldx_van_der_waals_clashes": 2.19093,
+    "foldx_entropy_sidechain": 8.67617,
+    "foldx_entropy_mainchain": 3.90884,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.193201,
+    "foldx_backbone_clash": 0.536361,
+    "foldx_helix_dipole": 0.000992617,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.676643,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0321568,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 51.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "42c0919c387e92a7df7c84f88dcd9d23ccf864ab8d95905cb2d1e8b7bf745f43",
+  "repaired_pdb_sha256": "7f8aa3b1bd07099a27e2599ba42f3e136ada08fa85bad4aee767798dc7430db4",
+  "conversion_validation": {
+    "n_atoms": 3147,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FENSCLETM"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 250.47826001199974,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*56:01",
+  "peptide": "RPNITSTAL",
+  "cluster_id": 3433,
+  "outer_fold": 3,
+  "complex_id": "B5601_RPNITSTAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_56_01/B5601_RPNITSTAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5601_RPNITSTAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_jf6ep545/input",
+        "--output-dir=/tmp/energy_repaired_jf6ep545/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 229.25903921200006
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5601_RPNITSTAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_jf6ep545/output",
+        "--output-dir=/tmp/energy_repaired_jf6ep545/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.5224830939996536
+    }
+  ],
+  "metadata_sha256": "998f9fec571aebef62fff3c301b2bbd3234bbb90a2804142ebd8986817cd72bd",
+  "structure_sha256": "394d12b5c4653a9f167091020fa6e62f373f74e00e478813c2250d42bdbdb08c",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.240604,
+    "foldx_intraclashesgroup2": 14.4548,
+    "foldx_interaction_energy": -16.2675,
+    "foldx_backbone_hbond": -4.46125,
+    "foldx_sidechain_hbond": -8.28692,
+    "foldx_van_der_waals": -17.8566,
+    "foldx_electrostatics": -0.93895,
+    "foldx_solvation_polar": 24.2421,
+    "foldx_solvation_hydrophobic": -24.1331,
+    "foldx_van_der_waals_clashes": 4.42943,
+    "foldx_entropy_sidechain": 7.59305,
+    "foldx_entropy_mainchain": 3.48499,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0911474,
+    "foldx_backbone_clash": 1.04529,
+    "foldx_helix_dipole": 0.0226676,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.454092,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 1.0,
+    "foldx_interface_residues_vdw_clashing": 1.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "b24d77ca59c525a6ca497e64df4e24bfd0ff3bde8ddd65f889bc76fe7b18412c",
+  "repaired_pdb_sha256": "ef2b6fac36fef64f9e9caa6606005986208f7d1178710ae3f372c0dbfbcf2f1c",
+  "conversion_validation": {
+    "n_atoms": 3141,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RPNITSTAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 233.90954556799988,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

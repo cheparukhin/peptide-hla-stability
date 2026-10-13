@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*23:01",
+  "peptide": "RYPAIAGGI",
+  "cluster_id": 3710,
+  "outer_fold": 3,
+  "complex_id": "A2301_RYPAIAGGI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_23_01/A2301_RYPAIAGGI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2301_RYPAIAGGI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_9zslns4t/input",
+        "--output-dir=/tmp/energy_repaired_9zslns4t/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 259.0587679980001
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2301_RYPAIAGGI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_9zslns4t/output",
+        "--output-dir=/tmp/energy_repaired_9zslns4t/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.853215038999906
+    }
+  ],
+  "metadata_sha256": "e6054395331eb7aedb607293a8d51f1f30f18317db7ebe53d9bc8f5cd8f9a7da",
+  "structure_sha256": "e1d3da98b89febbedd034af6ea3fe0f1b23481c2cdf0af906cff00e5c239c7c8",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.26317,
+    "foldx_intraclashesgroup2": 11.0843,
+    "foldx_interaction_energy": -20.8912,
+    "foldx_backbone_hbond": -5.95463,
+    "foldx_sidechain_hbond": -7.39361,
+    "foldx_van_der_waals": -16.4611,
+    "foldx_electrostatics": -3.29458,
+    "foldx_solvation_polar": 21.9638,
+    "foldx_solvation_hydrophobic": -23.672,
+    "foldx_van_der_waals_clashes": 3.58849,
+    "foldx_entropy_sidechain": 5.88361,
+    "foldx_entropy_mainchain": 5.30766,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0238626,
+    "foldx_backbone_clash": 0.82228,
+    "foldx_helix_dipole": 0.0187251,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.919433,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0180348,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "76dc330010a255a1f729fa4d6eb824c03e2f40825f43862c6a6e34173ed481c8",
+  "repaired_pdb_sha256": "6be4b3ddff1c9b931d8f6846bbe9ac60733ae9fe9201aa64c6edd402aec23384",
+  "conversion_validation": {
+    "n_atoms": 3122,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RYPAIAGGI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 267.691304745,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

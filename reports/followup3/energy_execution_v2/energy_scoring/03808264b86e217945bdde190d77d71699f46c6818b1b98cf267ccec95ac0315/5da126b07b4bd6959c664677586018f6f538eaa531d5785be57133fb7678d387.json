@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*42:01",
+  "peptide": "FMYALSRAF",
+  "cluster_id": 940,
+  "outer_fold": 1,
+  "complex_id": "B4201_FMYALSRAF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_42_01/B4201_FMYALSRAF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4201_FMYALSRAF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_06l100y9/input",
+        "--output-dir=/tmp/energy_repaired_06l100y9/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 209.01863635000018
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4201_FMYALSRAF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_06l100y9/output",
+        "--output-dir=/tmp/energy_repaired_06l100y9/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.2672417680000763
+    }
+  ],
+  "metadata_sha256": "0848839af1afe85276a441ba56213cfb2efe17e2bb915000502c1c2561a85105",
+  "structure_sha256": "0a41f809c59539cbb1c1928c9d5f6b19493f9bc96c402fe0e564b13c2b20de70",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.952037,
+    "foldx_intraclashesgroup2": 14.8028,
+    "foldx_interaction_energy": -24.7575,
+    "foldx_backbone_hbond": -5.76551,
+    "foldx_sidechain_hbond": -8.24128,
+    "foldx_van_der_waals": -20.7286,
+    "foldx_electrostatics": -0.588052,
+    "foldx_solvation_polar": 24.759,
+    "foldx_solvation_hydrophobic": -29.0483,
+    "foldx_van_der_waals_clashes": 2.48842,
+    "foldx_entropy_sidechain": 8.12097,
+    "foldx_entropy_mainchain": 4.26538,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.395797,
+    "foldx_backbone_clash": 0.962453,
+    "foldx_helix_dipole": 0.00357203,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 8.88178e-16,
+    "foldx_electrostatic_kon": -0.418976,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 2.22045e-16,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "afb814484747959cd98104a1014c03d2230fce2817b5b18f51ec7d7cf7d622f7",
+  "repaired_pdb_sha256": "ef2cfa1a28330a1baaa5e41bef6b585fa3a1848ff1aa1cc35dc708792b1a3fa4",
+  "conversion_validation": {
+    "n_atoms": 3151,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FMYALSRAF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 214.02503607100016,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

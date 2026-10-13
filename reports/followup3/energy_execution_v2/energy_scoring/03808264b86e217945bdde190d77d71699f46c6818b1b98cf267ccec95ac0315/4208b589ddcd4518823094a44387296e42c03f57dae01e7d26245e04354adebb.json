@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:01",
+  "peptide": "GLYEAIEEC",
+  "cluster_id": 1253,
+  "outer_fold": 0,
+  "complex_id": "A0201_GLYEAIEEC",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_01/A0201_GLYEAIEEC",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0201_GLYEAIEEC.pdb",
+        "--pdb-dir=/tmp/energy_repaired_x60cwzs9/input",
+        "--output-dir=/tmp/energy_repaired_x60cwzs9/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 290.84728270700003
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0201_GLYEAIEEC_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_x60cwzs9/output",
+        "--output-dir=/tmp/energy_repaired_x60cwzs9/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.0831402709999907
+    }
+  ],
+  "metadata_sha256": "7a539fbed274b12817f274575253dc3d33d6cad5510e34a1729ac27c9250972a",
+  "structure_sha256": "35d26dacdc3140833d00ca0c40b32ea200df52f0d8bc0105d5fed438c0811b3a",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.00832399,
+    "foldx_intraclashesgroup2": 10.6392,
+    "foldx_interaction_energy": -19.8796,
+    "foldx_backbone_hbond": -6.16256,
+    "foldx_sidechain_hbond": -10.5773,
+    "foldx_van_der_waals": -17.7663,
+    "foldx_electrostatics": -1.13554,
+    "foldx_solvation_polar": 24.5018,
+    "foldx_solvation_hydrophobic": -24.4018,
+    "foldx_van_der_waals_clashes": 2.80882,
+    "foldx_entropy_sidechain": 9.61572,
+    "foldx_entropy_mainchain": 3.69797,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0413551,
+    "foldx_backbone_clash": 1.16467,
+    "foldx_helix_dipole": 0.000469726,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.59673,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0944892,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "46f3f5dcea1d3af9aa0cabd9d3c0b630791b6a1eae1ed82c829cf4d39ce1e185",
+  "repaired_pdb_sha256": "a0961a9981c16e80ff153c40ce2c287be99e823e3097317d5c0446b8083cfb18",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "GLYEAIEEC"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 297.078311,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:01",
+  "peptide": "SIIGILHLI",
+  "cluster_id": 3786,
+  "outer_fold": 0,
+  "complex_id": "A0201_SIIGILHLI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_01/A0201_SIIGILHLI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0201_SIIGILHLI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_cot5i4dh/input",
+        "--output-dir=/tmp/energy_repaired_cot5i4dh/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 159.74275287900002
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0201_SIIGILHLI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_cot5i4dh/output",
+        "--output-dir=/tmp/energy_repaired_cot5i4dh/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.331757487999994
+    }
+  ],
+  "metadata_sha256": "7952a0482caeee459284e6a544c079dd5b7798eb6fb5615951c9070257c8e68c",
+  "structure_sha256": "074cf165da61c90efb59636f52d3cb8fedec4a8b720d627d3a24113d536db478",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.11101,
+    "foldx_intraclashesgroup2": 17.1798,
+    "foldx_interaction_energy": -20.1135,
+    "foldx_backbone_hbond": -5.19503,
+    "foldx_sidechain_hbond": -8.30883,
+    "foldx_van_der_waals": -19.2549,
+    "foldx_electrostatics": -1.56517,
+    "foldx_solvation_polar": 26.3799,
+    "foldx_solvation_hydrophobic": -27.8557,
+    "foldx_van_der_waals_clashes": 2.93905,
+    "foldx_entropy_sidechain": 8.31448,
+    "foldx_entropy_mainchain": 4.39278,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.146006,
+    "foldx_backbone_clash": 1.43868,
+    "foldx_helix_dipole": -0.00148691,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.19681,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0922431,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 44.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "0348c023c24fd2820372b92102caad700b660fdbea7f67242aa5207f533338a4",
+  "repaired_pdb_sha256": "ae87095cdcffdb963837d0eacc56a2aac9b7bc0fc41e01843c7f82d7000713ec",
+  "conversion_validation": {
+    "n_atoms": 3142,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SIIGILHLI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 163.59513535600001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

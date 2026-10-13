@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*56:01",
+  "peptide": "EPAFPHTEL",
+  "cluster_id": 617,
+  "outer_fold": 2,
+  "complex_id": "B5601_EPAFPHTEL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_56_01/B5601_EPAFPHTEL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5601_EPAFPHTEL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ers4c12l/input",
+        "--output-dir=/tmp/energy_repaired_ers4c12l/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 253.34899956000027
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5601_EPAFPHTEL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ers4c12l/output",
+        "--output-dir=/tmp/energy_repaired_ers4c12l/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4692154529993786
+    }
+  ],
+  "metadata_sha256": "868ab75f905688db72b4f3d7db71a837cee185673e93d83c7232f9c903883593",
+  "structure_sha256": "b93581e20d4e525e7804c0a8071da523f8ce73191e6519129ea6d647cc4aef35",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.244535,
+    "foldx_intraclashesgroup2": 11.9413,
+    "foldx_interaction_energy": -22.9949,
+    "foldx_backbone_hbond": -3.68105,
+    "foldx_sidechain_hbond": -9.58656,
+    "foldx_van_der_waals": -18.0995,
+    "foldx_electrostatics": -2.23207,
+    "foldx_solvation_polar": 23.3279,
+    "foldx_solvation_hydrophobic": -25.9105,
+    "foldx_van_der_waals_clashes": 2.68842,
+    "foldx_entropy_sidechain": 7.55365,
+    "foldx_entropy_mainchain": 3.17921,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0883402,
+    "foldx_backbone_clash": 0.631398,
+    "foldx_helix_dipole": -0.0190855,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.372321,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.068727,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "9647b997fdfd41ff6575d50a153f4911293a2c7fd51b93fc31aa799820d36143",
+  "repaired_pdb_sha256": "b1b39d31e3188d18942730a1ce716ae22e16d166d73050b4a0e69aa05aa6f5e1",
+  "conversion_validation": {
+    "n_atoms": 3147,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "EPAFPHTEL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 259.9374329550001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

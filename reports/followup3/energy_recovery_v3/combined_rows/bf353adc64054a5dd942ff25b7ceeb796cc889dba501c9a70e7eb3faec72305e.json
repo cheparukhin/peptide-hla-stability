@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*18:01",
+  "peptide": "MEYDAVATT",
+  "cluster_id": 2712,
+  "outer_fold": 1,
+  "complex_id": "B1801_MEYDAVATT",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_18_01/B1801_MEYDAVATT",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1801_MEYDAVATT.pdb",
+        "--pdb-dir=/tmp/energy_repaired_yggf321k/input",
+        "--output-dir=/tmp/energy_repaired_yggf321k/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 261.5110365580001
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1801_MEYDAVATT_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_yggf321k/output",
+        "--output-dir=/tmp/energy_repaired_yggf321k/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.2690637700000025
+    }
+  ],
+  "metadata_sha256": "674e30ccc73466b0277d9508472b1712536e9c87c0c6e1925b7a62c0a2bfd36f",
+  "structure_sha256": "e5e5feefdd54419098fd7fe857bc3d1b4289cd138aaecbf75cd7de976b205892",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.325185,
+    "foldx_intraclashesgroup2": 13.4083,
+    "foldx_interaction_energy": -23.7672,
+    "foldx_backbone_hbond": -6.00524,
+    "foldx_sidechain_hbond": -10.6514,
+    "foldx_van_der_waals": -17.8661,
+    "foldx_electrostatics": -2.71811,
+    "foldx_solvation_polar": 26.0815,
+    "foldx_solvation_hydrophobic": -23.9129,
+    "foldx_van_der_waals_clashes": 0.414839,
+    "foldx_entropy_sidechain": 7.16345,
+    "foldx_entropy_mainchain": 4.36469,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.083219,
+    "foldx_backbone_clash": 0.785867,
+    "foldx_helix_dipole": -0.0147719,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.752839,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0464612,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 52.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "845602185da17282d3410e920a93ed57caa240c3ea17f04276f8b353aa22d260",
+  "repaired_pdb_sha256": "e965ca124e279358dd5a012b2f136ea0bfca34ddb37d61d2394f7b47dddc5d15",
+  "conversion_validation": {
+    "n_atoms": 3128,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "MEYDAVATT"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 268.930338571,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

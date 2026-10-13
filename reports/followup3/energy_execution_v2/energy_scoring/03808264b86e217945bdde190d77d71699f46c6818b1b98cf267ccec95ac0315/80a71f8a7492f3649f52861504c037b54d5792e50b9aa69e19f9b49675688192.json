@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:01",
+  "peptide": "SVKERGPAY",
+  "cluster_id": 4020,
+  "outer_fold": 3,
+  "complex_id": "B1501_SVKERGPAY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_01/B1501_SVKERGPAY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1501_SVKERGPAY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oyzuhzo7/input",
+        "--output-dir=/tmp/energy_repaired_oyzuhzo7/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 205.54941079200034
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1501_SVKERGPAY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oyzuhzo7/output",
+        "--output-dir=/tmp/energy_repaired_oyzuhzo7/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.2705463829997825
+    }
+  ],
+  "metadata_sha256": "4fd7ae33394841267aacfd7dfe96325002b3399e3fefc8ab2687a8dbf7f2f3c6",
+  "structure_sha256": "4990d469acba5ead89b8cc54859bc3859cf486f854fd80a288823aa3593ee6c5",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.163614,
+    "foldx_intraclashesgroup2": 12.976,
+    "foldx_interaction_energy": -21.8804,
+    "foldx_backbone_hbond": -6.3178,
+    "foldx_sidechain_hbond": -11.7684,
+    "foldx_van_der_waals": -18.3384,
+    "foldx_electrostatics": -1.92578,
+    "foldx_solvation_polar": 28.8987,
+    "foldx_solvation_hydrophobic": -23.4931,
+    "foldx_van_der_waals_clashes": 0.848899,
+    "foldx_entropy_sidechain": 7.26721,
+    "foldx_entropy_mainchain": 3.42817,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.117289,
+    "foldx_backbone_clash": 0.381991,
+    "foldx_helix_dipole": -0.00252559,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.594681,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "a5524e1f75d20e27f8dea54de2dd4fd0c9a8e2819157fd01cb610c8777494b7d",
+  "repaired_pdb_sha256": "382355e004b4be967b2339d9e0950e4297d714ced7b092443e76286cdee36f1c",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SVKERGPAY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 209.94842954900014,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

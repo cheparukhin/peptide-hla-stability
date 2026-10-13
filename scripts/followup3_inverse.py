@@ -6,10 +6,12 @@ from concurrent.futures import ProcessPoolExecutor
 import hashlib
 from importlib.metadata import version
 import json
+import multiprocessing
 import os
 import platform
 from pathlib import Path
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -99,10 +101,20 @@ def prepare(out):
     print(json.dumps(dict(panel_rows=len(panel), alleles=int(panel.allele.nunique()), clusters=int(panel.cluster_id.nunique()), protocol_hash=protocol["protocol_hash"])))
 
 
+def worker_progress(row, stage, enabled):
+    if enabled:
+        print(json.dumps(dict(event="inverse_worker_progress", pid=os.getpid(), allele=row["allele"],
+                              peptide=row["peptide"], stage=stage)), flush=True)
+
+
 def _extract_one(args):
-    volume_root, row, output = args
+    volume_root, row, output, progress = args
+    started = time.perf_counter()
+    worker_progress(row, "torch_import_start", progress)
     import torch
+    worker_progress(row, "torch_import_complete", progress)
     torch.set_num_threads(2)
+    worker_progress(row, "torch_threads_configured", progress)
     os.environ.setdefault("OMP_NUM_THREADS", "2")
     path = Path(output) / (core.digest([row["allele"], row["peptide"]]) + ".json")
     if path.exists():
@@ -111,11 +123,24 @@ def _extract_one(args):
             raise ValueError("existing row identity differs")
         return cached
     try:
+        worker_progress(row, "native_structure_and_model_load_then_score_start", progress)
         result = core.score_pair(Path(volume_root) / row["folder"], row)
+        worker_progress(row, "score_complete", progress)
     except Exception as error:
         result = dict(row, status="failed", error=f"{type(error).__name__}:{error}")
+        worker_progress(row, "score_failed", progress)
+    result["worker_total_s"] = time.perf_counter() - started
     write_json(path, result)
+    worker_progress(row, "row_persisted", progress)
     return result
+
+
+def run_extraction_tasks(tasks, workers):
+    """Never fork native numerical-library state inherited from this CLI."""
+    if workers == 1:
+        return [_extract_one(task) for task in tasks]
+    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
+        return list(pool.map(_extract_one, tasks))
 
 
 def extract(out, volume_root, workers, pilot=False):
@@ -132,16 +157,16 @@ def extract(out, volume_root, workers, pilot=False):
         # final panel acceptance check, then reused without duplicate scoring.
         for source in (Path(out) / "pilot_rows").glob("*.json"):
             write_json(directory / source.name, json.loads(source.read_text()))
-    tasks = [(str(volume_root), row, str(directory)) for row in panel.to_dict(orient="records")]
-    with ProcessPoolExecutor(max_workers=workers) as pool:
-        rows = list(pool.map(_extract_one, tasks))
+    tasks = [(str(volume_root), row, str(directory), pilot) for row in panel.to_dict(orient="records")]
+    rows = run_extraction_tasks(tasks, workers)
     result = pd.DataFrame(rows)
     name = "pilot_scores.csv" if pilot else "scores.csv"
     result.to_csv(Path(out) / name, index=False)
     core.validate_scores(panel, result)
     write_json(Path(out) / ("pilot_receipt.json" if pilot else "extraction_receipt.json"),
                dict(protocol_hash=protocol["protocol_hash"], n_rows=len(result), scores_sha256=sha(Path(out) / name),
-                    total_pair_seconds=float(result.elapsed_s.sum()), workers=workers, engineering_only=pilot))
+                    total_pair_seconds=float(result.elapsed_s.sum()), total_worker_seconds=float(result.worker_total_s.sum()),
+                    worker_start_method="serial" if workers == 1 else "spawn", workers=workers, engineering_only=pilot))
     print(json.dumps(dict(rows=len(rows), total_pair_seconds=float(result.elapsed_s.sum()), pilot=pilot)))
 
 

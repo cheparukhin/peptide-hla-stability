@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:50",
+  "peptide": "FLIGELANL",
+  "cluster_id": 857,
+  "outer_fold": 1,
+  "complex_id": "A0250_FLIGELANL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_50/A0250_FLIGELANL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0250_FLIGELANL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ny099xv7/input",
+        "--output-dir=/tmp/energy_repaired_ny099xv7/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 160.88988255799995
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0250_FLIGELANL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_ny099xv7/output",
+        "--output-dir=/tmp/energy_repaired_ny099xv7/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.270338450000054
+    }
+  ],
+  "metadata_sha256": "c73f9a2faabd3faa97c1f908362bb4d6b2e68e43ad69153c600e513a1aa61af2",
+  "structure_sha256": "932e35559ffcaa64cc10d1a08102de347309d8c61f54e02c547ad2a674820393",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0700725,
+    "foldx_intraclashesgroup2": 15.4658,
+    "foldx_interaction_energy": -26.8585,
+    "foldx_backbone_hbond": -6.20623,
+    "foldx_sidechain_hbond": -9.19608,
+    "foldx_van_der_waals": -19.6324,
+    "foldx_electrostatics": -3.57664,
+    "foldx_solvation_polar": 25.7885,
+    "foldx_solvation_hydrophobic": -28.6607,
+    "foldx_van_der_waals_clashes": 1.9052,
+    "foldx_entropy_sidechain": 8.54171,
+    "foldx_entropy_mainchain": 4.25642,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0927067,
+    "foldx_backbone_clash": 1.1437,
+    "foldx_helix_dipole": -0.00939592,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.251815,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.090131,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 44.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "9cbee02c711b7f29534ee971d3e7e66f8a3ab37939d47bc4907c719cae489c18",
+  "repaired_pdb_sha256": "b8eb0f4da0bb90be8ff2b86ae33e14fcf7983a9b1929dd5b70dc01ed6bb0ce11",
+  "conversion_validation": {
+    "n_atoms": 3142,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FLIGELANL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 164.86664995,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}
