@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_cloud_phase.py", line 483, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_cloud_phase.py", line 481, in main
+    else:run_phase(args.approved,startup_wait_seconds=args.startup_wait_seconds)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/cheparukhin/ai_science_hack/scripts/final_cloud_phase.py", line 414, in run_phase
+    if code:raise RuntimeError(f"cloud child {record['job']} failed; no retry")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: cloud child hybrid_report failed; no retry
