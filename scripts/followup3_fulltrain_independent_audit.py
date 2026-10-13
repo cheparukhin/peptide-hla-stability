@@ -20,6 +20,17 @@ ARMS = ('R5', 'R5_P', 'R5_PC')
 CONTRASTS = {('R5','R5_PC'):'net', ('R5_P','R5_PC'):'context', ('R5','R5_P'):'peptide'}
 INPUT_NAMES = {'protocol.json','panel.csv','scores.csv','base_features.npz','base_features.provenance.json'}
 OUTPUT_NAMES = {'predictions.csv','selection.json','ancestry.json','runtime.json'}
+BATCH_SIZES = (3817,3817,3817,3816)
+
+
+def check_batch_partition(population, cached, batches, expected_sizes=BATCH_SIZES):
+    assert len(batches)==4 and tuple(map(len,batches))==tuple(expected_sizes)
+    groups=[set(batch) for batch in batches]
+    assert all(len(group)==len(batch) for group,batch in zip(groups,batches))
+    assert all(not groups[i]&groups[j] for i in range(4) for j in range(i))
+    new=set().union(*groups)
+    assert not cached&new and cached|new==population
+    return groups
 
 
 def check_comparisons(frame, predictions, saved, boot, minimum):
@@ -93,11 +104,8 @@ def check_extraction(directory,frame,cache,manifest):
     assert len(cached)==len(manifest['row_sha256'])==4449 and cached<=key(frame)
     old_receipt=audit.read(cache.parent/'parser_recovery_receipt.json')
     assert manifest['row_sha256']==old_receipt['completed_row_sha256']
-    batches=[audit.csv(directory/f'batch_{i}.csv') for i in (0,1)]
-    keys=[key(b) for b in batches]
-    assert list(map(len,batches))==[7634,7633] and all(len(b)==len(k) for b,k in zip(batches,keys))
-    assert not keys[0]&keys[1] and not cached&(keys[0]|keys[1])
-    assert cached|keys[0]|keys[1]==key(frame)
+    batches=[audit.csv(directory/f'batch_{i}.csv') for i in range(4)]
+    keys=check_batch_partition(key(frame),cached,[list(b[['allele','peptide']].itertuples(index=False,name=None)) for b in batches])
     rowfiles={cache/name:value for name,value in manifest['row_sha256'].items()}
     new_hashes={}
     for i,batch in enumerate(batches):

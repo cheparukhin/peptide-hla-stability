@@ -43,7 +43,8 @@ def draft(out):
         raise ValueError("complete audited source cache required")
     sources = dict(old_protocol["source_sha256"])
     for name in ("pepstab/followup3_inverse_fulltrain.py", "scripts/followup3_inverse_fulltrain.py", "pepstab/followup3_inverse_parser.py",
-                 "pepstab/followup3_energy.py", "pepstab/splits.py", "reports/followup3/inverse_fulltrain_candidate/SPECIFICATION.md"):
+                 "pepstab/followup3_energy.py", "pepstab/splits.py", "reports/followup3/inverse_fulltrain_candidate/SPECIFICATION.md",
+                 "reports/followup3/inverse_fulltrain_candidate/RESOURCE_AMENDMENT_FOUR_BATCHES.md"):
         sources[name] = sha(ROOT / name)
     inputs = dict(old_protocol["input_sha256"])
     for name in ("reports/followup3/inverse_execution_v2/protocol.json", "reports/followup3/inverse_execution_v2/extraction_receipt.json",
@@ -64,13 +65,13 @@ def draft(out):
     if len(cached) != 4449 or len(merged) != 4449 or any(not merged[c + "_old"].equals(merged[c + "_new"]) for c in ("cluster_id", "outer_fold", "complex_id", "folder")):
         raise ValueError("cached feature identities differ in expanded cohort")
     batches = core.extraction_batches(panel, set(zip(cached_panel.allele, cached_panel.peptide)))
-    if list(map(len, batches)) != [7634, 7633]:
+    if list(map(len, batches)) != [3817, 3817, 3817, 3816]:
         raise ValueError("exact disjoint15267 new rows required")
     write_csv(out / "panel.csv", panel)
     for i, batch in enumerate(batches): write_csv(out / f"batch_{i}.csv", batch)
     write_json(out / "cache_manifest.json", dict(source_directory=str(CACHE.relative_to(ROOT)), parent_protocol_file_sha256=sha(CACHE / "protocol.json"),
         parser_receipt_sha256=sha(CACHE / "parser_recovery_receipt.json"), row_sha256=recovery["completed_row_sha256"], cached_rows=4449))
-    for name in ("cache_manifest.json", "batch_0.csv", "batch_1.csv"):
+    for name in ("cache_manifest.json",) + tuple(f"batch_{i}.csv" for i in range(core.BATCH_COUNT)):
         inputs[str((out / name).relative_to(ROOT))] = sha(out / name)
     # Identify the already saved practical reference using identity columns only.
     reference = pd.read_csv(ROOT / REFERENCE, usecols=["pair_id", "cluster_id", "allele", "outer_fold"])
@@ -103,7 +104,9 @@ def draft(out):
         practical_reference=dict(path=REFERENCE, column="embedding_selector", scope="descriptive fixed reference only; no selection or matching-head claim"),
         fixed_query_check=dict(rows=4449, panels=[20, 50], old_arms=list(core.ARMS), learners=["mlp", "ridge"],
             outputs="absolute old/new points; net/context/peptide increments; old-to-new changes; no extra CI/models/bootstrap", interpretation="combined source coverage, tuning and stopping changes at fixed query composition; not pure sample-size causal effect"),
-        family="not one of three frozen tranche primaries; no tranche success claim", resource_proposal=dict(extraction_usd=34, remaining_usd=6, total_usd=40, sandboxes=2, hours_each=5),
+        family="not one of three frozen tranche primaries; no tranche success claim", resource_proposal=dict(extraction_usd=34, remaining_usd=6, total_usd=40,
+            sandboxes=4, hours_each=2.5, reservation_usd_each=8.5, overhead_usd_each=.5, cpu_each=16, memory_gib_each=32,
+            child_workers_each=8, threads_each=2, sandbox_account_quota_verified=False),
         limitations=["selected after balanced-panel outcomes; neither independent replication nor untouched validation", "bootstrap conditions on fitted predictions and omits followup/model selection", "density and cohort composition change together", "ridge disagreement must be reported", "no kinetics, causal geometry, native pose validation or deployed-head superiority claim", "no saved-weight replay"])
     write_json(out / "protocol.draft.json", dict(status="DRAFT_NOT_FROZEN_NOT_ADMITTED", drafted_at_utc=datetime.now(timezone.utc).isoformat(),
         specification=spec, protocol_hash=prior.digest(spec), panel_sha256=sha(out / "panel.csv"), source_sha256=sources, input_sha256=inputs))
@@ -138,7 +141,7 @@ def verify(out):
 
 def extract_batch(out, batch, volume_root, workers):
     panel, _, _, _ = verify(out)
-    if batch not in (0, 1) or not 1 <= workers <= 8: raise ValueError("two batches/eight spawn workers maximum")
+    if batch not in range(core.BATCH_COUNT) or not 1 <= workers <= 8: raise ValueError("four batches/eight spawn workers maximum")
     records = pd.read_csv(Path(out) / f"batch_{batch}.csv")
     directory = Path(out) / "score_rows"; directory.mkdir(exist_ok=True)
     tasks = [(str(volume_root), row, str(directory), False) for row in records.to_dict(orient="records")]
@@ -152,7 +155,7 @@ def extract_batch(out, batch, volume_root, workers):
 def collect(out):
     panel, protocol, cache, manifest = verify(out)
     rows = [json.loads((cache / name).read_text()) for name in manifest["row_sha256"]]
-    for batch in (0, 1):
+    for batch in range(core.BATCH_COUNT):
         receipt = json.loads((Path(out) / f"batch_{batch}.receipt.json").read_text())
         for name, expected in receipt["row_sha256"].items():
             path = Path(out) / "score_rows" / name
@@ -239,7 +242,7 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("command", choices=("draft", "freeze", "extract-batch", "collect", "stage", "assess", "report"))
     cli.add_argument("--out", type=Path, default=OUT); cli.add_argument("--decision", type=Path)
-    cli.add_argument("--batch", type=int, choices=(0, 1)); cli.add_argument("--workers", type=int, default=8)
+    cli.add_argument("--batch", type=int, choices=range(core.BATCH_COUNT)); cli.add_argument("--workers", type=int, default=8)
     cli.add_argument("--volume-root", type=Path, default=Path("/structures")); cli.add_argument("--bundle-root", type=Path)
     cli.add_argument("--learner", choices=("mlp", "ridge")); cli.add_argument("--outer-fold", type=int, choices=range(5))
     args = cli.parse_args()

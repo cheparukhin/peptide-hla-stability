@@ -42,3 +42,11 @@ def test_fulltrain_audit_refuses_unfrozen_candidate(tmp_path,monkeypatch):
     monkeypatch.setattr('sys.argv',['audit','--directory',str(tmp_path)])
     with pytest.raises(FileNotFoundError):check.main()
     assert not (tmp_path/'independent_audit.json').exists()
+
+
+def test_four_batch_partition_rejects_overlap_cache_leak_and_missing_rows():
+    batches=[[1,2],[3,4],[5,6],[7]]
+    assert check.check_batch_partition(set(range(8)),{0},batches,(2,2,2,1))==list(map(set,batches))
+    for changed in ([[1,2],[3,4],[5,6],[6]], [[0,2],[3,4],[5,6],[7]], [[1,2],[3,4],[5,6],[8]]):
+        with pytest.raises(AssertionError):check.check_batch_partition(set(range(8)),{0},changed,(2,2,2,1))
+    with pytest.raises(AssertionError):check.check_batch_partition(set(range(8)),{0},batches[:2],(2,2))

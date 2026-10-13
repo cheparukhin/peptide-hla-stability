@@ -22,8 +22,8 @@ Reuse all 4,449 complete native ProteinMPNN feature records byte-exactly after
 verifying every JSON hash, extraction receipt, parser recovery receipt and
 cluster/fold/complex/folder identity. The legacy 2,000-row QC scores are excluded.
 The other 15,267 rows are deterministically SHA-ranked within alleles,
-interleaved by rank and allele, then alternated into disjoint batches of
-7,634 and 7,633. Each batch computes only its own new rows; immutable cached
+interleaved by rank and allele, then split modulo four into disjoint batches of
+3,817,3,817,3,817 and3,816. Each batch computes only its own new rows; immutable cached
 records are read separately at collection. The jobs never share aggregate
 writes. Existing new records are reused without recomputation; failed records
 remain failures and cannot trigger automatic retries. No outcome-based changes
@@ -88,11 +88,17 @@ the candidate report does not fit/select an incumbent or assert matched
 head budgets against that selector. Adding reference metrics requires an
 explicit prelaunch report-scope decision, not new model selection.
 
-Historical mean worker time13.548s/pair predicts3.59h with two independent
+Historical mean worker time13.548s/pair predicts1.80h with four independent
 16CPU/32GiB Sandboxes, eight spawn workers×two threads each. The observed-job
-throughput predicts3.66h; mean+25%+five-minute startup predicts4.57h. Propose
-five-hour hard lifetime per job and $17 per-job admission ($34 extraction),
-plus $6 bounded staging/heads/report allowance. These are projections from
+throughput predicts1.83h; mean+25%+five-minute startup predicts2.33h. Propose
+2.5-hour hard lifetime per job and $8.50 per-job admission ($34 extraction),
+with$0.50 overhead per job. Maximum compute$30.384 plus overhead$2 is within
+that same envelope. Sandbox account quota is unverified; previous ordinary
+Function concurrency does not prove Sandbox-specific quota. Four jobs request
+aggregate64CPU/128GiB. No new scheduler or GPU path is introduced. Preserve the
+unexecuted two-batch draft/source/spec/batches/review under
+two_batch_unexecuted_snapshot and bind RESOURCE_AMENDMENT_FOUR_BATCHES.md.
+The $6 bounded staging/heads/report allowance remains unchanged. These are projections from
 completed telemetry and stored rates, not new measurements or authorization.
 Root owns fresh ledger admission, source/volume validation, launches and
 independent stop guards. Hard caps can leave incomplete records; preserve
@@ -109,6 +115,8 @@ python scripts/followup3_inverse_fulltrain.py draft
 python scripts/followup3_inverse_fulltrain.py freeze --decision ROOT_DECISION.json
 python scripts/followup3_inverse_fulltrain.py extract-batch --batch 0 --workers 8
 python scripts/followup3_inverse_fulltrain.py extract-batch --batch 1 --workers 8
+python scripts/followup3_inverse_fulltrain.py extract-batch --batch 2 --workers 8
+python scripts/followup3_inverse_fulltrain.py extract-batch --batch 3 --workers 8
 python scripts/followup3_inverse_fulltrain.py collect
 python scripts/followup3_inverse_fulltrain.py stage
 python scripts/followup3_inverse_fulltrain.py assess --learner mlp --outer-fold 0

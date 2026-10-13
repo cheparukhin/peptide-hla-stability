@@ -6,6 +6,7 @@ import numpy as np
 from . import followup3_inverse as prior
 
 ARMS = ("R5", "R5_P", "R5_PC")
+BATCH_COUNT = 4
 
 
 def full_panel(splits, folds, cohort):
@@ -27,7 +28,7 @@ def full_panel(splits, folds, cohort):
 
 
 def extraction_batches(panel, cached_keys):
-    """Interleave SHA-ranked rows within alleles, then alternate disjoint jobs."""
+    """Interleave SHA-ranked rows within alleles, then modulo four disjoint jobs."""
     keys = ["allele", "peptide"]
     panel_keys = set(panel[keys].itertuples(index=False, name=None))
     if not set(cached_keys).issubset(panel_keys):
@@ -37,7 +38,7 @@ def extraction_batches(panel, cached_keys):
     remaining = remaining.sort_values(["allele", "rank_hash"])
     remaining["rank_in_allele"] = remaining.groupby("allele").cumcount()
     remaining = remaining.sort_values(["rank_in_allele", "allele"]).reset_index(drop=True)
-    return [remaining.iloc[i::2].loc[:, prior.PANEL_COLUMNS].reset_index(drop=True) for i in (0, 1)]
+    return [remaining.iloc[i::BATCH_COUNT].loc[:, prior.PANEL_COLUMNS].reset_index(drop=True) for i in range(BATCH_COUNT)]
 
 
 def feature_arms(base, scored):

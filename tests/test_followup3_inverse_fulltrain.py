@@ -30,9 +30,11 @@ def test_new_batches_are_complete_disjoint_and_never_recompute_cache():
     cached = set(frame.iloc[:17][["allele","peptide"]].itertuples(index=False,name=None))
     batches = full.extraction_batches(frame, cached)
     keys = [set(b[["allele","peptide"]].itertuples(index=False,name=None)) for b in batches]
-    assert not keys[0] & keys[1] and not (keys[0] | keys[1]) & cached
-    assert len(keys[0] | keys[1]) == len(frame)-17
-    assert abs(len(batches[0])-len(batches[1])) <= 1
+    assert len(batches)==4 and list(map(len,batches))==[46,46,46,45]
+    union=set().union(*keys)
+    assert not union & cached and len(union)==sum(map(len,keys))
+    assert len(union)==len(frame)-17
+    assert max(map(len,batches))-min(map(len,batches)) <= 1
     for a,b in zip(batches,full.extraction_batches(frame.sample(frac=1,random_state=4),cached)):
         assert a.equals(b)
 

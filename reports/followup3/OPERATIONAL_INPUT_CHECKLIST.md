@@ -51,7 +51,9 @@ Energy v2 collect/heads/report
 
 Full ORIGINAL-train ProteinMPNN candidate
 
-- Reviewed draft SHA is2b466ce664f0e30a6f75073e91fff210f5abe0b2ae864a1038eaf15657f5b414.
+- Prior two-batch draft SHA2b466ce664f0e30a6f75073e91fff210f5abe0b2ae864a1038eaf15657f5b414
+  is preserved under two_batch_unexecuted_snapshot. Use the replacement
+  four-batch draft SHA and its new review when available.
   Wait for completed energy audit and explicit root decision. Decision fields
   are approve_fulltrain_inverse=true, energy_final_audit_complete=true and
   candidate_draft_sha256 equal to that SHA. Freeze creates protocol.json only
@@ -59,16 +61,18 @@ Full ORIGINAL-train ProteinMPNN candidate
 - Each extraction plan includes new protocol/panel/cache_manifest/batch files,
   all source/input bindings and the4,449 inherited JSONs via remote_inputs at
   their existing inverse_execution_v2/score_rows paths. Do not copy or rescore
-  those4,449 cases. Batch0/1 contain disjoint7,634/7,633 new rows. Use separate
-  supervisors/resource namespaces and one command per Sandbox, with eight
-  spawned child workers×two threads,16CPU/32GiB, five-hour/$17 caps each.
+  those4,449 cases. Batch0..3 contain disjoint3,817/3,817/3,817/3,816 new rows.
+  Use separate supervisors/resource namespaces and one command per Sandbox,
+  with eight spawned child workers×two threads,16CPU/32GiB,2.5-hour/$8.50 caps
+  each and$0.50 per-job overhead. Sandbox-specific account quota remains
+  unverified; prior ordinary-Function concurrency is not quota evidence.
 - Extraction requires the existing pepstab-structures volume mounted at
   /structures (primary merged volume includes both historical halves), and
   existing external/ProteinMPNN/protein_mpnn_utils.py plus
   vanilla_model_weights/v_48_020.pt at the repository path. Pin the checkpoint
   separately in the execution plan even though the scorer rechecks its SHA.
   Use corrected exact-unique-chain selector and all unchanged native checks.
-- Commands are extract-batch --batch0/1 --workers8, then collect. Both batch
+- Commands are extract-batch --batch0..3 --workers8, then collect. All four batch
   receipts must pass; partial or failed coverage blocks all assessment.
   Do not run the original inverse prepare/extract commands against the new
   namespace: they enforce the original64-per-allele/six-arm scope.

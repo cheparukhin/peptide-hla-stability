@@ -1,0 +1,39 @@
+{
+  "status": "passed_candidate_review_only",
+  "reviewed_at_utc": "2026-10-13T15:48:23.743556+00:00",
+  "draft_sha256": "2b466ce664f0e30a6f75073e91fff210f5abe0b2ae864a1038eaf15657f5b414",
+  "source_sha256": {
+    "pepstab/followup3_inverse_fulltrain.py": "ac0e236d098f14bb847aa010c4c089233dfb82093ede4531afc235ecdb98c9ea",
+    "scripts/followup3_inverse_fulltrain.py": "a8d1778c5ad7adce68f818cdbc3bd0a478051f8ed8e2a5eae64e9d2f28bc27a8",
+    "tests/test_followup3_inverse_fulltrain.py": "6092c423f5eb81c35ba081ea8510365566e2e8ddbf0336c2c9b5bd43cc7de8bb",
+    "pepstab/followup3_inverse_parser.py": "aadea505fe0814e03eb25a2d80197e53ecfda9fff8532c3bc9275999ad7147d7",
+    "reports/followup3/inverse_fulltrain_candidate/SPECIFICATION.md": "38eb554d3924e0f69ff6e4720f4ab2311ef31d5c77097b19c1eb016c9cbdf462"
+  },
+  "bound_source_files": 23,
+  "bound_input_files": 37,
+  "all_bindings_verified": true,
+  "synthetic_tests": {
+    "command": "pytest -q tests/test_followup3_inverse_fulltrain.py tests/test_followup3_inverse_parser.py",
+    "passed": 12,
+    "seconds": 1.27
+  },
+  "checks": [
+    "19716 ORIGINAL train natural identities and inherited cluster folds",
+    "4449 immutable cached feature records and disjoint 7634/7633 new batches",
+    "exact peptide-chain parser activated separately per worker; unchanged native scorer guards",
+    "fresh matched R5/R5_P/R5_PC with 300 MLP and 150 ridge fits",
+    "inner/outer fit-stop-scaler isolation and saved selection replay",
+    "complete coverage required; no complete-case fallback",
+    "paired whole-peptide-cluster conditional 95 percent intervals, not fourth primary",
+    "fixed original 4449 query comparison uses exact old files, same fixed eligibility, points and changes only"
+  ],
+  "blocking_findings": [],
+  "limitations": [
+    "Scientific/source review only; execution must await completed energy audit and explicit root decision, freeze and independent resource admission.",
+    "Selected development followup uses overlapping previously inspected labels, not independent confirmation.",
+    "Fixed-query changes combine source coverage, tuning and stopping changes; no causal sample-size attribution.",
+    "No fitted model weights are saved; completed-output audit replays predictions, selections and ancestry, not weights."
+  ],
+  "frozen": false,
+  "paid_launch_authorized": false
+}
