@@ -733,7 +733,8 @@ and independent artifact/table checks are complete. Matched R5−R0 MLP gains
 are +0.406234 [0.307286,0.473273] in HLA and +0.373784 [0.309165,0.463816] in
 joint holdout at minimum 20; minimum-50, matched ridge and group-deletion
 sensitivities stay positive. Show both original and expanded sequence references:
-the expanded selector underperforms the original in joint holdout. This remains
+the expanded selector has a lower joint point estimate than the original; the
+crossed uncertainty interval for their difference spans zero. This remains
 conditional development evidence and does not alter the main worthwhile-gain
 criterion or provide independent confirmation.
 
@@ -783,3 +784,19 @@ backend: held predictions and all 328 stopping-MSE checks reproduced exactly.
 No permitted scalar slack was used. Saved predictions and fitting procedures
 were unchanged. The prior unlogged-container mismatch's cause remains unproven.
 Cloud compute and temporary storage for this study are closed.
+
+### Frozen label-budget sensitivity — 13 October 00:55 UTC
+
+After successful hybrid certification, the reviewed fixed-head study was frozen
+and launched once: 120 new MLP fits at 25/50% outer-fit peptide-cluster budgets,
+three predetermined nested label-blind orderings, and exact reuse of 20 audited
+full-budget members. Both gradient and stopping labels count toward each budget.
+The primary contrast is the increase in the matched R5−R0 score gap at 25% versus
+100%; replicate scores are averaged, never predictions. Fixed minimum-20/50
+panels and 2,000 shared peptide-cluster draws provide conditional uncertainty.
+This tests a response to label budget under previously nominated recipes, not
+prospective assay savings or independent confirmation. No outcome is claimed.
+The inclusive $10 cap is inside the same $100 ceiling, with one two-core Modal
+worker and a fixed 13 October 01:55 UTC work stop. See the
+[specification](finalization/label_efficiency/SPECIFICATION.md) and current
+[operations](finalization/RECOVERY_OPERATIONS.md).

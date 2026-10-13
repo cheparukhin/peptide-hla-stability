@@ -1,8 +1,7 @@
 # Peptide–HLA stability: submission brief
 
-Prepared 12 October 2026. Local draft for the completed development findings;
-the stronger transfer extension is complete; hybrid fitting is complete and final audit is running.
-Not submitted externally.
+Prepared 13 October 2026. Local draft covering completed development, ranking,
+transfer and hybrid studies. Not submitted externally.
 
 ## Project in one paragraph
 
@@ -21,7 +20,7 @@ are development findings; independent experimental confirmation remains open.
 - Nested peptide-cluster, HLA-group and joint holdout assessments with fitting,
   stopping and selection kept inside the appropriate partitions.
 - Sequence, pooling and shuffled-contact controls, plus a matched ranking-loss
-  experiment covering 840 new fits.
+  experiment covering 840 new fits and a 480-fit matched hybrid study.
 - Portable, checksummed NPZ/JSON ridge and 30-member MLP heads with documented
   inputs and cached-feature inference.
 - A source-backed project page, complete reports and an unsent assay brief.
@@ -41,22 +40,36 @@ Matched R5−R0 MLP gains are +0.4062 [+0.3073,+0.4733] in HLA and
 +0.3738 [+0.3092,+0.4638] in joint holdout (≥20 panel, crossed 95% intervals).
 Matched ridge, ≥50-panel and single-HLA-group removal checks also stay positive.
 Both original and expanded sequence references remain visible because the
-expanded selector underperforms the original in joint holdout. This supports
+expanded selector has a lower joint point estimate than the original. This supports
 useful pretrained representations under matched learners, not causal attribution
 to structure or independent confirmation.
+
+The audited hybrid study compares an inner-selected tree/MLP/preprocessing
+procedure with the matched two-member R5 standard MLP. Its primary difference
+is **+0.004384 [−0.005541, +0.009984]**; the ≥50-row sensitivity is
+**+0.002640 [−0.003962, +0.009132]**. The selector keeps the standard R5 MLP in
+three folds and a 75% MLP / 25% regression-tree blend in two. Regression/ranking
+trees, tree-leaf MLP and PCA MLP score worse in the frozen exploratory comparisons
+on both representations; quantile preprocessing remains inconclusive.
+Secondary intervals are nominal and not multiplicity-adjusted. The primary
+result establishes neither an additional hybrid gain nor equivalence. These
+fixed recipes do not replace the stronger competitive sequence comparator used
+for the main +0.0543 result. See the [hybrid report](hybrids_cloud_v1/REPORT.md)
+and [independent saved-table audit](hybrids_cloud_v1/coverage_audit.json).
 
 ## Three-minute demonstration
 
 1. Open the [project page](../../site/index.html). Show the main development
-   comparison, then the uncertain ranking-loss result and its MSE fallback.
+   comparison, then the uncertain ranking and hybrid gains with their frozen
+   inner-selection fallbacks.
 2. Show the [portable model contract](../../docs/ROUND2_INFERENCE.md) and inspect
    one saved head. Its files contain weights, scalers, configuration and hashes.
 3. Use the documented cached-feature prediction command on the identified
    demonstration rows. State that these are training-cache examples, with no
    accuracy claim attached to the demonstration.
-4. Show the evidence boundaries: original test preserved, stronger transfer
-   controls completed, hybrid audit running, and an independent assay
-   cohort still needed.
+4. Show the evidence boundaries: the historical benchmark is separate, all
+   follow-ups use the original training cohort, and independent half-life
+   measurements are still needed.
 
 The measured warm cached-head median is 1.56 ms for ridge and 2.40 ms for the
 MLP per row on the recorded host. This excludes cache loading, MSA generation,
@@ -66,20 +79,21 @@ Boltz extraction and startup. Novel sequence-to-prediction latency is unmeasured
 
 **Is this independent validation?** No. The later studies reuse the original
 training cohort for development. The historical test report is separate and
-was not reopened. No adequate reserved independent assay cohort is available.
+was not reopened for the follow-ups. Its [original report](../REPORT.md#2-data-and-evaluation)
+discloses earlier diagnostic exposure of test rows and aggregate outcomes.
+No adequate reserved independent assay cohort is available.
 
 **Does structure cause the improvement?** The controls support useful
 position-aware learned features. They do not identify a causal structural
 mechanism or establish an advantage for the designated contact map.
 
-**Why not deploy the ranking-loss winner?** The average outer development score
+**Why not deploy the ranking-loss winner?** The pooled outer-held median per-allele Spearman
 was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
-**What is next?** Finish the saved-model and statistical audit of the completed 480-fit
-Boltz tree/ranking, tree–MLP blend and preprocessing comparison, then freeze candidates before independent assay
-outcomes. The separate 12-fit engineering pilot passed; its fits never enter
-scientific assessment. No hybrid outcome is claimed yet.
+**What is next?** Freeze candidate procedures before opening independent assay
+outcomes. A separately frozen [120-fit label-budget study](label_efficiency/SPECIFICATION.md)
+is running on Modal and has no outcomes yet.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance

@@ -65,7 +65,7 @@ def link(name, label):
 
 
 def path_link(path, label):
-    return f'<a href="{REPO_URL}{path}">{html.escape(label)}</a>'
+    return f'<a href="../{path}">{html.escape(label)}</a>'
 
 
 def build():
@@ -113,6 +113,29 @@ def build():
     ranking_scores = read_path(ranking_base + "scores.csv", "csv")
     ranking_selections = read_path(ranking_base + "selections.csv", "csv")
     ranking_audit = read_path(ranking_base + "completion_audit.json")
+    hybrid_base = "reports/finalization/hybrids_cloud_v1/"
+    hybrid_scores = read_path(hybrid_base + "scores.csv", "csv")
+    hybrid_comparisons = read_path(hybrid_base + "comparisons.csv", "csv")
+    hybrid_selections = read_path(hybrid_base + "selections.csv", "csv")
+    hybrid_audit = read_path(hybrid_base + "coverage_audit.json")
+    hybrid_replay = read_path(hybrid_base + "audit.json")
+    read_path(hybrid_base + "REPORT.md", "text")
+    if hybrid_audit["status"] != "passed" or hybrid_replay["new_supervised_fits"] != 480:
+        raise ValueError("Completed hybrid audit required")
+    hybrid_primary = one(hybrid_comparisons, contrast="R5_hybrid_selector-R5_standard", min_rows=20)
+    hybrid_sensitivity = one(hybrid_comparisons, contrast="R5_hybrid_selector-R5_standard", min_rows=50)
+    hybrid_standard = one(hybrid_scores, arm="R5_standard", min_rows=20)
+    hybrid_selected = one(hybrid_scores, arm="R5_hybrid_selector", min_rows=20)
+    if not math.isclose(float(hybrid_selected["median_spearman"])-float(hybrid_standard["median_spearman"]), float(hybrid_primary["delta"]), abs_tol=1e-12):
+        raise ValueError("Hybrid score/difference mismatch")
+    if not all(float(r["ci_low"]) < 0 < float(r["ci_high"]) for r in (hybrid_primary,hybrid_sensitivity)):
+        raise ValueError("Hybrid inconclusive statement requires review")
+    r5_choices = [r for r in hybrid_selections if r["representation"] == "R5"]
+    if len(r5_choices)!=5 or sum(r["hybrid_component"]=="standard" for r in r5_choices)!=3 or sum(r["hybrid_component"]=="blend" and float(r["blend_weight"])==.25 for r in r5_choices)!=2:
+        raise ValueError("Hybrid fallback statement requires review")
+    hybrid_rows = [(label,one(hybrid_comparisons,contrast=f"R5_{arm}-R5_standard",min_rows=20)) for label,arm in
+        (("Regression tree","tree_rmse"),("Ranking tree","tree_rank"),("Tree-leaf MLP","leaf_mlp"),("PCA MLP","pca_mlp"),("Quantile MLP","quantile_mlp"))]
+    hybrid_html = "\n".join(f'<tr><th scope="row">{label}</th><td class="num">{interval(row)}</td></tr>' for label,row in hybrid_rows)
     read_path(ranking_base + "protocol.json")
     read_path(ranking_base + "REPORT.md", "text")
     inference = read_path("reports/finalization/inference/distribution_manifest.json")
@@ -222,11 +245,19 @@ def build():
     <p class="note">All matched contrasts remain positive on the ≥50-row panel, under peptide-only and HLA-only uncertainty, and after deleting any one of the 35 HLA groups. Different feature dimensions, pretraining and representation construction still prevent causal attribution specifically to structure. These are conditional development results.</p>
     <details class="evidence-detail"><summary>Both sequence references, including the stronger original joint baseline</summary>
       <div class="scroller" tabindex="0" role="region" aria-label="Original and expanded sequence references"><table><caption>≥20 rows per allele · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Regime / sequence reference</th><th scope="col">Sequence</th><th scope="col">Embedding selector</th><th scope="col">Difference [crossed 95% interval]</th></tr></thead><tbody>{extension_reference_html}</tbody></table></div>
-      <p>The expanded sequence selector changes the original by {interval(extension_sequence[0])} in HLA and {interval(extension_sequence[1])} in joint holdout. It underperforms the original in joint holdout, so presenting only the expanded comparator would exaggerate the advantage. Outer outcomes do not select a replacement procedure.</p>
+      <p>The expanded sequence selector changes the original by {interval(extension_sequence[0])} in HLA and {interval(extension_sequence[1])} in joint holdout. Its joint point estimate is lower than the original, so presenting only the expanded comparator would exaggerate the advantage. Outer outcomes do not select a replacement procedure.</p>
     </details>
     <details class="evidence-detail"><summary>Scope and uncertainty</summary><p>The extension adds sequence regression/centred trees, a fixed ranker and matched R0 ridge/MLP heads. Inner selection, stopping and scaling obey each holdout regime. Its 264 comparison rows cover both panels and three uncertainty modes; all 12 bootstrap tables have 2,000 draws, and 3,080 rows cover every group-deletion contrast.</p><p>Intervals condition on fitted predictions and selections; group deletion does not retrain. Crossed resampling is a dependence sensitivity, not independent confirmation. HLA sequence groups are not validated functional distance. The ranker retains an inner-to-final scale-transport limitation. These transfer findings do not retrospectively change the main worthwhile-gain criterion.</p></details>
-    <p class="note"><b>Hybrid fitting is complete; final audit is running.</b> The separate Boltz tree/ranking, tree–MLP blend and preprocessing study completed 480 scientific fits on four Modal CPUs after a 12-fit unscored pilot passed. Its primary comparison is the R5 hybrid selector minus the matched two-member R5 standard MLP. No hybrid outcome is claimed yet.</p>
     <p class="source-line">{path_link(extension_base + "REPORT.md", "Complete stronger-transfer report")} · {path_link(extension_base + "comparisons.csv", "All comparisons")} · {path_link(extension_base + "coverage_audit.json", "Independent coverage audit")} · {link("transfer/results/README.md", "Historical narrower assessment")}</p>
+  </section>
+
+  <section id="hybrid-followup" aria-labelledby="hybrid-followup-title">
+    <div class="shead"><p class="eyebrow">Completed hybrid comparison · 480 fits · 16 arms</p><h2 class="title" id="hybrid-followup-title">Keep the simpler embedding head.</h2><p class="lede">Trees, blending and preprocessing did not establish an improvement over the matched standard Boltz MLP.</p></div>
+    <p class="col">The inner-selected R5 hybrid scores <b>{fmt(hybrid_selected["median_spearman"])}</b> versus <b>{fmt(hybrid_standard["median_spearman"])}</b>: <b>{interval(hybrid_primary)}</b>. Its ≥50-row sensitivity is {interval(hybrid_sensitivity)}. Both are inconclusive, not equivalence tests.</p>
+    <p class="note">The selector keeps the standard head in three folds and a 25% regression-tree blend in two. Selector and blend predictions coincide; they are one finding. Both arms use two members; historical 30-member heads and the stronger main sequence selector are descriptive references, not these matched controls.</p>
+    <div class="scroller" tabindex="0" role="region" aria-label="R5 hybrid component comparisons"><table><caption>R5 challenger minus standard MLP · ≥20 panel · exploratory paired 95% intervals</caption><thead><tr><th scope="col">Challenger</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody>{hybrid_html}</tbody></table></div>
+    <p class="note">These results concern the frozen recipes, not all possible trees or preprocessing methods. All saved held predictions and 328 stopping-MSE checks replayed exactly under the recorded numerical backend. The separate 12-fit pilot was unscored. A bounded label-budget follow-up is running; independent assay confirmation remains open.</p>
+    <p class="source-line">{path_link(hybrid_base + "REPORT.md", "Full hybrid study")} · {path_link(hybrid_base + "comparisons.csv", "Every frozen comparison")} · {path_link(hybrid_base + "coverage_audit.json", "Independent coverage audit")} · {path_link("reports/finalization/cloud/BACKEND_REPLAY.md", "Numerical replay disclosure")}</p>
   </section>
 
   <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
@@ -249,10 +280,10 @@ def build():
 
   <section id="round2-evidence" aria-labelledby="round2-evidence-title">
     <div class="shead"><h2 class="title" id="round2-evidence-title">Inspect the evidence.</h2><p class="lede">This page is a local static submission snapshot. Numeric tables are generated from saved result CSVs, with source SHA-256 hashes in the <a href="round2-data.json">downloadable evidence payload</a>. Reading this page starts no model jobs.</p></div>
-    <p class="source-line">{path_link("reports/finalization/FINAL_REPORT.md", "Combined finalisation readout")} · {link("REPORT.md", "Closed round-two assessment")} · {path_link("reports/finalization/INDEPENDENT_ASSAY_BRIEF.md", "Unsent independent-assay brief")} · <a href="{REPO_URL}reports/NEXT_RESEARCH_PLAN.md">Research plan and execution gates</a> · <a href="#archive">Original hackathon archive</a></p>
+    <p class="source-line">{path_link("reports/finalization/FINAL_REPORT.md", "Combined finalisation readout")} · {link("REPORT.md", "Closed round-two assessment")} · {path_link("reports/finalization/INDEPENDENT_ASSAY_BRIEF.md", "Unsent independent-assay brief")} · {path_link("reports/NEXT_RESEARCH_PLAN.md", "Research plan and execution gates")} · <a href="#archive">Original hackathon archive</a></p>
   </section>
 '''
-    payload = {"schema": "round2-site-snapshot.1", "assessment_date": "2026-10-12", "scope": "development only; original historical test separate; independent confirmation open", "cohort": cohort,
+    payload = {"schema": "round2-site-snapshot.1", "assessment_date": "2026-10-13", "scope": "development only; original historical test separate; independent confirmation open", "cohort": cohort,
                "primary": primary, "sensitivity": sensitivity, "procedure_scores": score_rows,
                "matched_controls": [{"label": label, "comparison": row} for label, row in controls],
                "complementarity": {"blend": blend, "residual": residual}, "transfer": transfer_rows,
@@ -265,7 +296,10 @@ def build():
                "transfer_extension_status": "complete; independently audited; development only",
                "transfer_extension": {"matched_heads": [{"label": label, "comparison": row} for label, row in extension_matched],
                                       "both_sequence_references": extension_references, "expanded_minus_original": extension_sequence},
-               "hybrid_status": "480 scientific fits complete; saved-model/statistical audit running on Modal; no outcome claimed",
+               "hybrid_status": "complete; independently audited; primary gain inconclusive; standard head retained",
+               "hybrid_followup": {"primary": hybrid_primary, "sensitivity": hybrid_sensitivity,
+                                    "scores": hybrid_scores, "comparisons": hybrid_comparisons,
+                                    "selections": hybrid_selections, "audit_status": hybrid_audit["status"]},
                "cost_accounting": {k: v for k, v in costs.items() if k != "interpretation"},
                "source_sha256": dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"

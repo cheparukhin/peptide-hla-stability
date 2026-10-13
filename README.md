@@ -12,24 +12,24 @@ The current development gain is **+0.054 median per-allele Spearman**
 (95% paired interval **+0.031 to +0.081**). This supports improvement on the
 examined development cohort; it does not establish that the gain exceeds the
 predeclared worthwhile threshold of +0.05. Independent assay confirmation remains
-open. The original test has not been reopened.
-
-The matched ranking-loss follow-up is now complete. Adding within-allele
-ranking loss to the R5 MLP gives **+0.0071 [−0.0051, +0.0098]** against its
-matched MSE head. This does not establish an additional gain; the inner
-deployment selector retained MSE in all five R5 folds.
+open. The original test has not been reopened for these follow-ups; its
+[historical report](reports/REPORT.md#2-data-and-evaluation) discloses earlier
+diagnostic exposure of test rows and aggregate outcomes.
 
 ## Explore the project
 
 - [Current research report](reports/further_research/round2/REPORT.md): complete
   main, transfer, complementarity, reproducibility and resource findings.
 - [Combined finalisation readout](reports/finalization/FINAL_REPORT.md): completed
-  portable inference, ranking follow-up and stronger transfer controls; hybrid
-  fitting is complete and its final audit is running.
+  portable inference, ranking, stronger transfer controls and the audited hybrid
+  follow-up.
 - [Matched ranking-loss report](reports/finalization/ranking/REPORT.md): frozen
   outcome, source tables and the completed artifact/arithmetic audit.
+- [Hybrid report](reports/finalization/hybrids_cloud_v1/REPORT.md): matched tree,
+  blending and preprocessing comparisons, with saved-model replay and an
+  [independent table audit](reports/finalization/hybrids_cloud_v1/coverage_audit.json).
 - [Project page](site/index.html): locally updated evidence and a clearly dated
-  archive of the original film/test. Serve with `python3 -m http.server 8000 --directory site` and open `http://localhost:8000`. This branch has not been
+  archive of the original film/test. Serve with `python3 -m http.server 8000 --bind 127.0.0.1` and open `http://localhost:8000/site/`. This branch has not been
   deployed to the public site.
 - [Portable model guide](docs/ROUND2_INFERENCE.md): use the trained ridge and
   neural heads with verified, compatible cached Boltz features.
@@ -39,7 +39,7 @@ deployment selector retained MSE in all five R5 folds.
 - [Independent assay brief](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md):
   concrete, unsent acquisition requirements and remaining confirmation gaps.
 - [Original 4 October report](reports/REPORT.md): preserved historical study,
-  including its single held-out test pass.
+  including its recorded test assessment and earlier exposure disclosure.
 
 ## Completed development results
 
@@ -51,38 +51,46 @@ Spearman correlations; differences are between those medians.
 | Assessment | Embedding procedure | Sequence comparator | Difference [95% interval] |
 |---|---:|---:|---:|
 | Main peptide-cluster assessment | 0.7212 | 0.6668 | +0.0543 [+0.0314, +0.0808] |
-| HLA-group holdout | 0.5463 | 0.1740 | +0.3723 [+0.2903, +0.4533] |
-| Joint peptide/HLA holdout | 0.5067 | 0.1108 | +0.3958 [+0.2951, +0.4457] |
 
 The main comparator selects among five sequence procedures inside fitting
-partitions. The transfer rows above preserve the earlier narrower original/centred neural
-comparison. The **stronger transfer follow-up is now complete**, as summarized
-below; its distinct sequence procedures must not be conflated with these rows.
-The main interval resamples paired peptide clusters; the transfer intervals
-shown use crossed peptide/HLA-group uncertainty. Selection and stopping obey
-the corresponding held-out grouping. Reported results remain conditional on
-this examined development cohort and frozen candidate sets.
+partitions. Its interval uses paired peptide-cluster resampling. The separate
+HLA-group and joint holdouts below assess transfer, with scaling, stopping and
+selection respecting their corresponding groups. Their results cannot be
+subtracted from the main score to identify a causal representation effect.
 
 The stronger transfer study covers all 30 cells and 10,830 retained fits.
 With matched MLP recipes, R5 minus R0 is **+0.4062 [+0.3073,+0.4733]** in HLA
 holdout and **+0.3738 [+0.3092,+0.4638]** in joint holdout (≥20 panel, crossed
 95% intervals). Matched ridge comparisons, the ≥50 panel and all single-HLA-group
 deletions also remain positive. Both original and expanded sequence references
-are shown: the expanded selector underperforms the original in joint holdout,
+are shown: the expanded selector has a lower joint point estimate than the original,
 so it must not be the only reference. These remain conditional development
 results and do not isolate a causal structural effect.
 [Completed transfer report](reports/finalization/transfer_cloud_recovery/results/REPORT.md).
 
-The separate matched follow-up compares mixed MSE + RankNet against MSE for
-both R0 sequence inputs and R5 Boltz features. R5 scores 0.7281 versus 0.7210;
-R0's difference is +0.0029 [−0.0077, +0.0120]. The paired loss-by-representation
-interaction is +0.0042 [−0.0125, +0.0119]. The ≥50-row R5 sensitivity is also
-uncertain: +0.0055 [−0.0039, +0.0085]. All 840 new scientific fits, 480 reused
-MSE members and both exact zero-weight validation members passed the audit.
-These intervals condition on fitted predictions and inner selections; they
-do not establish equivalence or independent confirmation. See the
-[saved comparisons](reports/finalization/ranking/comparisons.csv) and
-[independent completion audit](reports/finalization/ranking/completion_audit.json).
+The **matched ranking-loss follow-up** adds MSE + RankNet to the same R5 MLP:
+**+0.0071 [−0.0051, +0.0098]** against MSE alone. The ≥50-row sensitivity and
+loss-by-representation interaction also span zero; the inner deployment selector
+retains MSE in all five R5 folds. All 840 new fits, 480 reused MSE members and
+both zero-weight validation members passed the
+[completion audit](reports/finalization/ranking/completion_audit.json).
+
+The **completed hybrid follow-up** asks whether trees, blending or preprocessing
+improve a matched two-member R5 standard MLP. Its primary hybrid-selector gain
+is **+0.004384 [−0.005541, +0.009984]**; the ≥50-row sensitivity is
+**+0.002640 [−0.003962, +0.009132]**. The inner selector retains the standard
+R5 MLP in three folds and selects a 75% MLP / 25% regression-tree blend in two.
+The frozen exploratory comparisons show lower scores for regression/ranking
+trees, tree-leaf MLP and PCA MLP on both representations; quantile preprocessing
+is inconclusive. These nominal secondary intervals are not multiplicity-adjusted.
+The primary result establishes neither a hybrid gain nor equivalence. All 480
+scientific fits and the separate 12-fit unscored pilot passed saved-model replay;
+the [table audit](reports/finalization/hybrids_cloud_v1/coverage_audit.json)
+verified all 16 prediction arms and 50 comparison rows. These matched recipes
+are distinct from the competitive main-study sequence selector.
+
+Intervals throughout condition on fitted predictions and inner choices;
+they omit repeated fitting/selection and independent assay variation.
 
 Position-aware interface representations substantially outperform global
 pooling in matched neural comparisons. The designated contact-map representation
@@ -133,24 +141,18 @@ cannot be certified. No new result repairs that historical provenance gap.
 
 ## Completed follow-up and remaining work
 
-The portable model package and **Boltz + ranking-loss follow-up are complete**.
-The uncertain ranking result does not trigger another grid or stopping rule.
-The separately frozen stronger sequence transfer controls and matched learners
-are **complete and audited**. See its [specification](reports/finalization/transfer_controls/SPECIFICATION.md).
-The [combined report](reports/finalization/FINAL_REPORT.md) distinguishes these
-completed deliverables from pending hybrid evidence and independent assays.
-The separately frozen Boltz tree/ranking, tree–MLP blend, tree-leaf, quantile
-and PCA comparisons completed all 480 scientific fits on Modal after the
-separate 12-fit unscored pilot passed. The final saved-model and statistical
-audit is running; no hybrid outcome is claimed before it completes. [Recovery operations](reports/finalization/RECOVERY_OPERATIONS.md)
-records the preserved cells, interrupted attempts and current execution gates.
+Portable inference, ranking loss, stronger transfer controls and the hybrid
+study are complete and audited. Their uncertain ranking/hybrid gains do not
+authorize changing the completed candidate grids or stopping rules.
+A separately frozen [120-fit label-budget study](reports/finalization/label_efficiency/SPECIFICATION.md)
+is running on Modal and has no outcomes yet.
 
 The completed round-two phase conservatively accounted for $76.84 of its $100
 ceiling, including a retained engineering allowance. Its cloud jobs are stopped.
-The user separately authorized at most $100 additional against a fresh reported
-$143 balance. The new phase reuses existing embeddings and requires reservations,
-a bounded pilot and an independent deadline watchdog before paid execution.
-These figures are operational accounting, not a provider invoice or live balance.
+Finalisation has a separately authorized additional $100 ceiling and reuses
+existing embeddings. [Current accounting](reports/finalization/FINAL_REPORT.md)
+separates completed costs and reservations; these are conservative operational
+figures, not provider invoices or a live balance.
 
 ## Scope
 
