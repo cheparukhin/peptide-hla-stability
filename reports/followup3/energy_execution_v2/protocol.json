@@ -1,0 +1,191 @@
+{
+  "status": "FROZEN_SCOPE_NOT_PAID_LAUNCH_APPROVAL",
+  "frozen_at_utc": "2026-10-13T12:52:03.095669+00:00",
+  "specification": {
+    "schema": "followup3-repaired-energy.1",
+    "n_rows": 4449,
+    "same_inverse_panel_sha256": "0e78d19b306269865fad388ff45dcb53605746ad91c6cb5e6c3bae1df9f5d8a5",
+    "energy_columns": [
+      "foldx_backbone_clash",
+      "foldx_backbone_hbond",
+      "foldx_cis_bond",
+      "foldx_disulfide",
+      "foldx_electrostatic_kon",
+      "foldx_electrostatics",
+      "foldx_energy_ionisation",
+      "foldx_entropy_complex",
+      "foldx_entropy_mainchain",
+      "foldx_entropy_sidechain",
+      "foldx_helix_dipole",
+      "foldx_interaction_energy",
+      "foldx_interface_residues",
+      "foldx_interface_residues_bb_clashing",
+      "foldx_interface_residues_clashing",
+      "foldx_interface_residues_vdw_clashing",
+      "foldx_intraclashesgroup1",
+      "foldx_intraclashesgroup2",
+      "foldx_mloop_entropy",
+      "foldx_number_of_residues",
+      "foldx_partial_covalent_bonds",
+      "foldx_sidechain_hbond",
+      "foldx_sloop_entropy",
+      "foldx_solvation_hydrophobic",
+      "foldx_solvation_polar",
+      "foldx_torsional_clash",
+      "foldx_van_der_waals",
+      "foldx_van_der_waals_clashes",
+      "foldx_water_bridge"
+    ],
+    "feature_terms": "complete shared finite repaired numeric schema;no outcome selection",
+    "new_arms": [
+      "R0_E",
+      "R5_E"
+    ],
+    "reused_baselines": [
+      "R0",
+      "R5"
+    ],
+    "mlp_new_fits": 200,
+    "ridge_new_fits": 100,
+    "mlp_recipe": {
+      "hidden": [
+        64
+      ],
+      "max_epochs": 200,
+      "patience": 15,
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "members": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "final_recipe": "same bounded two-member as inner;FeatureHead.predict final=False"
+    },
+    "mlp_l2": [
+      1.0,
+      0.01,
+      0.0001
+    ],
+    "ridge_alpha": [
+      10000.0,
+      100.0,
+      1.0
+    ],
+    "outer_folds": 5,
+    "inner_folds": 3,
+    "selection": "pooled clean inner median per-allele Spearman,min20;stronger tie",
+    "primary": "MLP R5_E minus matched MLP R5",
+    "secondary": [
+      "R0 increment",
+      "representation-by-energy-gain interaction",
+      "ridge versions"
+    ],
+    "bootstrap": {
+      "n_draws": 2000,
+      "seed": 20261003,
+      "primary_panel": 20,
+      "sensitivity_panel": 50,
+      "pointwise_interval": 95.0,
+      "three_primary_family_tail": 0.008333333333333333
+    },
+    "scientific_versions": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "threadpoolctl": "3.7.0"
+    },
+    "extraction": {
+      "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+      "repair_interface": "ALL",
+      "cpu_hard_limit": 1,
+      "memory_hard_mib": 2048,
+      "max_containers": 100,
+      "per_case_timeout_s": 600,
+      "global_max_hours": 5,
+      "requested_retries": 0,
+      "interrupted_started_attempts": "no automatic retry;retain interruption as incomplete evidence"
+    },
+    "limitations": [
+      "conditional development evidence",
+      "bounded two-member comparator",
+      "no kinetic/causal/pose-validity claim",
+      "no saved-weight replay"
+    ]
+  },
+  "source_sha256": {
+    "pepstab/followup3_energy.py": "7bf8d28fab1f4577b805ecb881638235052eba656063ff964d759934a52b3dc6",
+    "scripts/followup3_energy.py": "e8cc32cd8425392b14f47740b0b58980d34a5b9daa326a9c2bda03050adfde02",
+    "modal_app/followup3_energy.py": "fe9d98608f139cab79c7e9935963c0d277e384a890ac1578d3868d84d092bc87",
+    "scripts/followup3_foldx.py": "1b4fa322b7d3e9cb532da2ccd12a0c715d215ee7f9d6cbf42f0374730e1fcccd",
+    "pepstab/foldx.py": "d2fb26d44c6e18a0772fbbaa8b8b41adfc24877ba6b91f8c99c0047c1502386d",
+    "pepstab/structural_features.py": "116910dda6b370b4210b607811c31257f3ac366cb80473d20201c82b008fb8ad",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/followup3_inverse.py": "386cf908047c3afb711ce422ad37da25c420a85652d04fe0578cfd387e868d96",
+    "scripts/followup3_inverse.py": "920d30d8031b5f5a0fb3277806f61751063660676a4db7b4db91e06715c1953d",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/nested.py": "f301b7ed4f0799bc2c17f61de3fc9a4429b576f246b69a4426fe71cf2d91efd0",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/final_cloud_targets.py": "2ed5778238570c8bad1a599b6e8fe3552c6d54ed9437d62fc5821539b34670a2",
+    "pepstab/final_cloud_protocol.py": "21ccdc163c77408a5f83d29a95953c8d3af7bb844beb6fa16caff3763d8f0ae0",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "scripts/boltz_pose_check.py": "faaee056073ae39492cd6046a224e61d99583983522f6de2fd9459359390fe10",
+    "reports/followup3/THIRD_PRIMARY_AMENDMENT.md": "dd09a9d31a1e5c655ec01550394c989c0207aa14fb55c83c337990234fc872c3",
+    "reports/followup3/energy/DECISION_DRAFT.md": "42433ff6d0a42402bc32254a71be51dfc0931d79af5a1bf750ae1813f920531a",
+    "reports/followup3/energy/SPECIFICATION.md": "f0bdb78bc90fe4dbc2064f99a12914e5154fd11e4e670161f75dcdac32e976e0",
+    "modal_app/followup3_energy_v2.py": "285a4980afd24a3ec03d78c5a508ab3deb83a758711b3067578dcbb4611c6498",
+    "scripts/followup3_energy_v2.py": "81c091fe8255f60780bcebdd63793cc703a87c9e1956448400689924368a88c2",
+    "reports/followup3/energy_execution_v2/EXECUTION_AMENDMENT.md": "2eb46e897972a0a77a5806baa5aed48f062c5158cf3656baf482919b89759e9d"
+  },
+  "panel_sha256": "0e78d19b306269865fad388ff45dcb53605746ad91c6cb5e6c3bae1df9f5d8a5",
+  "inverse_directory": "reports/followup3/inverse_execution_v2",
+  "inverse_protocol_sha256": "063c4aeaaa2685601e27e6aabb37f6a9e07fa2712274d276854635627296ac51",
+  "base_features_sha256": "e959bb079680643d5f2cab2abb9379642bc32e65dd8d812efd8e0ea2472af2ed",
+  "base_features_provenance_sha256": "c98185f65b3332567d19a9905a0b4cade3a1afb2fc55af34019e2c93f1730fcc",
+  "technical_receipt_sha256": "b2582a7881678578a89a83bc1670112ec1b00331782c67bea6e258037354df3a",
+  "original_scientific_specification": "2a97d0d380c3672633e5ee75913e5841ce1eca29964a59f24a043f0ddd0c073c",
+  "canonical_inputs": {
+    "data/splits.csv": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data/structural_cohort.csv": "ac599b74cb1d1611c5b606cd53fde72fe07dea9bb2ba13df0bc4f06b642dd2c6",
+    "data/rasmussen_et_al_dataset.csv": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "reports/further_research/round2/sequence/fold_manifest.csv": "d3a01774b286684dad438b55bb429d6bbd9fea648c9ad6d07b121afe430a9144",
+    "reports/finalization/cloud/canonical_training_targets.json": "f5a609a98fb7dc607242bcbe7b31db503f19a673c62a7de6398cd30b33df0b70",
+    "reports/finalization/cloud/canonical_training_targets.npz": "3e3b3758e5beb24930a2a8b071afb4a37d349176dcb4cb688e63468f029b04c4"
+  },
+  "pilot_energy_rows_sha256": "1269b6dd11e94d090f2050cc9ff4e3c20f0c3fc407e093076fd7a20340d429f0",
+  "execution_amendment": {
+    "schema": "followup3-energy-execution-v2.1",
+    "frozen_at_utc": "2026-10-13T13:04:55.045083+00:00",
+    "parent_directory": "reports/followup3/energy",
+    "parent_protocol_sha256": "2124b7bb695d6c2143b9cdb78aca4f88e3ec2da60b4929707eea2ef0b849598f",
+    "parent_protocol_hash": "ea9c5891c6f3fcda28e3f207951e78ac54b5152258469f5f90e0954a5a5a8361",
+    "output_directory": "reports/followup3/energy_execution_v2",
+    "native_runtime": "pinned image libraries off mounted volume;documented reload/commit retained",
+    "pinned_image_packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "biotite": "1.7.1"
+    },
+    "first_uncached_case": {
+      "allele": "HLA-A*01:01",
+      "peptide": "AADSFATSY",
+      "cluster_id": 3,
+      "outer_fold": 2,
+      "complex_id": "A0101_AADSFATSY",
+      "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_01_01/A0101_AADSFATSY"
+    },
+    "production_path_pilot": 1,
+    "pilot_reused_before_fanout": true
+  },
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}
