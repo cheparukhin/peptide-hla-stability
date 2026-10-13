@@ -146,7 +146,7 @@ def validate_plan(path, *, admission=False):
         raise ValueError('separate recovery10 and future35 reservations required')
     if (accounting.get('schema') != 'final_cloud_accounting.1'
             or accounting['prior_conservative_liability_usd'] < 5.1793820030564595
-            or not (accounting['future_envelope_usd']==10 if phase=='transfer_recovery' else 32 <= accounting['future_envelope_usd'] <= 35) or accounting['total_ceiling_usd'] > 100
+            or not (accounting['future_envelope_usd']==10 if phase in ('transfer_recovery','label_efficiency') else 32 <= accounting['future_envelope_usd'] <= 35) or accounting['total_ceiling_usd'] > 100
             or accounting['prior_conservative_liability_usd'] + accounting['future_envelope_usd'] + other > accounting['total_ceiling_usd']
             or accounting['phase'] != phase or accounting['phase_cap_usd'] != cap
             or accounting['reserved_phase_usd'] < cap

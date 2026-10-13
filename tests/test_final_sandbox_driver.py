@@ -58,7 +58,7 @@ def test_exact_resources_and_bound_arithmetic(planned):
 def test_label_phase_keeps_single_worker_one_hour_and_inclusive_ten_cap(planned):
     path,plan,auth,account_path,_=planned
     auth.update(phase='label_efficiency',phase_cap_usd=10)
-    account=json.loads(account_path.read_text());account.update(phase='label_efficiency',phase_cap_usd=10,reserved_phase_usd=10)
+    account=json.loads(account_path.read_text());account.update(phase='label_efficiency',phase_cap_usd=10,reserved_phase_usd=10,future_envelope_usd=10,other_scopes_reserved_usd=3)
     rewrite(account_path,account);auth['cloud_accounting']['sha256']=d.sha(account_path)
     auth_path=Path(plan['authorization']['path']);rewrite(auth_path,auth)
     plan.update(phase_cap_usd=10);plan['authorization']['sha256']=d.sha(auth_path);rewrite(path,plan)
