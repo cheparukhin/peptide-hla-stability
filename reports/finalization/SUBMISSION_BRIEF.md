@@ -1,6 +1,6 @@
 # Peptide–HLA stability: submission brief
 
-Prepared 13 October 2026. Local draft covering completed development, ranking,
+Prepared 13 October 2026. Submission brief covering completed development, ranking,
 transfer, hybrid and label-budget studies, and the independent-data metadata
 audit. The few-shot result is complete and independently audited;
 ProteinMPNN is complete with an inconclusive context increment beyond Boltz;
@@ -10,7 +10,8 @@ selected full-cohort ProteinMPNN extension is complete and independently audited
 with no established added R5 benefit. Computational search stops here. The
 [pre-efficacy amendment](../followup3/THIRD_PRIMARY_AMENDMENT.md) declares three
 primaries and 98.333333% family intervals.
-Not submitted externally.
+GitHub publication is separate from hackathon-portal submission; no portal
+submission has been performed.
 
 ## Project in one paragraph
 
@@ -228,5 +229,7 @@ Use the [consolidated readout](FINAL_REPORT.md) for exact numbers, protocol link
 and limitations; the [README](../../README.md) for navigation; and the
 [independent assay brief](INDEPENDENT_ASSAY_BRIEF.md) for the unsent measurement
 request. Verify the project-page snapshot with `python3 site/round2-build.py --check`.
-No public deployment, external submission, assay purchase or vendor outreach
-has been performed by this finalisation work.
+The project page is released through GitHub Pages, with publication confirmed
+by its deployment workflow. Repository publication does not submit this brief
+to the hackathon portal. No portal submission, assay purchase or vendor outreach
+has been performed.

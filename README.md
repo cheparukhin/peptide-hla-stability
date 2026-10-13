@@ -30,9 +30,12 @@ diagnostic exposure of test rows and aggregate outcomes.
 - [Hybrid report](reports/finalization/hybrids_cloud_v1/REPORT.md): matched tree,
   blending and preprocessing comparisons, with saved-model replay and an
   [independent table audit](reports/finalization/hybrids_cloud_v1/coverage_audit.json).
-- [Project page](site/index.html): locally updated evidence and a clearly dated
-  archive of the original film/test. Serve with `python3 -m http.server 8000 --bind 127.0.0.1` and open `http://localhost:8000/site/`. This branch has not been
-  deployed to the public site.
+- [Project page](site/index.html): current evidence and a clearly dated archive
+  of the original film/test. [GitHub Pages](https://cheparukhin.github.io/peptide-hla-stability/)
+  is the publication target; its deployment workflow confirms each release.
+  For local review, serve with `python3 -m http.server 8000 --bind 127.0.0.1`
+  and open `http://localhost:8000/site/`. GitHub publication does not submit
+  to the hackathon portal.
 - [Portable model guide](docs/ROUND2_INFERENCE.md): use the trained ridge and
   neural heads with verified, compatible cached Boltz features.
 - [Canonical research plan](reports/NEXT_RESEARCH_PLAN.md) and

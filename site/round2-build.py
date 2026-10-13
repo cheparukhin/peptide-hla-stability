@@ -2,7 +2,8 @@
 """Build/check the offline round-two submission snapshot from saved evidence.
 
 Writes the marked site section, evidence JSON and copies verified figure exports.
-No model execution, source-result mutation, network calls, or dependencies.
+No model execution, source-result mutation or network calls. Uses Python
+standard-library modules; publication validation requires a Git checkout and CLI.
 """
 import argparse
 import csv
@@ -10,7 +11,10 @@ import hashlib
 import html
 import json
 import math
+import subprocess
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "reports/further_research/round2/"
@@ -65,7 +69,59 @@ def link(name, label):
 
 
 def path_link(path, label):
-    return f'<a href="../{path}">{html.escape(label)}</a>'
+    return f'<a href="{html.escape(REPO_URL + quote(path, safe="/#"))}">{html.escape(label)}</a>'
+
+
+def publication_link_check(outputs):
+    """Reject path escapes, missing files and untracked release dependencies.
+
+    Requires a Git checkout and CLI; use a clean clone for release verification.
+    """
+    if not (ROOT / ".git").exists():
+        raise ValueError("Publication validation requires a Git checkout, not a source archive")
+    tracked = set(subprocess.run(["git", "ls-files", "-z"], cwd=ROOT,
+        check=True, capture_output=True, text=True).stdout.split("\0"))
+    site = ROOT / "site"
+    problems = []
+    checked = 0
+
+    class Links(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            for key, value in attrs:
+                if key in ("href", "src", "poster") and value:
+                    check(value, self.path)
+
+    def check(value, document):
+        nonlocal checked
+        parsed = urlsplit(value)
+        if value.startswith(REPO_URL):
+            target = (ROOT / unquote(urlsplit(value[len(REPO_URL):]).path)).resolve()
+        elif parsed.scheme or parsed.netloc or not parsed.path:
+            return
+        else:
+            target = (document.parent / unquote(parsed.path)).resolve()
+            if parsed.path.startswith("/") or not target.is_relative_to(site):
+                problems.append(f"{document.relative_to(ROOT)}: link escapes site artifact: {value}")
+                return
+        if not parsed.scheme and parsed.path.endswith("/"):
+            target = target / "index.html"
+        if not target.is_relative_to(ROOT):
+            problems.append(f"{document.relative_to(ROOT)}: repository link escapes checkout: {value}")
+        elif str(target.relative_to(ROOT)) not in tracked:
+            problems.append(f"{document.relative_to(ROOT)}: untracked publication dependency: {value}")
+        elif not target.is_file() and target not in outputs:
+            problems.append(f"{document.relative_to(ROOT)}: missing publication dependency: {value}")
+        checked += 1
+
+    for document in sorted(site.rglob("*.html")):
+        if str(document.relative_to(ROOT)) not in tracked:
+            problems.append(f"Untracked HTML would be absent from the release: {document.relative_to(ROOT)}")
+        parser = Links()
+        parser.path = document
+        parser.feed(outputs.get(document, document.read_bytes()).decode())
+    if problems:
+        raise ValueError("Publication links failed:\n" + "\n".join(problems))
+    return checked
 
 
 def full_cohort_presentation():
@@ -778,6 +834,7 @@ def main():
     outputs = {index: updated.encode(), ROOT / "site/round2-data.json": payload.encode()}
     for name in ("fewshot_curves.svg", "fewshot_curves.png", "descriptor_comparison.svg", "descriptor_comparison.png"):
         outputs[ROOT / "site/figures" / name] = (ROOT / "reports/followup3/figures" / name).read_bytes()
+    publication_link_check(outputs)
     if args.check:
         stale = [str(path.relative_to(ROOT)) for path, text in outputs.items() if not path.exists() or path.read_bytes() != text]
         if stale:

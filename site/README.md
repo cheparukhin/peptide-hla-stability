@@ -42,13 +42,17 @@ not final invoices or a live credit balance.
 
 The page uses static generated HTML, system-font fallbacks, and local film assets.
 The current results work without JavaScript, a backend, or network access. Evidence
-links point to the repository; the downloadable numeric/hash snapshot is local.
+links outside `site/` point to tracked files on GitHub `main`; the downloadable
+numeric/hash snapshot and media remain local to the Pages artifact. Pages uploads
+only `site/`, so `../reports` and `../docs` URLs would not resolve after deployment.
 Local source changes do not update the published site until deployment runs.
 
-**Published to GitHub Pages at
-<https://cheparukhin.github.io/peptide-hla-stability/>** by
-[`.github/workflows/pages.yml`](../.github/workflows/pages.yml), which uploads
-this folder on every push to `main` that touches it. Pages cannot serve an
+**GitHub Pages deployment target:
+<https://cheparukhin.github.io/peptide-hla-stability/>.** The current release is
+validated through a push and successful Pages workflow; the workflow result
+confirms publication. Deployment uses
+[`.github/workflows/pages.yml`](../.github/workflows/pages.yml), which validates and uploads
+this folder on matching pushes to `main` (site, reports, docs, scripts or workflow changes). Pages cannot serve an
 arbitrary folder from a branch and `docs/` is already the project's data
 documentation, so the workflow uploads `site/` as an artifact rather than using
 the built-in "/docs folder" source.
@@ -80,6 +84,15 @@ python3 site/round2-build.py
 python3 site/round2-build.py --check
 python3 -m http.server 8000 --directory site
 ```
+
+Run the checks from a clean checkout containing the intended release commit.
+The builder uses Python standard-library modules and requires the Git CLI in
+a real Git checkout; a plain source archive cannot run its publication guard.
+Run release checks from a clean clone. Every static HTML `href`, `src` and
+`poster` is validated: relative dependencies must stay inside `site/`, and local
+assets and GitHub evidence targets must exist and be Git-tracked. Untracked
+local files cannot conceal dependencies that would be absent from the release. Evidence URLs resolve on
+GitHub after the corresponding commit reaches `main`.
 
 Open `http://localhost:8000` at desktop and mobile widths. Check the primary
 paired gain and criterion statement, expand the procedure/control tables, check
@@ -220,12 +233,16 @@ ffmpeg -v error -i site/intro.mp4 -f null -    # must print nothing
 
 ## Publishing
 
-Published to GitHub Pages at
+Deployment target:
 <https://cheparukhin.github.io/peptide-hla-stability/>. Pushing to `main` with
-changes under `site/` redeploys it; there is nothing to upload by hand.
+matching site or evidence changes redeploys it; there is nothing to upload by hand.
 
 Rebuild the current evidence snapshot before pushing if its saved inputs changed.
-Run `python3 site/round2-build.py --check` before release.
+Run both `python3 site/round2-build.py --check` and
+`python3 site/round2-build.py --check-full-cohort` in the clean release checkout.
+After the Pages workflow succeeds, verify the main page, an evidence link on
+GitHub and the local figure/media assets at the deployed URL. A local pass or
+push alone does not confirm publication.
 
 Rebuild `film/` before pushing if any scene source or `film_data.js` changed —
 the workflow publishes this folder as-is and does not run the build.
