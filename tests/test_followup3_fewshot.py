@@ -80,3 +80,25 @@ def test_paired_bootstrap_averages_scores_and_preserves_identical_arm_gaps():
 def test_original_validation_or_duplicate_identity_rejected():
     frame=fixture_frame();frame.loc[0,'split']='test'
     with pytest.raises(ValueError,match='original training'):make_plan(frame)
+
+
+def test_saved_source_scaler_authoritative_float32_transform_exact(tmp_path):
+    from sklearn.preprocessing import StandardScaler
+    from scripts.followup3_fewshot import restore_source_scaler
+    rng=np.random.default_rng(91)
+    source=(rng.normal(size=(23,7))*np.linspace(.3,2.7,7)+np.linspace(-.17,.83,7)).astype(np.float32)
+    query=rng.normal(size=(11,7)).astype(np.float32)
+    source_ids=np.arange(23,dtype=np.int32)
+    scaler=StandardScaler().fit(source)
+    assert scaler.mean_.dtype==np.float64 and scaler.scale_.dtype==np.float64
+    path=tmp_path/'scaler.npz'
+    np.savez(path,source_ids=source_ids,scaler_mean=scaler.mean_,scaler_scale=scaler.scale_,scaler_var=scaler.var_,
+        scaler_n_samples=np.asarray(scaler.n_samples_seen_),scaler_n_features=np.asarray(scaler.n_features_in_))
+    with np.load(path,allow_pickle=False) as saved:
+        restored=restore_source_scaler(saved,source_ids)
+        np.testing.assert_array_equal(restored.transform(query),scaler.transform(query))
+        np.testing.assert_array_equal(restored.transform(source),scaler.transform(source))
+        with pytest.raises(AssertionError,match='source-fitting row identity'):
+            restore_source_scaler(saved,source_ids[::-1])
+    handwritten=query.copy();handwritten-=scaler.mean_;handwritten/=scaler.scale_
+    assert np.any(handwritten!=scaler.transform(query)), 'regression must expose float64-stat arithmetic mismatch'

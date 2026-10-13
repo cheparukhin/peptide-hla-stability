@@ -85,10 +85,19 @@ def freeze(out):
         source_rows_range=[min(r['source_rows'] for r in rows),max(r['source_rows'] for r in rows)])
 
 
-def context(out):
-    protocol=json.loads((out/'protocol.json').read_text()); identity=protocol.pop('protocol_hash')
+def context(out, protocol_path=None):
+    protocol_path=Path(protocol_path) if protocol_path is not None else out/'protocol.json'
+    if protocol_path.resolve().parent!=out.resolve():raise ValueError('protocol must reside in study output directory')
+    protocol=json.loads(protocol_path.read_text()); identity=protocol.pop('protocol_hash')
     if study.digest(protocol)!=identity: raise ValueError('protocol identity changed')
     protocol['protocol_hash']=identity
+    amendment=protocol.get('operational_amendment')
+    if amendment is not None:
+        if (sha(out/amendment['original_protocol_file'])!=amendment['original_protocol_sha256']
+                or sha(out/'SCALER_REPLAY_AMENDMENT.md')!=amendment['amendment_sha256']
+                or sha(ROOT/'tests/test_followup3_fewshot.py')!=amendment['regression_tests_sha256']
+                or amendment['scientific_recipe_changed'] is not False):
+            raise ValueError('operational amendment/original protocol/regression binding differs')
     for key in ('source_sha256','data_sha256'):
         for name,expected in protocol[key].items():
             if sha(ROOT/name)!=expected: raise ValueError(f'frozen source/input changed: {name}')
@@ -100,6 +109,37 @@ def context(out):
     if {str(k):v for k,v in study.fixed_panels(frame,plan).items()}!=protocol['fixed_panels']:
         raise ValueError('frozen assessment panel differs')
     return frame,protocol,plan
+
+
+def amend_replay(out):
+    """Metadata-only operational correction; retain original freeze unchanged."""
+    original_path=out/'protocol.json';original=json.loads(original_path.read_text())
+    identity=original.pop('protocol_hash')
+    if study.digest(original)!=identity:raise ValueError('original frozen identity differs')
+    original['protocol_hash']=identity
+    changed=[name for name,expected in original['source_sha256'].items() if sha(ROOT/name)!=expected]
+    if changed!=['scripts/followup3_fewshot.py']:
+        raise ValueError('replay amendment permits only the fitting/serialization script correction')
+    for name,expected in original['data_sha256'].items():
+        if sha(ROOT/name)!=expected:raise ValueError('scientific input changed')
+    plan=json.loads((out/'task_manifest.json').read_text());frame=load_frame()
+    if (study.digest(plan)!=original['plan_sha256'] or study.digest(study.make_plan(frame))!=original['plan_sha256']
+            or frame_hash(frame)!=original['frame_sha256']
+            or {str(k):v for k,v in study.fixed_panels(frame,plan).items()}!=original['fixed_panels']):
+        raise ValueError('replay amendment changed scientific population/partition/panel')
+    updated={k:v for k,v in original.items() if k!='protocol_hash'}
+    updated['source_sha256']={name:sha(ROOT/name) for name in original['source_sha256']}
+    updated['operational_amendment']=dict(schema='followup3_fewshot_scaler_replay_amendment.1',
+        original_protocol_file='protocol.json',original_protocol_sha256=sha(original_path),
+        original_protocol_hash=identity,amendment_sha256=sha(out/'SCALER_REPLAY_AMENDMENT.md'),
+        regression_tests_sha256=sha(ROOT/'tests/test_followup3_fewshot.py'),
+        reason='restore saved StandardScaler and use authoritative transform; exact replay retained',
+        scientific_recipe_changed=False,failed_attempts_must_be_preserved=True,
+        amended_at_utc=datetime.now(timezone.utc).isoformat())
+    updated['protocol_hash']=study.digest(updated)
+    path=out/'protocol_replay_v2.json';write_once(path,updated)
+    return dict(protocol_path=str(path),protocol_hash=updated['protocol_hash'],
+        original_protocol_preserved_sha256=sha(original_path),scientific_recipe_changed=False)
 
 
 def require_cloud():
@@ -123,6 +163,21 @@ def load_features(path, frame, protocol):
     return features
 
 
+def restore_source_scaler(arrays, source_ids):
+    """Restore the estimator, retaining its authoritative dtype semantics."""
+    from sklearn.preprocessing import StandardScaler
+    np.testing.assert_array_equal(arrays['source_ids'],np.asarray(source_ids),
+        err_msg='saved scaler source-fitting row identity differs')
+    scaler=StandardScaler()
+    for name in ('mean','scale','var'):setattr(scaler,name+'_',arrays[f'scaler_{name}'].copy())
+    scaler.n_features_in_=int(arrays['scaler_n_features'])
+    scaler.n_samples_seen_=arrays['scaler_n_samples'].copy()
+    if (scaler.mean_.shape!=(scaler.n_features_in_,) or scaler.scale_.shape!=scaler.mean_.shape
+            or scaler.var_.shape!=scaler.mean_.shape or int(scaler.n_samples_seen_)!=len(source_ids)):
+        raise ValueError('saved scaler fitted shape/sample metadata differs')
+    return scaler
+
+
 def replay_source(arrays, X):
     if 'coef' in arrays:return X@arrays['coef']+arrays['intercept']
     value=X
@@ -133,14 +188,14 @@ def replay_source(arrays, X):
     return value.ravel()+float(arrays['offset'])
 
 
-def run_cell(out, index, features_path):
+def run_cell(out, index, features_path, protocol_path=None):
     require_cloud()
     from sklearn.linear_model import Ridge
     from sklearn.preprocessing import StandardScaler
     from threadpoolctl import threadpool_limits
     from pepstab.mlp import MLPConfig, MLPRegressor
     from pepstab.round2_transfer import inner_partitions
-    frame,protocol,plan=context(out)
+    frame,protocol,plan=context(out,protocol_path)
     if index not in range(len(plan['cells'])):raise ValueError('cell index outside frozen study')
     cell=plan['cells'][index];directory=out/'cells'/f'cell_{index:03d}'
     directory.mkdir(parents=True,exist_ok=True)
@@ -164,11 +219,16 @@ def run_cell(out, index, features_path):
             model=Ridge(alpha=study.SOURCE_ALPHA,solver='lsqr',tol=1e-5,max_iter=2000).fit(zs,source.y_log1p)
             prediction=model.predict(zp);base[rep]=prediction.astype(np.float64);scaled[rep]=zp
             state=dict(coef=model.coef_,intercept=np.asarray(model.intercept_),scaler_mean=scaler.mean_,
-                scaler_scale=scaler.scale_,scaler_var=scaler.var_,source_ids=source.pair_id.to_numpy(),prediction=prediction)
+                scaler_scale=scaler.scale_,scaler_var=scaler.var_,source_ids=source.pair_id.to_numpy(),
+                scaler_n_samples=np.asarray(scaler.n_samples_seen_),scaler_n_features=np.asarray(scaler.n_features_in_),
+                prediction=prediction)
             member_path=directory/f'{rep}_ridge.npz';np.savez_compressed(member_path,**state)
             with np.load(member_path,allow_pickle=False) as saved:
-                # StandardScaler rounds in-place after subtraction AND division.
-                transformed=X(rep,predict_frame).copy();transformed-=saved['scaler_mean'];transformed/=saved['scaler_scale']
+                restored_scaler=restore_source_scaler(saved,source.pair_id.to_numpy())
+                for name in ('mean','scale','var'):
+                    np.testing.assert_array_equal(getattr(restored_scaler,name+'_'),getattr(scaler,name+'_'))
+                transformed=restored_scaler.transform(X(rep,predict_frame)).astype(np.float32)
+                np.testing.assert_array_equal(restored_scaler.transform(X(rep,source)).astype(np.float32),zs)
                 np.testing.assert_array_equal(transformed,zp)
                 np.testing.assert_array_equal(replay_source(saved,transformed),prediction)
             members.append(dict(arm=rep,kind='ridge',source_ids=cell['source_ids'],gradient_ids=cell['source_ids'],
@@ -256,8 +316,8 @@ def comparison_specs():
     return contrasts
 
 
-def report(out):
-    require_cloud();frame,protocol,plan=context(out);lookup=frame.set_index('pair_id',drop=False)
+def report(out,protocol_path=None):
+    require_cloud();frame,protocol,plan=context(out,protocol_path);lookup=frame.set_index('pair_id',drop=False)
     tables={draw:[] for draw in study.DRAWS};fits=0;adapter_fits=0;source_budgets=[]
     for cell in plan['cells']:
         directory=out/'cells'/f"cell_{cell['index']:03d}";done=json.loads((directory/'completed.json').read_text())
@@ -341,14 +401,16 @@ def report(out):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode',choices=['freeze','run-cell','report'])
+    parser.add_argument('mode',choices=['freeze','amend-replay','run-cell','report'])
     parser.add_argument('--out',type=Path,default=OUT);parser.add_argument('--cell-index',type=int);parser.add_argument('--features',type=Path)
+    parser.add_argument('--protocol',type=Path,help='Explicit amended protocol; original remains the default')
     args=parser.parse_args()
     if args.mode=='freeze':result=freeze(args.out)
-    elif args.mode=='report':result=report(args.out)
+    elif args.mode=='amend-replay':result=amend_replay(args.out)
+    elif args.mode=='report':result=report(args.out,args.protocol)
     else:
         if args.cell_index is None or args.features is None:parser.error('run-cell requires --cell-index and --features')
-        result=run_cell(args.out,args.cell_index,args.features)
+        result=run_cell(args.out,args.cell_index,args.features,args.protocol)
     print(json.dumps(result,indent=2))
 
 if __name__=='__main__':main()
