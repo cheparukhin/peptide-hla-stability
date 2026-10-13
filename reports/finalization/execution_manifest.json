@@ -47,7 +47,8 @@
     "final_docs": "Complete concise scientific report, README, submission brief, recorded environment setup and final source-backed page.",
     "code_commits": "Validated completed changes only; exclude historical logs/livepartialoutputs.",
     "validation": "Independent label saved-table/member/subset/CI audit passed; all phase output hashes verified; no local heavy inference; page source check and 36 local evidence paths passed.",
-    "preview": "reports/finalization/preview/label-budget.jpg"
+    "preview": "reports/finalization/preview/label-budget.jpg",
+    "completed_artifact_commit": "8bef075"
   },
   "controllers": {
     "ranking": {
@@ -803,9 +804,11 @@
     "automation_id": "continue-round-two-research",
     "policy": "Quiet on healthy unchanged state; notify meaningful milestones/failure/budget or completion; pause when finalised.",
     "user_canceled_handoff": true,
-    "automation_still_active": true
+    "automation_still_active": false,
+    "status": "PAUSED",
+    "reason": "All achievable authorized science, reporting and temporary cloud closure complete."
   },
-  "updated_at_utc": "2026-10-13T01:19:40.193716+00:00",
+  "updated_at_utc": "2026-10-13T01:20:34.081397+00:00",
   "recovery": {
     "amendment": "reports/finalization/resources/transfer_main/interruption_20261012/implementation_amendment.json",
     "closure": "reports/finalization/resources/transfer_main/interruption_20261012/closure.json",

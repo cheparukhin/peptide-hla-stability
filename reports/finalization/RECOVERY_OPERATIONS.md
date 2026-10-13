@@ -3,8 +3,8 @@
 **Current, 13 October 2026:** all achievable authorized computational experiments
 and scientific audits are complete. No controller, download, training or report
 job is active. No additional launch or retry is authorized by old receipts.
-Final local presentation/source checks passed. Commit the final evidence, then
-pause the heartbeat.
+Final local presentation/source checks passed, the final evidence is committed
+in `8bef075`, and the heartbeat is paused.
 The original test was not reopened. Independent assay confirmation remains open.
 
 ## Final label-budget study

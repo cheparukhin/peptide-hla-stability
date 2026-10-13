@@ -11,8 +11,8 @@ All compute and temporary finalization cloud storage are closed. Historical
 feature/weight caches remain. Conservative finalization compute is $8.609382 plus
 a retained $3 overhead allowance within the unchanged $100 additional ceiling.
 Independent assay confirmation is open. Local presentation verification and
-source checks passed. Commit the final evidence and pause the existing heartbeat;
-do not launch new work.
+source checks passed; final evidence is committed in `8bef075` and the heartbeat
+is paused. Do not launch new work.
 
 The canonical scientific record remains [NEXT_RESEARCH_PLAN.md](../NEXT_RESEARCH_PLAN.md).
 This is the bounded execution plan for the newly authorized finalisation phase;
