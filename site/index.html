@@ -3,1013 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Antigen Presentation Stability · Audited Research</title>
-<meta name="description" content="Audited peptide–HLA stability research: interface embedding development gains, uncertain ranking-loss follow-up, portable cached-feature prediction, and a dated hackathon archive.">
-
-
+<title>Boltz embeddings improve peptide–HLA stability ranking</title>
+<meta name="description" content="Scientific results on peptide–HLA stability: Boltz representations improve development ranking and transfer; independent experimental confirmation remains necessary.">
+<link rel="canonical" href="https://cheparukhin.github.io/peptide-hla-stability/">
+<style>
+:root { color-scheme: light; --ink:#17272d; --muted:#53656a; --accent:#0a6b6c; --line:#d7e0df; --paper:#fff; --wash:#edf4f2; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:1.5rem; }
+body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+main { max-width:1040px; margin:auto; padding:0 44px; }
+a { color:var(--accent); text-underline-offset:3px; }
+a:hover { text-decoration-thickness:2px; }
+a:focus-visible,[tabindex]:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+.skip { position:absolute; top:-100px; padding:10px; background:white; }.skip:focus { top:0; }
+p { margin:0 0 1rem; } p:last-child { margin-bottom:0; }
+h1,h2 { font-family:Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.024em; }
+h1 { font-size:clamp(2.4rem,5.8vw,4.2rem); line-height:1.12; max-width:22ch; margin:0 0 1.5rem; }
+h2 { font-size:clamp(1.6rem,3.2vw,2.25rem); line-height:1.25; max-width:35ch; margin:0 0 1.25rem; }
+.masthead { padding:70px 0 32px; border-bottom:1px solid var(--ink); }
+.eyebrow { text-transform:uppercase; letter-spacing:.14em; color:var(--accent); font-size:.69rem; font-weight:650; margin-bottom:1.1rem; }
+.standfirst { font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.15rem,2.2vw,1.45rem); line-height:1.6; max-width:65ch; color:var(--muted); }
+nav { display:flex; flex-wrap:wrap; gap:9px 25px; margin-top:30px; font-size:.83rem; }
+section { padding:46px 0; border-bottom:1px solid var(--line); }
+section>p { max-width:79ch; }
+.abstract h2 { font-size:1.55rem; max-width:50ch; }
+.cohort { display:grid; grid-template-columns:repeat(3,1fr); margin:26px 0 20px; padding:20px 0; border-block:1px solid var(--line); gap:20px; }
+.cohort dt { color:var(--muted); font-size:.73rem; }.cohort dd { margin:3px 0 0; font:2rem/1.2 Georgia,serif; }
+.note { color:var(--muted); font-size:.88rem; line-height:1.65; }
+.main-result { display:grid; grid-template-columns:1.2fr 1fr; align-items:center; gap:35px; margin:24px 0; padding:28px 30px; background:var(--wash); }
+.metric-label { font-size:.78rem; margin-bottom:2px; }.effect { color:var(--accent); font-size:3.15rem; font-weight:500; line-height:1.2; letter-spacing:-.04em; margin-bottom:8px; font-variant-numeric:tabular-nums; }
+.uncertainty { font-size:.78rem; font-variant-numeric:tabular-nums; }
+.score-pair p { display:flex; gap:12px; justify-content:space-between; font-size:.86rem; padding:9px 0; margin:0; border-bottom:1px solid #c6d6d1; }.score-pair p:last-child { border:0; }.score-pair strong { font-variant-numeric:tabular-nums; }
+.table-scroll { overflow-x:auto; margin:22px 0; }
+table { border-collapse:collapse; width:100%; font-size:.8rem; font-variant-numeric:tabular-nums; text-align:right; }
+caption { text-align:left; color:var(--muted); font-size:.74rem; line-height:1.5; padding-bottom:12px; }
+th,td { padding:12px 11px; border-bottom:1px solid var(--line); vertical-align:top; white-space:nowrap; }
+th:first-child { padding-left:0; text-align:left; white-space:normal; min-width:175px; }
+th:last-child,td:last-child { padding-right:0; }
+thead th { border-block:1px solid var(--ink); font-weight:600; }
+tbody th { font-weight:500; }tbody th span { display:block; font-size:.72rem; color:var(--muted); }
+figure { margin:27px 0 20px; }figure img { display:block; width:100%; height:auto; background:#fff; }
+figcaption { font-size:.78rem; color:var(--muted); line-height:1.6; margin-top:14px; }
+.source { font-size:.77rem; color:var(--muted); margin-top:22px; }.discussion { padding-bottom:42px; }
+footer { padding:29px 0 45px; font-size:.78rem; color:var(--muted); }footer p { margin-bottom:8px; }
+@media(max-width:640px) { main { padding:0 22px; } .masthead { padding-top:40px; } section { padding:34px 0; } .main-result { grid-template-columns:1fr; gap:15px; padding:22px; }.cohort { gap:10px; }.cohort dt { font-size:.65rem; }.cohort dd { font-size:1.7rem; }.table-scroll { margin-inline:-6px; padding-inline:6px; }.effect { font-size:2.8rem; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+@media print { main { max-width:none; padding:0; } .masthead { padding-top:0; } nav,.source,footer { display:none; } section { break-inside:avoid; padding:20px 0; }.main-result { background:transparent; border:1px solid var(--line); }body { font-size:11pt; }h1 { font-size:30pt; }h2 { font-size:20pt; } }
+</style>
 </head>
 <body>
-<style>
-  :root {
-    --ground:      #F7F8FA;
-    --surface:     #FFFFFF;
-    --sunk:        #EFF1F4;
-    --ink:         #15191F;
-    --ink-2:       #474F5A;
-    --ink-3:       #717B88;
-    --rule:        #D9DEE4;
-    --rule-soft:   #E7EAEF;
-    --accent:      #0E7490;
-    --accent-deep: #0A5668;
-    --neg:         #B23A2E;
-    --neg-soft:    #F7ECEA;
-    --pos:         #2E6E43;
-    --pos-soft:    #E9F2EC;
-    --warn:        #8C5A0E;
-    --warn-soft:   #F8F0E2;
-
-    --col:      68ch;
-    --wide:     1080px;
-    --s1: 0.4rem; --s2: 0.75rem; --s3: 1.15rem;
-    --s4: 1.9rem; --s5: 3rem;   --s6: 4.5rem;
-
-    --serif: "Spectral", Georgia, "Times New Roman", serif;
-    --sans:  "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:      #0E1116;
-      --surface:     #161A21;
-      --sunk:        #1C212A;
-      --ink:         #E6E9EE;
-      --ink-2:       #AEB6C2;
-      --ink-3:       #7D8795;
-      --rule:        #2A313C;
-      --rule-soft:   #222832;
-      --accent:      #3FA8C4;
-      --accent-deep: #7FCFE4;
-      --neg:         #E0766A;
-      --neg-soft:    #2A1B19;
-      --pos:         #6FBF8C;
-      --pos-soft:    #16251C;
-      --warn:        #D6A24A;
-      --warn-soft:   #261E11;
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --ground:      #0E1116;
-    --surface:     #161A21;
-    --sunk:        #1C212A;
-    --ink:         #E6E9EE;
-    --ink-2:       #AEB6C2;
-    --ink-3:       #7D8795;
-    --rule:        #2A313C;
-    --rule-soft:   #222832;
-    --accent:      #3FA8C4;
-    --accent-deep: #7FCFE4;
-    --neg:         #E0766A;
-    --neg-soft:    #2A1B19;
-    --pos:         #6FBF8C;
-    --pos-soft:    #16251C;
-    --warn:        #D6A24A;
-    --warn-soft:   #261E11;
-  }
-
-  * { box-sizing: border-box; }
-
-  body {
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 17px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-  }
-
-  .wrap {
-    max-width: var(--wide);
-    margin: 0 auto;
-    padding: 0 var(--s4) var(--s6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s6);
-  }
-
-  .col { max-width: var(--col); }
-
-  p { margin: 0 0 var(--s3); }
-  p:last-child { margin-bottom: 0; }
-
-  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-  a:focus-visible, summary:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin: 0 0 var(--s2);
-  }
-
-  /* ---------- masthead ---------- */
-
-  .masthead {
-    border-bottom: 1px solid var(--rule);
-    padding: var(--s5) 0 var(--s4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s3);
-  }
-
-  h1 {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: clamp(1.9rem, 4.6vw, 3.2rem);
-    line-height: 1.12;
-    letter-spacing: -0.016em;
-    margin: 0;
-    max-width: 30ch;
-  }
-  /* The explicit break sets the two lines; let it wrap naturally below that. */
-  h1 br { display: none; }
-  @media (min-width: 620px) {
-    h1 br { display: inline; }
-  }
-
-  .standfirst {
-    font-family: var(--serif);
-    font-size: clamp(1.05rem, 2vw, 1.3rem);
-    line-height: 1.5;
-    color: var(--ink-2);
-    max-width: 58ch;
-    margin: 0;
-  }
-
-  .byline {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--ink-3);
-    letter-spacing: 0.04em;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s1) var(--s3);
-  }
-
-  /* ---------- the question ---------- */
-
-  .question {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--accent);
-    padding: var(--s4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s3);
-  }
-
-  .question h2 {
-    font-family: var(--serif);
-    font-size: 1.45rem;
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0;
-    max-width: 48ch;
-    text-wrap: balance;
-  }
-
-  .question .task-body { max-width: var(--col); color: var(--ink-2); }
-  .question strong { color: var(--ink); font-weight: 600; }
-
-  .spec {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1px;
-    background: var(--rule-soft);
-    border: 1px solid var(--rule-soft);
-    margin-top: var(--s1);
-  }
-  .spec div {
-    background: var(--surface);
-    padding: var(--s2) var(--s3);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .spec dt {
-    font-family: var(--mono);
-    font-size: 0.67rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-  }
-  .spec dd {
-    margin: 0;
-    font-family: var(--mono);
-    font-size: 1.02rem;
-    font-weight: 500;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ---------- formulas ---------- */
-
-  .formulas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: var(--s3);
-    margin: 0;
-  }
-  .formulas div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-    border-top: 2px solid var(--rule);
-    padding-top: var(--s2);
-  }
-  .formulas dt {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-  }
-  .formulas dd { margin: 0; }
-  .formulas .f {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--ink);
-    letter-spacing: 0.01em;
-  }
-  .formulas sub { font-style: normal; font-size: 0.62em; }
-
-  /* ---------- approach bullets ---------- */
-
-  .arm-list {
-    margin: 0;
-    padding-left: 1.1rem;
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-    max-width: var(--col);
-    color: var(--ink-2);
-  }
-  .arm-list li::marker { color: var(--accent); }
-
-  /* ---------- section scaffolding ---------- */
-
-  section { display: flex; flex-direction: column; gap: var(--s4); }
-
-  .shead { display: flex; flex-direction: column; gap: var(--s2); }
-
-  h2.title {
-    font-family: var(--serif);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
-    line-height: 1.18;
-    letter-spacing: -0.012em;
-    margin: 0;
-    text-wrap: balance;
-    max-width: 30ch;
-  }
-
-  .lede { color: var(--ink-2); max-width: var(--col); }
-
-  /* ---------- video ---------- */
-
-  figure { margin: 0; display: flex; flex-direction: column; gap: var(--s2); }
-
-  .video-frame {
-    background: #0B0E12;
-    border: 1px solid var(--rule);
-    overflow: hidden;
-    line-height: 0;
-  }
-  video, .figure-img { width: 100%; height: auto; display: block; }
-
-  /* The matplotlib figures are white-ground PNGs: sit them on an explicit
-     white card so they never glare against a dark page ground. */
-  .plate {
-    background: #FFFFFF;
-    border: 1px solid var(--rule);
-    padding: var(--s2);
-    line-height: 0;
-  }
-
-  figcaption {
-    font-size: 0.86rem;
-    color: var(--ink-3);
-    max-width: 62ch;
-    line-height: 1.55;
-  }
-  figcaption b { color: var(--ink-2); font-weight: 600; }
-
-  .beats {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: var(--s3);
-    counter-reset: beat;
-  }
-  .beats li {
-    counter-increment: beat;
-    border-top: 2px solid var(--rule);
-    padding-top: var(--s2);
-    font-size: 0.9rem;
-    color: var(--ink-2);
-    line-height: 1.5;
-  }
-  .beats li::before {
-    content: counter(beat);
-    display: block;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--accent);
-    margin-bottom: 4px;
-    font-weight: 500;
-  }
-
-  /* ---------- approach list ---------- */
-
-  .approaches { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
-
-  .approach {
-    display: grid;
-    grid-template-columns: 1fr minmax(0, 300px) 110px;
-    gap: var(--s3);
-    align-items: baseline;
-    padding: var(--s3) 0;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-
-  .approach .name {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .approach .kind {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-    font-weight: 400;
-  }
-  .approach .what {
-    font-size: 0.9rem;
-    color: var(--ink-2);
-    line-height: 1.5;
-  }
-  .approach .score {
-    font-family: var(--mono);
-    font-size: 1.15rem;
-    font-weight: 500;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-  }
-  .approach .score small {
-    display: block;
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    font-weight: 400;
-    margin-top: 2px;
-  }
-
-  .approach.is-best { background: var(--pos-soft); }
-  .approach.is-best .score { color: var(--pos); }
-  .approach.is-best .score small { color: var(--pos); }
-  .approach.is-neg .score { color: var(--neg); }
-  .approach.is-neg .score small { color: var(--neg); }
-  .approach.is-null .score small { color: var(--ink-3); }
-  .approach.is-best .name::after {
-    content: "best in project";
-    font-family: var(--mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--pos);
-  }
-  .approach.is-best { padding-left: var(--s3); padding-right: var(--s3); }
-
-  /* ---------- tables ---------- */
-
-  .scroller { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 1rem;
-    min-width: 580px;
-  }
-  caption {
-    text-align: left;
-    padding: var(--s3) var(--s3) var(--s2);
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  th, td { padding: 0.6rem var(--s3); text-align: left; vertical-align: top; }
-  thead th {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--rule);
-    white-space: nowrap;
-  }
-  tbody tr + tr td { border-top: 1px solid var(--rule-soft); }
-  td.num {
-    font-family: var(--mono);
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-  tbody tr.row-best td { background: var(--pos-soft); font-weight: 600; }
-
-  .chip {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    padding: 2px 7px;
-    white-space: nowrap;
-    border-radius: 2px;
-  }
-  .chip.neg  { background: var(--neg-soft);  color: var(--neg); }
-  .chip.null { background: var(--sunk);      color: var(--ink-2); }
-  .chip.pos  { background: var(--pos-soft);  color: var(--pos); }
-  .chip.warn { background: var(--warn-soft); color: var(--warn); }
-
-  /* ---------- callout ---------- */
-
-  .note {
-    border-left: 2px solid var(--rule);
-    padding-left: var(--s3);
-    font-size: 0.92rem;
-    color: var(--ink-2);
-    max-width: var(--col);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-  }
-  .note.flag { border-left-color: var(--warn); }
-
-  /* ---------- next steps ---------- */
-
-  .steps { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
-
-  .step {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--s3);
-    padding: var(--s4) 0;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .step .rank {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    color: var(--accent);
-    padding-top: 5px;
-    font-weight: 500;
-  }
-  .step .body { display: flex; flex-direction: column; gap: var(--s2); max-width: var(--col); }
-  .step h3 {
-    font-family: var(--serif);
-    font-size: 1.22rem;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-    text-wrap: balance;
-  }
-  .step p { font-size: 0.95rem; color: var(--ink-2); margin: 0; }
-  .step .answers {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    color: var(--ink-3);
-    border-top: 1px dashed var(--rule);
-    padding-top: var(--s2);
-    line-height: 1.5;
-  }
-  .step .answers b {
-    color: var(--accent);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 0.68rem;
-  }
-
-  .closed summary {
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    color: var(--ink-3);
-    padding: var(--s2) 0;
-    list-style: none;
-  }
-  .closed summary::-webkit-details-marker { display: none; }
-  .closed summary::before { content: "▸ "; color: var(--accent); }
-  .closed[open] summary::before { content: "▾ "; }
-  .closed summary:hover { color: var(--ink); }
-  .closed ul {
-    margin: 0 0 var(--s3);
-    padding-left: var(--s3);
-    font-size: 0.89rem;
-    color: var(--ink-2);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-  }
-
-  /* ---------- footer ---------- */
-
-  footer {
-    border-top: 1px solid var(--rule);
-    padding-top: var(--s4);
-    font-size: 0.84rem;
-    color: var(--ink-3);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-    max-width: var(--col);
-  }
-  footer code {
-    font-family: var(--mono);
-    font-size: 0.88em;
-    background: var(--sunk);
-    padding: 1px 5px;
-  }
-
-  @media (max-width: 760px) {
-    .approach { grid-template-columns: 1fr auto; }
-    .approach .what { grid-column: 1 / -1; }
-    .step { grid-template-columns: 1fr; gap: var(--s2); }
-    .wrap { padding-left: var(--s3); padding-right: var(--s3); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  }
-
-  /* Round-two submission view: static, offline-readable, with a dated archive. */
-  .skip-link { position:absolute; left:1rem; top:-5rem; background:var(--surface); padding:.6rem 1rem; z-index:10; }
-  .skip-link:focus { top:1rem; }
-  nav { display:flex; flex-wrap:wrap; gap:.55rem 1.4rem; font-size:.92rem; }
-  section { scroll-margin-top:1.5rem; }
-  .finding { display:grid; grid-template-columns:1fr 1.3fr; gap:2rem; background:var(--surface); padding:var(--s4); border:1px solid var(--rule); border-top:3px solid var(--accent); }
-  .gain { font-family:var(--mono); font-size:clamp(2.1rem,5vw,3.5rem); line-height:1.15; letter-spacing:-.05em; color:var(--accent); margin:.4rem 0 .75rem; }
-  .interval { font-family:var(--mono); font-size:.86rem; }
-  .finding-reading { display:flex; flex-direction:column; align-items:flex-start; gap:.9rem; justify-content:center; }
-  .finding-reading p { margin:0; }
-  .source-line { font-size:.88rem; color:var(--ink-2); }
-  tbody th { font-weight:400; border-top:1px solid var(--rule-soft); }
-  .row-best th { background:var(--pos-soft); font-weight:600; }
-  .evidence-detail { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:.75rem 0; }
-  .evidence-detail summary { cursor:pointer; font-weight:600; color:var(--accent); padding:.3rem 0; }
-  .evidence-detail[open] summary { margin-bottom:1rem; }
-  .evidence-detail p { max-width:var(--col); }
-  .evidence-detail code { white-space:normal; overflow-wrap:anywhere; }
-  .evidence-detail .scroller { margin:1.4rem 0; }
-  .scroller:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
-  .method-flow { padding-left:1.35rem; margin:0; display:flex; flex-direction:column; gap:1rem; max-width:var(--col); }
-  .budget-box { border:1px solid var(--rule); background:var(--surface); padding:var(--s4); max-width:var(--col); }
-  .budget-total { font-family:var(--mono); font-size:1.7rem; line-height:1.4; }
-  .budget-total span { font-family:var(--sans); font-size:1rem; color:var(--ink-2); }
-  .figure-scroll-hint { display:none; }
-  @media (max-width:760px) { .figure-scroll-hint { display:block; margin:0; font-size:.86rem; color:var(--ink-2); } }
-  .figure-scroll { overflow-x:auto; }
-  .scientific-figure { min-width:800px; background:#FFFFFF; }
-  .figure-scroll:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
-  .archive { border-top:2px solid var(--rule); padding-top:var(--s4); }
-  .archive > summary { cursor:pointer; font-family:var(--serif); font-size:1.55rem; font-weight:600; }
-  .archive-body { display:flex; flex-direction:column; gap:var(--s6); padding-top:var(--s4); }
-  .archive-notice { background:var(--warn-soft); padding:var(--s3); border-left:3px solid var(--warn); color:var(--ink); }
-  @media (max-width:760px) { .finding { grid-template-columns:1fr; gap:1.4rem; } .chip { white-space:normal; } }
-  @media print { .wrap { max-width:100%; gap:2rem; } nav, .skip-link, iframe { display:none; } details:not([open]) { display:none; } .scroller { overflow:visible; } .finding { break-inside:avoid; } }
-
-</style>
-
-<a class="skip-link" href="#main">Skip to content</a>
-<main class="wrap" id="main">
-  <header class="masthead">
-    <p class="eyebrow">logic binders · London AI × Science · updated 13 October 2026</p>
-    <h1>Antigen Presentation Stability:<br> What do frozen interfaces add?</h1>
-    <p class="standfirst">A source-backed assessment of peptide–HLA stability ranking. Interface embeddings improve development ranking, and few-shot adaptation improves strict joint development ranking. Ranking loss, the tested tree hybrids and ProteinMPNN/FoldX descriptors add no established benefit beyond matched Boltz heads. Verified cached-feature prediction heads are ready; independent confirmation remains open.</p>
-    <nav aria-label="Page sections"><a href="#round2">Main finding</a><a href="#ranking-followup">Ranking loss</a><a href="#portable-inference">Trained models</a><a href="#round2-methods">Methods</a><a href="#round2-transfer">Transfer</a>
-          <a href="#hybrid-followup">Hybrids</a>
-      <a href="#label-budget">Label budget</a><a href="#focused-followups">New studies</a><a href="#inverse-followup">ProteinMPNN</a><a href="#inverse-full-cohort">Full-cohort ProteinMPNN</a><a href="#fewshot-followup">Few-shot adaptation</a><a href="#round2-provenance">Audit &amp; cost</a><a href="#round2-confirmation">Confirmation</a><a href="#archive">Archive</a></nav>
-  </header>
-
-  <section id="task">
-    <div class="question">
-      <p class="eyebrow">The task</p>
-      <h2>Stability is different from affinity.</h2>
-      <dl class="formulas">
-        <div>
-          <dt>Stability — how long it stays bound</dt>
-          <dd><span class="f">t<sub>½</sub> = ln 2 / k<sub>off</sub></span></dd>
-        </div>
-        <div>
-          <dt>Affinity — how readily it binds</dt>
-          <dd><span class="f">K<sub>d</sub> = k<sub>off</sub> / k<sub>on</sub></span></dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ROUND2 GENERATED START -->
-<section id="round2" aria-labelledby="round2-title">
-    <div class="shead">
-      <p class="eyebrow">Audited round 2 · 12 October 2026 · development evidence</p>
-      <h2 class="title" id="round2-title">Frozen interface embeddings add useful ranking information.</h2>
-      <p class="lede">In peptide-cluster holdout, the prespecified embedding-or-original selector improves on a competitive sequence selector. Independent confirmation remains open.</p>
-    </div>
-    <div class="finding">
-      <div><p class="eyebrow">Primary paired difference in Spearman</p><p class="gain">+0.054322</p><p class="interval">95% interval [+0.031395, +0.080805]</p></div>
-      <div class="finding-reading"><span class="chip pos">Positive conditional development gain</span><p>The lower bound is above zero, but below <b>+0.05</b>. The prespecified worthwhile-gain criterion is <b>not met</b>.</p><p>Embedding selector <b>0.721163</b> · competitive sequence selector <b>0.666841</b>.</p></div>
-    </div>
-    <dl class="spec">
-      <div><dt>Original training rows</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div>
-      <div><dt>HLA alleles</dt><dd>75</dd></div><div><dt>Outer folds</dt><dd>5</dd></div><div><dt>Primary eligible panel</dt><dd>69 alleles</dd></div>
-    </dl>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/REPORT.md">Main assessment</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Saved paired comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/embedding_completion_audit.json">Completion audit</a></p>
-    <details class="evidence-detail"><summary>Declared procedures and matched controls</summary>
-      <p>Scores describe declared procedures; the highest component score does not select a new winner. The inner selector retained the original fallback and chose R5 MLP in four folds and R4 ridge in one.</p>
-      <div class="scroller" tabindex="0" role="region" aria-label="Round 2 procedure scores"><table><caption>Peptide-held-out · ≥20 rows per allele · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Procedure</th><th scope="col">Score</th></tr></thead><tbody><tr class=""><th scope="row">Original 30-member sequence MLP</th><td class="num">0.661522</td></tr>
-<tr class=""><th scope="row">Competitive sequence selector</th><td class="num">0.666841</td></tr>
-<tr class=""><th scope="row">R2 chain-mean MLP</th><td class="num">0.421852</td></tr>
-<tr class=""><th scope="row">R4 position-aware ridge</th><td class="num">0.684510</td></tr>
-<tr class=""><th scope="row">R4 position-aware MLP</th><td class="num">0.713592</td></tr>
-<tr class=""><th scope="row">R5 contact-pooled MLP</th><td class="num">0.720986</td></tr>
-<tr class=""><th scope="row">R5 shuffled-membership MLP</th><td class="num">0.720310</td></tr>
-<tr class=""><th scope="row">Full 9×34 positional MLP</th><td class="num">0.731541</td></tr>
-<tr class="row-best"><th scope="row">Prespecified embedding-or-original selector</th><td class="num">0.721163</td></tr></tbody></table></div>
-      <div class="scroller" tabindex="0" role="region" aria-label="Matched positional controls"><table><caption>Matched MLP controls · paired whole-cluster 95% intervals</caption><thead><tr><th scope="col">Declared contrast</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><th scope="row">Retain R3 token positions vs. matched tiled pooling</th><td class="num">+0.338713 [+0.302942, +0.377253]</td></tr>
-<tr><th scope="row">Retain full 9×34 positions vs. matched pooling</th><td class="num">+0.166349 [+0.137791, +0.199165]</td></tr>
-<tr><th scope="row">Crystal contact membership vs. shuffled membership</th><td class="num">+0.000676 [−0.009556, +0.023590]</td></tr></tbody></table></div>
-      <p>Positions help within these frozen compressed representations. The particular crystal-derived contact membership has no established benefit. Weak chain averages do not reject internal embeddings generally.</p>
-    </details>
-  </section>
-
-  <section id="ranking-followup" aria-labelledby="ranking-followup-title">
-    <div class="shead"><p class="eyebrow">Completed matched follow-up · 12 October 2026</p><h2 class="title" id="ranking-followup-title">Ranking loss adds no established gain.</h2><p class="lede">The mixed MSE + within-allele ranking objective slightly raises the R5 point estimate. Its paired interval crosses zero, and the inner deployment selector retains MSE in all five R5 folds.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="Matched ranking-loss comparisons"><table><caption>Original-training peptide-cluster assessment · ≥20 rows per allele</caption><thead><tr><th scope="col">Frozen comparison</th><th scope="col">Difference [paired 95% interval]</th></tr></thead><tbody><tr><th scope="row">R5 mixed ranking loss − R5 MSE</th><td class="num">+0.007072 [−0.005051, +0.009829]</td></tr>
-<tr><th scope="row">R0 mixed ranking loss − R0 MSE</th><td class="num">+0.002891 [−0.007704, +0.012037]</td></tr>
-<tr><th scope="row">Loss × representation interaction</th><td class="num">+0.004181 [−0.012532, +0.011938]</td></tr></tbody></table></div>
-    <p class="note">R5 mixed-loss MLP scores <b>0.728058</b>, compared with <b>0.720986</b> for its matched MSE head. The ≥50-row sensitivity gives +0.005523 [−0.003946, +0.008494]. These comparisons do not establish a ranking-loss benefit or equivalence.</p>
-    <details class="evidence-detail"><summary>Matched recipe, audit and limits</summary><p>R0 onehot and R5 Boltz features use the same 64-unit head, MSE stopping, regularisation grid and final 30-member ensemble. Positive ranking weights 0.1, 0.3 and 1 were selected inside fitting partitions only. All 840 new fits, 480 reused MSE members, fresh inner predictions and gradient-only scaler statistics were audited; both real zero-weight checks reproduced the cached MSE member exactly.</p><p>The interaction subtracts the two loss differences on the same 2,000 paired cluster draws. Intervals condition on fitted predictions and inner selections. Screening uses two members and final prediction 30; feature dimensions and parameter counts still differ. MSE anchors prediction scale. This outcome triggers no extra grid, new stopping rule or transfer expansion.</p></details>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/REPORT.md">Ranking readout</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/comparisons.csv">All paired comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/completion_audit.json">Independent arithmetic and artifact audit</a></p>
-  </section>
-
-  <section id="portable-inference" aria-labelledby="portable-inference-title">
-    <div class="shead"><p class="eyebrow">Completed portable prediction package</p><h2 class="title" id="portable-inference-title">Use the trained heads with verified Boltz features.</h2><p class="lede">Locked demonstration recipes export R4 ridge (alpha 100) and a 30-member R5 MLP (L2 0.01). Save/reload predictions match exactly.</p></div>
-    <p class="col">Warm single-row cached-head medians are <b>1.56 ms</b> for ridge and <b>2.40 ms</b> for the MLP on the recorded host. These are performance-only measurements on identified training-cache inputs, excluding Boltz extraction, MSA generation, cache reads and startup.</p>
-    <p class="note">The package accepts compatible verified compact features. Novel peptide/HLA inputs need real feature extraction; this page does not simulate sequence-to-prediction output. The two recipes were locked before new outcomes and are deployment demonstrations, without a new accuracy or universal-winner claim.</p>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/ROUND2_INFERENCE.md">Input contract and prediction commands</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/inference/README.md">Exports and measured timing</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/inference/distribution_manifest.json">Model artifact hashes</a></p>
-  </section>
-
-  <section id="round2-methods" aria-labelledby="round2-methods-title">
-    <div class="shead"><p class="eyebrow">How to read the evidence</p><h2 class="title" id="round2-methods-title">Select inside, assess outside.</h2></div>
-    <ol class="method-flow"><li><b>Freeze features and partitions.</b> All original training rows remain in five outer peptide-cluster folds; assessed clusters stay outside fitting, stopping and scaling.</li><li><b>Select with inner folds.</b> Regularisation and procedure choices use inner outcomes only, with an original-sequence fallback.</li><li><b>Pair the comparisons.</b> Subtract the two pooled medians of per-allele Spearman on the same eligible panel, then resample whole peptide clusters with 2,000 shared draws.</li></ol>
-    <div class="note flag"><p><b>The intervals condition on fitted predictions.</b> They exclude selection and execution uncertainty. They are neither medians of allele differences nor medians of fold scores. The primary ≥20-row panel covers 19,647 rows; the ≥50-row sensitivity gives +0.056352 [+0.031732, +0.079137] across 68 alleles.</p><p>These data and earlier benchmark/test results influenced development history. Preserving the original test in this execution does not create an independent cohort; the original test has not been rescored or used to select these round 2 procedures.</p></div>
-  </section>
-
-  <section id="round2-transfer" aria-labelledby="round2-transfer-title">
-    <div class="shead"><p class="eyebrow">Completed stronger transfer controls · 30 cells · 10,830 retained fits</p><h2 class="title" id="round2-transfer-title">Transfer gains survive matched head recipes.</h2><p class="lede">Boltz representations outperform their sequence counterparts under matched ridge and MLP recipes. Five HLA folds and all 25 joint intersections passed the full audit.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="Matched transfer results"><table><caption>≥20 rows per allele · crossed peptide-cluster × HLA-group paired 95% intervals</caption><thead><tr><th scope="col">Matched contrast</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><th scope="row">HLA · R4_ridge − R0_ridge</th><td class="num">+0.465509 [+0.395953, +0.553410]</td></tr>
-<tr><th scope="row">HLA · R5_mlp − R0_mlp</th><td class="num">+0.406234 [+0.307286, +0.473273]</td></tr>
-<tr><th scope="row">JOINT · R4_ridge − R0_ridge</th><td class="num">+0.463260 [+0.380234, +0.524616]</td></tr>
-<tr><th scope="row">JOINT · R5_mlp − R0_mlp</th><td class="num">+0.373784 [+0.309165, +0.463816]</td></tr></tbody></table></div>
-    <p class="note">All matched contrasts remain positive on the ≥50-row panel, under peptide-only and HLA-only uncertainty, and after deleting any one of the 35 HLA groups. Different feature dimensions, pretraining and representation construction still prevent causal attribution specifically to structure. These are conditional development results.</p>
-    <details class="evidence-detail"><summary>Both sequence references, including the stronger original joint baseline</summary>
-      <div class="scroller" tabindex="0" role="region" aria-label="Original and expanded sequence references"><table><caption>≥20 rows per allele · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Regime / sequence reference</th><th scope="col">Sequence</th><th scope="col">Embedding selector</th><th scope="col">Difference [crossed 95% interval]</th></tr></thead><tbody><tr><th scope="row">HLA · original</th><td class="num">0.170935</td><td class="num">0.546303</td><td class="num">+0.375368 [+0.283444, +0.455040]</td></tr>
-<tr><th scope="row">HLA · expanded sequence selector</th><td class="num">0.192134</td><td class="num">0.546303</td><td class="num">+0.354169 [+0.276201, +0.456250]</td></tr>
-<tr><th scope="row">JOINT · original</th><td class="num">0.134985</td><td class="num">0.506675</td><td class="num">+0.371689 [+0.278298, +0.436636]</td></tr>
-<tr><th scope="row">JOINT · expanded sequence selector</th><td class="num">0.108454</td><td class="num">0.506675</td><td class="num">+0.398220 [+0.314321, +0.461279]</td></tr></tbody></table></div>
-      <p>The expanded sequence selector changes the original by +0.021199 [−0.064630, +0.073387] in HLA and −0.026531 [−0.088797, +0.018463] in joint holdout. Its joint point estimate is lower than the original, so presenting only the expanded comparator would exaggerate the advantage. Outer outcomes do not select a replacement procedure.</p>
-    </details>
-    <details class="evidence-detail"><summary>Scope and uncertainty</summary><p>The extension adds sequence regression/centred trees, a fixed ranker and matched R0 ridge/MLP heads. Inner selection, stopping and scaling obey each holdout regime. Its 264 comparison rows cover both panels and three uncertainty modes; all 12 bootstrap tables have 2,000 draws, and 3,080 rows cover every group-deletion contrast.</p><p>Intervals condition on fitted predictions and selections; group deletion does not retrain. Crossed resampling is a dependence sensitivity, not independent confirmation. HLA sequence groups are not validated functional distance. The ranker retains an inner-to-final scale-transport limitation. These transfer findings do not retrospectively change the main worthwhile-gain criterion.</p></details>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/REPORT.md">Complete stronger-transfer report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/comparisons.csv">All comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/coverage_audit.json">Independent coverage audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/transfer/results/README.md">Historical narrower assessment</a></p>
-  </section>
-
-  <section id="hybrid-followup" aria-labelledby="hybrid-followup-title">
-    <div class="shead"><p class="eyebrow">Completed hybrid comparison · 480 fits · 16 arms</p><h2 class="title" id="hybrid-followup-title">Keep the simpler embedding head.</h2><p class="lede">Trees, blending and preprocessing did not establish an improvement over the matched standard Boltz MLP.</p></div>
-    <p class="col">The inner-selected R5 hybrid scores <b>0.703863</b> versus <b>0.699478</b>: <b>+0.004384 [−0.005541, +0.009984]</b>. Its ≥50-row sensitivity is +0.002640 [−0.003962, +0.009132]. Both are inconclusive, not equivalence tests.</p>
-    <p class="note">The selector keeps the standard head in three folds and a 25% regression-tree blend in two. Selector and blend predictions coincide; they are one finding. Both arms use two members; historical 30-member heads and the stronger main sequence selector are descriptive references, not these matched controls.</p>
-    <div class="scroller" tabindex="0" role="region" aria-label="R5 hybrid component comparisons"><table><caption>R5 challenger minus standard MLP · ≥20 panel · exploratory paired 95% intervals</caption><thead><tr><th scope="col">Challenger</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><th scope="row">Regression tree</th><td class="num">−0.057113 [−0.086156, −0.037329]</td></tr>
-<tr><th scope="row">Ranking tree</th><td class="num">−0.050018 [−0.076069, −0.025128]</td></tr>
-<tr><th scope="row">Tree-leaf MLP</th><td class="num">−0.134263 [−0.160633, −0.105511]</td></tr>
-<tr><th scope="row">PCA MLP</th><td class="num">−0.051989 [−0.065983, −0.025168]</td></tr>
-<tr><th scope="row">Quantile MLP</th><td class="num">−0.009349 [−0.015886, +0.016830]</td></tr></tbody></table></div>
-    <p class="note">These results concern the frozen recipes, not all possible trees or preprocessing methods. All saved held predictions and 328 stopping-MSE checks replayed exactly under the recorded numerical backend. The separate 12-fit pilot was unscored. Independent assay confirmation remains open.</p>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/REPORT.md">Full hybrid study</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/comparisons.csv">Every frozen comparison</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/coverage_audit.json">Independent coverage audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/cloud/BACKEND_REPLAY.md">Numerical replay disclosure</a></p>
-  </section>
-
-  <section id="label-budget" aria-labelledby="label-budget-title">
-    <div class="shead"><p class="eyebrow">Completed label-budget sensitivity · 120 new fits</p><h2 class="title" id="label-budget-title">Boltz loses less performance when labels shrink.</h2><p class="lede">Under the same fixed MLP recipe, the representation advantage grows at lower training-label budgets. Both models still worsen.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="Label-budget results"><table><caption>Mean subset scores · ≥20 panel · stopping labels included</caption><thead><tr><th scope="col">Fitting-cluster budget</th><th scope="col">Sequence MLP</th><th scope="col">Boltz MLP</th><th scope="col">Gap</th></tr></thead><tbody><tr><th scope="row">25%</th><td class="num">0.263989</td><td class="num">0.587712</td><td class="num">+0.323723</td></tr>
-<tr><th scope="row">50%</th><td class="num">0.401050</td><td class="num">0.650417</td><td class="num">+0.249367</td></tr>
-<tr><th scope="row">100%</th><td class="num">0.537292</td><td class="num">0.699478</td><td class="num">+0.162187</td></tr></tbody></table></div>
-    <p class="col">The primary increase in the gap at 25% versus 100% is <b>+0.161536 [+0.133321, +0.204142]</b>. The ≥50-row sensitivity is +0.161485 [+0.133849, +0.201678]. The 50% budget agrees.</p>
-    <p class="note">Three predetermined nested subsets are averaged as scores, never as prediction ensembles. Budgets count peptide clusters and include both fitting and stopping labels. Intervals condition on fixed models and subsets; recipes were nominated using earlier full-data development. This is relative robustness, not prospective assay savings or a comparison with the stronger main sequence selector.</p>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/label_efficiency/REPORT.md">Label-budget report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/label_efficiency/absolute_curves.csv">All absolute scores and intervals</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/label_efficiency/comparisons.csv">Paired gap comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/label_efficiency/coverage_audit.json">Independent table and subset audit</a></p>
-  </section>
-
-  <section id="focused-followups" aria-labelledby="focused-followups-title">
-    <div class="shead"><p class="eyebrow">New bounded development tranche · 13 October 2026</p><h2 class="title" id="focused-followups-title">Context, target labels and repaired energy.</h2><p class="lede">Three frozen primary questions extend the development evidence. Their different assessment populations and recipes prevent direct subtraction from the main score.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="New follow-up study status"><table><caption>Current evidence status · original-training outcomes only</caption><thead><tr><th scope="col">Question</th><th scope="col">Frozen primary comparison</th><th scope="col">Status</th></tr></thead><tbody>
-      <tr><th scope="row">ProteinMPNN context</th><td>R5 + peptide-only + full context minus R5 + peptide-only</td><td>900 fits complete and independently audited; increment beyond Boltz inconclusive</td></tr>
-      <tr><th scope="row">Few-shot HLA adaptation</th><td>R5 at 20 target labels per allele minus R5 at zero labels</td><td>Audited positive adaptation gain; 450 source fits and 9,180 adapters complete</td></tr>
-      <tr><th scope="row">Repaired FoldX complementarity</th><td>R5 + repaired energy and interface descriptors minus R5</td><td>4,449 descriptors and 300 new fits complete and independently audited; R5 increment inconclusive</td></tr>
-    </tbody></table></div>
-    <p class="note">The third-primary decision was recorded at 12:35 UTC before the manager inspected new efficacy results. Any tranche-wide success claim uses 98.333333% intervals for all three primaries. Individual 95% and historically specified 97.5% intervals remain visible, with the latter superseded for the three-question family. Few-shot adaptation is the sole positive primary under this family correction. Technical extraction success is not evidence of half-life prediction benefit.</p>
-    <details class="evidence-detail"><summary>Primary method references and pinned model artifacts</summary><p><b>ProteinMPNN:</b> <a href="https://doi.org/10.1126/science.add2187">Dauparas et al., 2022</a> · <a href="https://github.com/dauparas/ProteinMPNN">official implementation</a>. Full-backbone vanilla checkpoint <code>v_48_020.pt</code>, hash c9cb4a671d79…; scoring uses zero added coordinate noise and 16 explicit common peptide orders.</p><p><b>FoldX:</b> <a href="https://doi.org/10.1093/bioinformatics/btz184">FoldX 5.0 (Delgado et al., 2019)</a> · <a href="https://doi.org/10.1016/S0022-2836(02)00442-4">original force field (Guerois et al., 2002)</a> · <a href="https://doi.org/10.1093/nar/gki387">complex-analysis methods (Schymkowitz et al., 2005)</a>. The recorded Linux executable is hash-pinned (faed5e54e477…); its finer semantic release is not recorded. RepairPDB then AnalyseComplex supplies 29 energy and interface/clash/residue descriptors.</p><p><b>Boltz-2:</b> <a href="https://doi.org/10.1101/2025.06.14.659707">Passaro et al., 2025, technical preprint</a> · <a href="https://github.com/jwohlwend/boltz">official implementation</a>. Reused features use package <code>boltz==2.1.1</code>, weight revision <code>6fdef46d763fee7fbb83ca5501ccceff43b85607</code> and checkpoint hash 090e82ac8c92…. Package version, model family and weight revision are separate identifiers.</p><p>Sequence compatibility and computed equilibrium energies do not directly measure dissociation half-life. The supervised kinetic-ranking comparisons determine their predictive value here. The <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/ASSESSMENT_PRECHECK.md">pre-results source audit</a> found no blocking defect before head fitting; all three original studies now have completed independent audits. The selected full-cohort extension also passed completed-output independent auditing.</p></details>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/REPORT.md">Current follow-up report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/THIRD_PRIMARY_AMENDMENT.md">Pre-efficacy third-primary amendment</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/foldx/technical_receipt.json">FoldX technical receipt</a></p>
-  </section>
-
-  <section id="inverse-followup" aria-labelledby="inverse-followup-title">
-    <div class="shead"><p class="eyebrow">Completed ProteinMPNN assessment · balanced 4,449 pairs · 900 fits</p><h2 class="title" id="inverse-followup-title">The context increment beyond Boltz remains unresolved.</h2><p class="lede">Native-peptide compatibility with full-complex context does not establish an additional gain over its matched Boltz controls. A small useful increment remains possible; these comparisons do not establish equivalence.</p></div>
-    <div class="scroller" tabindex="0" role="region" aria-label="ProteinMPNN primary and net comparison"><table><caption>Matched two-member MLP · ≥20 panel · 69 alleles</caption><thead><tr><th scope="col">Comparison</th><th scope="col">Difference [individual 95% interval]</th></tr></thead><tbody><tr><th scope="row">Primary: R5 + P + C minus R5 + P</th><td class="num">+0.023960 [−0.014736, +0.058359]</td></tr><tr><th scope="row">Exploratory net: R5 + P + C minus R5</th><td class="num">+0.018816 [−0.016250, +0.056637]</td></tr></tbody></table></div>
-    <p class="col">The required <b>98.333333% three-primary family interval is [−0.021942, +0.065942]</b>. Absolute MLP scores are 0.600708 for R5, 0.595564 for R5 + P and 0.619524 for R5 + P + C. The original CSV's 97.5% fields are historical two-primary intervals, superseded for tranche-wide claims.</p>
-    <details class="evidence-detail"><summary>All six arms, sensitivities and completed audit</summary>
-      <div class="scroller" tabindex="0" role="region" aria-label="ProteinMPNN absolute MLP and ridge scores"><table><caption>All absolute scores · ≥20 panel · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Arm</th><th scope="col">Two-member MLP</th><th scope="col">Ridge sensitivity</th></tr></thead><tbody><tr><th scope="row">R0</th><td class="num">0.295240</td><td class="num">0.149447</td></tr>
-<tr><th scope="row">R0 + P</th><td class="num">0.289204</td><td class="num">0.135086</td></tr>
-<tr><th scope="row">R0 + P + C</th><td class="num">0.340620</td><td class="num">0.293213</td></tr>
-<tr><th scope="row">R5</th><td class="num">0.600708</td><td class="num">0.626800</td></tr>
-<tr><th scope="row">R5 + P</th><td class="num">0.595564</td><td class="num">0.630401</td></tr>
-<tr><th scope="row">R5 + P + C</th><td class="num">0.619524</td><td class="num">0.623753</td></tr></tbody></table></div>
-      <p>P is nine position-wise mean native-residue log probabilities on the peptide backbone alone; C uses full complex context. Each position averages over the same 16 explicit decoding orders. P's backbone was predicted using native peptide/HLA context. Removing chains changes graph neighbors too, so the ablation does not isolate structural causality.</p><p>The ≥50 sensitivity has 68 alleles and gives +0.026008 [−0.014884, +0.057774] for the MLP context increment. R0 context controls are positive exploratory comparisons; R5 ridge increments remain inconclusive. All 28 contrasts and 24 absolute score rows remain in the source tables; no secondary learner/panel replaces the primary. These balanced-panel recipes differ from the main competitive selector and strict joint few-shot ridge design.</p><p>All 600 MLP members and 300 ridge fits passed independent score/selection/ancestry checks. Parser recovery completed all 4,449 identities, preserving 4,163 inherited record hashes and archiving the failed attempt. Fitted states are not saved; no fitted-weight replay, refitting or bootstrap regeneration is claimed. Conditional intervals exclude new assay and repeated fitting/selection variation.</p>
-      <p><b>Post-hoc descriptive influence.</b> With original eligibility fixed, every single-allele or outer-held prediction-fold deletion keeps the MLP net point positive, from +0.016474 to +0.028273 across allele deletions and +0.011860 to +0.040450 across fold deletions. Individual allele effects vary: 43 rise and 26 fall. Ridge's net point remains negative under all single-allele deletions and its fold deletions disagree in sign. No models are refitted, no new interval/testing or inference upgrade is introduced, and the original MLP uncertainty remains inconclusive. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/exploratory_influence/summary.json">Descriptive source summary</a></p>
-    </details>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/REPORT.md">Full follow-up readout</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/comparisons.csv">All declared contrasts</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/pooled_scores.csv">All absolute scores</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/independent_audit.json">Independent assessment audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/primary_family3_interval.json">Current family interval</a></p>
-  </section>
-
-  <section id="energy-followup" aria-labelledby="energy-followup-title">
-    <div class="shead"><p class="eyebrow">Completed repaired descriptors · balanced 4,449 pairs · 300 new fits</p><h2 class="title" id="energy-followup-title">Repaired descriptors do not establish extra Boltz value.</h2><p class="lede">R5 + E minus R5 is +0.014991 [−0.043512, +0.036368] under its individual 95% interval. Its 98.333333% family interval is [−0.052436, +0.045026]. A useful increment remains possible; this is not equivalence.</p></div>
-    <figure><p class="figure-scroll-hint">Scroll sideways to see the full figure.</p><div class="figure-scroll" tabindex="0" role="region" aria-label="All balanced-panel MLP descriptors and two primary family intervals"><img class="figure-img scientific-figure" src="figures/descriptor_comparison.svg" width="1040" height="560" loading="lazy" alt="All eight balanced-panel MLP scores. ProteinMPNN context adds +0.023960 and repaired descriptors +0.014991; both 98.333333% family intervals span zero."></div><figcaption><b>Same balanced panel, distinct assessment.</b> All eight matched MLP arms and two primary family intervals; absolute-score intervals are not shown. P is peptide-only compatibility, C full-complex compatibility and E the 29 repaired energy/interface/clash/residue descriptors. These recipes differ from the main selector and strict joint few-shot ridge study. <a href="figures/descriptor_comparison.svg">SVG export</a> · <a href="figures/descriptor_comparison.png">PNG export</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/figures/descriptor_comparison.json">Exact rows and source hashes</a></figcaption></figure>
-    <details class="evidence-detail"><summary>All repaired-descriptor arms, sensitivities and completed audits</summary><div class="scroller" tabindex="0" role="region" aria-label="Repaired descriptor MLP and ridge absolute scores"><table><caption>≥20 panel · 69 alleles · pooled median per-allele Spearman</caption><thead><tr><th scope="col">Arm</th><th scope="col">Two-member MLP</th><th scope="col">Ridge sensitivity</th></tr></thead><tbody><tr><th scope="row">R0</th><td class="num">0.295240</td><td class="num">0.149447</td></tr>
-<tr><th scope="row">R0 + E</th><td class="num">0.327591</td><td class="num">0.282594</td></tr>
-<tr><th scope="row">R5</th><td class="num">0.600708</td><td class="num">0.626800</td></tr>
-<tr><th scope="row">R5 + E</th><td class="num">0.615698</td><td class="num">0.633310</td></tr></tbody></table></div><p>R5 ridge adds +0.006510 [−0.023760, +0.020296]; the ≥50 MLP sensitivity is +0.017248 [−0.043292, +0.034193]. Both learners and both eligible panels remain inconclusive. A positive exploratory weak R0 ridge increment does not establish added incumbent R5 value. All 16 absolute score rows and 12 contrasts remain linked.</p><p>The 73 interrupted cases were recovered with the same frozen recipe, preserving 4,376 inherited success hashes and original attempts. Independent recovery and exact feature-matrix audits passed before assessment. All 200 new MLP members and 100 ridge fits passed score/selection/ancestry auditing, with R0/R5 baselines reused exactly and zero baseline refits. Independent checks did not refit or regenerate bootstrap draws. Fitted states are not saved; fitted-weight replay is not claimed.</p></details>
-
-    <details class="evidence-detail"><summary>Full-cohort coverage and density: label-free metadata</summary><p>The same 75 alleles grow from 4,449 to 19,716 rows (4.43×), and 2,082 to 3,587 inherited peptide clusters (1.72×), adding 1,505 clusters. Of the additional rows, 11,656 belong to previously covered clusters and 3,611 to new clusters. These are coverage/density counts, not effective independent observations. The metadata's ≥20/≥50 thresholds count rows only and do not establish assay-rankability eligibility. No labels, predictions or ProteinMPNN scores were read. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_metadata/cohort_metadata_comparison.json">Source metadata comparison</a></p></details>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/comparisons.csv">All declared contrasts</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/pooled_scores.csv">All absolute scores</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/INDEPENDENT_FINAL_REVIEW.json">Final independent review</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/primary_family3_interval.json">Current family interval</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/REPORT.md">Full methods and limitations</a></p>
-  </section>
-
-  <section id="inverse-full-cohort" aria-labelledby="inverse-full-title">
-    <div class="shead"><p class="eyebrow">Selected development extension · 19,716 original-training pairs · 450 fits</p><h2 class="title" id="inverse-full-title">Full-cohort scoring does not establish added ProteinMPNN value.</h2><p class="lede">MLP R5 scores 0.695498 versus 0.688472 for R5 + P + C: −0.007026 [−0.022047, +0.013082] under its conditional pointwise 95% interval. Ridge net is −0.001644 [−0.015097, +0.007286]. Every declared contrast spans zero, establishing neither added benefit nor harm or equivalence. This extension was selected after balanced-panel outcomes; it is not independent confirmation or a fourth original-family primary.</p></div>
-    <details class="evidence-detail"><summary>All three arms, both learners and both panels</summary><div class="scroller" tabindex="0" role="region" aria-label="Full-cohort absolute scores"><table><caption>Median per-allele Spearman · ≥20: 69 alleles · ≥50: 68 alleles</caption><thead><tr><th scope="col">Arm</th><th scope="col">MLP ≥20</th><th scope="col">Ridge ≥20</th><th scope="col">MLP ≥50</th><th scope="col">Ridge ≥50</th></tr></thead><tbody><tr><th scope="row">R5</th><td class="num">0.695498</td><td class="num">0.666307</td><td class="num">0.695107</td><td class="num">0.663502</td></tr>
-<tr><th scope="row">R5 + P</th><td class="num">0.692185</td><td class="num">0.664884</td><td class="num">0.691995</td><td class="num">0.663541</td></tr>
-<tr><th scope="row">R5 + P + C</th><td class="num">0.688472</td><td class="num">0.664664</td><td class="num">0.686715</td><td class="num">0.663616</td></tr></tbody></table></div><div class="scroller" tabindex="0" role="region" aria-label="All full-cohort comparisons"><table><caption>All 12 contrasts · conditional pointwise 95% intervals</caption><thead><tr><th scope="col">Learner</th><th scope="col">Panel</th><th scope="col">Comparison</th><th scope="col">Difference [95% interval]</th></tr></thead><tbody><tr><td>MLP</td><td>≥20</td><th scope="row">Net: R5 + P + C minus R5</th><td class="num">−0.007026 [−0.022047, +0.013082]</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">Context: R5 + P + C minus R5 + P</th><td class="num">−0.003714 [−0.025597, +0.010449]</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">Peptide-only: R5 + P minus R5</th><td class="num">−0.003313 [−0.013345, +0.020614]</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">Net: R5 + P + C minus R5</th><td class="num">−0.008392 [−0.022074, +0.011666]</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">Context: R5 + P + C minus R5 + P</th><td class="num">−0.005279 [−0.024660, +0.009264]</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">Peptide-only: R5 + P minus R5</th><td class="num">−0.003112 [−0.013216, +0.019631]</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">Net: R5 + P + C minus R5</th><td class="num">−0.001644 [−0.015097, +0.007286]</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">Context: R5 + P + C minus R5 + P</th><td class="num">−0.000220 [−0.013631, +0.007982]</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">Peptide-only: R5 + P minus R5</th><td class="num">−0.001423 [−0.006455, +0.004289]</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">Net: R5 + P + C minus R5</th><td class="num">+0.000114 [−0.014008, +0.006116]</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">Context: R5 + P + C minus R5 + P</th><td class="num">+0.000076 [−0.012638, +0.006640]</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">Peptide-only: R5 + P minus R5</th><td class="num">+0.000038 [−0.005199, +0.003251]</td></tr></tbody></table></div></details>
-    <details class="evidence-detail"><summary>Original 4,449 fixed queries: descriptive old/new comparison</summary><p>The MLP net changes from +0.018816 to +0.001088, while R5 rises from 0.600708 to 0.680453. Old and new held predictions are compared on the same identities and fixed eligible panels, without an additional fit or confidence interval. Source coverage, inner selection and stopping change together, so these points do not isolate a causal sample-size effect.</p><div class="scroller" tabindex="0" role="region" aria-label="All fixed-query descriptive points"><table><caption>All 24 fixed-query entries · no additional interval</caption><thead><tr><th scope="col">Learner</th><th scope="col">Panel</th><th scope="col">Entry</th><th scope="col">Old</th><th scope="col">New</th><th scope="col">Change</th></tr></thead><tbody><tr><td>MLP</td><td>≥20</td><th scope="row">R5 point</th><td class="num">0.600708</td><td class="num">0.680453</td><td class="num">+0.079745</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">R5 + P point</th><td class="num">0.595564</td><td class="num">0.702650</td><td class="num">+0.107086</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">R5 + P + C point</th><td class="num">0.619524</td><td class="num">0.681541</td><td class="num">+0.062017</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">net increment</th><td class="num">0.018816</td><td class="num">0.001088</td><td class="num">−0.017728</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">context increment</th><td class="num">0.023960</td><td class="num">−0.021109</td><td class="num">−0.045069</td></tr><tr><td>MLP</td><td>≥20</td><th scope="row">peptide increment</th><td class="num">−0.005144</td><td class="num">0.022197</td><td class="num">+0.027341</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">R5 point</th><td class="num">0.597830</td><td class="num">0.677871</td><td class="num">+0.080041</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">R5 + P point</th><td class="num">0.593336</td><td class="num">0.699480</td><td class="num">+0.106144</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">R5 + P + C point</th><td class="num">0.619344</td><td class="num">0.681294</td><td class="num">+0.061951</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">net increment</th><td class="num">0.021514</td><td class="num">0.003423</td><td class="num">−0.018091</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">context increment</th><td class="num">0.026008</td><td class="num">−0.018185</td><td class="num">−0.044194</td></tr><tr><td>MLP</td><td>≥50</td><th scope="row">peptide increment</th><td class="num">−0.004494</td><td class="num">0.021609</td><td class="num">+0.026103</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">R5 point</th><td class="num">0.626800</td><td class="num">0.678587</td><td class="num">+0.051788</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">R5 + P point</th><td class="num">0.630401</td><td class="num">0.680634</td><td class="num">+0.050233</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">R5 + P + C point</th><td class="num">0.623753</td><td class="num">0.678542</td><td class="num">+0.054788</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">net increment</th><td class="num">−0.003047</td><td class="num">−0.000046</td><td class="num">+0.003001</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">context increment</th><td class="num">−0.006648</td><td class="num">−0.002093</td><td class="num">+0.004556</td></tr><tr><td>RIDGE</td><td>≥20</td><th scope="row">peptide increment</th><td class="num">0.003602</td><td class="num">0.002047</td><td class="num">−0.001555</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">R5 point</th><td class="num">0.625071</td><td class="num">0.678073</td><td class="num">+0.053002</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">R5 + P point</th><td class="num">0.629116</td><td class="num">0.676696</td><td class="num">+0.047580</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">R5 + P + C point</th><td class="num">0.623035</td><td class="num">0.677720</td><td class="num">+0.054685</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">net increment</th><td class="num">−0.002035</td><td class="num">−0.000352</td><td class="num">+0.001683</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">context increment</th><td class="num">−0.006081</td><td class="num">0.001024</td><td class="num">+0.007105</td></tr><tr><td>RIDGE</td><td>≥50</td><th scope="row">peptide increment</th><td class="num">0.004045</td><td class="num">−0.001377</td><td class="num">−0.005422</td></tr></tbody></table></div></details>
-    <p class="note"><b>Stop computational search; independent kinetic-assay confirmation is next.</b> Retain the simpler embedding head. No new grid, combined arm or full FoldX expansion is admitted. Few-shot remains the sole positive primary in the original three-question family.</p>
-    <p class="note">Independent saved-output arithmetic, selection and ancestry audits cover all 300 MLP members and 150 ridge fits. No independent refitting, bootstrap regeneration or saved-weight replay is claimed. Intervals omit assay and repeated fitting/selection variation and extension-choice uncertainty.</p><p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/comparisons.csv">Every contrast</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/fixed_query_descriptive.csv">All fixed-query points</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/independent_audit.json">Independent audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/completion_audit.json">Completion audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/INDEPENDENT_FINAL_REVIEW.json">Final independent review</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_repair/PRELAUNCH_REVIEW.json">Operational repair provenance</a></p>
-    </section>
-
-  <section id="fewshot-followup" aria-labelledby="fewshot-followup-title">
-    <div class="shead"><p class="eyebrow">Completed few-shot adaptation · 68 target alleles · 3 support draws</p><h2 class="title" id="fewshot-followup-title">A few target-allele measurements improve ranking.</h2><p class="lede">Twenty support labels per allele raise the fixed R5 source ridge score from 0.529583 to 0.576337 on peptide families excluded from source fitting.</p></div>
-    <div class="finding"><div><p class="eyebrow">R5 k=20 minus zero-shot</p><p class="gain">+0.046754</p><p class="interval">Individual crossed 95% interval [+0.022657, +0.103467]</p></div><div class="finding-reading"><span class="chip pos">Positive conditional adaptation gain</span><p>Three-primary family interval, 98.333333%: <b>[+0.014042, +0.119457]</b>.</p><p>Original two-primary 97.5% interval [+0.016161, +0.113802], retained historically and superseded for tranche-wide claims.</p></div></div>
-    <figure>
-      <p class="figure-scroll-hint">Scroll sideways to see the full figure.</p>
-      <div class="figure-scroll" tabindex="0" role="region" aria-label="Three few-shot curves and primary family interval"><img class="figure-img scientific-figure" src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="R0, R5 and reduced sequence-anchor absolute curves at zero, five, ten and twenty labels. R5 increases from 0.529583 to 0.576337; primary gain +0.046754, with a 98.333333% family interval from +0.014042 to +0.119457."></div>
-      <figcaption><b>Strict joint transfer.</b> Three fixed support-draw scores are averaged on 68 target alleles. Source fitting excludes target HLA groups and support/query peptide families. The sequence comparator is a reduced four-member historical anchor. The primary family interval is conditional development evidence; curve intervals are not shown. <a href="figures/fewshot_curves.svg">SVG export</a> · <a href="figures/fewshot_curves.png">PNG export</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/figures/fewshot_curves.json">Exact values and source hashes</a></figcaption>
-    </figure>
-    <div class="scroller" tabindex="0" role="region" aria-label="Few-shot absolute learning curves"><table><caption>Mean draw scores · fixed 68-allele panel · median per-allele Spearman</caption><thead><tr><th scope="col">Labels per allele</th><th scope="col">Target labels per draw</th><th scope="col">R0 ridge</th><th scope="col">R5 ridge</th><th scope="col">Four-member sequence anchor</th></tr></thead><tbody><tr><th scope="row">0</th><td class="num">0</td><td class="num">0.053755</td><td class="num">0.529583</td><td class="num">0.082976</td></tr>
-<tr><th scope="row">5</th><td class="num">340</td><td class="num">0.079463</td><td class="num">0.539286</td><td class="num">0.144005</td></tr>
-<tr><th scope="row">10</th><td class="num">680</td><td class="num">0.104730</td><td class="num">0.559218</td><td class="num">0.166569</td></tr>
-<tr><th scope="row">20</th><td class="num">1,360</td><td class="num">0.142517</td><td class="num">0.576337</td><td class="num">0.205753</td></tr></tbody></table></div>
-    <p class="note">Supports are chosen by identity. Within each held-out HLA fold, the union of its target alleles' maximum-support clusters is excluded from that fold's source/query cells at every label budget. Source fitting also excludes both held grouping axes. Query rows stay fixed across budgets within each draw; three draw scores are averaged, never predictions. Target tuning and stopping use zero labels. Support labels are reused across five query cells and count once per draw/budget. Source stopping labels count; source availability ranges from 11,213–11,950 labels and the actual sequence gradient/stopping union from 10,213–11,055.</p>
-    <details class="evidence-detail"><summary>Matched interpretation, sensitivities and audit</summary><p>The sequence anchor uses the previously nominated two-layer one-hot/BLOSUM recipe with four source members. It is a reduced historical anchor, distinct from the full main competitive selector. Strict joint exclusions, query population and target-label access differ from the main study; these scores cannot be directly subtracted from its results.</p><p>The ≥20 and ≥50 panels are the identical 68 alleles, so their equality supplies no additional population robustness. Every one of the 35 HLA-group deletions keeps a positive primary point difference, from +0.033232 to +0.068527, without refitting. R0 and the sequence anchor gain more in nominal secondary comparisons but start and finish below R5; the crossed representation-by-adaptation interaction remains inconclusive. All declared secondary contrasts and uncertainty modes are retained.</p><p>Cloud completion records exact saved-state replay for 450 source fits and 9,180 adapters. The independent audit checks 825 payload hashes, all 72 draw scores, 108 comparisons, 1,260 group-deletion rows, residual offsets and ancestry. It verifies cloud replay assertions without independent refitting, full matrix replay or bootstrap regeneration. Intervals condition on fixed source fits, adapters and support designs; they do not establish prospective assay savings or independent confirmation.</p></details>
-    <div class="note"><p><b>Exploratory post-hoc offset control.</b> Chosen after the positive primary, this diagnostic uses saved fits and the same labels. R5 scores 0.529583 zero-shot, 0.531987 with scalar offsets alone and 0.576337 with the full adapter. Full minus offset is <b>+0.044350 [+0.016478, +0.092778]</b>; offset minus zero is <b>+0.002404 [−0.006172, +0.023880]</b>, with nominal unadjusted 95% intervals. Feature-dependent correction adds ranking beyond this control on saved predictions; offset-only benefit remains unresolved. Offsets preserve within-cell ranks but can align pooled predictions across source/query cells. The independent audit checks 44,199 query predictions, 1,020 offset/rank checks and paired-bootstrap arithmetic. No new fits or labels are used; this is not a fourth primary and leaves the three-primary family unchanged. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot_offset/REPORT.md">Diagnostic report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot_offset/independent_audit.json">Independent audit</a></p></div>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/REPORT.md">Full follow-up readout</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/absolute_curves.csv">All absolute curves</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/comparisons.csv">All frozen comparisons</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/independent_audit.json">Independent numerical and ancestry audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/primary_family3_interval.json">Three-primary family interval</a></p>
-  </section>
-
-  <section id="round2-complementarity" aria-labelledby="round2-complementarity-title">
-    <div class="shead"><p class="eyebrow">Clean nested complementarity</p><h2 class="title" id="round2-complementarity-title">Sequence and interface information can complement each other.</h2></div>
-    <p class="col">R4 ridge blended with the exact original reference scores <b>0.723789</b>: +0.056948 [+0.042591, +0.083811] against the competitive selector. R4 residual correction gives +0.044588 [+0.030379, +0.067056]. Both support a conditional development gain; neither lower bound exceeds 0.05.</p>
-    <p class="note">Assessed clusters never enter base fitting, stopping, ridge selection or residual-target construction. Predictions from other outer folds do not supply stacking inputs. Numerical proximity to the embedding selector is not a tested superiority claim.</p>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/complementarity/results/REPORT.md">Complementarity report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/complementarity_completion_audit.json">Completion audit</a></p>
-  </section>
-
-  <section id="round2-provenance" aria-labelledby="round2-provenance-title">
-    <div class="shead"><p class="eyebrow">Reproducibility, provenance and resources</p><h2 class="title" id="round2-provenance-title">Audited artifacts, with a disclosed launch-source gap.</h2></div>
-    <div class="note"><p><b>Locked repeats matched exactly on the recorded platform.</b> Two fresh identical-setting embedding-selector repeats used 242 local fits and distinct caches. Prediction and metric differences were zero over all 19,716 rows. This is execution reproducibility, not cross-platform equivalence or an assay-noise ceiling.</p><p><b>The cache fanout wrapper has an inherited provenance gap.</b> Current/committed and launch-authorization SHA-256 digests differ; exact launch-time wrapper bytes cannot be certified. Both digests are preserved in the <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/cache_completion_audit.json">cache audit</a>. The four extraction fingerprint sources, cohort, protocol and local artifact checks match; the discrepancy itself is not evidence of changed features.</p></div>
-    <div class="budget-box"><p class="eyebrow">Closed round-two accounting</p><p class="budget-total">$76.8388 <span>against the $100 ceiling</span></p><p>Shared cache $66.8431 + sequence $7.9957 + retained engineering allowance $2.00.</p><p><b>Not a final invoice or live credit balance.</b> Retaining the engineering allowance does not mean it was spent. Provider snapshots lag and differ, leaving $3.1554 unattributed; storage is separate. These assessment costs do not establish new-case end-to-end latency. A subsequent portable package measures cached-head latency separately; see the repository inference guide.</p></div>
-    <p class="note">The separate finalization phase carries <b>$8.61</b> in conservative closed compute plus a retained <b>$3</b> overhead allowance, within its additional $100 ceiling. All compute and temporary finalization Volumes are closed. Existing durable feature and weight caches remain. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/resources/final_cloud_closeout.json">Final resource closeout</a></p>
-    <p class="note">The separately authorized 13 October tranche is closed at <b>$67.302731</b> conservatively, with <b>$0 reserved</b>, against its $139 ceiling. Failed attempts are included and the application is stopped. Scientific outputs are preserved locally; the temporary tranche volume is deleted and historical structure caches retained. This is not a provider invoice or live credit balance. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/budget.json">Tranche ledger</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/resources/cloud_closeout.json">Cloud closeout</a></p>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/embedding_repeat_completion_audit.json">Embedding repeat audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/sequence_repeat_completion_audit.json">Sequence repeat audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/runtime_cost_summary.json">Runtime/cost accounting</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/resources/transfer_runtime_closeout.json">Local transfer closeout</a></p>
-  </section>
-
-  <section id="round2-confirmation" aria-labelledby="round2-confirmation-title">
-    <div class="question"><p class="eyebrow">Still open</p><h2 id="round2-confirmation-title">Independent confirmation.</h2><p class="task-body">The public stability release overlaps the canonical corpus. Conservative exclusions preserve <b>129 candidate rows, 126 peptides, 9 alleles and 36 cited studies</b>. A completed metadata/methods audit verifies heterogeneous endpoints, temperatures and constructs, with unresolved measurement mapping. The largest single-study/allele stratum has only 23 rows (Strønen 2016, A*02:01) and remains gated; it cannot provide representative multi-allele confirmation. External candidate outcome columns remain reserved. Incidental public-paper result visibility during literature retrieval is disclosed in the audit.</p><p class="task-body">No assay quote, partner commitment or adequately powered independent cohort is secured. The synthetic design supports asking for comparable assay quotes, not a guaranteed power or assay-noise claim. Lock the final procedure and analysis before a one-time independent confirmation.</p><p><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/independent_data/PROVENANCE.md">Completed metadata/methods audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/independent_data/README.md">Original identity audit</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/independent_data/design/README.md">Conditional assay-design study</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/REPORT.md">Current round 2 assessment</a></p></div>
-  </section>
-
-  <section id="round2-evidence" aria-labelledby="round2-evidence-title">
-    <div class="shead"><h2 class="title" id="round2-evidence-title">Inspect the evidence.</h2><p class="lede">This page is a local static submission snapshot. Numeric tables are generated from saved result CSVs, with source SHA-256 hashes in the <a href="round2-data.json">downloadable evidence payload</a>. Reading this page starts no model jobs.</p></div>
-    <p class="source-line"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/FINAL_REPORT.md">Combined finalisation readout</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/REPORT.md">Closed round-two assessment</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/INDEPENDENT_ASSAY_BRIEF.md">Unsent independent-assay brief</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/NEXT_RESEARCH_PLAN.md">Research plan and execution gates</a> · <a href="#archive">Original hackathon archive</a></p>
-  </section>
-  <!-- ROUND2 GENERATED END -->
-
-  <details class="archive" id="archive">
-    <summary>Original hackathon archive · 3–4 October 2026</summary>
-    <div class="archive-body">
-      <p class="archive-notice"><b>Historical evidence and film.</b> The original test below is separate from the current development assessment. The film’s conclusion and closing proposals describe the original tested features and are superseded by the round 2 evidence above. Original numerical results are preserved.</p>
-<section id="intro">
-    <div class="shead">
-      <h2 class="title">Original submission film</h2>
-    </div>
-
-    <figure>
-      <!-- The film runs live rather than as a recording: it is the same
-           composition the repo renders, with every number read at runtime from
-           film/film_data.js, which is generated from the frozen result tables.
-           Sandboxed in an iframe so its globals cannot collide with this page. -->
-      <div class="video-frame">
-        <iframe src="film/" title="Sequence Is All You Need? - the submission film"
-                loading="lazy" allowfullscreen
-                style="width:100%;aspect-ratio:16/9;border:0;display:block"></iframe>
-      </div>
-      <noscript>
-        <p class="note">
-          The film is rendered in the browser and needs JavaScript. The
-          30-second interface animation is available as a video instead:
-          <a href="intro.mp4">intro.mp4</a>.
-        </p>
-      </noscript>
-      <figcaption class="note">
-        Historical hackathon submission, 3–4 October 2026. Its closing proposals are superseded by the <a href="#round2">current assessment</a>.
-        Plays in the browser. <a href="film/">Open it full-screen</a> &middot;
-        the original 30-second interface animation also runs live at
-        <a href="intro/">intro/</a>, or
-        <a href="intro.mp4">as an MP4</a>.
-      </figcaption>
-    </figure>
-  </section>
-
-<section id="approaches">
-    <div class="shead">
-      <h2 class="title">Original approaches</h2>
-    </div>
-
-    <ul class="arm-list">
-      <li>Allele-mean (sanity floor)</li>
-      <li>Single sequence MLP (peptide + HLA contact residues)</li>
-      <li>Sequence ensemble (30 networks)</li>
-      <li>ESM-2 35M embeddings, alone</li>
-      <li>ESM-2 150M embeddings, alone</li>
-      <li>ESM-2 + sequence features</li>
-      <li>Boltz-2 structure — geometry only</li>
-      <li>Boltz-2 structure — confidence only</li>
-      <li>Boltz-2 structure — seq + geometry + confidence</li>
-      <li>FoldX energy + sequence</li>
-    </ul>
-  </section>
-
-<section id="results">
-    <div class="shead">
-      <p class="eyebrow">Historical test result</p>
-      <h2 class="title">Original held-out test · October 2026</h2>
-      <p class="lede">
-        <b>Held-out test split</b>, median per-allele Spearman, higher is better. Scored once,
-        after every modelling decision was frozen. An interval crossing zero is
-        <em>inconclusive</em>; a strong negative <em>rules out</em> the 0.05 bar.
-      </p>
-    </div>
-
-    <div class="scroller">
-      <table>
-        <caption>Test split &middot; 5,565 rows &middot; 67 alleles &middot; paired cluster bootstrap, 2,000 resamples</caption>
-        <thead>
-          <tr>
-            <th scope="col">Approach</th>
-            <th scope="col" style="text-align:right">Score</th>
-            <th scope="col">Verdict vs. baseline (0.706)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row-best">
-            <td>Sequence ensemble (30 networks)</td>
-            <td class="num">0.7064</td>
-            <td><span class="chip pos">historical baseline</span></td>
-          </tr>
-          <tr>
-            <td>ESM-2 35M embeddings, alone</td>
-            <td class="num">0.6979</td>
-            <td><span class="chip null">&minus;0.009 [&minus;0.029, +0.023] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>Sequence ensemble, full domain</td>
-            <td class="num">0.6904</td>
-            <td><span class="chip null">&minus;0.016 [&minus;0.039, +0.004] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>ESM-2 + sequence features</td>
-            <td class="num">0.6816</td>
-            <td><span class="chip null">&minus;0.025 [&minus;0.046, +0.007] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>Single sequence MLP (peptide + contact residues)</td>
-            <td class="num">0.6181</td>
-            <td><span class="chip neg">worse: &minus;0.088 [&minus;0.120, &minus;0.055]</span></td>
-          </tr>
-          <tr>
-            <td>Boltz-2 &mdash; seq + geometry + confidence</td>
-            <td class="num">0.5947</td>
-            <td><span class="chip neg">worse: &minus;0.112 [&minus;0.134, &minus;0.057]</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>The structural arm is conclusively worse.</b> Its interval sits entirely below zero, and
-        a sequence-only control through the <em>identical</em> pipeline beats it at every tuning
-        setting — so the loss is the structural features, not the fit.
-      </p>
-      <p>
-        <b>The ESM-2 arms are inconclusive at zero.</b> They neither replace nor improve the
-        baseline, and the intervals are tight enough to rule out a worthwhile gain.
-      </p>
-      <p>
-        <b>We do not claim "pretraining helps."</b> ESM-2 only <em>ties</em> the cheap 34-residue
-        contact-sequence baseline. Both beat a weaker full-domain encoding by similar margins —
-        a fact about the weak encoding, not evidence for pretraining.
-      </p>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>One strong positive.</b> With no retraining, the sequence model ranked 81,600 naturally
-        presented peptides above 816,000 matched decoys — a different assay, a different biological
-        event — at <strong>median AUROC 0.966</strong>. This secondary presentation result concerns a different biological endpoint; it does not independently confirm stability generalisation.
-      </p>
-    </div>
-  </section>
-
-<section id="methods">
-    <div class="shead">
-      <h2 class="title">Methods</h2>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>The rules were fixed before any modelling.</b> Splits are frozen 70/10/20 with peptides
-        grouped by similarity, so no peptide within 3 substitutions appears in two splits. The
-        primary metric is median per-allele Spearman &mdash; ranking peptides <em>within</em> each
-        allele. The original prespecified worthwhile-gain threshold was 0.05; it is not an established assay-noise ceiling.
-      </p>
-      <p>
-        Every arm uses the same rows, the same 30-network ensembling, and an equal tuning
-        <em>budget</em>. Scores are median per-allele Spearman.
-      </p>
-      <p>
-        <b>NetMHCstabpan is not used as a comparator.</b> The published model for this task was
-        reported to have substantial overlap with the benchmark corpus, including test peptides. This overlap prevents a clean comparison; it does not prove checkpoint-specific training membership or pure memorisation.
-      </p>
-    </div>
-
-    <dl class="spec">
-      <div><dt>Measured pairs</dt><dd>28,166</dd></div>
-      <div><dt>Unique peptides</dt><dd>5,633</dd></div>
-      <div><dt>HLA alleles</dt><dd>75</dd></div>
-      <div><dt>Peptide length</dt><dd>9 exact</dd></div>
-      <div><dt>Labels at 0 h</dt><dd>20.2%</dd></div>
-      <div><dt>Worthwhile bar</dt><dd>&Delta;&rho; &ge; 0.05</dd></div>
-    </dl>
-  </section>
-    </div>
-  </details>
-
-  <footer>
-    <p class="eyebrow">logic binders · Protein Engineering Track</p>
-    <p>London AI × Science, 3–4 October 2026. Audited development update: 13 October 2026.</p>
-    <p>The current round 2 result uses original training data only. The original held-out test and film are preserved in the dated archive above; their numbers are not comparable across assessment regimes.</p>
-    <p><a href="https://github.com/cheparukhin/peptide-hla-stability">Project repository</a> · <a href="round2-data.json">Source hashes and saved comparisons</a></p>
-  </footer>
+<a class="skip" href="#results">Skip to results</a>
+<main>
+<!-- ROUND2 GENERATED START -->
+<header class="masthead">
+  <p class="eyebrow">Peptide–HLA stability · Research findings</p>
+  <h1>Boltz embeddings improve peptide–HLA stability ranking</h1>
+  <p class="standfirst">Structure-model representations improve ranking within a development dataset and under held-out HLA groups. Twenty measurements per target allele improve adaptation. Independent experimental confirmation is the next test.</p>
+  <nav aria-label="Research navigation"><a href="#results">Results</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#interpretation">Interpretation</a><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md">Full paper ↗</a></nav>
+</header>
+<section class="abstract" aria-labelledby="question">
+  <h2 id="question">Can representations from a structure model predict complex stability?</h2>
+  <p>Peptide–HLA complexes display intracellular peptides to T cells. We study whether frozen Boltz-2 embeddings improve the ordering of peptides by experimentally measured complex stability. The endpoint is the median within-allele Spearman correlation, giving each eligible allele equal weight.</p>
+  <dl class="cohort"><div><dt>Development pairs</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div><div><dt>Eligible HLA alleles</dt><dd>69</dd></div></dl>
+  <p class="note">The development cohort contains 75 alleles; 69 have at least 20 observations for the primary endpoint. These pairs belong to the original training split. Nested assessment separates held-out peptide clusters from model fitting and selection.</p>
+</section>
+<section id="results" aria-labelledby="results-title">
+  <p class="eyebrow">01 · Peptide-cluster holdout</p>
+  <h2 id="results-title">Embeddings improve ranking over competitive sequence models</h2>
+  <div class="main-result"><div><p class="metric-label">Paired improvement in Spearman</p><p class="effect">+0.0543</p><p class="uncertainty">95% interval [+0.0314, +0.0808]</p></div>
+  <div class="score-pair"><p><span>Embedding selector</span><strong>0.7212</strong></p><p><span>Sequence selector</span><strong>0.6668</strong></p></div></div>
+  <p>The prespecified embedding-or-original selector outperforms the competitive sequence selector. The lower interval bound is positive but below +0.05, so the declared criterion for a gain exceeding 0.05 is not met.</p>
+  <p>Position-aware features are useful. The designated contact map, however, has no established advantage over shuffled membership: +0.0007 [−0.0096, +0.0236]. The result supports predictive information in the representations; it does not identify a causal structural mechanism.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Paired results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/pooled_scores.csv">All procedure scores</a></p>
+</section>
+<section id="transfer" aria-labelledby="transfer-title">
+  <p class="eyebrow">02 · Held-out HLA groups</p>
+  <h2 id="transfer-title">The advantage persists when target HLA groups are excluded from fitting</h2>
+  <p>Two comparisons test this result: matched multilayer perceptrons (MLPs) using sequence or Boltz features, and a broader comparison between selected sequence and embedding procedures. Joint holdout also excludes target peptide clusters.</p>
+  <div class="table-scroll" role="region" aria-label="Transfer results" tabindex="0"><table><caption>Median within-allele Spearman · 69 alleles · conditional crossed 95% intervals</caption><thead><tr><th scope="col">Held out / comparison</th><th scope="col">Sequence</th><th scope="col">Embedding</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">HLA group<span>Matched MLPs</span></th><td>0.1605</td><td>0.5667</td><td>+0.4062 [+0.3073, +0.4733]</td></tr>
+<tr><th scope="row">HLA group<span>Embedding vs expanded sequence selector</span></th><td>0.1921</td><td>0.5463</td><td>+0.3542 [+0.2762, +0.4563]</td></tr>
+<tr><th scope="row">HLA group + peptide cluster<span>Matched MLPs</span></th><td>0.1242</td><td>0.4980</td><td>+0.3738 [+0.3092, +0.4638]</td></tr>
+<tr><th scope="row">HLA group + peptide cluster<span>Embedding vs expanded sequence selector</span></th><td>0.1085</td><td>0.5067</td><td>+0.3982 [+0.3143, +0.4613]</td></tr></tbody></table></div>
+  <p class="note">The original 30-member sequence reference scores 0.1709 under HLA holdout and 0.1350 under joint holdout; expanding sequence selection does not consistently improve this reference. These are comparisons of complete predictive procedures. Boltz has broader molecular context and prior structural training. HLA holdout from supervised fitting does not establish structural novelty during pretraining. The additive sequence-ridge comparator cannot express allele-specific peptide preferences and is not the principal comparator here.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/comparisons.csv">All transfer comparisons</a></p>
+</section>
+<section id="adaptation" aria-labelledby="adaptation-title">
+  <p class="eyebrow">03 · Few-shot adaptation</p>
+  <h2 id="adaptation-title">Twenty measurements per target allele improve transfer</h2>
+  <p>Under strict joint holdout, adapting a Boltz-feature ridge model raises the score from <strong>0.5296</strong> without target labels to <strong>0.5763</strong> with 20 labels per allele. The paired improvement is <strong>+0.0468</strong>, with a three-primary Bonferroni interval of <strong>[+0.0140, +0.1195]</strong> at 98.33%.</p>
+  <figure><img src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="Learning curves for sequence and Boltz representations, with the positive family-adjusted interval for Boltz adaptation at twenty labels."><figcaption>Scores average three fixed support designs on 68 target alleles. Support and query peptide families are excluded from source fitting. R0 is additive sequence ridge; R5 uses Boltz features. The four-member sequence ensemble is a reduced reference, not the fully tuned sequence selector. The interval conditions on these support designs; uncertainty bands for the curves are not estimated.</figcaption></figure>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/absolute_curves.csv">Exact learning curves</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/primary_family3_interval.json">Primary family interval</a> · <a href="figures/fewshot_curves.svg">Download figure</a></p>
+</section>
+<section id="extensions" aria-labelledby="extensions-title">
+  <p class="eyebrow">04 · Additional descriptors and learners</p>
+  <h2 id="extensions-title">Added complexity has no established benefit beyond Boltz</h2>
+  <p>On a matched 4,449-pair subset, neither ProteinMPNN complex context nor repaired FoldX descriptors establishes an additional ranking benefit. For ProteinMPNN, the comparison adds complex-context scores to Boltz plus peptide-only ProteinMPNN scores. For FoldX, it adds repaired energy descriptors to Boltz alone.</p>
+  <div class="table-scroll" role="region" aria-label="Descriptor results" tabindex="0"><table><caption>Matched MLPs · 69 alleles · conditional 98.33% family intervals</caption><thead><tr><th scope="col">Added information</th><th scope="col">Reference</th><th scope="col">Augmented</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">ProteinMPNN complex context</th><td>0.5956</td><td>0.6195</td><td>+0.0240 [−0.0219, +0.0659]</td></tr>
+<tr><th scope="row">Repaired FoldX descriptors</th><td>0.6007</td><td>0.6157</td><td>+0.0150 [−0.0524, +0.0450]</td></tr></tbody></table></div>
+  <p>A subsequent ProteinMPNN extension to all 19,716 development pairs gives −0.0070 [−0.0220, +0.0131] relative to Boltz alone (pointwise 95% interval). This extension was selected after the subset analysis. Ranking loss (+0.0071 [−0.0051, +0.0098]) and hybrid learners (+0.0044 [−0.0055, +0.0100]) also have intervals spanning zero. These results establish neither added benefit nor equivalence.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/comparisons.csv">ProteinMPNN</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/comparisons.csv">FoldX</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/comparisons.csv">Full-cohort extension</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/comparisons.csv">Ranking loss</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/comparisons.csv">Hybrid learners</a></p>
+</section>
+<section id="interpretation" class="discussion" aria-labelledby="interpretation-title">
+  <p class="eyebrow">Interpretation</p>
+  <h2 id="interpretation-title">A useful development result; independent measurements must test generalisation</h2>
+  <p>The evidence supports improved ranking within this assay corpus. It does not establish calibrated half-lives, immunogenicity prediction, or experimental savings. The underlying assay uses β2-microglobulin dissociation as a proxy for peptide–HLA stability. Zero-valued records may reflect censoring or other measurement limitations; their cause cannot be resolved from the aggregated labels.</p>
+  <p>All intervals resample saved predictions while holding models and selection decisions fixed. Peptide-cluster resampling is used for peptide holdout; crossed HLA-group and peptide-cluster resampling is used for transfer and adaptation. The intervals omit repeated fitting, new assay measurements, and the project's adaptive choice of follow-up studies. The three-primary correction covers its declared family only.</p>
+  <p>The decisive next experiment is a blinded kinetic-assay panel evaluated with frozen models and a prespecified analysis. Raw curves and independent replicates should distinguish low stability, censoring, and assay failure. No independent cohort has yet confirmed these results.</p>
+</section>
+<footer><p><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md">Full scientific report</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/EVALUATION.md">Evaluation methods</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/DATASETS.md">Dataset and assay</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/ROUND2_INFERENCE.md">Use the released models</a></p><p><a href="round2-data.json">Source values and hashes</a> · <a href="intro/">Peptide–HLA biology animation</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability">Code and evidence</a></p></footer>
+<!-- ROUND2 GENERATED END -->
 </main>
-
 </body>
 </html>

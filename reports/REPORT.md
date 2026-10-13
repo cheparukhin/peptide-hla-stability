@@ -1,279 +1,164 @@
-> **Original benchmark report.** Preserved as the record of the hackathon results. For current project status, follow-up evidence, interpretation corrections and research priorities, use the [current project review and research plan](NEXT_RESEARCH_PLAN.md).
+# Learned interface representations improve peptide–HLA stability ranking
 
-# Does pretrained protein AI improve peptide–HLA stability prediction?
+## Abstract
 
-**London AI × Science — Protein Engineering Track, 3–4 October 2026**
+Peptide–HLA complex stability is a kinetic property that cannot be inferred from a plausible bound structure alone. We tested whether frozen Boltz-2 representations improve prediction of assay-derived stability over supervised sequence models. Nested assessment of 19,716 peptide–HLA pairs, with related peptides held together, increased median within-allele Spearman correlation from 0.6668 to 0.7212: a difference of **+0.0543, with a conditional 95% resampling interval of [+0.0314, +0.0808]**. Matched nonlinear comparisons also favoured embeddings when HLA groups, or both peptide and HLA groups, were held out. Position-preserving features outperformed pooled controls, whereas the specified contact map had no established advantage over shuffled contacts. Twenty measurements per target allele improved adaptation; additional ProteinMPNN scores, repaired FoldX descriptors, ranking loss and hybrid heads did not establish further gains. These results support useful predictive information in learned interface representations. They do not isolate a structural mechanism, demonstrate calibrated physical half-lives or provide independent experimental confirmation.
 
-> **Main result.** A supervised sequence ensemble leads the six-arm test
-> comparison: median per-allele Spearman **0.693 on validation** and **0.706 on test**.
-> Frozen ESM-2 embeddings do not establish an improvement, and their test
-> intervals exclude the predeclared **+0.05** worthwhile gain. The implemented
-> Boltz-2 structural arm reduces test ranking accuracy by
-> **−0.112 [−0.134, −0.057]**, after a full-cohort fold costing **$212.71,
-> derived from recorded container-hours**.
+## Biological question and measurement
 
-**Evidence status.** The six-arm test summary and paired intervals are final and
-reported in §7; the completion manifest is
-[`stage6_test_manifest.json`](stage6_test_manifest.json). Validation comparisons
-remain separate in §3. ProteinMPNN and FoldX are diagnostic pilots, with narrower
-conclusions than the predictive benchmark.
+HLA class I molecules present short peptides for immune recognition. We study the ranking of nine-residue peptides by the stability of their complex with a specified HLA molecule. Stability, binding affinity and immunogenicity are related but distinct quantities. In particular, an equilibrium binding free energy does not determine a dissociation rate without kinetic information.
 
-## 1. The problem
+The supplied benchmark, attributed to [Rasmussen et al. (2016)](https://doi.org/10.4049/jimmunol.1600582), contains 28,166 pairs, 5,633 peptides and 75 HLA alleles or constructs. The source study used a scintillation proximity assay and reported geometric means of two independent experiments. This assay follows labelled β2-microglobulin dissociation as a proxy for peptide–HLA dissociation; the labels are therefore assay-derived complex-stability measurements, rather than direct measurements of every peptide's microscopic unbinding rate. [Harndahl et al., assay method](https://doi.org/10.1016/j.jim.2010.10.012).
 
-HLA molecules hold short protein fragments at the cell surface for immune
-inspection. We predict how long a **9-residue peptide** remains bound to its
-HLA molecule, measured as its **dissociation half-life**.
+The source study selected peptides using predicted binding, so this population does not represent a random peptide repertoire. The supplied file lacks the separate replicate observations, raw time courses and measurement-level failure or censoring flags. About 20.2% of labels are zero. They may represent very low or unresolved stability, but the distribution alone does not establish a common detection limit or prove that every zero is left-censored. We retain the supplied labels for the ranking analyses. Their interpretation limits claims about calibration, censoring models and assay reliability. Three engineered C67S constructs remain in the assessed population; effects of this substitution cannot be isolated without matched wild-type measurements. The [data description](../docs/DATASETS.md) specifies the source, constructs and exclusions.
 
-Binding affinity describes equilibrium binding strength; dissociation half-life
-describes how quickly a bound complex comes apart. A plausible predicted pose
-or favourable interaction energy therefore needs to be tested against half-life
-labels before it can be used as a stability predictor.
+## Methods
 
-**Research question.** Do pretrained protein-model features improve half-life
-prediction over a supervised sequence model, and is any improvement worth the
-additional compute?
+### Cohorts and held-out assessment
 
-## 2. Data and evaluation
+The original split contains 19,716 training, 2,817 validation and 5,633 test pairs. Peptides connected by Hamming distance of three or fewer substitutions belong to the same cluster and remain in one partition. All embedding, transfer, label-budget and descriptor assessments reported below use the original training partition: 3,587 peptide clusters across 75 alleles or constructs. Five outer peptide-cluster folds produce held-out predictions for every training pair; regularisation, preprocessing, stopping and procedure selection use only the permitted inner data.
 
-| Property | Value |
-|---|---:|
-| Peptide–HLA pairs | 28,166 |
-| Unique peptides | 5,633 |
-| HLA alleles | 75 |
-| Peptide length | 9 residues |
-| Labels recorded at 0 h | 20.2% — treated as an assay floor |
-| Train / validation / test rows | 19,716 / 2,817 / 5,633 |
+These are development assessments. An earlier diagnostic repartitioned the complete dataset and used 3,350 original test rows for fitting, 448 for stopping and 585 for evaluation. Although the final benchmark models were fitted on the original training partition, those exposures and aggregate results influenced the research process. The original test was not reused for the subsequent studies, but neither nested assessment nor a new analysis of the training cohort restores independent confirmation. Exact split and exposure details are in the [evaluation specification](../EVALUATION.md).
 
-**Splits.** Frozen 70/10/20 partitions group peptides by sequence similarity:
-peptides within three substitutions cannot appear in different splits. This
-reduces inflation from training on near-copies of evaluation peptides.
+Transfer uses five HLA-group folds and their 25 intersections with peptide-cluster folds. Related HLA sequences are grouped by a fixed Hamming-distance rule; this is a sequence convention, not a validated functional distance. Joint holdout excludes both the target HLA group and target peptide cluster from fitting. Predictions pooled across joint cells may differ in scale because they come from different fitted models. No outcome-based recalibration was applied.
 
-**Primary metric.** Median per-allele Spearman measures peptide ranking within
-each allele. Validation covers **68 eligible alleles / 2,802 scored rows**;
-test covers **67 / 5,565**. Eligibility is fixed from row counts and labels,
-independently of predictions. Secondary metrics are MAE on `log1p(half-life
-in hours)` and precision@10 for half-life greater than 2 h.
+### Representations and predictors
 
-**Decision rule.** The frozen [evaluation contract](../EVALUATION.md) sets a
-minimum worthwhile gain of **Δ median per-allele Spearman = +0.05**, motivated
-by the benchmark's estimated uncertainty. This is a decision threshold rather
-than a universal detection limit. Paired 95% intervals resample whole peptide
-clusters, using 2,000 draws. An interval crossing zero leaves the direction
-unresolved; an upper bound below +0.05 excludes that gain under this procedure.
-An improvement clears the bar only if its lower bound exceeds +0.05.
+The competitive sequence procedure selects among neural models, regression trees and a pairwise ranker using inner data. The main embedding procedure selects among frozen representations and ridge or multilayer perceptron (MLP) heads, retaining the original sequence reference as a fallback. Main neural heads average 30 members. Selection is part of each assessed procedure; outer results do not determine a new global winner.
 
-**Comparison controls.** The headline sequence, ESM and structural arms each
-use 30-network ensembles on the same validation rows. Ensembling alone is worth
-**+0.074 mean Spearman** against the deployed single network, from no new
-information, so unequal ensembling would manufacture a difference
-([limitations §4.5](limitations.md#45-arms-must-be-ensembled-identically-or-the-comparison-is-manufactured)).
-Arm-specific tuning ranges and sequence controls are recorded in the stage
-reports. The single
-network and feature-only ablations below provide context. NetMHCstabpan is
-excluded as a held-out comparator because its training data overlap this
-benchmark, including test peptides.
+Boltz-2 features describe a complex containing HLA, β2-microglobulin and peptide. We compare chain averages, position-preserving token features and interface pair features. The principal contact-pooled representation retains separate peptide positions 1, 2 and 9 and averages positions 3–8. Its fixed contact mask uses heavy-atom proximity across five crystal structures. Matched controls shuffle HLA contact membership or replace positional features with tiled pooled values while preserving dimensions and projection. Fixed channel projections are independent of labels. [Feature definitions and saved protocol](further_research/round2/embedding/protocol.json).
 
-**Test exposure disclosure.** An earlier diagnostic re-partitioned the full
-dataset and exposed frozen test rows to diagnostic fitting and aggregate
-evaluation. Its conclusion was retracted; the final benchmark models were
-fitted on the frozen training split. The exposure partly influenced the project
-narrative and motivation for ensembling, so this study does not claim a wholly
-untouched test set. The diagnostic used **3,350 frozen test rows for fitting,
-448 for early stopping and 585 in its evaluation**, exposing eight aggregate
-statistics. Observed aggregates and the fix are recorded in
-[the evaluation contract](../EVALUATION.md#disclosed-test-exposure).
-
-## 3. Main result: validation comparisons
-
-Higher Spearman is better. All differences are against the **0.6931 sequence
-ensemble**, and every interval in this table is **validation**, not test.
-
-| Approach | Median Spearman | Δ vs. baseline [paired 95% CI] | Interpretation |
-|---|---:|---|---|
-| Allele mean | 0.000 | — | Sanity floor |
-| Single sequence MLP: peptide + 34 HLA contact residues | 0.610 | — | Single-network reference |
-| **Sequence ensemble, 30 networks** | **0.693** | — | **Reference; highest point estimate** |
-| ESM-2 35M embeddings | 0.683 | −0.010 [−0.038, +0.035] | Direction unresolved; excludes +0.05 |
-| ESM-2 150M embeddings | 0.674 | −0.019 [−0.060, +0.020] | Direction unresolved; excludes +0.05 |
-| Sequence + ESM-2 embeddings | 0.676 | −0.017 [−0.047, +0.032] | Direction unresolved; excludes +0.05 |
-| Boltz-2 geometry only | 0.268 | −0.425 [−0.499, −0.352] | Worse |
-| Boltz-2 confidence only | 0.393 | −0.301 [−0.369, −0.227] | Worse |
-| Sequence + Boltz-2 geometry + confidence | 0.622 | **−0.071 [−0.123, −0.025]** | **Worse** |
-
-Sources: [ESM comparisons](stage3_comparisons.csv),
-[structural scores](stage5_structural_val.csv) and
-[structural paired intervals](stage5_structural_bootstrap.csv).
-
-**Interpretation.** ESM's results allow small gains or losses; they do not
-establish equivalence to the baseline or a zero effect. The tested structural
-arm performs worse on validation. Its sequence encoding mix also differs from
-the reference ensemble, so the headline delta measures the implemented arm
-rather than isolating the effect of structural features. A sequence-only
-control in the structural pipeline has lower development MSE at **five of six**
-tested L2 settings, including the structural arm's selected setting: **0.5458
-vs. 0.5503 at L2 0.01**. At L2 0.1 the ordering reverses, **0.8176 vs. 0.7082**.
-That supports a detrimental feature addition within this implementation, but is not
-a paired validation comparison on the primary ranking metric. See
-[the structural report](stage4c5_features.md#93-the-control-that-makes-the-result-attributable).
-
-## 4. Additional experiments and diagnostic pilots
-
-These experiments use validation or their own separately stated protocols.
-They are not additional held-out test comparisons.
-
-| Experiment | Supported outcome |
+| Description used here | Identifier in source tables |
 |---|---|
-| [Weak-binder augmentation](stage2b_augmentation.md) | Best Δ +0.024; all paired intervals cross zero and exclude +0.05 under the tested sources and weights. |
-| [Auxiliary affinity labels](stage2c_affinity.md) | No demonstrated worthwhile increment. Affinity alone ranks stability at ρ 0.580 on the dual-labelled subset; this is not an upper bound on an energy model or its incremental value. |
-| [ESM-2 + affinity](stage3b_esm_multitask.md) | **Unresolved:** sensitivity at the +0.05 bar was not established for the difference-of-differences analysis. |
-| [Censored (Tobit) loss](stage7_censored.md) | Better floor calibration, worse ranking: Δ −0.0414 [−0.078, −0.006]. |
-| [ProteinMPNN inverse folding](stage5_inverse_folding.md) | A five-complex pilot showed no half-life association and separated one known pose failure. A subsequent **[2,000-fold QC sample](stage5_inverse_folding_qcsample_a-cheparukhin.csv)** showed that the pilot's absolute score thresholds did **not transfer** ([run record](stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json)). No full-cohort regression comparison was performed. |
-| [FoldX empirical energy](stage8_foldx.md#results) | Pilot repair changed implausible raw energies. **Neither standalone FoldX nor sequence + FoldX has been scored for half-life prediction**; incremental predictive value remains open. |
+| Positional peptide + 34-residue HLA one-hot sequence | R0 |
+| Boltz chain averages | R2 |
+| Projected positional token features | R3 |
+| Interface features at all nine peptide positions | R4 |
+| Contact-pooled interface features | R5 |
+| Native-peptide compatibility on peptide backbone alone | P |
+| Native-peptide compatibility with HLA/β2m context | C |
+| Repaired FoldX energy and interface descriptors | E |
 
-The geometry/confidence benchmark supports a negative result for the tested
-structural feature block. ProteinMPNN and FoldX supply engineering diagnostics;
-they do not provide two further independent predictive nulls.
+Matched transfer comparisons hold the learner recipe, parameter grid, selection and stopping rules fixed across feature sets. Feature dimensions and model parameter counts still differ. Moreover, a ridge model of concatenated peptide and HLA one-hot features is additive: within a fitted model, HLA identity changes the intercept but cannot change peptide ordering. It cannot represent allele-specific peptide motifs. Nonlinear sequence comparisons therefore carry more weight than the ridge comparison. Boltz's fuller molecular context and pretraining also prevent attributing the difference solely to three-dimensional structure.
 
-## 5. Transfer and unseen-allele analysis
+ProteinMPNN evaluates the native peptide using the full-backbone `v_48_020.pt` checkpoint, zero added coordinate noise and the same 16 decoding orders across contexts. Each descriptor block contains nine position-wise mean log probabilities. The peptide-only backbone was predicted in the full native complex, so removing its other chains does not create a context-free structural control. FoldX applies `RepairPDB` and `AnalyseComplex`, retaining β2-microglobulin, to produce 29 descriptors. Both methods are tested as predictors of the measured endpoint; neither directly measures dissociation kinetics. Exact settings are in the [ProteinMPNN](followup3/inverse_execution_v2/protocol.json) and [FoldX](followup3/foldx/protocol.json) protocols.
 
-**Elution transfer.** Without retraining on elution labels, the sequence model
-discriminates **81,600 naturally presented peptides** from **816,000 matched
-proteome decoys** across **51 alleles**, with median **AUROC 0.9656**. Random
-scores return 0.4974. More informative controls preserve AUROC **0.9157** when
-decoys are ligands from other alleles and reduce it to **0.6965** when the model
-receives the wrong HLA pseudosequence.
+### Estimand and uncertainty
 
-These controls support transfer of allele-dependent peptide recognition to a
-different assay. Elution is not a half-life measurement, and proteome decoys are
-assumed negatives. This is evidence of biological transfer, rather than a
-second measurement of stability accuracy or proof that dataset artefacts are
-absent. Protocol and caveats: [elution report](stage3c_elution_validation.md).
+The primary endpoint is the median of within-allele Spearman correlations on pooled held-out predictions. The main panel contains 69 alleles with at least 20 observations and varying labels, covering 19,647 rows. A sensitivity panel requires at least 50 observations and contains 68 alleles. A reported difference subtracts the two panel medians; it is not a median of allele differences or of fold scores. This estimand gives equal weight to eligible alleles and addresses ranking, rather than error in hours.
 
-**Unseen alleles.** A separate leave-allele-out analysis gives median ρ **0.741**
-for near alleles and **0.339** for distant alleles: near − distant **+0.403
-[+0.223, +0.478]**. Panel composition partly confounds the distance association.
-These models are refitted under a different protocol, so these values are not
-comparable to §3 or §7. See [the allele hold-out report](stage7_allele_holdout.md).
+Intervals use 2,000 paired bootstrap draws of whole peptide clusters. Transfer and adaptation additionally resample HLA groups independently, carrying their multiplicities into the allele median. These crossed intervals are dependence sensitivities. All intervals are **conditional on the saved fitted predictions and selection decisions**. They omit retraining, repeated selection, support-design variation and independent assay variation; they should not be read as demonstrated coverage for a newly trained or deployed procedure.
 
-## 6. Compute cost
+The main study's declared decision criterion requires the lower interval bound to exceed +0.05. That threshold is a study decision, not a universal detection limit or a demonstrated biological utility threshold. The adaptation, ProteinMPNN-context and repaired-FoldX primary questions form a three-comparison family, reported with 98.3333% intervals using Bonferroni tail probabilities. Other intervals are pointwise 95% unless stated otherwise. This correction covers the specified family, not the project's adaptive research history. The [evaluation specification](../EVALUATION.md) contains the complete analysis rules.
 
-| Approach | Project cloud spend | Compute per 1,000 new pairs | Cost basis |
-|---|---:|---|---|
-| Sequence ensemble | $0; local CPU | **~0.073 s**, including feature assembly | Measured local timing |
-| ESM-2 35M ensemble | $0; local GPU/CPU | **~1.14 s**; illustrative ~$0.00047 | Local timing priced at a rented A10G rate; not an incurred bill |
-| Boltz-2 production folds | **$212.71 derived** | **~$7.55**, fold only at realised cohort rate | 28,166 folds, 0 execution failures, 143.6 A10G-hours; 7 h 32 min wall |
-| Structural feature extraction | ~$1.18 derived | Reported separately from folding | Full cohort, 0 extraction failures |
-| ProteinMPNN QC sample | ~$1.15 derived, including a discarded attempt | Diagnostic sample; no deployed predictor | 2,000 successful sampled scores |
-| FoldX pilots | ~$0.33 derived | Predictive production pass not run | Pilot timing and rates |
+## Results
 
-Production folding dominates project compute. Its **$212.71** figure is
-recorded container-hours multiplied by the measured worker rate; a final
-provider-bill reconciliation was not captured. The ledger also records **$4.41
-metered pre-production spend**. Costs here are useful comparisons of the tested
-implementations, rather than deployment quotes. Zero execution failures do not
-establish pose accuracy across the cohort. The
-[production verification](ectodomain-20261004/production_verification.json)
-records folding totals, and the
-[QC run record](stage5_inverse_folding_qcsample_a-cheparukhin.provenance.json)
-records the successful sample and discarded attempt. See
-[the compute ledger](compute_ledger.md) for the broader accounting.
+### Interface embeddings improve ranking within the development cohort
 
-## 7. Test results
+The embedding selector achieved 0.721163 against 0.666841 for the competitive sequence selector: **Δ +0.054322 [+0.031395, +0.080805]**. The lower bound is positive but below +0.05, so the declared worthwhile-gain criterion was not met. Requiring 50 observations per allele gave +0.056352 [+0.031732, +0.079137]. Inner selection chose the contact-pooled MLP in four outer folds and the per-position interface ridge model in one.
 
-The [test provenance record](test_scoring_provenance.json), captured
-**4 October 2026 at 13:35:40 BST**, identifies **six arms**, each with predictions
-for all **5,633 test rows**. The written summary scores **5,565 rows across 67
-eligible alleles**. The estimates below come directly from
-[the existing test summary](stage6_test_summary.csv); no test scoring was rerun
-for this report.
+| Main assessment procedure | Median within-allele Spearman |
+|---|---:|
+| Original sequence MLP ensemble | 0.6615 |
+| Competitive sequence selector | 0.6668 |
+| Chain-average Boltz MLP | 0.4219 |
+| Per-position interface ridge | 0.6845 |
+| Per-position interface MLP | 0.7136 |
+| Contact-pooled interface MLP | 0.7210 |
+| Same MLP with shuffled contact membership | 0.7203 |
+| Full 9 × 34 positional interface MLP | 0.7315 |
+| Prespecified embedding selector | 0.7212 |
 
-| Approach | Test median Spearman | Δ vs. sequence ensemble [paired 95% CI] | Test MAE, log1p |
-|---|---:|---|---:|
-| **Sequence ensemble: peptide + contact residues** | **0.7064** | — | **0.4657** |
-| Single sequence MLP | 0.6181 | −0.088 [−0.120, −0.055] | 0.5322 |
-| Sequence ensemble: full HLA domain | 0.6904 | −0.016 [−0.039, +0.004] | 0.4804 |
-| ESM-2 35M ensemble | 0.6979 | −0.009 [−0.029, +0.023] | 0.4735 |
-| Sequence + ESM-2 ensemble | 0.6816 | −0.025 [−0.046, +0.007] | 0.4828 |
-| Sequence + Boltz-2 geometry + confidence | 0.5947 | **−0.112 [−0.134, −0.057]** | 0.5174 |
+Component scores describe the assessed procedures and are not a replacement selection rule. The full positional model's difference from the contact-pooled model was uncertain, +0.0106 [−0.0142, +0.0220]. The competitive sequence selector's improvement over the original ensemble was also uncertain, +0.0053 [−0.0093, +0.0123]. [All absolute scores](further_research/round2/results/main/pooled_scores.csv) and [paired comparisons](further_research/round2/results/main/paired_comparisons.csv).
 
-![Paired test comparisons against the sequence ensemble](figures/report_test_comparisons.png)
+Matched positional controls show clear gains over their pooled counterparts: +0.3387 [+0.3029, +0.3773] for projected tokens and +0.1663 [+0.1378, +0.1992] for full interface positions. By contrast, the designated versus shuffled contact mask gave +0.0007 [−0.0096, +0.0236]. Position information is useful in these representations; the particular contact map has no established benefit.
 
-The [test paired intervals](stage6_test_paired_ci.csv) use 2,000 whole-cluster
-resamples for the primary metric. Both ESM comparisons cross zero and exclude
-the +0.05 gain. The implemented structural arm is worse, with its interval
-entirely below zero. These test verdicts agree with validation. Median
-precision@10 is 0.9 for the sequence and ESM arms and 0.8 for the structural
-arm; the paired precision intervals cross or touch zero, so that secondary
-metric does not establish a difference.
+Sequence and embedding predictions also contain complementary information. An inner-selected blend of the per-position interface ridge model and original sequence ensemble scored 0.7238: +0.0393 [+0.0220, +0.0567] over that ridge alone and +0.0569 [+0.0426, +0.0838] over the competitive sequence selector. Residual correction scored 0.7114, +0.0446 [+0.0304, +0.0671] over the selector. These positive secondary comparisons also fall short of a lower bound above +0.05. [Complementarity comparisons](further_research/round2/complementarity/results/paired_comparisons.csv).
 
-The run is recorded in the [completion manifest](stage6_test_manifest.json) —
-per-arm prediction hashes, distance strata, the differential and the file list —
-alongside the [test provenance record](test_scoring_provenance.json). The final
-benchmark procedure is specified in the
-[test-scoring runbook](TEST_SCORING_RUNBOOK.md), with the earlier exposure
-disclosed in §2.
+### Nonlinear transfer comparisons favour embeddings
 
-## 8. Limitations
+| Groups held out | Matched sequence MLP | Matched interface MLP | Difference, crossed 95% interval |
+|---|---:|---:|---:|
+| HLA groups | 0.1605 | 0.5667 | +0.4062 [+0.3073, +0.4733] |
+| Peptide clusters and HLA groups | 0.1242 | 0.4980 | +0.3738 [+0.3092, +0.4638] |
 
-- Conclusions cover the tested frozen ESM-2 representations and Boltz-2
-  single-pose feature extraction. Fine-tuning, other model families and other
-  structural representations remain open.
-- ProteinMPNN's pose-failure evidence rests on one failing complex; its
-  absolute thresholds failed to transfer to the QC cohort. FoldX predictive
-  performance remains unmeasured.
-- ESM-2 + affinity is unresolved at the worthwhile-gain threshold. Missing
-  or underpowered evidence is not treated as a predictive negative.
-- The assay floor creates tied labels, and no assay replicates are available
-  to estimate a noise ceiling. The panel was partly selected by predicted
-  affinity, limiting broader biological generalisation.
-- Earlier test exposure, validation model selection and an unreconciled provider
-  bill for the fold cost limit the strength of the claims.
+The original sequence ensemble scored 0.1709 and 0.1350 in these regimes; the expanded sequence selector scored 0.1921 and 0.1085. The embedding selector scored 0.5463 and 0.5067, exceeding the expanded selector by +0.3542 [+0.2762, +0.4563] and +0.3982 [+0.3143, +0.4613]. The expanded sequence selector's lower joint score is retained in the comparison rather than treated as an improvement over the original reference.
 
-Full register: [limitations.md](limitations.md).
+Matched ridge gains were also positive, but their additive sequence comparator has the limitation described above. The nonlinear gains retained positive lower bounds in the ≥50-row panel, and positive point differences after deleting any one HLA group. These checks strengthen the development comparison without measuring transfer to a new assay or establishing structural causality. [Transfer scores, all contrasts and resampling modes](finalization/transfer_cloud_recovery/results/comparisons.csv).
 
-## 9. Conclusion
+### Embeddings lose less ranking performance when training labels are reduced
 
-Within the six-arm benchmark, the supervised sequence ensemble leads the test
-point estimates. Frozen ESM-2 embeddings do not establish a worthwhile gain,
-while the implemented Boltz-2 arm performs worse despite substantially greater
-compute. Paired validation and test intervals support those conclusions.
+A separate fixed-recipe comparison reduced the number of outer-fitting peptide clusters. Three predetermined nested subsets were averaged as scores, counting labels reserved for stopping.
 
-The submission's contribution is a controlled comparison of predictive value
-and compute, supported by bounded validation negatives and a separate
-allele-specific transfer result. Inverse folding and empirical energy pilots
-identify useful implementation limits while leaving their broader predictive
-value open.
+| Fitting-cluster budget | Sequence MLP | Interface MLP | Difference |
+|---|---:|---:|---:|
+| 25% | 0.2640 | 0.5877 | +0.3237 |
+| 50% | 0.4010 | 0.6504 | +0.2494 |
+| 100% | 0.5373 | 0.6995 | +0.1622 |
 
-## Provenance and open work
+The embedding advantage increased by +0.1615 [+0.1333, +0.2041] at 25% relative to 100%. Both models deteriorated; the embedding model deteriorated less. This is relative robustness under these fixed, two-member recipes, whose sequence baseline is weaker than the competitive main-study comparator. It does not estimate prospective assay savings. [Absolute curves](finalization/label_efficiency/absolute_curves.csv) and [budget contrasts](finalization/label_efficiency/comparisons.csv).
 
-This section records the original benchmark close-out. The
-[current research plan](NEXT_RESEARCH_PLAN.md#disposition-of-remaining-proposals)
-now owns the priority and disposition of these items.
+### Twenty target measurements improve adaptation
 
-This report is the authoritative write-up; the linked stage reports and scored
-tables hold the supporting evidence. Test scoring ran once, on 4 October 2026,
-recorded in [`test_scoring_provenance.json`](test_scoring_provenance.json) and
-the [`stage6_test_manifest.json`](stage6_test_manifest.json) completion record.
-The figure in §7 is generated from the published test tables by
-[`make_report_comparison.py`](figures/make_report_comparison.py).
+A source ridge model was adapted using 20 measured peptides per target allele. Target HLA groups and support/query peptide families were excluded from source fitting. Three fixed support designs were averaged as scores; each used 1,360 target measurements across 68 alleles, with no target tuning or stopping labels. Source stopping labels were counted separately.
 
-Still open:
+The interface model improved from **0.529583 to 0.576337**, a gain of **+0.046754**. Its crossed 95% interval was [+0.022657, +0.103467] and its three-primary **98.3333% interval was [+0.014042, +0.119457]**. The ≥20- and ≥50-row panels are identical here, so their agreement is not an additional robustness result. A reduced four-member sequence anchor improved from 0.0830 to 0.2058; it is not the competitive main-study comparator. [Adaptation curves](followup3/fewshot/absolute_curves.csv), [comparisons](followup3/fewshot/comparisons.csv) and [family interval](followup3/fewshot/primary_family3_interval.json).
 
-- **Provider-bill reconciliation of the fold cost.** The $212.71 is derived from
-  recorded container-hours at the measured A10G rate; no post-run metered bill
-  was captured. See [the compute ledger](compute_ledger.md).
-- **Elution transfer on the ESM-2 and structural arms.** The §5 pass covers the
-  sequence arm only ([stage 3c](stage3c_elution_validation.md)).
-- **ESM-2 likelihood features (stage 3d).** Not run; untested scope, not a null.
-  A second pLM family and a chimeric peptide-linker-groove ESM input are also
-  untested ([limitations §5.3](limitations.md)).
-- **Full-cohort ProteinMPNN and FoldX scoring.** Declined on evidence, not
-  pending: no deployed predictor rests on either
-  ([stage 5](stage5_inverse_folding.md), [stage 8](stage8_foldx.md)).
+A post hoc control retained only the adapter's scalar offset. Full adaptation exceeded this control by +0.0444 [+0.0165, +0.0928]; offset alone versus no adaptation was uncertain, +0.0024 [−0.0062, +0.0239]. This exploratory result supports a contribution from feature-dependent correction beyond alignment of fitted-cell offsets. Its nominal interval is unadjusted and does not establish a biological mechanism. [Offset comparisons](followup3/fewshot_offset/comparisons.csv).
 
-Per-stage detail lives in the stage reports: the structural pilot and features
-([stage 4c](stage4c_ectodomain_pilot.md), [stage 4c5](stage4c5_features.md)),
-inverse folding ([stage 5](stage5_inverse_folding.md)), FoldX
-([stage 8](stage8_foldx.md)), elution ([stage 3c](stage3c_elution_validation.md))
-and the transfer and hold-out analyses
-([stage 7a](stage7_censored.md), [stage 7b](stage7_allele_holdout.md)).
+### Additional descriptors and more complex heads have no established incremental benefit
+
+The descriptor comparison used a balanced subset of 4,449 pairs, 2,082 peptide clusters and all 75 alleles, with at most 64 rows per allele. Its primary panel contained 69 eligible alleles. Matched two-member MLPs and ridge sensitivity analyses assessed peptide-only ProteinMPNN compatibility, full-complex compatibility and repaired FoldX descriptors.
+
+| Balanced-panel MLP | Sequence features | Interface features |
+|---|---:|---:|
+| Base representation | 0.2952 | 0.6007 |
+| + Peptide-only ProteinMPNN scores | 0.2892 | 0.5956 |
+| + Peptide-only and full-complex ProteinMPNN scores | 0.3406 | 0.6195 |
+| + Repaired FoldX descriptors | 0.3276 | 0.6157 |
+
+The primary ProteinMPNN context increment was +0.0240, with a 98.3333% family interval of [−0.0219, +0.0659]. Its net increment over interface features alone was +0.0188 [−0.0163, +0.0566] under a secondary 95% interval. FoldX's primary increment was +0.0150, with a 98.3333% family interval of [−0.0524, +0.0450]. Ridge and ≥50-row sensitivities likewise did not establish additional benefit beyond interface features. Positive exploratory sequence-control comparisons do not replace these primary questions. [ProteinMPNN scores](followup3/inverse_execution_v2/pooled_scores.csv), [contrasts](followup3/inverse_execution_v2/comparisons.csv) and [family interval](followup3/inverse_execution_v2/primary_family3_interval.json); [FoldX scores](followup3/energy_execution_v2/pooled_scores.csv), [contrasts](followup3/energy_execution_v2/comparisons.csv) and [family interval](followup3/energy_execution_v2/primary_family3_interval.json).
+
+A ProteinMPNN extension selected after these results assessed all 19,716 training pairs. The interface MLP scored 0.6955 and its fully augmented counterpart 0.6885: **−0.0070 [−0.0220, +0.0131]**. Ridge gave −0.0016 [−0.0151, +0.0073]; peptide-only, context and ≥50-row sensitivities also spanned zero. These pointwise 95% intervals do not account for selection of the extension, which is not a fourth primary in the original family. Adding overlapping training pairs does not create independent confirmation. The extension establishes neither added benefit, harm nor equivalence. [All full-cohort contrasts](followup3/inverse_fulltrain_candidate/comparisons.csv).
+
+The same pattern held for more complex predictive heads. Adding within-allele RankNet to mean squared error gave +0.0071 [−0.0051, +0.0098]; inner selection retained mean squared error in every interface-model fold. A selector over trees, neural preprocessing and blends scored 0.7039 against 0.6995 for its matched standard MLP: +0.0044 [−0.0055, +0.0100]. It selected the standard MLP in three folds and a 75% MLP/25% regression-tree blend in two. Regression trees, ranking trees, tree-leaf preprocessing and principal components performed worse under the tested settings; quantile preprocessing remained inconclusive. These secondary comparisons are unadjusted. [Ranking-loss contrasts](finalization/ranking/comparisons.csv) and [hybrid contrasts](finalization/hybrids_cloud_v1/comparisons.csv).
+
+### Simpler pretrained features do not show the same benefit
+
+The separate original test comparison evaluated frozen ESM-2 features and sequence augmentation with Boltz geometry/confidence summaries, rather than internal interface embeddings. Its 67-allele panel covered 5,565 rows. The earlier exposure described in Methods prevents treating this test as wholly untouched.
+
+| Original test procedure | Median Spearman | Difference from sequence ensemble, 95% interval |
+|---|---:|---:|
+| Peptide + HLA pseudosequence ensemble | 0.7064 | Reference |
+| Single sequence network | 0.6181 | −0.0883 [−0.1201, −0.0555] |
+| Peptide + full HLA-domain ensemble | 0.6904 | −0.0160 [−0.0388, +0.0043] |
+| ESM-2 ensemble | 0.6979 | −0.0085 [−0.0291, +0.0233] |
+| Sequence + ESM-2 ensemble | 0.6816 | −0.0248 [−0.0460, +0.0073] |
+| Sequence + Boltz geometry/confidence | 0.5947 | −0.1117 [−0.1339, −0.0575] |
+
+The tested geometry augmentation reduced ranking performance; ESM-2 did not establish improvement. Different representations and evaluation populations explain why these findings must remain separate from the positive interface-embedding result. They do not support a claim that protein foundation models uniformly help or fail. [Test scores](stage6_test_summary.csv) and [paired comparisons](stage6_test_paired_ci.csv).
+
+## Discussion
+
+The most defensible conclusion is that learned, position-aware interface representations contain information useful for stability ranking in this benchmark. The evidence combines a competitive sequence comparison, matched nonlinear transfer controls and matched positional ablations. It remains a comparison of complete predictive procedures. Pretraining, molecular context, representation dimensions and fitting choices differ, while the contact-map control provides no evidence for a specific structural explanation. Supervised HLA holdout also does not establish that related structures were absent from foundation-model pretraining.
+
+The conditional intervals quantify variation in the saved assessments, rather than the full uncertainty of the research programme. Nested selection limits leakage within each declared procedure, but repeated use of the same population informed which procedures were studied. The positive main result does not establish a gain above +0.05, and even such a gain would require a separate connection to practical benefit. Rank correlation alone does not demonstrate calibrated half-lives, better immunogenicity prediction or more stable candidates recovered within an experimental budget.
+
+Measurement uncertainty is a second unresolved constraint. The aggregated labels cannot identify replicate reliability, the origin of zero values or a noise ceiling. Candidate public datasets have unresolved construct and measurement lineage and mix assay types; they do not currently supply representative independent confirmation. [Independent-candidate provenance](followup3/independent_data/study_method_status.csv).
+
+The descriptor and head comparisons favour retaining a simpler interface model for the next fixed comparison, while leaving small incremental effects unresolved. The next decisive evidence should come from independent kinetic measurements, with candidate and reference procedures locked before outcomes are opened. A suitable study must define its intended peptide/HLA population, retain raw curves and independent repeats, record measurement failure separately from censoring, and predefine both ranking and an experimental decision endpoint. The [independent assay design](finalization/INDEPENDENT_ASSAY_BRIEF.md) specifies these requirements; its proposed sample sizes are planning assumptions, not demonstrated power.
+
+## Data and model availability
+
+The [dataset documentation](../docs/DATASETS.md) and [evaluation specification](../EVALUATION.md) define the scientific inputs and analysis. Linked CSV/JSON tables provide all assessed arms, predictions, contrasts, sensitivities and frozen protocols. Portable ridge and neural models accept compatible, verified cached Boltz features; their output is an uncalibrated log-scale prediction. The [inference guide](../docs/ROUND2_INFERENCE.md) describes the supported input contract. Generating features for new sequences is a separate computational step.
+
+Feature and cohort hashes bind the stored evidence. A remaining extraction-provenance limitation is that the fanout wrapper's recorded launch digest differs from its retained source digest, so its exact launch-time bytes cannot be certified; the frozen extraction sources and feature checks agree. [Cache provenance](further_research/round2/resources/cache_completion_audit.json). Reproducing saved arithmetic or execution does not establish experimental reproducibility.
+
+## Method references
+
+- Rasmussen et al. (2016). *Pan-Specific Prediction of Peptide–MHC Class I Complex Stability, a Correlate of T Cell Immunogenicity.* [The Journal of Immunology](https://doi.org/10.4049/jimmunol.1600582).
+- Harndahl et al. (2011). *Real-time, high-throughput measurements of peptide–MHC-I dissociation using a scintillation proximity assay.* [Journal of Immunological Methods](https://doi.org/10.1016/j.jim.2010.10.012).
+- Passaro et al. (2025). *Boltz-2: Towards Accurate and Efficient Binding Affinity Prediction.* [Technical preprint](https://doi.org/10.1101/2025.06.14.659707).
+- Dauparas et al. (2022). *Robust deep learning–based protein sequence design using ProteinMPNN.* [Science](https://doi.org/10.1126/science.add2187).
+- Delgado et al. (2019). *FoldX 5.0: working with RNA, small molecules and a new graphical interface.* [Bioinformatics](https://doi.org/10.1093/bioinformatics/btz184).
+- Cawley and Talbot (2010). *On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation.* [Journal of Machine Learning Research](https://www.jmlr.org/papers/v11/cawley10a.html).

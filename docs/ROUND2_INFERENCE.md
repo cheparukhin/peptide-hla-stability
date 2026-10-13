@@ -1,16 +1,17 @@
-# Cached-feature round-two inference
+# Cached-feature inference
 
 This package exports reusable **R4 ridge** and **R5 MLP** heads. It consumes
 verified Boltz compact feature caches. It does not create features from a novel
 peptide/HLA sequence, call Boltz, produce structures, or run an MSA search.
 New sequence inference still requires the pinned extraction workflow and its
-unmeasured new-case costs. See the [canonical research report](../reports/further_research/round2/REPORT.md).
+unmeasured new-case costs. See the [research report](../reports/REPORT.md).
 
 The two demonstration recipes are explicitly locked development refits:
 `R4_ridge_100` (one fit) and `R5_mlp_0.01` (30 fits). They are not selected from
 follow-up outer outcomes and neither is designated a global winner. These
-exports are fit only to the original training partition. They provide a usable
-artifact, not independent confirmation or a new held-out accuracy estimate.
+exports are fit only to the original training partition. They do not reproduce
+the nested embedding selector or inherit its reported 0.7212 score; they have no
+new held-out accuracy estimate.
 
 ## Environment setup
 
@@ -86,7 +87,7 @@ the recorded platform; cross-platform numerical identity is not promised.
 
 ## Commands
 
-Show the cost bound without fitting:
+Show the fixed configuration and fit count without training:
 
 ```sh
 .venv/bin/python scripts/round2_inference.py plan --candidate R5_mlp_0.01
@@ -108,7 +109,7 @@ Predict from an existing cached bundle:
   --out /tmp/r4_cached_predictions.csv
 ```
 
-Refit only with an explicit authorized budget and locked candidate:
+For an authorised refit on Modal, the worker invocation is:
 
 ```sh
 .venv/bin/python scripts/round2_inference.py fit \
@@ -140,8 +141,8 @@ path traversal rejection. Run:
 .venv/bin/python -m pytest -q tests/test_round2_inference.py
 ```
 
-The finalization distribution manifest and benchmark report live under
-`reports/finalization/inference/`. The benchmark is a **performance-only,
+The [distribution manifest](../reports/finalization/inference/distribution_manifest.json)
+records the packaged models and timing measurements. The benchmark is a **performance-only,
 in-sample cached-head benchmark** on identified training cache rows. It includes
 package validation, scaling, member inference and output-frame construction,
 but excludes cache reading, feature extraction, startup and MSA generation.

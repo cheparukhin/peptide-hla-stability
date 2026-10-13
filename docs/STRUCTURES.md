@@ -1,155 +1,95 @@
-# Experimental structures for the Rasmussen complexes
+# Structural inputs and representations
 
-Ground-truth pMHC crystal structures matched against the stability dataset,
-assembled before the structure predictions were run. Three tables, from broadest
-to narrowest:
+Boltz-2 supplies predicted coordinates and frozen learned features; experimental
+PDB entries provide a limited structural reference. Predictive comparisons are
+reported in the [research report](../reports/REPORT.md), with selection and
+assessment defined in [EVALUATION.md](../EVALUATION.md).
 
-| file | rows | what it is | readable version |
-| --- | --- | --- | --- |
-| [`data/pdb_pmhc_pairs.csv`](../data/pdb_pmhc_pairs.csv) | 841 | every peptide entity in every PDB entry whose α1/α2 groove matches a Rasmussen allele exactly | — |
-| [`data/allele_pdb_templates.csv`](../data/allele_pdb_templates.csv) | 75 | one threading template per Rasmussen allele, tiered by groove match | [allele_pdb_templates.md](allele_pdb_templates.md) |
-| [`data/pdb_rasmussen_overlap.csv`](../data/pdb_rasmussen_overlap.csv) | 32 | (allele, peptide) pairs with **both** a measured half-life and a deposited structure | [pdb_rasmussen_overlap.md](pdb_rasmussen_overlap.md) |
+## Coordinate and feature provenance
 
-## What is in them
+Production coordinates contain the reconstructed HLA ectodomain, β2-microglobulin
+and native nine-residue peptide, with prepared HLA alignment information.
+The cohort contains all 28,166 source pairs; each receives one Boltz-2 prediction
+at seed 0, three recycling steps and 200 sampling steps. Coordinates, confidence
+and residue/chain mapping are bound by the
+[input provenance](../reports/ectodomain-20261004/input_provenance.json) and
+[production verification](../reports/ectodomain-20261004/production_verification.json).
+A small matched experimental-structure pilot checked peptide placement; it
+cannot establish accuracy for every production structure or every label range.
 
-**`pdb_pmhc_pairs.csv`** — 840 PDB entries across 33 of the 75 alleles, allele
-assigned by 100% identity over the 182-residue α1/α2 domain. 841 rows rather
-than 840 because one entry (`9A0U`, a six-chain class I / class II docking
-model) contributes two peptide entities; **rows are entities, not entries**, and
-the per-allele counts in `allele_pdb_templates.csv` are entry counts. Of the 840
-entries, 808 have an 8–15-residue polypeptide in the groove and **32 have no
-peptide modelled at all** — empty or disordered. 813 are X-ray, 25 cryo-EM, 1
-NMR, 2 unspecified (including the docking model, which is not experimental).
-243 are TCR–pMHC complexes. The peptide entities give **510 distinct
-(allele, peptide) pMHC pairs, 329 of them 9-mers**. Coverage is as lopsided as
-the stability data: A\*02:01 alone has 393 entries, A\*24:02 has 71, A\*11:01 56.
+The current compact representation cache covers the original 19,716 training
+rows only. Its [completion audit](../reports/further_research/round2/resources/cache_completion_audit.json)
+records the cohort, identities, feature hashes and numerical checks, including
+its controller-provenance limitation. The model family is **Boltz-2**, the
+inference package is `boltz==2.1.1`, and the weight-repository revision is
+`6fdef46d763fee7fbb83ca5501ccceff43b85607`. These are different identifiers.
+See the upstream [Boltz-2 methods](https://doi.org/10.1101/2025.06.14.659707)
+and [implementation](https://github.com/jwohlwend/boltz).
 
-**`allele_pdb_templates.csv`** — one template per allele, tiered: **33 tier A**
-(exact groove, use directly), **24 tier B** (homology, groove intact), **18 tier
-C** (homology, groove differs). Note that [HACKATHON_PLAN.md](../HACKATHON_PLAN.md)
-defers template threading to the "not in scope" list; this table makes it cheap
-if that changes, it does not promote it.
+| Representation | Construction | Dimensions |
+|---|---|---:|
+| R0 | Positional one-hot peptide and 34-residue HLA pseudosequence | 860 |
+| R1 | R0 plus coordinate/confidence summaries | 969 |
+| R2 | Concatenated mean token features for HLA, β2m and peptide | 1,152 |
+| R3 | Position-preserving peptide/groove token features with fixed channel projection | 1,528 |
+| R4 | Per-peptide-position means of directed peptide–groove pair features | 2,304 |
+| R5 | Contact-pooled pair features at P1, P2, P9 and mean P3–P8 | 1,024 |
 
-**`pdb_rasmussen_overlap.csv`** — the 32 pairs where a measured half-life and an
-experimental structure exist for the *same* complex.
+R3 and the more detailed position-by-contact control use fixed, label-independent
+random channel projections. R4 and R5 retain all 128 pair-feature channels in
+each direction. R5's fixed contact mask is the union of heavy-atom contacts
+within 4.5 Å in five reference crystals, restricted to the canonical 34 HLA
+positions. Shuffled-contact and dimension-matched pooled controls assess
+specific positional choices. The
+[feature protocol](../reports/further_research/round2/representations/feature_protocol.json)
+is authoritative for tensor order, contact membership, projections and hashes.
 
-## The 32-pair overlap
+These representations combine sequence, evolutionary information, molecular
+context and structural pretraining. A supervised advantage does not by itself
+identify a causal geometric mechanism. Comparisons that change chain context,
+channel projection or pooling together cannot isolate positional information.
+Cached inference requirements are in [ROUND2_INFERENCE.md](ROUND2_INFERENCE.md).
 
-**32 pairs, 0.11% of the 28,166 measurements.** That number is the one to carry
-forward, and it largely defuses the memorisation worry: for 99.9% of the
-dataset, a co-folding model has no deposited structure of that exact complex to
-recall. A further **12 are near misses** — the peptide appears in Rasmussen but
-the crystal structure is on a different allele.
+## Experimental structure tables
 
-They span **0.4 to 97.1 h, none censored**, so they cover nearly the full
-dynamic range (99.8% of Rasmussen rows fall at or below 97.1 h). The
-longest-lived is `HLA-A*11:01 / ATIGTAMYK` at 97.1 h ([6JOZ](https://www.rcsb.org/structure/6JOZ),
-1.35 Å); the most-structured is `HLA-A*02:01 / SLLMWITQV` — NY-ESO-1 — with 13
-entries; A\*02:01 accounts for 17 of the 32. Resolution runs 1.1–3.84 Å, with 20
-of 32 at 2.0 Å or better.
+| Table | Contents |
+|---|---|
+| [PDB peptide–HLA entries](../data/pdb_pmhc_pairs.csv) | 841 records from 840 entries, assigned by exact identity over the 182-residue groove |
+| [Allele templates](../data/allele_pdb_templates.csv) | One candidate threading template for each of the 75 molecules, with match quality recorded |
+| [Exact dataset overlap](../data/pdb_rasmussen_overlap.csv) | 32 peptide–HLA pairs with both a measured half-life and a deposited structure |
 
-**Six were deposited in 2021 or later** (`21EX`, `8T7R`, `7PBC`, `7LG2`, `7LG3`,
-`7LFZ`), but only one is clearly post-cutoff for all models under consideration:
-`21EX` ("Wild type p53WT-HLA-A2") was deposited 2025-12-10 and released
-2026-09-09. It is the only pair that a September 2026 co-folding run could not
-have memorised. The other five may or may not post-date ESMFold2's training
-snapshot (undocumented); check the model card before claiming them as controls.
-Stage 4c in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) used these rows as the
-pilot gate for both structure arms.
+These are saved database snapshots, not a complete audit of any foundation
+model's training corpus. The broad table includes entries without a modelled
+peptide and entries that are not experimental structures; filter on method,
+peptide presence and molecular identity before using it as a reference.
+The overlap has no recorded zero labels and a median half-life of six hours;
+13 of its 32 pairs have at least one TCR-bound entry. It therefore favours
+well-studied, structurally tractable complexes and does not represent the
+complete assay population. Prefer a compatible TCR-free entry for a pose
+comparison when available, and retain construct and resolution information.
 
-### Two uses
+Experimental structures have coordinate uncertainty, crystal-condition effects
+and possible biological-context differences. They are not error-free kinetic
+standards. Exact overlap in this snapshot is small, but related peptides,
+shared HLA grooves and pretraining exposure remain possible. Supervised
+HLA-group holdout does not remove earlier structural exposure. Claims of
+pretraining novelty require a separate model-specific training-data audit.
 
-1. **Pilot gate (stage 4c).** These complexes validated both structure arms
-   before the batch fold: the pilot co-folded them, measured RMSD against the
-   crystal, and confirmed the peptide lands in the groove. Boltz-2 passed and
-   ESMFold2 failed, so production folded Boltz-2 only. The full structural arm
-   was later scored on the test set and underperformed the sequence ensemble by
-   0.112 median per-allele Spearman; see [reports/REPORT.md](../reports/REPORT.md).
-   Exit criteria are in [HACKATHON_PLAN.md](../HACKATHON_PLAN.md) stage 4c and
-   the [stage 4c report](../reports/stage4c_ectodomain_pilot.md).
-2. **Register check.** The pilot confirmed the predicted peptide sits in the
-   canonical P2/PΩ-anchored conformation here, where the answer is known, before
-   the other 99.9% were folded.
+## Descriptor interpretation
 
-### Caveats on the 32
+ProteinMPNN scores compatibility of a native sequence with a supplied backbone.
+The peptide-only backbone used here was itself predicted with native peptide
+and HLA context; removing the other chains changes graph neighbourhoods as
+well as context. Thus the P/C comparison does not isolate native geometry or
+a physical dissociation mechanism.
 
-- **13 of the 32 are TCR-bound.** TCR engagement can perturb peptide
-  conformation, so an RMSD control or an energy-function benchmark should
-  prefer the **19 TCR-free** pairs (which still span the full 0.4–97.1 h range)
-  and treat the TCR-bound ones as a separate stratum.
-- **They are not a representative label sample.** Median half-life is 6.0 h
-  against 1.1 h for the full dataset, and **none is a censored zero** against
-  20.2% zeros overall. The set is biased toward stable, well-studied,
-  immunodominant epitopes. Nothing about the zero spike can be validated here.
-- **n = 32 is small.** The smallest correlation significant at p < 0.05 is
-  r ≈ 0.35, and r = 0.5 would carry a 95% CI of roughly [0.18, 0.72]. Only a
-  strong effect or a clean null is readable at this n — which is exactly the
-  argument for extending to the 329 nine-mer PDB pairs (there, r ≈ 0.11 is
-  detectable and r = 0.5 narrows to [0.41, 0.58]).
-
-### What this check does not cover
-
-Memorisation of the exact pair is rare; memorisation of the **groove** is not.
-33 alleles have deposited structures, A\*02:01 alone with 393. A model can know
-an allele's groove perfectly without ever having seen your peptide in it. That
-residual risk is handled by the **leave-allele-cluster-out split**, not by this
-overlap table.
-
-## Affinity is not half-life — and whether to add an affinity column
-
-This is the mismatch that governs the project. Every structure-derived score
-under consideration — FoldX, PRODIGY, EvoEF2, an interface-energy decomposition
-— estimates **K_d, the depth of the well**. The label is **ln2/k_off, the height
-of the barrier out of it**. Two complexes with identical K_d can have very
-different off-rates, and dissociation of a class I complex is thought to proceed
-by partial unthreading from the anchor pockets rather than by the interface
-melting uniformly. A perfect ΔG calculation is therefore predicting an
-*adjacent* quantity, not the label. [HACKATHON_PLAN.md:17](../HACKATHON_PLAN.md#L17)
-states the same thing from the other direction; this is the quantitative
-version of it.
-
-That is what makes the 32-pair overlap valuable rather than merely interesting.
-**On those 32, structural error is zero** — the structure is experimentally
-determined, so whatever an energy function produces there is the best it will
-ever do.
-
-### The test that settles it
-
-1. Run PRODIGY or an EvoEF2-style decomposition on the 32 (ideally the 19
-   TCR-free ones first) and correlate against `log t½`.
-2. **If there is no correlation on perfect structures, there will be none on the
-   28,134 threaded models.** That is established cheaply and decisively, and
-   given the kinetic-versus-thermodynamic argument above it is a real result,
-   not a null.
-3. Extend to all **329 nine-mer PDB pairs** by pulling measured affinities from
-   IEDB, where n is large enough for a usable confidence interval.
-
-Everywhere outside the 510 structurally-resolved pairs you are scoring side
-chains your repacking protocol invented, so the number partly measures the
-protocol rather than the biology.
-
-### Recommendation on the affinity column
-
-Neither dataset carries an affinity column today, and the decision splits three
-ways:
-
-- **As the training target — no.** The label is half-life. Substituting or
-  blending in affinity changes the task.
-- **As an input feature — yes if it is cheap.** A predicted or IEDB-measured
-  affinity per (allele, peptide) is one number, costs no GPU time, and is a
-  strong baseline covariate precisely because it is adjacent rather than
-  identical. The honest framing is that stability prediction exists as a
-  separate problem *because* affinity is an incomplete proxy, so the feature
-  should help without being sufficient. Treat its marginal gain over the
-  sequence baseline as the experiment, same ladder as every other feature.
-  One caveat from [HACKATHON_PLAN.md:140](../HACKATHON_PLAN.md#L140): the assay
-  panel was partly selected by predicted affinity, so affinity is entangled with
-  dataset inclusion and a gain may be partly a selection artefact.
-- **As a multi-task auxiliary target — defer.** Plausible, but it needs
-  affinities for most of the 28k rows and competes with the core comparison for
-  the hours available.
-
-The step-3 result above decides how much weight to put on the feature: if
-interface energy does not track `log t½` even on experimental structures, an
-affinity feature is unlikely to carry the model either, and the sequence
-baseline keeps priority.
+FoldX descriptors follow `RepairPDB` with `repairInterface=ALL` and peptide–HLA
+`AnalyseComplex`, retaining β2m in the structure. The
+[extraction protocol](../reports/followup3/foldx/protocol.json) pins the executable
+and settings. Compatibility scores and computed energy descriptors do not
+directly measure a dissociation rate. Even exact equilibrium affinity would
+not uniquely determine off-rate without kinetic information. Nevertheless,
+such descriptors can be useful statistical predictors; their value is tested
+by matched supervised comparisons. An inconclusive result on one selected
+panel or learner establishes neither equivalence nor failure of all
+structure-based approaches.

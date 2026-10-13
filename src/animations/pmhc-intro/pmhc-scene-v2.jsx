@@ -163,7 +163,7 @@ function BeatGroove({ T, A, L }) {
       {/* one persistent grey groove; only the peptide layer hard-cuts */}
       <Frame op={opG} cam={cam} src={[{ n: 'layer_groove_empty' }, { n: T < A.Lock ? cands[ci].n : 'layer_peptide_alpha' }]} />
       {L && inCand && <Chip x={80} y={80} op={chipOp} color={cands[ci].c} text={`candidate ${ci + 1} / 4`} />}
-      {L && <Chip x={80} y={80} op={tw(T, A.Lock - 0.05, A.Lock + 0.25, Easing.linear) * out} color={C.crimson} text="bound · stable fit" />}
+      {L && <Chip x={80} y={80} op={tw(T, A.Lock - 0.05, A.Lock + 0.25, Easing.linear) * out} color={C.crimson} text="bound peptide" />}
     </React.Fragment>
   );
 }
@@ -245,7 +245,7 @@ function BeatStability({ T, A, L }) {
   return (
     <React.Fragment>
       <Frame src={layers} op={opW} cam={cam} />
-      {L && <Chip x={80} y={80} op={unst * opW} color={C.crimson} text={t < 1.7 ? 'loose fit' : 'peptide lost · no signal'} />}
+      {L && <Chip x={80} y={80} op={unst * opW} color={C.crimson} text={t < 1.7 ? 'dissociation illustrated' : 'peptide lost'} />}
       <Frame src="shot3d_settled_anchors_grey" op={opAn} cam={cam}>
         {(map) => {
           const pocket = (x, y, p) => {
@@ -441,15 +441,15 @@ function Piece({ labels, captions }) {
           { at: 0.4, text: 'HLA class I presents short peptides on the cell surface.' },
           { at: A.Anatomy + 0.4, text: 'The peptide lies in a groove: two α-helices over a β-sheet floor.' },
           { at: A.Candidates + 0.2, text: 'Many candidate peptides. Which ones fit this HLA allele?' },
-          { at: A.Lock + 0.1, text: 'Only some form a precise pair.' },
+          { at: A.Lock + 0.1, text: 'Peptides differ in binding and complex stability.' },
           { at: A.Approach + 0.3, text: 'A T-cell receptor docks onto the peptide–HLA complex.' },
-          { at: A.Interface + 0.2, text: 'Its CDR loops read the exposed peptide residues.' },
-          { at: A.Wobble + 0.3, text: 'A loose peptide escapes, and the T cell sees nothing.' },
-          { at: A.Anchors + 0.2, text: 'A stable fit: anchors P2 and P9 seat in pockets B and F.' },
-          { at: A.Contact + 0.3, text: 'CDR3 contacts the peptide. The receptor signals.' },
-          { at: A.Activation + 0.2, text: 'The T cell activates.' },
-          { at: A.Expansion + 0.3, text: 'Out of the naïve repertoire, one clone expands.' },
-          { at: A.Body + 0.2, text: 'Every successful immune response depends on this pairing.' },
+          { at: A.Interface + 0.2, text: 'Its CDR loops contact the peptide–HLA surface.' },
+          { at: A.Wobble + 0.3, text: 'Peptide dissociation can reduce the persistence of this surface complex.' },
+          { at: A.Anchors + 0.2, text: 'Here, anchors P2 and P9 occupy HLA pockets B and F.' },
+          { at: A.Contact + 0.3, text: 'Specific T-cell receptor engagement can initiate signalling.' },
+          { at: A.Activation + 0.2, text: 'T-cell activation also depends on co-stimulation and cellular context.' },
+          { at: A.Expansion + 0.3, text: 'An activated T-cell clone can expand.' },
+          { at: A.Body + 0.2, text: 'Peptide–HLA recognition can contribute to a T-cell response.' },
         ]} />
       )}
     </div>

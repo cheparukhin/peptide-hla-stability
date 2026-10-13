@@ -1,99 +1,112 @@
-# Datasets
+# Data and assay provenance
 
-| file | rows | alleles | peptides | role | summary |
-| --- | --- | --- | --- | --- | --- |
-| [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) | 28,166 | 75 | 5,633 | raw source, read-only | [summary](rasmussen_et_al_dataset_summary/DATASET_SUMMARY.md) |
-| [`data/c67s_cleanup/rasmussen_no_C67S.csv`](../data/c67s_cleanup/rasmussen_no_C67S.csv) | 27,031 | 72 | 5,633 | available, not in use this round | [summary](rasmussen_no_C67S_summary/DATASET_SUMMARY.md) |
-| [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv) | 1,135 | 3 | 663 | available, not in use this round | — |
+The analysis uses the measured peptide–HLA stability dataset from
+[Rasmussen et al. (2016)](https://doi.org/10.4049/jimmunol.1600582), supplied as
+[`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv).
+It contains **28,166 unique peptide–HLA pairs, 75 HLA-A/B molecules and 5,633
+nine-residue peptides**, without missing values or duplicate pair identities.
+The source CSV is read-only and its checksum is recorded in
+[`data/SHA256SUMS`](../data/SHA256SUMS). The original
+[paper](../data/rasmussen_et_al_2016.pdf) is retained with the data.
 
-Split assignments for every row of all three files live in
-[`data/splits.csv`](../data/splits.csv) and are documented in
-[EVALUATION.md](../EVALUATION.md). Join them on `(allele, peptide)`. The earlier
-`data/c67s_cleanup/peptide_splits.csv` is superseded — see [SPLITS.md](SPLITS.md)
-for why it is kept.
+## What the outcome measures
 
-Public binding-affinity measurements for the same 75 alleles — the auxiliary
-labels for stage 2c — are in
-[`data/data_augmentation_iedb/`](../data/data_augmentation_iedb/) and described
-in [AFFINITY_REFERENCE.md](AFFINITY_REFERENCE.md). They are not stability data
-and are not part of train/eval; read that document before training on them.
+The study reports complex dissociation half-lives at 37 °C from a scintillation
+proximity assay. The underlying method follows radiolabelled
+β2-microglobulin dissociation as a proxy for peptide dissociation; this is a
+complex-stability endpoint rather than a direct observation of every peptide's
+microscopic unbinding event. The assay was validated against peptide-based
+measurements in [Harndahl et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC4341823/).
 
-Structural coverage for these alleles — deposited PDB entries, threading
-templates, and the 32 complexes with both a measured half-life and an
-experimental structure — is described in [STRUCTURES.md](STRUCTURES.md).
+Rasmussen et al. report geometric means from two independent experiments.
+This repository supplies only the aggregated half-life values, without separate
+replicate measurements, raw dissociation curves or measurement-level fitting
+and censoring flags. Experimental replication therefore existed, but its
+reliability and an assay noise ceiling cannot be estimated from this file.
 
-The two derived files are regenerated with
-`python3 scripts/make_no_c67s_dataset.py`; the summaries with
-`python3 scripts/summarize_dataset.py [--input <csv>]`. The split is lossless —
-concatenating them reproduces the raw CSV row for row. The raw CSV is never
-modified; `(cd data && shasum -a 256 -c SHA256SUMS)` still passes.
+Recorded half-lives range from 0 to 256.7 hours, with median 1.1 hours.
+Exactly 5,679 values (20.16%) are zero. Their concentration is consistent with
+low or unresolved stability, but does not prove that every zero is a
+left-censored measurement at one known detection limit. Rounding, insufficient
+complex formation, low signal and fitting failure cannot be separated using
+the supplied fields. Analyses that model all zeros as censored are sensitivity
+analyses under an assumption, not recovered measurement metadata. Ranking
+retains ties; error against recorded zeros is not necessarily error against
+latent physical half-life.
 
-## The C67S constructs: available but kept in training
+## Sampling and constructs
 
-**Decision:** all 75 alleles, including the three C67S constructs, remain in
-train/val/test. This matches `data/splits.csv` (which distributes all 1,135 C67S
-rows: train 798 / val 122 / test 215) and `EVALUATION.md`'s 67-of-75
-eligible-allele panel. The files below exist for reference but are not the
-canonical training path.
+The assay collection is selected rather than population-representative.
+Rasmussen et al. grouped peptides partly using predicted affinity
+(NetMHCpan 2.8, <500 nM or top 2% rank) to permit measurement against multiple
+HLA molecules. The published modelling cohort retained molecules with at least
+one stable and two nonstable observations using a two-hour threshold. These
+choices condition the observed peptide diversity and stability distribution.
+The table is sparse: 6.67% of all possible allele–peptide combinations were
+measured, and a peptide occurs on as many as 36 alleles.
 
-The original rationale for building them follows — it explains why the split
-*exists*, not why it is *used*.
+All 75 molecules, including `HLA-B*14:01(C67S)`, `HLA-B*14:02(C67S)` and
+`HLA-B*39:06(C67S)`, remain in the canonical analysis. These engineered
+constructs contribute 1,135 rows. Their supplied heavy-chain sequences contain
+serine at mature residue 67, and no matched wild-type counterpart is measured
+in this dataset. Their high zero fractions cannot identify the mutation's
+effect without matched controls. The two B*14 constructs share the same
+34-residue pseudosequence; a model using only that pseudosequence cannot
+distinguish them. Their full 182-residue sequences differ.
 
-### Why these files were built (historical)
+The supplied `hla_seq` covers the 182-residue α1/α2 groove and
+`hla_pseudoseq` contains 34 selected residues. Structure generation uses a
+larger reconstructed ectodomain plus β2-microglobulin. These inputs differ in
+molecular context; a performance difference cannot be attributed solely to
+three-dimensional structure or pretraining. Physical construct details also
+matter when comparing this assay with an external study.
 
-`HLA-B*14:01(C67S)`, `HLA-B*14:02(C67S)` and `HLA-B*39:06(C67S)` — 1,135 rows,
-4.03% of the dataset — are pulled out of train/eval and promoted to a dedicated
-benchmark.
+## Data references
 
-All three carry **serine at position 67** of the mature heavy chain, verifiable
-directly in the `hla_seq` column (`hla_seq[66] == "S"` for each). Position 67 is
-an unpaired cysteine site in some natural HLA-B allotypes; it is not part of the
-structural disulfide, which is C101–C164 and is intact in all three constructs
-(their only cysteines are at 101 and 164). So the substitution is visible to any
-sequence-based model rather than hidden behind the allele name.
+| Source | Role |
+|---|---|
+| [Frozen split assignments](../data/splits.csv) | Canonical original train/validation/test membership; load through `pepstab.data.load_with_splits()` |
+| [Dataset summary](rasmussen_et_al_dataset_summary/dataset_summary.csv) and [per-allele statistics](rasmussen_et_al_dataset_summary/per_allele_stats.csv) | Machine-readable descriptive counts and distributions |
+| [Non-C67S subset](../data/c67s_cleanup/rasmussen_no_C67S.csv) and [C67S subset](../data/c67s_cleanup/benchmark_C67S.csv) | Lossless reference subsets; neither replaces the canonical cohort |
+| [Affinity reference](AFFINITY_REFERENCE.md) | Auxiliary binding-affinity provenance and leakage constraints |
+| [Structural inputs](STRUCTURES.md) | Deposited structures, Boltz representations and descriptor interpretation |
 
-### 1. They are engineered assay constructs, not natural allotypes
+Join derived data by exact `(allele, peptide)` identity, retaining construct
+suffixes. `pair_id` is positional in the unmodified source file and must not be
+reinterpreted as row position in a subset. The older split table under
+`data/c67s_cleanup/` is not used. Current assessment populations and eligibility
+are defined in [EVALUATION.md](../EVALUATION.md).
 
-Fitting them teaches the model about an assay stabilisation artefact rather than
-about HLA biology.
+## External comparisons
 
-### 2. No wild-type counterpart is available
+NetMHCstabpan was trained on this dataset and is not an independent comparator.
+Its published training/evaluation design also added 1,000 predicted weak-binding
+nine-mers per allele with assigned zero-hour outcomes and used a different
+target transformation. Its reported Pearson correlation of 0.676 therefore
+cannot be compared directly with median within-allele Spearman on measured
+rows. Synthetic negatives are assumptions, not experimental half-lives.
 
-`HLA-B*14:01`, `HLA-B*14:02` and `HLA-B*39:06` are all absent from the dataset,
-so the constructs cannot serve as a mutation-effect test either. The nearest
-natural alleles are several substitutions away — too far to attribute a
-half-life difference to position 67:
+The [reserved candidate inventory](../reports/followup3/independent_data/candidate_metadata_audit.json)
+contains **129 rows, 126 peptides, 113 peptide clusters and nine HLA alleles
+from 36 PMIDs** after the recorded overlap exclusions. The largest single
+study–allele stratum is 23 HLA-A*02:01 rows attributed to Strønen et al.; its
+original measurement mapping and methods remain unresolved. Every other
+study–allele group contains at most ten rows. These counts use identities and
+metadata, without checking outcome variation or completeness.
 
-| construct | nearest natural allele(s) | residues differing (of 182) |
-| --- | --- | --- |
-| HLA-B*14:01(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 6 |
-| HLA-B*14:02(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 7 |
-| HLA-B*39:06(C67S) | B*39:01, B*39:02, B*39:10 (tied) | 3 |
+The [study-method inventory](../reports/followup3/independent_data/study_method_status.csv)
+records heterogeneous purified and cellular endpoints, with unresolved or
+conflicting temperature and construct annotations. Cellular surface persistence,
+thermal stability and purified-complex dissociation are different endpoints;
+release assay labels alone do not make them interchangeable. Missing measurement
+identifiers also prevent ruling out reprinted or reused values. Pooling these
+rows does not establish a coherent multi-allele confirmation cohort.
 
-### 3. They barely form stable complexes
-
-They would inflate the zero spike without being informative:
-
-| construct | rows | % exactly 0 h | median | p95 half-life | max |
-| --- | --- | --- | --- | --- | --- |
-| HLA-B*14:01(C67S) | 374 | 89.0% | 0.0 h | 0.60 h | 108.4 h |
-| HLA-B*14:02(C67S) | 382 | 74.9% | 0.0 h | 4.39 h | 66.3 h |
-| HLA-B*39:06(C67S) | 379 | 92.1% | 0.0 h | 0.50 h | 8.5 h |
-
-Note on provenance: the challenge brief reports the same zero fractions and
-95th-percentile half-lives but pairs the B\*14:01 and B\*14:02 values the
-opposite way round. The table above is recomputed from the raw CSV.
-
-## Effect of the exclusion
-
-- Zero-inflation drops from **20.16% to 17.43%** of rows.
-- Rows above the 2-hour stability threshold rise from **39.88% to 41.37%**.
-- `hla_pseudoseq` becomes a **unique allele key** (72 alleles, 72 pseudosequences).
-  The only collision in the raw data was `HLA-B*14:01(C67S)` /
-  `HLA-B*14:02(C67S)` sharing one pseudosequence.
-- **No peptides are lost** — all 5,633 remain, because each of the 663 peptides
-  measured against a C67S construct is also measured against at least one
-  natural allele.
-- **No Cys67 signal is lost.** Six natural alleles retain cysteine at position 67
-  (B\*15:10, B\*27:02, B\*27:03, B\*27:05, B\*27:20, B\*39:01), together 2,504
-  rows (8.9%), and all stay in the training set.
+Candidate outcome columns remain reserved from assessment. Incidental public
+result text was visible during literature retrieval, so the literature audit
+was not fully blinded; those numeric outcomes were not joined to candidates or
+used for scoring or selection. Independent confirmation requires resolved
+measurement lineage, overlap, endpoint, temperature and physical constructs,
+with eligibility fixed before outcome assessment. Requirements for new
+measurements are set out in the
+[independent assay brief](../reports/finalization/INDEPENDENT_ASSAY_BRIEF.md).

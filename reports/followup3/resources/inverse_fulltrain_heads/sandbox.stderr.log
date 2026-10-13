@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 306, in <module>
-    main()
-  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 296, in main
-    worker(args.plan, args.hash)
-  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 146, in worker
-    raise RuntimeError(f'child {index} failed: {result}')
-RuntimeError: child 0 failed: 1
