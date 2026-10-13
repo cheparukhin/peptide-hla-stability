@@ -32,6 +32,12 @@ def test_scientific_worker_functions_are_exact_ast_copies():
 def test_scientific_report_audits_and_whole_science_tail_unchanged():
     a=(REPO/'scripts/final_hybrids_report.py').read_text()
     b=(REPO/'scripts/final_hybrids_cloud_report.py').read_text()
+    # Declared report-only fix 8f4b28f matches the frozen worker's float64
+    # member promotion. All other replay/scoring/statistical code stays exact.
+    original_member="predictions[name].append(audit['predictions'][name])"
+    promoted_member="predictions[name].append(evaluation.validate_finite(audit['predictions'][name], f'{name} member'))"
+    assert a.count(original_member)==1 and b.count(promoted_member)==1
+    a=a.replace(original_member,promoted_member)
     funcs=lambda s:{n.name:ast.dump(n,include_attributes=False) for n in ast.parse(s).body if isinstance(n,ast.FunctionDef)}
     af,bf=funcs(a),funcs(b)
     assert set(af)==set(bf)
@@ -43,7 +49,17 @@ def test_scientific_report_audits_and_whole_science_tail_unchanged():
         cloud_current_phase_reservation_usd=cloud_auth['_accounting']['reserved_phase_usd'],
         cloud_accounting=cloud_auth['cloud_accounting'], backend='modal_cpu_sandbox',
         cloud_cost_interpretation='Conservative preceding-phase accounted liability and current phase reservation at authorization; neither field is actual invoiced spend. Final provider reconciliation is separate.',"""
-    assert a.replace('controller_receipts=controller_receipts, cloud_spend_usd=0,',replacement)==b
+    expected=a.replace('controller_receipts=controller_receipts, cloud_spend_usd=0,',replacement)
+    link_line="        'See [comparisons.csv](comparisons.csv)"
+    disclosure="        'Replay promotes member outputs to float64 before ensemble averaging, matching the actual frozen worker. The earlier report-only float32 aggregation bug was corrected without changing any saved prediction, fit, selection or comparison tolerance.', '',\n"
+    assert expected.count(link_line)==1
+    expected=expected.replace(link_line,disclosure+link_line)
+    old_audit='bootstrap=metadata, conditional_development_only=True)'
+    new_audit="""bootstrap=metadata, conditional_development_only=True,
+        ensemble_replay=dict(member_promotion='evaluation.validate_finite float64',
+            matches_frozen_worker=True, saved_predictions_unchanged=True, comparison_tolerances_unchanged=True))"""
+    assert expected.count(old_audit)==1
+    assert expected.replace(old_audit,new_audit)==b
 
 
 def test_paths_duplicate_json_and_bound_bytes_reject(tmp_path):
@@ -139,6 +155,72 @@ def test_source_coverage_is_not_optional(tmp_path,monkeypatch):
     auth['sources'].pop(c.NEW_SOURCES[0]);save(tmp_path,'authorization.json',auth)
     with pytest.raises(ValueError,match='all cloud execution'):
         c.validate_authorization('authorization.json',root=tmp_path,clock=lambda:c.timestamp('2026-10-12T18:00:00+00:00'))
+
+
+def test_label_authorization_keeps_science_sources_and_requires_report_predecessor(tmp_path,monkeypatch):
+    auth=authorization_fixture(tmp_path,monkeypatch)
+    for name in c.LABEL_SOURCES:
+        ref=save(tmp_path,name,{'synthetic':'source'});auth['sources'][name]=ref['sha256']
+    hybrid=save(tmp_path,'reports/finalization/hybrids_recovery_v2/protocol.json',
+        dict(protocol_hash=c.SCIENCE_HASH,source_sha256={'historical.py':auth['sources']['historical.py']}))
+    staged=save(tmp_path,c.SCOPE+'/protocol.json',c.read(tmp_path/hybrid['path']))
+    report,_=phase_certificate(tmp_path,'hybrid_report')
+    tasks=save(tmp_path,c.LABEL_SCOPE+'/task_manifest.json',{'synthetic':'tasks'})
+    digest=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    specification=dict(new_supervised_fits=120,full_budget_reused_members=20,inclusive_cap_usd=10,
+        subset_manifest_sha256=digest(c.read(tmp_path/tasks['path'])))
+    protocol=save(tmp_path,c.LABEL_SCOPE+'/protocol.json',dict(schema='final_label_efficiency_protocol.1',
+        protocol_hash=digest(specification),specification=specification,source_sha256=auth['sources'],
+        canonical_targets={'path':'target.json','sha256':'c'*64},hybrid_protocol=staged,baseline_report_certificate=report))
+    account=save(tmp_path,'account.json',dict(c.read(tmp_path/'account.json'),phase='label_efficiency',phase_cap_usd=10,reserved_phase_usd=10))
+    files=dict(auth['sources'])
+    for ref in (hybrid,staged,report,tasks,protocol,account):files[ref['path']]=ref['sha256']
+    manifest=save(tmp_path,'manifest.json',dict(schema='final_cloud_input_manifest.1',repository_root=c.REPOSITORY_ROOT,files=files))
+    auth.update(phase='label_efficiency',scope_root=c.LABEL_SCOPE,protocol=protocol,protocol_hash=digest(specification),
+        task_manifest=tasks,canonical_targets={'path':'target.json','sha256':'c'*64},backend='modal_cpu_sandbox',
+        new_supervised_fits=120,reused_full_members=20,fit_wall_seconds=3600,phase_cap_usd=10,
+        phase_certificates={'hybrid_report':report},cloud_accounting=account,input_manifest=manifest)
+    check=lambda:c.validate_authorization('authorization.json',root=tmp_path,clock=lambda:c.timestamp('2026-10-12T18:00:00+00:00'))
+    save(tmp_path,'authorization.json',auth)
+    checked=check()
+    assert checked['_phase_certificates']['hybrid_report']['protocol_hash']==c.SCIENCE_HASH
+    assert c.phase_protocol_hash(checked,tmp_path)==digest(specification)!=c.SCIENCE_HASH
+    for key,value in [('new_supervised_fits',121),('reused_full_members',21),('protocol_hash',c.SCIENCE_HASH),
+                      ('phase_certificates',{}),('fit_wall_seconds',3601),('phase_cap_usd',11),
+                      ('resources',dict(auth['resources'],max_workers=2))]:
+        save(tmp_path,'authorization.json',dict(auth,**{key:value}))
+        with pytest.raises(ValueError):check()
+
+
+def test_label_dispatch_fresh_output_and_exact_member_receipt(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    monkeypatch.setattr(runner,'ROOT',tmp_path)
+    monkeypatch.setattr(c,'phase_protocol_hash',lambda auth:'e'*64)
+    auth=dict(phase='label_efficiency',_sha256='a'*64)
+    assert runner.phase_jobs('label_efficiency')==[(None,None)]
+    command=runner.child_command(auth,Path('/approved'),(None,None))
+    assert command[1:]==[str(tmp_path/'scripts/final_label_efficiency.py'),'run','--approved','/approved']
+    for name in ('protocol.json','SPECIFICATION.md','task_manifest.json','test_design.py'):save(tmp_path,c.LABEL_SCOPE+'/'+name,{})
+    runner.require_fresh_outputs(auth)
+    outputs={name:save(tmp_path,c.LABEL_SCOPE+'/'+name,{})['sha256'] for name in c.LABEL_RESULTS if name not in ('attempt.json','completed.json')}
+    hashes={}
+    for i in range(120):
+        prefix=c.LABEL_SCOPE+f'/members/member_{i:03d}/'
+        save(tmp_path,prefix+'attempt.json',{'index':i})
+        payload={name:save(tmp_path,prefix+name,{})['sha256'] for name in ('arrays.npz','predictions.csv')}
+        hashes[str(i)]=save(tmp_path,prefix+'completed.json',dict(status='complete',n_fits=1,
+            saved_model_predictions_replayed_exactly=True,payload_sha256=payload))['sha256']
+    save(tmp_path,c.LABEL_SCOPE+'/attempt.json',dict(pid=17,authorization_sha256='a'*64))
+    done=dict(status='complete',pid=17,authorization_sha256='a'*64,protocol_hash='e'*64,
+        new_supervised_fits=120,reused_full_members=20,member_completed_sha256=hashes,outputs=outputs)
+    save(tmp_path,c.LABEL_SCOPE+'/completed.json',done)
+    assert runner.job_receipt(auth,(None,None),SimpleNamespace(pid=17))==120
+    names=runner.output_files(auth,tmp_path/'run')
+    assert len(names)==491 and all(name not in names for name in (c.LABEL_SCOPE+'/protocol.json',c.LABEL_SCOPE+'/SPECIFICATION.md'))
+    with pytest.raises(ValueError,match='existing'):runner.require_fresh_outputs(auth)
+    with pytest.raises(ValueError,match='completion'):runner.job_receipt(auth,(None,None),SimpleNamespace(pid=18))
+    save(tmp_path,c.LABEL_SCOPE+'/members/member_119/arrays.npz',{'tampered':True})
+    with pytest.raises(ValueError,match='payload'):runner.job_receipt(auth,(None,None),SimpleNamespace(pid=17))
 
 
 def release_payload(auth):

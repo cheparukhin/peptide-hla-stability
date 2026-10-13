@@ -16,6 +16,10 @@ import socket
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = '/Users/cheparukhin/ai_science_hack'
 SCOPE = 'reports/finalization/hybrids_cloud_v1'
+LABEL_SCOPE = 'reports/finalization/label_efficiency'
+LABEL_SOURCES = ('scripts/final_label_efficiency.py', LABEL_SCOPE+'/SPECIFICATION.md', LABEL_SCOPE+'/test_design.py')
+LABEL_RESULTS = ('attempt.json','completed.json','scores_by_draw.csv','absolute_curves.csv','matched_gaps.csv',
+                 'comparisons.csv','actual_budgets.csv','bootstrap_min20.csv','bootstrap_min50.csv','reporting_metadata.json','REPORT.md')
 TRANSFER_ROOT = 'reports/finalization/transfer_recovery_v2'
 CLOUD_TRANSFER_ROOT = 'reports/finalization/transfer_cloud_recovery'
 RECOVERY_CELLS = tuple(f'joint/h4_p{i}' for i in range(5))
@@ -28,7 +32,8 @@ PHASES = {'transfer_recovery': (4,16384,2,21600,10,2000),
           'transfer_report': (2,8192,1,28800,5,0),
           'hybrid_pilot': (2,8192,1,7200,2,12),
           'hybrid_main': (4,16384,2,43200,20,480),
-          'hybrid_report': (2,8192,1,28800,5,0)}
+          'hybrid_report': (2,8192,1,28800,5,0),
+          'label_efficiency': (2,8192,1,3600,10,120)}
 NEW_SOURCES = ('pepstab/final_cloud_protocol.py','scripts/final_hybrids_cloud.py',
                'scripts/final_hybrids_cloud_report.py','scripts/final_cloud_phase.py','scripts/final_sandbox_driver.py')
 CELLS = tuple(f'hla/h{i}' for i in range(5)) + tuple(f'joint/h{i}_p{j}' for i in range(5) for j in range(5))
@@ -298,11 +303,22 @@ def verify_predecessor(reference, root=ROOT):
     return item
 
 
+def phase_protocol_hash(auth, root=ROOT):
+    if auth['phase'] != 'label_efficiency':
+        return TRANSFER_HASH if auth['phase'] in ('transfer_report','transfer_recovery') else SCIENCE_HASH
+    protocol = read(bound(auth['protocol'],root))
+    digest = hashlib.sha256(json.dumps(protocol['specification'],sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+    if (protocol.get('schema') != 'final_label_efficiency_protocol.1' or protocol.get('protocol_hash') != digest
+            or auth['protocol']['path'] != LABEL_SCOPE+'/protocol.json'):
+        raise ValueError('exact frozen label protocol required')
+    return digest
+
+
 def verify_phase_certificate(reference, phase, root=ROOT):
     item = read(bound(reference, root))
     count = PHASES[phase][-1]
     expected = dict(schema='finalization_sandbox_phase_completion.1',status='complete',phase=phase,
-                    protocol_hash=TRANSFER_HASH if phase in ('transfer_report','transfer_recovery') else SCIENCE_HASH,n_fits=count)
+                    protocol_hash=phase_protocol_hash(dict(item,phase=phase),root),n_fits=count)
     if any(item.get(k) != v for k,v in expected.items()):
         raise ValueError('exact successful cloud phase certificate required')
     terminal = item.get('provider_terminal', {})
@@ -318,6 +334,8 @@ def verify_phase_certificate(reference, phase, root=ROOT):
             or any(receipt.get(k) != item.get(k) for k in shared)
             or not receipt.get('real_process_owner',{}).get('pid_namespace')):
         raise ValueError('phase receipt/real namespace mismatch')
+    if phase=='label_efficiency' and receipt.get('protocol')!=item['protocol']:
+        raise ValueError('label certificate/receipt protocol binding changed')
     if receipt.get('output_manifest') != item['output_manifest']:
         raise ValueError('phase output manifest linkage changed')
     manifest = read(bound(item['output_manifest'],root))
@@ -351,7 +369,7 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
     path = path_in_root(path,root)
     auth = read(path)
     phase = phase or auth.get('phase')
-    expected_scope=CLOUD_TRANSFER_ROOT if phase=='transfer_recovery' else auth.get('scope_root') if phase=='transfer_report' and auth.get('scope_root')==CLOUD_TRANSFER_ROOT else SCOPE
+    expected_scope=LABEL_SCOPE if phase=='label_efficiency' else CLOUD_TRANSFER_ROOT if phase=='transfer_recovery' else auth.get('scope_root') if phase=='transfer_report' and auth.get('scope_root')==CLOUD_TRANSFER_ROOT else SCOPE
     if phase not in PHASES or auth.get('schema') != 'final_cloud_phase_authorization.1' or auth.get('approved') is not True or auth.get('phase') != phase or auth.get('scope_root') != expected_scope:
         raise ValueError('approved exact cloud phase/scope required')
     cpu,memory,workers,max_wall,max_cap,_ = PHASES[phase]
@@ -394,6 +412,25 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
                 or original_protocol.get('protocol_hash') != SCIENCE_HASH
                 or any(sources.get(k) != h for k,h in original_protocol['source_sha256'].items())):
             raise ValueError('cloud scientific protocol/source bytes changed')
+    if phase=='label_efficiency':
+        protocol=read(bound(auth['protocol'],root));protocol_hash=phase_protocol_hash(auth,root)
+        specification=protocol['specification']
+        tasks=read(bound(auth['task_manifest'],root))
+        tasks_hash=hashlib.sha256(json.dumps(tasks,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+        if (auth.get('protocol_hash')!=protocol_hash or auth.get('new_supervised_fits')!=120
+                or auth.get('reused_full_members')!=20 or auth.get('backend')!='modal_cpu_sandbox'
+                or not set(LABEL_SOURCES).issubset(sources)
+                or not set(LABEL_SOURCES).issubset(protocol['source_sha256'])
+                or any(sources.get(k)!=h for k,h in protocol['source_sha256'].items())
+                or specification.get('new_supervised_fits')!=120 or specification.get('full_budget_reused_members')!=20
+                or specification.get('inclusive_cap_usd')!=10 or tasks_hash!=specification.get('subset_manifest_sha256')
+                or auth['task_manifest']['path']!=LABEL_SCOPE+'/task_manifest.json'
+                or auth.get('canonical_targets')!=protocol.get('canonical_targets')
+                or protocol.get('hybrid_protocol')!={'path':SCOPE+'/protocol.json','sha256':sha(staged_protocol)}
+                or auth.get('phase_certificates',{}).get('hybrid_report')!=protocol.get('baseline_report_certificate')
+                or manifest['files'].get(auth['protocol']['path'])!=auth['protocol']['sha256']
+                or manifest['files'].get(auth['task_manifest']['path'])!=auth['task_manifest']['sha256']):
+            raise ValueError('exact frozen 120-fit/20-reuse study binding required')
     account = read(bound(auth['cloud_accounting'],root))
     if account.get('schema') != 'final_cloud_accounting.1' or account.get('phase') != phase:
         raise ValueError('phase accounting schema/identity changed')
@@ -409,7 +446,7 @@ def validate_authorization(path, phase=None, *, root=ROOT, clock=None, verify_in
             or account['conservative_spend_usd'] + account['reserved_phase_usd'] > account['future_envelope_usd']):
         raise ValueError('accounting under-reserved or exceeds authorized ceiling')
     certificates = auth.get('phase_certificates',{})
-    required = () if phase in ('transfer_report','transfer_recovery','hybrid_pilot') else ('hybrid_pilot',) if phase=='hybrid_main' else ('hybrid_pilot','hybrid_main')
+    required = ('hybrid_report',) if phase=='label_efficiency' else () if phase in ('transfer_report','transfer_recovery','hybrid_pilot') else ('hybrid_pilot',) if phase=='hybrid_main' else ('hybrid_pilot','hybrid_main')
     if set(certificates) != set(required):
         raise ValueError('exact preceding phase certificates required')
     checked = {key:verify_phase_certificate(certificates[key],key,root) for key in required}

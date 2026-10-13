@@ -55,6 +55,19 @@ def test_exact_resources_and_bound_arithmetic(planned):
     assert (d.stamp(plan['provider_stop_deadline_utc'])-d.stamp(plan['created_at_utc']))*d.rate(auth) <5
 
 
+def test_label_phase_keeps_single_worker_one_hour_and_inclusive_ten_cap(planned):
+    path,plan,auth,account_path,_=planned
+    auth.update(phase='label_efficiency',phase_cap_usd=10)
+    account=json.loads(account_path.read_text());account.update(phase='label_efficiency',phase_cap_usd=10,reserved_phase_usd=10)
+    rewrite(account_path,account);auth['cloud_accounting']['sha256']=d.sha(account_path)
+    auth_path=Path(plan['authorization']['path']);rewrite(auth_path,auth)
+    plan.update(phase_cap_usd=10);plan['authorization']['sha256']=d.sha(auth_path);rewrite(path,plan)
+    assert d.validate_plan(path,admission=True)[1]['resources']['max_workers']==1
+    for key,value in [('fit_wall_seconds',3601),('phase_cap_usd',11),('resources',dict(auth['resources'],max_workers=2))]:
+        rewrite(auth_path,dict(auth,**{key:value}));plan['authorization']['sha256']=d.sha(auth_path);rewrite(path,plan)
+        with pytest.raises(ValueError,match='caps'):d.validate_plan(path)
+
+
 @pytest.mark.parametrize('change', ['phase','worker','threads','memory','cpu','bool_worker','wall','phase_cap','image'])
 def test_modified_phase_authorization_rejected_even_if_rebound(planned,change):
     path,plan,auth,_,_=planned

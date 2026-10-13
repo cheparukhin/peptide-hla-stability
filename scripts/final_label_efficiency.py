@@ -201,15 +201,8 @@ def freeze(baseline_certificate):
 def authorize(path):
     from pepstab import final_cloud_protocol as c
     if sys.platform!='linux':raise ValueError('paid scientific work is Modal/Linux only')
-    path=Path(path);auth=c.read(path)
-    if (auth.get('schema')!='final_label_efficiency_authorization.1' or auth.get('approved') is not True
-            or auth.get('phase')!='label_efficiency' or auth.get('backend')!='modal_cpu_sandbox'
-            or auth.get('inclusive_cap_usd')!=10 or auth.get('new_supervised_fits')!=120
-            or auth.get('resources')!={'cpu_cores':2,'memory_mib':8192,'numerical_threads':2,'max_workers':1}
-            or any(type(v) is not int for v in auth.get('resources',{}).values())
-            or type(auth.get('work_wall_seconds')) is not int or not 0<auth['work_wall_seconds']<=3600
-            or not time.time()<c.timestamp(auth['deadline_utc'])<=c.timestamp(c.OUTER_DEADLINE)
-            or os.environ.get('FINAL_CLOUD_AUTH_SHA256')!=sha(path)
+    path=Path(path);auth=c.validate_authorization(path,'label_efficiency')
+    if (os.environ.get('FINAL_CLOUD_AUTH_SHA256')!=auth['_sha256']
             or not os.environ.get('FINAL_CLOUD_SANDBOX_ID','').startswith('sb-')):
         raise ValueError('exact released bounded study authorization required')
     protocol=c.read(c.bound(auth['protocol']))
@@ -227,14 +220,16 @@ def run(approved):
     from threadpoolctl import threadpool_limits
     from pepstab.final_hybrids import mlp_config
     from pepstab.mlp import MLPRegressor
+    from scripts.final_ranking import runtime_identity
     auth,protocol,tasks=authorize(approved);started=time.monotonic()
+    runtime=runtime_identity()
     def guard():
-        if time.monotonic()-started>=auth['work_wall_seconds'] or time.time()>=datetime.fromisoformat(auth['deadline_utc']).timestamp() or sha(approved)!=os.environ['FINAL_CLOUD_AUTH_SHA256']:
+        if time.monotonic()-started>=auth['fit_wall_seconds'] or time.time()>=datetime.fromisoformat(auth['deadline_utc']).timestamp() or sha(approved)!=os.environ['FINAL_CLOUD_AUTH_SHA256']:
             raise ValueError('fixed study deadline/authorization changed; no retry')
     frame,hybrid,features=load_context(protocol['canonical_targets'],features=True)
     if binding(HYBRID/'protocol.json')!=protocol['hybrid_protocol'] or make_tasks(frame)!=tasks:raise ValueError('frozen population/subsets changed')
     full=baseline_members(frame,hybrid,protocol['baseline_report_certificate'],features=features)
-    guard();write_once(OUT/'attempt.json',dict(status='attempted',protocol_hash=protocol['protocol_hash'],authorization_sha256=sha(approved),new_fits=120,no_retry=True))
+    guard();write_once(OUT/'attempt.json',dict(status='attempted',pid=os.getpid(),runtime=runtime,protocol_hash=protocol['protocol_hash'],authorization_sha256=sha(approved),new_fits=120,no_retry=True))
     position={int(pid):i for i,pid in enumerate(frame.pair_id)};tables=[];receipts=[]
     with threadpool_limits(limits=2):
         for task in tasks['new_members']:
@@ -260,9 +255,10 @@ def run(approved):
             receipt.update(replay)
             write_once(directory/'completed.json',receipt);receipts.append(receipt)
         guard();report(frame,tasks,tables,full,protocol,guard);guard()
-    write_once(OUT/'completed.json',dict(status='complete',protocol_hash=protocol['protocol_hash'],new_supervised_fits=120,
+    from pepstab.final_cloud_protocol import LABEL_RESULTS
+    write_once(OUT/'completed.json',dict(status='complete',pid=os.getpid(),runtime=runtime,authorization_sha256=sha(approved),protocol_hash=protocol['protocol_hash'],new_supervised_fits=120,
         reused_full_members=20,member_completed_sha256={str(i):sha(OUT/'members'/f'member_{i:03d}'/'completed.json') for i in range(120)},
-        elapsed_seconds=time.monotonic()-started,outputs={p.name:sha(p) for p in OUT.iterdir() if p.is_file() and p.suffix in ('.csv','.md')}))
+        elapsed_seconds=time.monotonic()-started,outputs={name:sha(OUT/name) for name in LABEL_RESULTS if name not in ('attempt.json','completed.json')}))
     return {'new_supervised_fits':120,'reused_full_members':20}
 
 

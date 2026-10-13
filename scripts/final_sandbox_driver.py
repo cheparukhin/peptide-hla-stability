@@ -23,7 +23,8 @@ LIMITS = {'transfer_recovery': (4, 16384, 21600, 10),
           'transfer_report': (2, 8192, 28800, 5),
           'hybrid_pilot': (2, 8192, 7200, 2),
           'hybrid_main': (4, 16384, 43200, 20),
-          'hybrid_report': (2, 8192, 28800, 5)}
+          'hybrid_report': (2, 8192, 28800, 5),
+          'label_efficiency': (2, 8192, 3600, 10)}
 OUTER_STOP = '2026-10-14T14:15:17.567539+00:00'
 TRANSFER_STOP = '2026-10-13T15:32:19.924192+00:00'
 

@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 
 ALLOWED={'scripts/final_transfer.py','scripts/final_transfer_report.py','scripts/final_hybrids_cloud.py',
-         'scripts/final_hybrids_cloud_report.py','scripts/final_cloud_phase.py'}
+         'scripts/final_hybrids_cloud_report.py','scripts/final_cloud_phase.py','scripts/final_label_efficiency.py'}
 COMPATIBILITY_SOURCES=('pepstab/final_cloud_targets.py','scripts/final_cloud_scientific_entry.py')
 
 

@@ -196,6 +196,10 @@ def allowed_output(name, auth, root=ROOT):
     if phase=='hybrid_pilot':
         return name.startswith(scope+'/pilot/') or name==auth['run_directory']+'/pilot_audit.json'
     if phase=='hybrid_main':return any(name.startswith(f'{scope}/fold_{fold}/') for fold in range(5))
+    if phase=='label_efficiency':
+        if name in {c.LABEL_SCOPE+'/'+filename for filename in c.LABEL_RESULTS}:return True
+        match=re.fullmatch(re.escape(c.LABEL_SCOPE)+r'/members/member_(\d{3})/(attempt\.json|arrays\.npz|predictions\.csv|completed\.json)',name)
+        return bool(match and int(match[1])<120)
     return name in {scope+'/'+filename for filename in REPORT_FILES}
 
 
@@ -272,7 +276,8 @@ async def download(path, terminal_path, *, certificate_path=None, root=ROOT):
             expected=dict(schema='final_cloud_phase_exit.1',status='complete',phase=auth['phase'],phase_nonce=auth['phase_nonce'],
                 sandbox_id=created['sandbox_id'],app_id=resources['app_id'],authorization_sha256=auth['_sha256'],
                 input_manifest_sha256=auth['input_manifest']['sha256'],exit_code=0,cleanup_complete=True,
-                protocol_hash=c.TRANSFER_HASH if auth['phase'] in ('transfer_recovery','transfer_report') else c.SCIENCE_HASH,n_fits=c.PHASES[auth['phase']][-1])
+                protocol_hash=c.phase_protocol_hash(auth,root),n_fits=c.PHASES[auth['phase']][-1])
+            if auth['phase']=='label_efficiency':expected['protocol']=auth['protocol']
             if (any(receipt.get(k)!=v for k,v in expected.items())
                     or type(receipt.get('exit_code')) is not int
                     or not receipt.get('real_process_owner',{}).get('pid_namespace')
@@ -312,6 +317,7 @@ async def download(path, terminal_path, *, certificate_path=None, root=ROOT):
         certificate.update(schema='finalization_sandbox_phase_completion.1',status='complete',
             runner_exit={'path':run+'/exit_receipt.json','sha256':exit_digest},output_manifest=ref,
             provider_terminal=dict(sandbox_id=created['sandbox_id'],returncode=code,observed_at_utc=observed))
+        if auth['phase']=='label_efficiency':certificate['protocol']=auth['protocol']
         checked=stage/'certificate.json';write_once(checked,certificate)
         # Includes pilot replay audit checks; no certificate can bypass them.
         check_name=str((directory/f'certificate-check-{uuid.uuid4().hex}.json').relative_to(root))

@@ -51,6 +51,8 @@ def child_command(auth,approved,job):
         return [sys.executable,str(ROOT/'scripts/final_transfer_report.py'),'--out-dir',str(ROOT/report_root)]
     if phase=='hybrid_report':
         return [sys.executable,str(ROOT/'scripts/final_hybrids_cloud_report.py'),'--out-dir',str(out),'--approved',str(approved)]
+    if phase=='label_efficiency':
+        return [sys.executable,str(ROOT/'scripts/final_label_efficiency.py'),'run','--approved',str(approved)]
     fold,rep=job
     return [sys.executable,str(ROOT/'scripts/final_hybrids_cloud.py'),'pilot-component' if phase=='hybrid_pilot' else 'run-component',
             '--out-dir',str(out),'--approved',str(approved),'--fold',str(fold),'--representation',rep]
@@ -259,6 +261,27 @@ def cleanup_children(active,*,grace_seconds=10):
 
 
 def job_receipt(auth,job,child):
+    if auth['phase']=='label_efficiency':
+        directory=ROOT/contract.LABEL_SCOPE
+        attempt=contract.read(directory/'attempt.json');done=contract.read(directory/'completed.json')
+        if (attempt.get('pid')!=child.pid or done.get('pid')!=child.pid
+                or attempt.get('authorization_sha256')!=auth['_sha256'] or done.get('authorization_sha256')!=auth['_sha256']
+                or done.get('status')!='complete' or done.get('protocol_hash')!=contract.phase_protocol_hash(auth)
+                or done.get('new_supervised_fits')!=120 or done.get('reused_full_members')!=20
+                or set(done.get('member_completed_sha256',{}))!={str(i) for i in range(120)}
+                or set(done.get('outputs',{}))!=set(contract.LABEL_RESULTS)-{'attempt.json','completed.json'}):
+            raise ValueError('exact label worker completion/fit count required')
+        for i in range(120):
+            member=directory/'members'/f'member_{i:03d}';completion=contract.read(member/'completed.json')
+            if (contract.sha(member/'completed.json')!=done['member_completed_sha256'][str(i)]
+                    or completion.get('status')!='complete' or completion.get('n_fits')!=1
+                    or completion.get('saved_model_predictions_replayed_exactly') is not True
+                    or set(completion.get('payload_sha256',{}))!={'arrays.npz','predictions.csv'}
+                    or any(contract.sha(member/name)!=h for name,h in completion['payload_sha256'].items())):
+                raise ValueError('label member count/payload/replay mismatch')
+        if any(contract.sha(directory/name)!=h for name,h in done['outputs'].items()):
+            raise ValueError('label result payload changed')
+        return 120
     if auth['phase']=='transfer_recovery':
         regime,cell=job;directory=ROOT/contract.CLOUD_TRANSFER_ROOT/regime/cell
         attempt=contract.read(directory/'attempt.json');receipt=contract.read(directory/'exit_receipt.json')
@@ -289,6 +312,7 @@ def require_fresh_outputs(auth):
     elif phase=='transfer_report':paths=[ROOT/(contract.CLOUD_TRANSFER_ROOT if auth.get('scope_root')==contract.CLOUD_TRANSFER_ROOT else contract.TRANSFER_ROOT)/'results']
     elif phase=='hybrid_pilot':paths=[out/'pilot']
     elif phase=='hybrid_main':paths=[out/f'fold_{fold}' for fold in range(5)]
+    elif phase=='label_efficiency':paths=[ROOT/contract.LABEL_SCOPE/'members']+[ROOT/contract.LABEL_SCOPE/name for name in contract.LABEL_RESULTS]
     else:paths=[out/name for name in ('predictions.csv','scores.csv','comparisons.csv','audit.json','REPORT.md','runtime_summary.json','bootstrap_min20.csv','bootstrap_min50.csv')]
     if any(p.exists() for p in paths):
         raise ValueError('existing scientific/report attempt; no automatic overwrite or retry')
@@ -306,6 +330,11 @@ def output_files(auth,run_dir):
         names=['bootstrap_min20.csv','bootstrap_min50.csv','predictions.csv','scores.csv','comparisons.csv','selections.csv',
                'per_allele_scores.csv','per_fold_scores.csv','historical_descriptive_scores.csv','runtime_summary.json','REPORT.md','audit.json']
         files.extend(out/name for name in names)
+    if phase=='label_efficiency':
+        directory=ROOT/contract.LABEL_SCOPE
+        files.extend(directory/name for name in contract.LABEL_RESULTS)
+        files.extend(directory/'members'/f'member_{i:03d}'/name for i in range(120)
+                     for name in ('attempt.json','arrays.npz','predictions.csv','completed.json'))
     if phase=='hybrid_pilot':files.append(run_dir/'pilot_audit.json')
     if phase=='transfer_recovery':files.append(ROOT/contract.CLOUD_TRANSFER_ROOT/'recovery_completion.json')
     if not files or any(p.is_symlink() or not p.is_file() for p in files):
@@ -381,7 +410,8 @@ def run_phase(approved,*,startup_wait_seconds=300,stream=sys.stdin,popen=subproc
     for sig in previous:signal.signal(sig,stop)
     base=dict(schema='final_cloud_phase_exit.1',phase=bare['phase'],phase_nonce=bare['phase_nonce'],
         authorization_sha256=auth['_sha256'],input_manifest_sha256=bare['input_manifest']['sha256'],
-        protocol_hash=contract.TRANSFER_HASH if bare['phase'] in ('transfer_report','transfer_recovery') else contract.SCIENCE_HASH,real_process_owner=owner,started_at_utc=started)
+        protocol_hash=contract.phase_protocol_hash(bare),real_process_owner=owner,started_at_utc=started)
+    if bare['phase']=='label_efficiency':base['protocol']=bare['protocol']
     try:
         environment=verify_environment()
         reader=RawJsonLines(stream)

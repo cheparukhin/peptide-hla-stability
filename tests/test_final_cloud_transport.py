@@ -14,6 +14,15 @@ from scripts import final_cloud_transport as t
 NOW='2026-10-12T18:00:00+00:00'
 
 
+@pytest.mark.parametrize('name,allowed',[
+    ('members/member_000/arrays.npz',True),('members/member_119/completed.json',True),
+    ('members/member_120/arrays.npz',False),('members/member_001/protocol.json',False),
+    ('REPORT.md',True),('reporting_metadata.json',True),('protocol.json',False),
+    ('SPECIFICATION.md',False),('task_manifest.json',False),('test_design.py',False)])
+def test_label_download_is_only_fresh_results_and_bounded_members(tmp_path,name,allowed):
+    assert t.allowed_output(t.c.LABEL_SCOPE+'/'+name,{'phase':'label_efficiency'},tmp_path)==allowed
+
+
 def put(root,name,value):
     path=root/name;path.parent.mkdir(parents=True,exist_ok=True)
     path.write_bytes(value if isinstance(value,bytes) else json.dumps(value,sort_keys=True).encode())
