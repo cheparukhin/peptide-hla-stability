@@ -1,0 +1,18 @@
+{
+  "schema": "energy_v2_preemption_diagnosis.1",
+  "app_id": "ap-nvIT2aCnYh2xc3Ea32CotH",
+  "log_path": "reports/followup3/energy_recovery_diagnosis/system_logs.txt",
+  "log_sha256": "d19b48b1f4ae31fa2711a02bf0a23f23869ccdcbad9f08aacbf79d59e33fbcb4",
+  "fetch_source": "system",
+  "since_utc": "2026-10-13T13:05:00Z",
+  "until_utc": "2026-10-13T18:06:00Z",
+  "fetch_tail_limit": 20000,
+  "log_lines": 127,
+  "explicit_preemption_events": 73,
+  "unique_preempted_containers": 73,
+  "oom_evidence_in_bounded_system_fetch": false,
+  "first_preemption_display": "2026-10-13 14:15:18+01:00 ta-01M4TP2WY0S2P3XSRTHPJ6EP1R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption",
+  "last_preemption_display": "2026-10-13 17:06:34+01:00 ta-01M4TV38H21056GV3V611PY02R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption",
+  "attribution": "explicit provider preemptions; count consistent with73 missing outputs, no exactcase/container map",
+  "efficacy_outcomes_inspected": false
+}

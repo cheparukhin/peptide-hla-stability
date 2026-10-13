@@ -1,0 +1,127 @@
+2026-10-13 14:05:28+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Building image im-exuqO6YOQva1FHq4CdRT1N
+2026-10-13 14:05:28+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:05:28+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB => Step 0: FROM base
+2026-10-13 14:05:28+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:05:28+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB => Step 1: RUN python -m pip install biotite==1.7.1 numpy==2.5.3 pandas==3.0.6 scipy==1.18.1
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Looking in indexes: http://pypi-mirror.modal.local:5555/simple
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting biotite==1.7.1
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading biotite-1.7.1-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: numpy==2.5.3 in ./usr/local/lib/python3.12/site-packages (2.5.3)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: pandas==3.0.6 in ./usr/local/lib/python3.12/site-packages (3.0.6)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: scipy==1.18.1 in ./usr/local/lib/python3.12/site-packages (1.18.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting biotraj<2.0,>=1.0 (from biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading biotraj-1.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (32 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting requests>=2.12 (from biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting msgpack>=0.5.6 (from biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading msgpack-1.2.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting networkx>=2.0 (from biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: packaging>=24.0 in ./usr/local/lib/python3.12/site-packages (from biotite==1.7.1) (26.3)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: python-dateutil>=2.8.2 in ./usr/local/lib/python3.12/site-packages (from pandas==3.0.6) (2.9.0.post0)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Requirement already satisfied: six>=1.5 in ./usr/local/lib/python3.12/site-packages (from python-dateutil>=2.8.2->pandas==3.0.6) (1.17.0)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting charset_normalizer<4,>=2 (from requests>=2.12->biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting idna<4,>=2.5 (from requests>=2.12->biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting urllib3<3,>=1.26 (from requests>=2.12->biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Collecting certifi>=2023.5.7 (from requests>=2.12->biotite==1.7.1)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+2026-10-13 14:05:29+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading biotite-1.7.1-cp312-cp312-manylinux_2_28_x86_64.whl (58.0 MB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.0/58.0 MB 227.5 MB/s  0:00:00
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading biotraj-1.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 218.1 MB/s  0:00:00
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading msgpack-1.2.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (472 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 601.6 MB/s  0:00:00
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading idna-3.20-py3-none-any.whl (69 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+2026-10-13 14:05:30+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Installing collected packages: urllib3, networkx, msgpack, idna, charset_normalizer, certifi, requests, biotraj, biotite
+2026-10-13 14:05:32+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:05:32+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Successfully installed biotite-1.7.1 biotraj-1.2.2 certifi-2026.7.22 charset_normalizer-3.5.2 idna-3.20 msgpack-1.2.3 networkx-3.7 requests-2.34.2 urllib3-2.8.0
+2026-10-13 14:05:33+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Saving image...
+2026-10-13 14:05:34+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Image saved, took 623.47ms
+2026-10-13 14:05:34+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:05:34+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB Built image im-exuqO6YOQva1FHq4CdRT1N in 5.58s
+2026-10-13 14:05:34+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:05:34+01:00 ta-01M4TNWCJM2CREDA3G166MG4CB 
+2026-10-13 14:15:18+01:00 ta-01M4TP2WY0S2P3XSRTHPJ6EP1R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:36:50+01:00 ta-01M4TP2NC672265ZCGF6H6HR2R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:43:14+01:00 ta-01M4TP2QGF5ABNQ95GXDKRE8RR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:47:18+01:00 ta-01M4TP2WBJPMD72AE2W60NVH6R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:48:09+01:00 ta-01M4TP2Z162VCDPVNS827S80FR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:55:04+01:00 ta-01M4TP30ZEXG4P59BQVJ91355R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:56:10+01:00 ta-01M4TP2RYMB3Z5YKWHHG41083R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 14:59:23+01:00 ta-01M4TP2TN6CK51Q5Q10E4NECQR Runner failed with exception: Runner has been idle for too long: 62 seconds
+2026-10-13 15:06:42+01:00 ta-01M4TP31JKCBRK8A9Q7ECG3HXR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:12:33+01:00 ta-01M4TP2YVK7EAQCPB06XSW2N0R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:12:33+01:00 ta-01M4TP2P92S79MK9PWX0BNSEAR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:12:45+01:00 ta-01M4TP2WCRVZFF6PZEBM1JV3VR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:17:48+01:00 ta-01M4TP2PAV5QVETKAKRAHDRZSR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:18:03+01:00 ta-01M4TP2VAJDZW8RPYE4VPA410R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:32:55+01:00 ta-01M4TP2Z9G4Z7Y267SEFF1KTAR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:32:56+01:00 ta-01M4TP2QYMAY50WQRKHTNJ58SR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:02+01:00 ta-01M4TP2NAXN24ZEFVTPAREYSQR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:06+01:00 ta-01M4TP2T8ERYCGSSWZHGNX11BR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:09+01:00 ta-01M4TP2XBBBFN2YYZMCA293NBR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:11+01:00 ta-01M4TP2Y5NDPYS2VY5DYJWT8YR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:12+01:00 ta-01M4TNWPVWGWQT7NGFR3WNDKBR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:12+01:00 ta-01M4TP2NJBJ1KYGSVZ0Z0YG13R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:14+01:00 ta-01M4TP2P1XDHPW4DE0PN0M1W8R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:16+01:00 ta-01M4TP2Y8SSS01KMEFE2KF81BR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:16+01:00 ta-01M4TT1BTKW3RCH6QNC2ZHKPRR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:16+01:00 ta-01M4TP2ZTCC59GRWRZ30QTK2QR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:17+01:00 ta-01M4TP2NS414CZZ46W2ZDKTKPR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:24+01:00 ta-01M4TP2QYACTESWX7FYTV5JWWR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:25+01:00 ta-01M4TP2SS20ZNQBZZ1J2065M0R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:31+01:00 ta-01M4TTX8N3FX0SH1KR2QJRGY4R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:31+01:00 ta-01M4TP2THN715C8ZDFYFQ8BKWR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:31+01:00 ta-01M4TP2S8RCM1RS8Y24VHHTCCR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:34+01:00 ta-01M4TP2WDD4P7GZX24T5MH77GR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:36+01:00 ta-01M4TP2VBJ25CJFSEV8BE9CS9R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:36+01:00 ta-01M4TP2PP2ATPCKJ192XTMB9BR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:41+01:00 ta-01M4TP2YEBGJ1857FKB4DZ31BR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:45+01:00 ta-01M4TP2VJAJB6BBJNNRA0XTZKR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:47+01:00 ta-01M4TP30MGW0FMTMKX5FCE0Q1R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:52+01:00 ta-01M4TP2NRAVXJ1YCJZ3H2AHD0R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:55+01:00 ta-01M4TP2XA9BFHCWQKF7Y6VS01R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:56+01:00 ta-01M4TR1ZJ9BF7ET2VBZWG80CVR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:58+01:00 ta-01M4TP31Q2ANZDHZZ483D2RRAR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:33:59+01:00 ta-01M4TP2NAB4FY8M60CE4267DDR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:01+01:00 ta-01M4TP2SSZGVJZ51PF6M4PMG5R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:03+01:00 ta-01M4TTXRVE26HWVXEPZT18T4FR Runner terminated.
+2026-10-13 15:34:05+01:00 ta-01M4TP2P9Z5CYK4DG1QSRJRS9R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:07+01:00 ta-01M4TP2QY175GVKQ2CR7J7Q5BR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:07+01:00 ta-01M4TSD9YTWP0TS8WEW7CJD1DR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:08+01:00 ta-01M4TR9Y094ZJA2YCEBZQ17J2R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:35+01:00 ta-01M4TP2T0XDMN7NGWHP34P7YDR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:36+01:00 ta-01M4TP2SZTPMH4P0VTNH0W3DMR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:37+01:00 ta-01M4TTXE46FWH3JC2CPX1EYDJR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:34:38+01:00 ta-01M4TP302DX3X3Q02SHVN94PWR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:36:24+01:00 ta-01M4TP2P9AWA93K6EPHRTS44MR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:36:30+01:00 ta-01M4TP2X1CFHGB5C7ANQJVGNMR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:36:32+01:00 ta-01M4TP2PJ1VT6X7AD245D051ZR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:36:44+01:00 ta-01M4TP2NSC4HYD3WEK7VDX202R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:42:10+01:00 ta-01M4TTXCE0JCTP4DWPWYDGNFAR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:42:10+01:00 ta-01M4TP2NRWW9NHJNYN23KEHFCR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:42:13+01:00 ta-01M4TT1C742E9J7CCPS605MRZR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:42:14+01:00 ta-01M4TP2WKDFVTYFTFP8YJKJPBR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:48:07+01:00 ta-01M4TTX92NP472TXFS8AYTYFRR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 15:52:38+01:00 ta-01M4TP2PQ8DX9SHF8FTM3ZKJRR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:05:14+01:00 ta-01M4TVDWA7RRC0CTNVR1GT12NR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:06:54+01:00 ta-01M4TP2S5SA09RFY7DSTVHAKHR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:13:09+01:00 ta-01M4TTZNBJVGG6HK3B2WDJFYGR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:13:20+01:00 ta-01M4TTX59EJXX4C6SQWS6GY1QR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:13:20+01:00 ta-01M4TVDTSP07NETKVCHR4V9THR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:13:41+01:00 ta-01M4TQPQKPEBEKXF4V97PX4W7R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:24:42+01:00 ta-01M4TTZMJ5SC6MB0PQESJER9SR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 16:24:43+01:00 ta-01M4TTYNHY52RNVC1Y9871WH4R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 17:06:15+01:00 ta-01M4TV3KTASA14YSXQ9CSE5JWR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 17:06:20+01:00 ta-01M4TSR28W6JEA7JB0703G9BGR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 17:06:20+01:00 ta-01M4TTXDTD52H2DTSTPZCQ31DR Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 17:06:34+01:00 ta-01M4TV38H21056GV3V611PY02R Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+2026-10-13 17:07:58+01:00 Stopping app - uncaught exception raised locally: RuntimeError('incomplete/failed repaired panel;assessment remains blocked').

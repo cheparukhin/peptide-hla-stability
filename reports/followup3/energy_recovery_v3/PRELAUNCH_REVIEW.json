@@ -1,0 +1,58 @@
+{
+  "status": "passed_prelaunch_source_review",
+  "reviewed_at_utc": "2026-10-13T16:22:37.220471+00:00",
+  "source_sha256": {
+    "scripts/followup3_energy_recovery.py": "d633944052ba2f9fb58c23d19da483125935bf8b5415a70b97fc3be754ae428e",
+    "tests/test_followup3_energy_recovery.py": "4b4f82367a395dc7aeea98764c202bbe54702c753756519577da783451cefb17",
+    "reports/followup3/energy_recovery_v3/EXECUTION_AMENDMENT.md": "55105cba97684d530c9f0b9c475a18291964732deeda6732b29c46d067ffce28",
+    "reports/followup3/energy_recovery_diagnosis/diagnosis.json": "467a56dd65c6053c6fc59ad38cfb158f7d7c6ed98e7cb528b515e93a48b65122",
+    "reports/followup3/energy_recovery_diagnosis/system_logs.txt": "d19b48b1f4ae31fa2711a02bf0a23f23869ccdcbad9f08aacbf79d59e33fbcb4"
+  },
+  "scientific_judgment": "One manual operational recovery of the exact73 interrupted cases is legitimate before efficacy inspection. It is not automatic retry or outcome-driven case selection.",
+  "parent_protocol_sha256": "9f99bf603ffe9a7dd66cd39f5e7a3e197ad495a45f74f334d2eeb8a4865ca926",
+  "checks": {
+    "original_panel_rows": 4449,
+    "original_success_rows_validated": 4376,
+    "original_interrupted_start_rows_preserved": 73,
+    "exact_recovery_rows": 73,
+    "native_inputs_match_audited_inverse_cache": true,
+    "diagnostic_preemption_events": 73,
+    "diagnostic_unique_containers": 73,
+    "oom_evidence_in_bounded_fetch": false,
+    "individual_case_container_attribution_claimed": false,
+    "successful_rows_recomputed": 0,
+    "unchanged_scientific_scorer": true,
+    "new_attempt_limit_per_identity": 1,
+    "per_case_limit_seconds": 600,
+    "shared_access_rejection_stop": true,
+    "execution_and_73_start_hashes_in_final_receipt": true,
+    "complete_panel_required_before_collection": true
+  },
+  "tests": {
+    "passed": 6,
+    "seconds": 0.93,
+    "scope": [
+      "interrupted manual start blocks retry",
+      "shared access marker blocks executable/start",
+      "completed cache identity preserved",
+      "original combined-copy bytes unchanged and attempt3 rejected",
+      "native coordinate mutation rejected",
+      "spawn/thread/deadline bounds"
+    ]
+  },
+  "resource_review": {
+    "sandbox_cpu_hard": 16,
+    "sandbox_memory_gib_hard": 32,
+    "spawn_workers_max": 16,
+    "numerical_threads_each": 1,
+    "deadline_max_seconds": 2700,
+    "root_reservation_proposed_usd": 3.5,
+    "per_process_memory_cgroup_claim": false,
+    "caveat": "The 45-minute hard cap does not guarantee completion if every case reaches its600-second maximum; no automatic extension or incomplete-panel analysis."
+  },
+  "blocking_findings": [],
+  "paid_launch_authorized_by_this_review": false,
+  "manifest_frozen_by_this_review": false,
+  "ledger_modified": false,
+  "required_next": "Root prepares and verifies source-bound manifest, admits fresh exact resource plan/guard, then launches one bounded recovery; completed assessment audit must additionally verify recovery manifest/receipt/combined hashes."
+}
