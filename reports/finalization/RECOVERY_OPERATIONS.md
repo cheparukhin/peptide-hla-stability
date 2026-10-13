@@ -1,38 +1,43 @@
 # Continuation after the 12 October process interruption
 
-**Current, 12 October 23:47 UTC:** all 480 hybrid fits and their download are
-complete; the report-only recovery is active. No scored hybrid result is claimed.
-Original test remains closed. Science and concise interpretation remain the goal.
+**Current, 13 October 00:17 UTC:** all 480 hybrid fits and their download are complete;
+one historical-backend report replay is running. No scored hybrid outcome yet.
+Original test remains closed. Prioritize scientific interpretation and clear writing.
 
-Two report attempts are closed, with real failed receipts and no statistics.
-The 22:40 attempt found one float32 ULP in recomputed stopping MSE. The 23:20
-attempt then found that report ensemble averaging omitted the worker's float64
-conversion. Both fixes are report-only: saved models/predictions, scientific
-sources, selection and CSV tolerances are unchanged. The scalar allowance is
-still at most one ULP; it has not widened. See [scalar explanation](cloud/STOPPING_MSE_REPLAY.md)
-and [ensemble explanation](cloud/ENSEMBLE_REPLAY.md). The second repair passed
-25 targeted checks and independent Astra review, committed `8f4b28f`.
+- Active directory `resources/cloud_sandboxes/hybrid-report-20261013-0020`.
+- Sandbox `sb-01M4S9VY6NV4WYNP3JHCNNZ98N`; App `ap-tXZim3RKtP1MEpna5Nmgxj`;
+  Volume `vo-A71FrGIxlb9M6L3hwubYev`.
+- Released once at 00:16 UTC; watcher PID 27319; launcher 27905 exited 0. Labels
+  `org.pepstab.hybrid-report-{watch,launch,awake}-20261013-0020`.
+- Authorization SHA `dac98e3de1ea5ba62046b37045283a038dcc5f90a5a8b69e56dcae982ecd8695`.
+- Same 2 physical CPU / 8 GiB / 2 threads / one process / zero fits / $5 cap.
+  Original work stop 13 October 06:45 UTC; provider stop 06:47 UTC. Never extend.
+- 3.041 GB / 5,068 input verification can take minutes. Watcher leases must be fresh;
+  never replace its writer, duplicate jobs or modify pinned sources.
 
-- Active directory: `resources/cloud_sandboxes/hybrid-report-20261012-2350`.
-- Sandbox `sb-01M4S85N57N520133XCE0H6B6Y`; App `ap-uzE2ZhxzJNoxj38JzbBXMT`;
-  Volume `vo-6LW5fTKXPxWOFpJNT0ceY2`.
-- Released once at 23:46 UTC; watchdog PID10871; launcher10946 exited0.
-  Labels `org.pepstab.hybrid-report-{watch,launch,awake}-20261012-2350`.
-- Authorization SHA `d427f4af861f526a575fa96142a7f47f2356fe27e041435f62b1e1f2a399e91b`.
-- Two physical CPU / 8 GiB / two numerical threads / one process / zero new fits.
-  The original work stop **13 October06:45UTC**, provider stop **06:47UTC** and
-  **$5 cap** remain unchanged. Never duplicate, blindly retry or edit pinned sources.
-- The 3.04GB /5,048-file input verification can take roughly15minutes. Keep the
-  independent watcher's one persistent stdin lease fresh; never replace it.
-- Success requires actual provider0, successful remote exit/cleanup, verified
-  download/certificate and all frozen audit/statistical coverage. Then close
-  the exact Volume/App and remove exited registrations.
+The third report attempt (`20261012-2350`) failed at 23:50:15 UTC during R0 pilot
+leaf-MLP exact held replay: 3,886/5,258 values differed, maximum absolute difference 0.0000019073486.
+Input/model/transform identities passed. Its actual BLAS architecture was not
+logged; the cause remains unproven. It is closed: provider 1, remote cleanup true,
+App stopped, Volume deleted and registrations removed. Metered $0.02883595; carry $0.05.
 
-Both failed report Apps/Volumes and registrations are closed. The latest failure
-metered $0.12941363 and carries $0.20; preserve it as failed evidence. Closed
-conservative compute is **$8.309382**, with $5 report and $3 overhead reserved:
-maximum **$16.309382** inside the same $100 ceiling. These are not live balance
-or final invoice figures.
+All 12 actual fitting runtime records nominate SkylakeX OpenBLAS with 2 threads.
+The new report pins that backend before importing the NumPy-importing pepstab
+package, checks exposed AVX512 capability, actual library versions/architecture
+and threads, and records them. The unchanged unscored pilot must pass first.
+This is one provenance-based hypothesis test, not kernel search. Exact held
+predictions, one-ULP stopping-MSE rule and CSV tolerances remain unchanged.
+If verified matching-backend replay fails, stop repeated report attempts and
+preserve evidence rather than widening tolerances automatically. Read
+[backend amendment](cloud/BACKEND_REPLAY.md). Code is committed `e5be689`;
+31 lightweight checks, fresh-process import-order regression and Astra review passed.
+
+The two earlier closed failures and narrow report fixes remain disclosed in
+[scalar replay](cloud/STOPPING_MSE_REPLAY.md) and [ensemble arithmetic](cloud/ENSEMBLE_REPLAY.md).
+No fitting, saved scientific prediction, selection or statistics changed.
+
+Closed conservative compute is $8.359382, with $5 report + $3 overhead reserved:
+maximum $16.359382 within the same $100 ceiling. These are not live balance/invoice.
 
 The optional fixed-head label-budget study is implemented/reviewed in `3e1b378`,
 with five synthetic checks. It is NOT frozen or launched. Only after successful
