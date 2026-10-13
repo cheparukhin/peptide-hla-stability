@@ -45,7 +45,8 @@ diagnostic exposure of test rows and aggregate outcomes.
   The [few-shot result](reports/followup3/REPORT.md#completed-few-shot-result)
   is complete and audited. ProteinMPNN context augmentation is audited and
   inconclusive beyond the matched Boltz head, as is repaired-descriptor
-  complementarity. One selected full-cohort ProteinMPNN extension is pending.
+  complementarity. The selected full-cohort ProteinMPNN extension is complete
+  and independently audited; computational search stops here.
 - [Independent metadata/methods audit](reports/followup3/independent_data/PROVENANCE.md):
   preserved 129 candidates, heterogeneous protocols and unresolved construct/
   measurement mapping; external candidate outcomes remain reserved.
@@ -133,11 +134,19 @@ reused exactly. The [comparison figure](reports/followup3/figures/descriptor_com
 shows all eight balanced-panel MLP arms and both descriptor family intervals.
 Few-shot adaptation is the only positive primary in the original family.
 
-After both descriptor audits, the [frozen decision](reports/followup3/FULL_COHORT_DECISION.json)
-admits one final 19,716-pair ProteinMPNN extension with three R5/P/PC arms,
-300 MLP members and 150 ridge fits, capped at $40. Results are pending.
-This selected development check is not independent confirmation or a fourth
-original-family primary; no full FoldX expansion or additional grid is admitted.
+The final [selected full-cohort ProteinMPNN extension](reports/followup3/REPORT.md#completed-selected-full-cohort-extension)
+is complete on all **19,716 original-training pairs**, with 300 MLP members
+and 150 ridge fits. MLP R5+P+C minus R5 is **−0.007026 [−0.022047,+0.013082]**,
+from 0.695498 to 0.688472; ridge, context, P-only and ≥50 sensitivities remain
+inconclusive. These are conditional pointwise 95% intervals after evidence-based
+study selection, not independent confirmation or a fourth original-family
+primary. All arms and fixed-query descriptive results remain visible.
+No added ProteinMPNN or FoldX benefit beyond R5 under the tested recipes is
+established; neither harm nor equivalence is established.
+**Stop computational search; retain the simpler embedding head and seek
+independent kinetic-assay confirmation.** The [unsent assay brief](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md)
+keeps locked-model confirmation primary with an optional future few-shot arm.
+No new grid, combined arm, full FoldX expansion, acquisition or outreach is admitted.
 
 Intervals throughout condition on fitted predictions and inner choices;
 they omit repeated fitting/selection and independent assay variation.
@@ -204,8 +213,10 @@ but Boltz loses less performance. The fixed recipes, label-blind subsets and
 counted stopping labels support relative robustness; they do not establish
 prospective assay savings or a gain against the main competitive selector.
 The finalization computational work and its temporary cloud resources are
-closed. The separately authorized third follow-up tranche is in progress,
-with a $139 inclusive ceiling; this is a limit, not a spending target.
+closed. The separately authorized third follow-up tranche is closed at
+**$67.302731 conservatively, with $0 reserved**, against its $139 inclusive
+ceiling. Failed attempts are included; these are not reconciled provider invoices
+or a live credit balance. [Ledger](reports/followup3/budget.json).
 
 
 The completed round-two phase conservatively accounted for $76.84 of its $100

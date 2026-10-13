@@ -20,11 +20,36 @@ results were inspected; see [the amendment](followup3/THIRD_PRIMARY_AMENDMENT.md
 Root selected one final [full-cohort ProteinMPNN extension](followup3/FULL_COHORT_DECISION.json)
 after both descriptor audits. It retains all 19,716 original-training complexes,
 reuses 4,449 native scores, and evaluates freshly fitted R5/R5+P/R5+P+C heads
-plus a fixed-query descriptive comparison. Four disjoint scoring batches are
-running under a combined $34 extraction cap; the entire extension is bounded
-at $40. This is selected development work, not an independent confirmation or
-a fourth original-tranche primary. No full FoldX expansion, combined-feature
-search or additional tuning grid is planned.
+plus a fixed-query descriptive comparison. **This extension is complete and
+independently audited:** all 300 MLP members and 150 ridge fits passed. Adding
+both native-compatibility contexts changes the neural score from 0.695498 to
+0.688472, a **−0.007026 change with conditional 95% interval
+[−0.022047, +0.013082]**. Ridge gives −0.001644 [−0.015097, +0.007286];
+the ≥50-row sensitivities also remain inconclusive. Added value is not
+established, and negative point estimates do not establish harm or equivalence.
+On the original 4,449 queries, the neural net increment declines descriptively
+from +0.018816 to +0.001088. That comparison has no new interval and does not
+isolate a causal training-size effect: source coverage, selection and stopping
+change together. See the [full-cohort comparisons](followup3/inverse_fulltrain_candidate/comparisons.csv)
+and [independent audit](followup3/inverse_fulltrain_candidate/independent_audit.json).
+This is selected development work, not independent confirmation or a fourth
+original-tranche primary.
+
+**Decision: stop computational model searching here.** Retain the supported
+Boltz representation and few-shot findings, and report the unresolved native-
+compatibility and repaired-descriptor increments. No full FoldX expansion,
+combined-feature search or additional tuning grid follows these outcomes.
+Independent kinetic half-life confirmation is the next evidence requirement;
+the [updated assay brief](finalization/INDEPENDENT_ASSAY_BRIEF.md) also describes
+a separately prespecified optional calibration arm. No acquisition, outreach
+or opening of reserved external outcomes is authorized by this document.
+
+All paid jobs in this tranche are closed. Conservative accounting is
+**$67.302731 against the $139 ceiling**, with zero remaining reservations;
+the full-cohort extension used $20.730950 of its $40 cap. These are resource
+allowances, not provider invoices or a verified remaining-credit balance.
+The study app has stopped; artifact preservation and final delivery are
+recorded in [the execution log](followup3/EXECUTION.md).
 
 The metadata-only audit retained 129 candidate external rows as reserved;
 measurement lineage and assay compatibility remain insufficient for confirmation.
@@ -33,7 +58,7 @@ The [follow-up report](followup3/REPORT.md), [frozen protocol](followup3/PROTOCO
 carry detailed evidence and current status. Completed historical studies below
 remain immutable; their grids and original test assessment are not reopened.
 
-Reviewed and reconciled: **12 October 2026**. Execution updated: **12 October 2026**. Status: **bounded round-two development execution complete: evaluation repair, extraction, sequence/representation screens, complementarity, locked execution repeats and all 30 transfer cells with full reporting; independent confirmation remains open**. The original review is preserved below; §12 records subsequent execution, scope amendments and outstanding gates. The original test has not been rescored.
+Historical review and reconciliation: **12 October 2026**. The bounded round-two development execution completed evaluation repair, extraction, sequence/representation screens, complementarity, locked execution repeats and all 30 transfer cells with full reporting. The 13 October follow-up completion and current stopping decision are above; independent confirmation remains open. The original review is preserved below; §12 records subsequent execution and scope amendments. The original test has not been rescored.
 
 This is the **single current source of truth for project status, research priorities and execution gates**. It consolidates the original follow-up plan, completed Phase A–D findings, the [8 October Boltz strategy](archive/plans/boltz-strategy-2026-10-08.md), and the remaining hackathon proposals. Superseded proposals are in the [plan archive](archive/plans/README.md). Stage reports, saved tables and dated prespecifications remain evidence about completed work; they are not additional work queues. The frozen [original evaluation contract](../EVALUATION.md) remains unchanged. Section 11 records the reconciliation decisions.
 

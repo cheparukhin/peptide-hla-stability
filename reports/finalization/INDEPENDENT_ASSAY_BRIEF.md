@@ -1,6 +1,6 @@
 # Independent stability assay: request-for-quote brief
 
-Prepared 12 October 2026. **Draft for review; not sent and not funded.**
+Prepared 12 October 2026; evidence-gap update 13 October 2026. **Draft for review; not sent and not funded.**
 This is an acquisition specification, not experimental confirmation.
 
 ## Purpose and quantities
@@ -66,12 +66,51 @@ absolute scores and the paired interval. Improvement requires a 95% lower
 bound above zero; a worthwhile gain requires it above 0.05. An inconclusive
 interval does not establish equivalence or a measurement-noise ceiling.
 
+## Optional future few-shot validation arm
+
+The [positive conditional few-shot development result](../followup3/REPORT.md#completed-few-shot-result)
+motivates an optional, separately prespecified validation arm alongside the
+locked-model confirmation primary above. It is not an executed study or
+additional acquisition authorization. The quoted quantities and primary
+comparison remain unchanged.
+
+Before any outcomes are opened, define a separate calibration-support panel
+and a confirmation query panel whose labels remain unopened throughout
+adaptation. Protect peptide families: support and query clusters must not
+overlap each other or exposed development families. Freeze support identities,
+target alleles, support budgets and reuse rules, preprocessing, source artifacts
+and the entire residual-adaptation recipe before opening support labels. The
+20-support-label setting is a candidate to prespecify, not a newly selected
+validated optimum. Target support labels must not be used for tuning or
+stopping. Freeze both zero-shot and adapted query predictions and their hashes
+after support adaptation and before opening any query labels.
+
+Count every calibration-support measurement explicitly, separately from query
+measurements and independent repeats; report distinct pairs, peptide clusters,
+per-allele budgets and any support reuse. Support labels cannot silently reduce
+the locked primary's confirmation panel or be counted as held query outcomes.
+Any extra support acquisition would need its own quantity/price specification
+and authorization. Prespecify the optional paired query comparison, absolute
+scores, eligible panel, missingness/QC and uncertainty, keeping it subordinate
+to the locked-model primary. This arm makes no power, prospective assay-savings
+or independent-confirmation claim before new measurements exist.
+
 ## Current evidence gap
 
-The [public-data audit](../further_research/round2/independent_data/README.md)
-retained only 129 conservative candidate rows across nine alleles, with only
-one allele above 20 rows and unresolved assay/construct details. That is not
-representative independent confirmation. External outcomes remain reserved.
-The existing CSV lacks replicate-level measurements sufficient to estimate an
-assay reliability ceiling. This brief makes the next acquisition step concrete;
-it does not resolve those gaps or authorize contacting a provider.
+The completed [metadata/methods audit](../followup3/independent_data/PROVENANCE.md)
+preserves **129 reserved candidate rows across nine alleles**. Primary methods
+show heterogeneous endpoints, temperatures and physical constructs, including
+an assay-category mismatch; the candidates cannot presently be pooled as one
+kinetic validation panel. The largest single-study/allele stratum is **Strønen
+2016, HLA-A*02:01, with 23 rows**. Its original methods/supplement, physical
+construct, kinetic endpoint and row-to-measurement lineage remain unresolved.
+Even a defensible narrow check would remain one study/one allele without a
+≥50-row sensitivity, leaving representative independent confirmation open.
+
+External candidate outcomes remain reserved. Incidental public-paper result
+visibility during methods retrieval is disclosed in the audit; this is not a
+fully blinded literature review. Bibliographic resolution is not measurement-
+level provenance. The existing CSV lacks replicate-level measurements
+sufficient to estimate an assay reliability ceiling. This brief makes the next
+acquisition step concrete; it does not resolve these gaps or authorize provider
+contact, extra acquisition or outcome access.

@@ -1,0 +1,157 @@
+{
+  "at_utc": "2026-10-13T16:51:58.648109+00:00",
+  "status": "complete",
+  "plan_sha256": "1acab960135c2a3340fd46317c1dc31b489deb11d70723e1b9224423e8330ba3",
+  "children": [
+    {
+      "index": 5,
+      "returncode": 0,
+      "seconds": 64.6628360748291,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T16:51:45.552140+00:00"
+    },
+    {
+      "index": 6,
+      "returncode": 0,
+      "seconds": 64.66253566741943,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T16:51:45.553286+00:00"
+    },
+    {
+      "index": 7,
+      "returncode": 0,
+      "seconds": 64.66157650947571,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T16:51:45.554189+00:00"
+    },
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 74.69324445724487,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T16:51:55.574016+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 74.69275951385498,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T16:51:55.575268+00:00"
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "seconds": 74.69199132919312,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T16:51:55.575978+00:00"
+    },
+    {
+      "index": 3,
+      "returncode": 0,
+      "seconds": 74.69093775749207,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T16:51:55.576642+00:00"
+    },
+    {
+      "index": 8,
+      "returncode": 0,
+      "seconds": 10.02187466621399,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T16:51:56.579011+00:00"
+    },
+    {
+      "index": 9,
+      "returncode": 0,
+      "seconds": 10.021060705184937,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T16:51:56.580213+00:00"
+    },
+    {
+      "index": 4,
+      "returncode": 0,
+      "seconds": 76.69434833526611,
+      "command": [
+        "python",
+        "scripts/followup3_energy_v2.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T16:51:57.582024+00:00"
+    }
+  ]
+}

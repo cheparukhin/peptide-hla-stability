@@ -1,0 +1,220 @@
+{
+  "allele": "HLA-A*02:19",
+  "peptide": "ATGDYVAFV",
+  "cluster_id": 295,
+  "outer_fold": 1,
+  "complex_id": "A0219_ATGDYVAFV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_19/A0219_ATGDYVAFV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "phases": [
+    {
+      "phase": "raw_analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0219_ATGDYVAFV.pdb",
+        "--pdb-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/input",
+        "--output-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/raw",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.392893095999966
+    },
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0219_ATGDYVAFV.pdb",
+        "--pdb-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/input",
+        "--output-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/repaired"
+      ],
+      "returncode": 0,
+      "elapsed_s": 182.19816780000002
+    },
+    {
+      "phase": "repaired_analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0219_ATGDYVAFV_Repair.pdb",
+        "--pdb-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/repaired",
+        "--output-dir=/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/repaired",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.413064448
+    }
+  ],
+  "stage": "repaired_parse",
+  "metadata_sha256": "2e077a737fb13ace1a0cf015a36a774b4d996c1d76b2912a013b2f53b2c548d9",
+  "structure_sha256": "c1dd9b9ede45c1a627c44aea28eda758461a15dbd16f6497a3e082f241d169a2",
+  "conversion": {
+    "cif": "/structures/stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_19/A0219_ATGDYVAFV/A0219_ATGDYVAFV_model_0.cif",
+    "pdb": "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/reports/followup3/foldx/work/a42c569114d91284df8fde5e2e591a71885be1af91248f26d80ebbd2974a8553/input/A0219_ATGDYVAFV.pdb",
+    "n_atoms": 3135,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "n_residues": 383,
+    "bytes": 254023
+  },
+  "conversion_validation": {
+    "n_atoms": 3135,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "ATGDYVAFV"
+  },
+  "chain_sequences": {
+    "A": "GSHSMRYFFTSVSRPGRGEPRFIAVGYVDDTQFVRFDSDAASQRMEPRAPWIEQEGPEYWDGETRKVKAHSQTHRVDLGTLRGYYNQSEAGSHTVQRMYGCDVGSDWRFLRGYHQYAYDGKDYIALKEDLRSWTAADMAAQITKRKWEAAHVAEQQRAYLEGTCVDGLRRYLENGKETLQRTDPPKTHMTHHPISDHEATLRCWALGFYPAEITLTWQRDGEDQTQDTELVETRPAGDGTFQKWAAVVVPSGEEQRYTCHVQHEGLPKPLTLRWE",
+    "B": "IQRTPKIQVYSRHPAENGKSNFLNCYVSGFHPSDIEVDLLKNGERIEKVEHSDLSFSKDWSFYLLYYTEFTPTEKDEYACRVNHVTLSQPKIVKWDRDM",
+    "C": "ATGDYVAFV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "beta2m_chain": "B",
+  "raw_pdb_sha256": "3a40ba03f82ff9295755b8cd3b9ec87b00e1c431d19fd184a0644256a267150b",
+  "raw": {
+    "terms": {
+      "foldx_intraclashesgroup1": 0.679061,
+      "foldx_intraclashesgroup2": 19.9494,
+      "foldx_interaction_energy": -14.4113,
+      "foldx_backbone_hbond": -6.09253,
+      "foldx_sidechain_hbond": -7.27177,
+      "foldx_van_der_waals": -15.8816,
+      "foldx_electrostatics": -2.66553,
+      "foldx_solvation_polar": 26.3961,
+      "foldx_solvation_hydrophobic": -20.5415,
+      "foldx_van_der_waals_clashes": 2.35208,
+      "foldx_entropy_sidechain": 4.72256,
+      "foldx_entropy_mainchain": 4.87467,
+      "foldx_sloop_entropy": 0.0,
+      "foldx_mloop_entropy": 0.0,
+      "foldx_cis_bond": 0.0,
+      "foldx_torsional_clash": 0.112943,
+      "foldx_backbone_clash": 1.01479,
+      "foldx_helix_dipole": -0.00376756,
+      "foldx_water_bridge": 0.0,
+      "foldx_disulfide": 8.88178e-16,
+      "foldx_electrostatic_kon": -0.475658,
+      "foldx_partial_covalent_bonds": 0.0,
+      "foldx_energy_ionisation": 0.0627012,
+      "foldx_entropy_complex": 2.384,
+      "foldx_number_of_residues": 383.0,
+      "foldx_interface_residues": 46.0,
+      "foldx_interface_residues_clashing": 0.0,
+      "foldx_interface_residues_vdw_clashing": 0.0,
+      "foldx_interface_residues_bb_clashing": 0.0,
+      "foldx_group1": "C",
+      "foldx_group2": "A"
+    },
+    "fxout_sha256": "a028ed67e8d4b64f4643604132c7ffc3559b301d5ef953c769cdb60518a3686c",
+    "pdb_sha256": "3a40ba03f82ff9295755b8cd3b9ec87b00e1c431d19fd184a0644256a267150b"
+  },
+  "coordinate_change": {
+    "n_matching_heavy_atoms": 3135,
+    "atoms_added": 3,
+    "atoms_removed": 0,
+    "all_atom_rms_displacement_A": 0.9157996773719788,
+    "backbone_rms_displacement_A": 0.0
+  },
+  "repaired_pdb_sha256": "c13abbab5c9bb5aad174257457e2f822033c9ae63329a164a84025b79679c314",
+  "repaired": {
+    "terms": {
+      "foldx_intraclashesgroup1": 0.106265,
+      "foldx_intraclashesgroup2": 9.57713,
+      "foldx_interaction_energy": -18.7251,
+      "foldx_backbone_hbond": -6.60861,
+      "foldx_sidechain_hbond": -7.93098,
+      "foldx_van_der_waals": -16.1007,
+      "foldx_electrostatics": -2.70282,
+      "foldx_solvation_polar": 25.0966,
+      "foldx_solvation_hydrophobic": -21.3123,
+      "foldx_van_der_waals_clashes": 1.34155,
+      "foldx_entropy_sidechain": 4.88625,
+      "foldx_entropy_mainchain": 4.80129,
+      "foldx_sloop_entropy": 0.0,
+      "foldx_mloop_entropy": 0.0,
+      "foldx_cis_bond": 0.0,
+      "foldx_torsional_clash": 0.113386,
+      "foldx_backbone_clash": 1.13988,
+      "foldx_helix_dipole": -0.00561996,
+      "foldx_water_bridge": 0.0,
+      "foldx_disulfide": 8.88178e-16,
+      "foldx_electrostatic_kon": -0.365332,
+      "foldx_partial_covalent_bonds": 0.0,
+      "foldx_energy_ionisation": 0.0622035,
+      "foldx_entropy_complex": 2.384,
+      "foldx_number_of_residues": 383.0,
+      "foldx_interface_residues": 45.0,
+      "foldx_interface_residues_clashing": 0.0,
+      "foldx_interface_residues_vdw_clashing": 0.0,
+      "foldx_interface_residues_bb_clashing": 0.0,
+      "foldx_group1": "C",
+      "foldx_group2": "A"
+    },
+    "fxout_sha256": "925d434248cf9bfc2cba25b951d197f9eccbbb52a268924abcdbaa774b9620cb",
+    "pdb_sha256": "c13abbab5c9bb5aad174257457e2f822033c9ae63329a164a84025b79679c314"
+  },
+  "term_changes": {
+    "foldx_intraclashesgroup1": -0.5727960000000001,
+    "foldx_intraclashesgroup2": -10.37227,
+    "foldx_interaction_energy": -4.3138000000000005,
+    "foldx_backbone_hbond": -0.5160799999999997,
+    "foldx_sidechain_hbond": -0.6592099999999999,
+    "foldx_van_der_waals": -0.21909999999999918,
+    "foldx_electrostatics": -0.037290000000000045,
+    "foldx_solvation_polar": -1.2995000000000019,
+    "foldx_solvation_hydrophobic": -0.7708000000000013,
+    "foldx_van_der_waals_clashes": -1.01053,
+    "foldx_entropy_sidechain": 0.16369000000000078,
+    "foldx_entropy_mainchain": -0.07338000000000022,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.00044299999999999895,
+    "foldx_backbone_clash": 0.12508999999999992,
+    "foldx_helix_dipole": -0.0018524000000000001,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": 0.11032600000000004,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": -0.0004976999999999968,
+    "foldx_entropy_complex": 0.0,
+    "foldx_number_of_residues": 0.0,
+    "foldx_interface_residues": -1.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0
+  },
+  "elapsed_s": 188.30637285500006
+}

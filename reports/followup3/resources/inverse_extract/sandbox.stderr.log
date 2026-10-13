@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 306, in <module>
+    main()
+  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 296, in main
+    worker(args.plan, args.hash)
+  File "/Users/cheparukhin/ai_science_hack/scripts/followup3_cloud.py", line 125, in worker
+    raise TimeoutError('fixed work deadline or termination')
+TimeoutError: fixed work deadline or termination

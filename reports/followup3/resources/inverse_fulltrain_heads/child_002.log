@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_inverse_fulltrain.py", line 258, in <module>
+    if __name__ == "__main__": main()
+                               ^^^^^^
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_inverse_fulltrain.py", line 254, in main
+    elif args.command == "assess": assess(args.out, args.learner, args.outer_fold)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_inverse_fulltrain.py", line 177, in assess
+    scored = prior.validate_scores(frame[list(prior.PANEL_COLUMNS)], pd.read_csv(Path(out) / "scores.csv", float_precision="round_trip"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/pepstab/followup3_inverse.py", line 143, in validate_scores
+    joined = panel.merge(scores, on=keys, how="outer", validate="one_to_one", suffixes=("", "_score"), indicator=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pandas/core/frame.py", line 12902, in merge
+    return merge(
+           ^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 399, in merge
+    return op.get_result()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 1143, in get_result
+    result = self._reindex_and_concat(join_index, left_indexer, right_indexer)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 1094, in _reindex_and_concat
+    llabels, rlabels = _items_overlap_with_suffix(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 3131, in _items_overlap_with_suffix
+    raise MergeError(
+pandas.errors.MergeError: Passing 'suffixes' which cause duplicate columns {'cluster_id_score', 'outer_fold_score', 'complex_id_score', 'folder_score'} is not allowed.

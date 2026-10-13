@@ -1,0 +1,11 @@
+{
+  "index": 1,
+  "returncode": 0,
+  "seconds": 7.009629487991333,
+  "command": [
+    "python",
+    "-c",
+    "from pathlib import Path; import tarfile; p=Path('reports/followup3/inverse_fulltrain_candidate'); names=['score_rows','scores.csv','extraction_receipt.json']+[f'batch_{i}.receipt.json' for i in range(4)]; t=tarfile.open(p/'scores_archive.tar.gz','x:gz',compresslevel=1); [t.add(p/n,arcname=n) for n in names]; t.close()"
+  ],
+  "at_utc": "2026-10-13T18:52:08.002611+00:00"
+}

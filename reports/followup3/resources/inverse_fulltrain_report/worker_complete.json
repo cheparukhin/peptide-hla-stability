@@ -1,0 +1,29 @@
+{
+  "at_utc": "2026-10-13T19:15:27.617552+00:00",
+  "status": "complete",
+  "plan_sha256": "c9dbfff63d04576556b944834725e81027ba269402ba048f51f81e79c31040b5",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 91.81163048744202,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain.py",
+        "report"
+      ],
+      "at_utc": "2026-10-13T19:15:23.308639+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 2.020888090133667,
+      "command": [
+        "python",
+        "-c",
+        "from pathlib import Path; import tarfile; root=Path('reports/followup3/inverse_fulltrain_candidate'); names=['assessment','protocol.json','panel.csv','cache_manifest.json','extraction_receipt.json','base_features.provenance.json','completion_audit.json']+[p.name for p in root.glob('*.csv') if p.name not in {'scores.csv','panel.csv'}]+[f'batch_{i}.receipt.json' for i in range(4)]; t=tarfile.open(root/'results_archive.tar.gz','x:gz',compresslevel=1); [t.add(root/name,arcname=name) for name in names]; t.close()"
+      ],
+      "at_utc": "2026-10-13T19:15:26.332820+00:00"
+    }
+  ]
+}

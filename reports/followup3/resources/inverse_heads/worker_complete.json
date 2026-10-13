@@ -1,0 +1,177 @@
+{
+  "at_utc": "2026-10-13T15:02:51.949420+00:00",
+  "status": "complete",
+  "plan_sha256": "99fb3671431e500dcde9254737df5e66131120a1b6056daab506c075adb9f9de",
+  "children": [
+    {
+      "index": 7,
+      "returncode": 0,
+      "seconds": 35.469523191452026,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T15:02:31.874237+00:00"
+    },
+    {
+      "index": 5,
+      "returncode": 0,
+      "seconds": 36.478084564208984,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T15:02:32.879042+00:00"
+    },
+    {
+      "index": 6,
+      "returncode": 0,
+      "seconds": 37.47978687286377,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T15:02:33.882402+00:00"
+    },
+    {
+      "index": 8,
+      "returncode": 0,
+      "seconds": 7.0138208866119385,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T15:02:39.891121+00:00"
+    },
+    {
+      "index": 9,
+      "returncode": 0,
+      "seconds": 7.012853622436523,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T15:02:40.893534+00:00"
+    },
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 52.514997720718384,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T15:02:48.906982+00:00"
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "seconds": 53.513733863830566,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T15:02:49.909319+00:00"
+    },
+    {
+      "index": 4,
+      "returncode": 0,
+      "seconds": 53.510645627975464,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T15:02:49.910096+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 54.51795196533203,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T15:02:50.911796+00:00"
+    },
+    {
+      "index": 3,
+      "returncode": 0,
+      "seconds": 54.514989376068115,
+      "command": [
+        "python",
+        "scripts/followup3_inverse.py",
+        "assess",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_execution_v2",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T15:02:50.912673+00:00"
+    }
+  ]
+}

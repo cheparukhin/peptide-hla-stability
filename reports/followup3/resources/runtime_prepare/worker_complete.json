@@ -1,0 +1,40 @@
+{
+  "at_utc": "2026-10-13T11:49:22.465482+00:00",
+  "status": "complete",
+  "plan_sha256": "8aca4ea549409d300a72b82c7259d859f25f6841b170c80e89825d39e2de5a33",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 36.059574127197266,
+      "command": [
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "--disable-pip-version-check",
+        "--no-compile",
+        "--target",
+        "/Users/cheparukhin/ai_science_hack/runs/followup3/dependencies",
+        "numpy==2.5.3",
+        "scipy==1.18.1",
+        "biotite==1.7.1",
+        "torch==2.14.1",
+        "--extra-index-url",
+        "https://download.pytorch.org/whl/cpu"
+      ],
+      "at_utc": "2026-10-13T11:49:15.421062+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 5.020927667617798,
+      "command": [
+        "python",
+        "-c",
+        "import torch,biotite,numpy,scipy; assert torch.version.cuda is None; print({\"torch\":torch.__version__,\"biotite\":biotite.__version__,\"numpy\":numpy.__version__,\"scipy\":scipy.__version__})"
+      ],
+      "at_utc": "2026-10-13T11:49:21.461363+00:00"
+    }
+  ]
+}

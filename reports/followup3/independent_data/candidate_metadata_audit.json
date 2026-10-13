@@ -1,0 +1,1397 @@
+{
+  "checked_date": "2026-10-13",
+  "policy": "canonical + all affinity/stability partitions + stage3 train/val; exact standard 9mer Hamming <=3 components",
+  "outcome_policy": "No outcome column retained, displayed, summarized, scored or used for eligibility. CSV raw row objects exist only long enough to allowlist metadata. Literature visibility is documented separately in PROVENANCE.md.",
+  "canonical_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+  "sources": [
+    {
+      "source": "binding_stability/train",
+      "sha256": "3ad79db3286688972b47ea96ba96129704367c1f016947a2ecc39c4872520793",
+      "rows": 21626
+    },
+    {
+      "source": "binding_stability/val",
+      "sha256": "49217866a5d084ecd74150609bd5f0cfb8f6a78ac772ded6f26e1ff427a79dd8",
+      "rows": 2705
+    },
+    {
+      "source": "binding_stability/test",
+      "sha256": "61d8ab1ae07e75fcf69b8175617ccf1bb43255498f0a8f37882568b2075c953f",
+      "rows": 2700
+    },
+    {
+      "source": "binding_affinity/train",
+      "sha256": "97b51189e696da1b4388bef8c1fd2eeaf8316a2f37644b032ffbd61a03876c1a",
+      "rows": 126683
+    },
+    {
+      "source": "binding_affinity/val",
+      "sha256": "17de443b650699c05b21612687735d53395992b7d16c8d314f9ecb959d3bae89",
+      "rows": 21712
+    },
+    {
+      "source": "binding_affinity/test",
+      "sha256": "20a1c537a5ff5cc9182002a59e9316ab94bea7134c5386239656b57492d6687a",
+      "rows": 21712
+    },
+    {
+      "source": "stage3_assay_conditioning/train",
+      "sha256": "fcb8dc7d78559830ef5cd6c990a8e4125c514bf69dcb9600c0e8b5d5b56397d8",
+      "rows": 8465
+    },
+    {
+      "source": "stage3_assay_conditioning/val",
+      "sha256": "368678a3452b5957ee00aeff7d5a951d0183dc4a01dc82c349753dfaf003afd9",
+      "rows": 543
+    },
+    {
+      "source": "stage3_assay_conditioning/test",
+      "sha256": "f7bed03d1f3ef6bf8666bca52f5e54a843d869ae4de916b0fb3d00ffe056a1e1",
+      "rows": 1133
+    }
+  ],
+  "rows": 129,
+  "peptides": 126,
+  "components": 113,
+  "allele_counts": {
+    "HLA-B*14:02": 7,
+    "HLA-A*02:01": 99,
+    "HLA-A*03:01": 8,
+    "HLA-A*11:01": 1,
+    "HLA-B*08:01": 3,
+    "HLA-A*01:01": 3,
+    "HLA-C*03:04": 4,
+    "HLA-B*57:01": 3,
+    "HLA-A*24:02": 1
+  },
+  "source_pmids": [
+    "10593938",
+    "12078650",
+    "15039371",
+    "16339578",
+    "17030875",
+    "19435415",
+    "20123035",
+    "20705101",
+    "21692558",
+    "22537173",
+    "22750229",
+    "23147993",
+    "24790791",
+    "25376540",
+    "26398429",
+    "26715028",
+    "27198675",
+    "28486273",
+    "28536262",
+    "28832583",
+    "29203107",
+    "30425106",
+    "30596107",
+    "33490292",
+    "34093574",
+    "34721410",
+    "35080970",
+    "35959968",
+    "40681176",
+    "40687378",
+    "7506728",
+    "7526383",
+    "7595214",
+    "7679507",
+    "9058754",
+    "9177214"
+  ],
+  "row_manifest": [
+    {
+      "source_row_zero_based": 21,
+      "pair_identity_sha256": "7dc0a8e919160d47e85b4f6fefc93d65d8ce23dbbd7e3ed959d85841433f5bc6",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 30,
+      "pair_identity_sha256": "52641c7e217401ca6979ab2bb0a2a7166d0dfb87f3e6958d6f7baa2b7ce73b44",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 31,
+      "pair_identity_sha256": "4e7ad2a2b3bb937a761cad7fbf8515a96ae04e9fdfa70f87e0512bdb44f0a5e7",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 32,
+      "pair_identity_sha256": "3b8c33e452143e542efa3f305e48479bdeeed7ea05e35ab724a5bd2dc7bdd96e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 35,
+      "pair_identity_sha256": "9cce19564441316ab036bbd4391b559b0dca069c294f0dc783dd12f510c227a0",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "40681176.0",
+      "ref_iri": "http://www.iedb.org/reference/1047454"
+    },
+    {
+      "source_row_zero_based": 36,
+      "pair_identity_sha256": "7654b59d8d924a1bb71ee3e13956defbcf0141d146485bcf0f15fe056318bc10",
+      "mhc_input_sha256": "ca7cb6a64ed350ee677984cc7b94f8f5b596c9d24204d54a28b993e49239a760",
+      "allele": "HLA-A*11:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "40681176.0",
+      "ref_iri": "http://www.iedb.org/reference/1047454"
+    },
+    {
+      "source_row_zero_based": 39,
+      "pair_identity_sha256": "344405a785bd502e7e417b2dc623186e6a3f8b5d94527f64f0c946cc6d90f305",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9058754.0",
+      "ref_iri": "http://www.iedb.org/reference/1006919"
+    },
+    {
+      "source_row_zero_based": 42,
+      "pair_identity_sha256": "4c882b0f873a24483945b2b1b3ed4d28cc0e9a81af802824c25a5867b93f6b72",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26715028.0",
+      "ref_iri": "http://www.iedb.org/reference/1038327"
+    },
+    {
+      "source_row_zero_based": 46,
+      "pair_identity_sha256": "deb03cc503613f22433f457acf8d372bcd6118fb40dfc809c2a8b9597767969a",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35080970.0",
+      "ref_iri": "http://www.iedb.org/reference/1040089"
+    },
+    {
+      "source_row_zero_based": 59,
+      "pair_identity_sha256": "5a0b93d73cf470384ddce159320cbe23fe97d4cd80240ced2a36e68329be26e1",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 60,
+      "pair_identity_sha256": "a513d32690348b0878ec4bfb9b41dccef2e267b40556f26c1ff04e94581f8c5b",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 65,
+      "pair_identity_sha256": "32653f3a223f78284a4b8ff6504bcca36c19e46b3c9a1b20c3ea911b412c8087",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 66,
+      "pair_identity_sha256": "fa9cf06085033351126250ac842a6bfc9905e84fb0ce447fe83c0f640c8e157c",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 70,
+      "pair_identity_sha256": "6567f769b66790d6205ca5eaf9b0a8443bbd17d655fd8076dc8d00f942b8f12b",
+      "mhc_input_sha256": "d0fe4adc69b5f35427613d38bf79e0aa757be6bb5b016d9c381be1c64ce08e04",
+      "allele": "HLA-B*08:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7595214.0",
+      "ref_iri": "http://www.iedb.org/reference/1002975"
+    },
+    {
+      "source_row_zero_based": 81,
+      "pair_identity_sha256": "75f58067adc53024b78fa08bd09a6b83c8f1edeae135001e5681b3e15224a4be",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 87,
+      "pair_identity_sha256": "27cf3eef0807662e32714526e45fe6d5242dcd8850ce48c0dfbe5fc1f64a8283",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9058754.0",
+      "ref_iri": "http://www.iedb.org/reference/1006919"
+    },
+    {
+      "source_row_zero_based": 94,
+      "pair_identity_sha256": "0867c403b5590955bd8c27838093c9e3857093d68e3601eb0b2618c9dac8f0b8",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "21692558.0",
+      "ref_iri": "http://www.iedb.org/reference/1036608"
+    },
+    {
+      "source_row_zero_based": 95,
+      "pair_identity_sha256": "0c5eca3f8ec88e5771386ce44b692f43cd75150ee0ce2a24da8cf65090a22991",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 111,
+      "pair_identity_sha256": "4c4488976d9fc6642bee8d9cb0a792a5e90d639cac6e949c33495817264a7b53",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22750229.0",
+      "ref_iri": "http://www.iedb.org/reference/1024552"
+    },
+    {
+      "source_row_zero_based": 131,
+      "pair_identity_sha256": "d3eb8844902a7f6d7477572d53639f82f80e82ca865f0518af8f217d2c3ebdf9",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 135,
+      "pair_identity_sha256": "7a9bd81f723f3830093c511e854031235bcb68444c46ae537816b55a5891e54b",
+      "mhc_input_sha256": "d0fe4adc69b5f35427613d38bf79e0aa757be6bb5b016d9c381be1c64ce08e04",
+      "allele": "HLA-B*08:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "34721410.0",
+      "ref_iri": "http://www.iedb.org/reference/1039788"
+    },
+    {
+      "source_row_zero_based": 158,
+      "pair_identity_sha256": "7843985bb404fbfa372c9951e6050e4c8707eac1d9be7c03d187a7736465b180",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 176,
+      "pair_identity_sha256": "e6b2d33846c1a231a8ec3a414df34b8d4f16b68911ec11280bb494cffa07da7c",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35959968.0",
+      "ref_iri": "http://www.iedb.org/reference/1041048"
+    },
+    {
+      "source_row_zero_based": 177,
+      "pair_identity_sha256": "30f4cd0d6b9f37cdb93cc44e3749a81c70d3e08e6a6803e5cc120ad5f287544f",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 183,
+      "pair_identity_sha256": "573585ef94e7b4817c5abe51c4b6b8074339bee9b4539a64c0225c3f786a6d10",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 186,
+      "pair_identity_sha256": "f33742e6060930739f184b3a60c6771a88cec9c1c63f9bad7453ba79012ae250",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28486273.0",
+      "ref_iri": "http://www.iedb.org/reference/1031773"
+    },
+    {
+      "source_row_zero_based": 188,
+      "pair_identity_sha256": "218ba56506db7de9242151c28fa7f672ee6ce28f35a24e8deacded7bb906aebc",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35959968.0",
+      "ref_iri": "http://www.iedb.org/reference/1041048"
+    },
+    {
+      "source_row_zero_based": 189,
+      "pair_identity_sha256": "c5136f77f2fa700a4b51838b637c10053543b8d6ec4da707be83252d6c3765a2",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 192,
+      "pair_identity_sha256": "4373f3a1961c0542e71388744dc2a3b856c7c5bff06c3bcf7d416646e3bb6947",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "23147993.0",
+      "ref_iri": "http://www.iedb.org/reference/1045270"
+    },
+    {
+      "source_row_zero_based": 199,
+      "pair_identity_sha256": "4d5666aa249268acbfe598a467e3d03d383bd42e95c49238fa760cc50b2a50cf",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 200,
+      "pair_identity_sha256": "3996a653cc8661d9b67e6d8c1b10ff2c94bd214e146fe686e2877d264d678af3",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35080970.0",
+      "ref_iri": "http://www.iedb.org/reference/1040089"
+    },
+    {
+      "source_row_zero_based": 201,
+      "pair_identity_sha256": "a51b5c0f1a17a5336fb47c29e452908747cf98a1804bd2aa2fb5f5368b197bf6",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 203,
+      "pair_identity_sha256": "71be6baa9ef9195c1d2d47231e70178e46c254c3e00d7f619604bc1fed7138e7",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 220,
+      "pair_identity_sha256": "6818b5cabdd18454c6af7a1564d75a40f8bef0e9aaf84e0c452c6133c1c5fdfd",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 221,
+      "pair_identity_sha256": "2edbe99afcc3853c808e57692bdb0be3dca051d0b1dec9abb8f09741042bb1d2",
+      "mhc_input_sha256": "af7d8d5c2b428a0df898fb4088112ca840b8861adef36b25770fdee5d00952b3",
+      "allele": "HLA-A*01:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7506728.0",
+      "ref_iri": "http://www.iedb.org/reference/315451"
+    },
+    {
+      "source_row_zero_based": 222,
+      "pair_identity_sha256": "a3c208ae3257766adda2b5cd275754b3b456168f061ca74e59559046bc30fd0e",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7506728.0",
+      "ref_iri": "http://www.iedb.org/reference/315451"
+    },
+    {
+      "source_row_zero_based": 228,
+      "pair_identity_sha256": "a389741283b4c70f7ab47e5f08ace46a834a7eacbfd070e1c3909a8927f7e872",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 248,
+      "pair_identity_sha256": "13d561eef62f8aab5d3607fec2fe638b16e2efb510ab2f14cd47c17bb488ee45",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26398429.0",
+      "ref_iri": "http://www.iedb.org/reference/1044279"
+    },
+    {
+      "source_row_zero_based": 259,
+      "pair_identity_sha256": "c4e86e859d910aaad57db25d61347a0db3da1dbb0bedc12cb675626054e9eb3b",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 270,
+      "pair_identity_sha256": "c88c096ae7ead99c21ab3fec5e46c59f1ee4f9b41a1322887df85d26dfab406a",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 275,
+      "pair_identity_sha256": "5d305bad14fb8b304a9e5a761c16f82a170c36cd80a70e3b1cc2be7e1aaa79f0",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "15039371.0",
+      "ref_iri": "http://www.iedb.org/reference/621"
+    },
+    {
+      "source_row_zero_based": 280,
+      "pair_identity_sha256": "c73a5967f436d07b883984dd4dda84665defd1482d077520675c2d446c7fda69",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26398429.0",
+      "ref_iri": "http://www.iedb.org/reference/1044279"
+    },
+    {
+      "source_row_zero_based": 281,
+      "pair_identity_sha256": "dbb0ea3e114578f982d0c20bf4fe5b1c9209d3538e92aa807e0c72cee6277f17",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26715028.0",
+      "ref_iri": "http://www.iedb.org/reference/1038327"
+    },
+    {
+      "source_row_zero_based": 298,
+      "pair_identity_sha256": "7daa75a6af8bd1004c04772240fef9affe0b8a5436eeee71a5198410341dfcc3",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 311,
+      "pair_identity_sha256": "beccd82bd657135ef65de790f0fffa52d415b99cbdd36189bbb53b91c9f301d1",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 312,
+      "pair_identity_sha256": "ab93edbd593fa69f91811e8e6d83ce0c3d710d4011f50f3cf2b3d93c173df344",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 325,
+      "pair_identity_sha256": "f18c054375678034af2c2d7a3bfe877777e081f783a9c885a3774ef9bd613805",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 329,
+      "pair_identity_sha256": "0c44c894985b5ebeff731c490265fa07d6c8743a41bac9fd530f11804a981bea",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22750229.0",
+      "ref_iri": "http://www.iedb.org/reference/1024552"
+    },
+    {
+      "source_row_zero_based": 336,
+      "pair_identity_sha256": "1a87143db119242298ccf631cd8759121cf711fe09afaec8ae911db6921ce037",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 355,
+      "pair_identity_sha256": "a3e972831871ce2a5c2111df314336a7356c111da8e64735b7892bfce9479f90",
+      "mhc_input_sha256": "0ea914ac9dc8a371651a72cec6e8d941bc96783d4f482bfaff5e32a7ddb7a9e2",
+      "allele": "HLA-B*14:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28832583.0",
+      "ref_iri": "http://www.iedb.org/reference/1032297"
+    },
+    {
+      "source_row_zero_based": 359,
+      "pair_identity_sha256": "af8fa3619edd64d8868f3788f8dd9aac3fd4aae1cbc3dbf0e95823c860282369",
+      "mhc_input_sha256": "d59362958b91846620b016fc8461d20c7e8808e49b9d1cf590ca8e9cbb87cc1d",
+      "allele": "HLA-C*03:04",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9177214.0",
+      "ref_iri": "http://www.iedb.org/reference/315209"
+    },
+    {
+      "source_row_zero_based": 360,
+      "pair_identity_sha256": "baa8f7a53ead832f4dda25ef43156ddc9e54ea0959ce7bcd2c4d113185f22c44",
+      "mhc_input_sha256": "d59362958b91846620b016fc8461d20c7e8808e49b9d1cf590ca8e9cbb87cc1d",
+      "allele": "HLA-C*03:04",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9177214.0",
+      "ref_iri": "http://www.iedb.org/reference/315209"
+    },
+    {
+      "source_row_zero_based": 361,
+      "pair_identity_sha256": "c8cdd80a0aaca8d81529d79905f7b4b4e83dcc178c78ae7cd8d2f621e5862856",
+      "mhc_input_sha256": "d59362958b91846620b016fc8461d20c7e8808e49b9d1cf590ca8e9cbb87cc1d",
+      "allele": "HLA-C*03:04",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9177214.0",
+      "ref_iri": "http://www.iedb.org/reference/315209"
+    },
+    {
+      "source_row_zero_based": 362,
+      "pair_identity_sha256": "0ec8f70d7af33b18181f12ab879c6070d8c7a0c162957701cef139d899a579cd",
+      "mhc_input_sha256": "d59362958b91846620b016fc8461d20c7e8808e49b9d1cf590ca8e9cbb87cc1d",
+      "allele": "HLA-C*03:04",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9177214.0",
+      "ref_iri": "http://www.iedb.org/reference/315209"
+    },
+    {
+      "source_row_zero_based": 393,
+      "pair_identity_sha256": "25063bed2d0631980eb64d57ee3f9c4dbb6e23ca518b9e7555e27486afd3b727",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "20705101.0",
+      "ref_iri": "http://www.iedb.org/reference/1020872"
+    },
+    {
+      "source_row_zero_based": 412,
+      "pair_identity_sha256": "def67a6d0124c6f3360dec88b7783134e18b3719b9b9909a70f7563ce85341a6",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 455,
+      "pair_identity_sha256": "025d696494492415276c0eed36b9d8415b76a5d1875a8339f530808287b8aeb1",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 460,
+      "pair_identity_sha256": "9c9461f4960adc2aa52adde298d898596586f208604ca081a6b22a22041a7461",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7679507.0",
+      "ref_iri": "http://www.iedb.org/reference/1000288"
+    },
+    {
+      "source_row_zero_based": 466,
+      "pair_identity_sha256": "48b4e2a8f4d5c41f3e9d287531592240540df3660688ac9d1af4b868810bfc65",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "9058754.0",
+      "ref_iri": "http://www.iedb.org/reference/1006919"
+    },
+    {
+      "source_row_zero_based": 467,
+      "pair_identity_sha256": "42570f883ed033cb4ac11c92634b409958cba53c69b3a526f709cca7a2282468",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "20123035.0",
+      "ref_iri": "http://www.iedb.org/reference/1019814"
+    },
+    {
+      "source_row_zero_based": 468,
+      "pair_identity_sha256": "b2aef5eaf307bc17a52a619257645c9ed06908f311292fa151f386cbb077f2e2",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 480,
+      "pair_identity_sha256": "851fc17bdeea138be02044ed35083d1d29de1c65403239c02229af6307bc2b75",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 481,
+      "pair_identity_sha256": "d1752f0313907da78af4d91b77f5705cf8c04234083a7ae85ed130531771ce8f",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7679507.0",
+      "ref_iri": "http://www.iedb.org/reference/1000288"
+    },
+    {
+      "source_row_zero_based": 487,
+      "pair_identity_sha256": "88a83e5187f0aa5f760c9e9aed5e14555067de6c149b9eb5133bab0362ba74e6",
+      "mhc_input_sha256": "d0fe4adc69b5f35427613d38bf79e0aa757be6bb5b016d9c381be1c64ce08e04",
+      "allele": "HLA-B*08:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7595214.0",
+      "ref_iri": "http://www.iedb.org/reference/1002975"
+    },
+    {
+      "source_row_zero_based": 542,
+      "pair_identity_sha256": "613579b78fbebe1dfe4d26ea3f3b6148b46c9be36211428af96e63c282cafc1e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22537173.0",
+      "ref_iri": "http://www.iedb.org/reference/1024956"
+    },
+    {
+      "source_row_zero_based": 553,
+      "pair_identity_sha256": "bea29d85d12e554c543f6c1dffd899304df355ad07572665d579bc690205f30e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 560,
+      "pair_identity_sha256": "a757835cae9166a1d7874ede5149236207b7b959f5194670fedc6ff35ca81b24",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 562,
+      "pair_identity_sha256": "27a8aabbb6933bbe5b43a3f08903794fda4399b5c1f52502713959c210b1ed21",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 567,
+      "pair_identity_sha256": "f0670aee5036e49472e6ddcd6a2f974aef85031d5fe3199e2844d2fa2baff17e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "16339578.0",
+      "ref_iri": "http://www.iedb.org/reference/1015583"
+    },
+    {
+      "source_row_zero_based": 573,
+      "pair_identity_sha256": "b61baeda991acad4ef1de5c7ab17bd93e25dfa66fd77c3884cd5e9627e3feafd",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26715028.0",
+      "ref_iri": "http://www.iedb.org/reference/1038327"
+    },
+    {
+      "source_row_zero_based": 600,
+      "pair_identity_sha256": "8b02a3fa56b517958df2c43d89692e71042dce44a129ff4163bffd3c4a06bba3",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 603,
+      "pair_identity_sha256": "eb51bc622d104f19ca9df4d21ffa224c00bf81e03ddbb9c1f742e540281ee9cd",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 644,
+      "pair_identity_sha256": "509ff994f8dec8831a4e770f0eea747f10ce38c7b285ffeafda4ca8e9af94cec",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26715028.0",
+      "ref_iri": "http://www.iedb.org/reference/1038327"
+    },
+    {
+      "source_row_zero_based": 645,
+      "pair_identity_sha256": "5c1a146da62212c23ee02d75c08fb78b6ec6adddc642f2c3a3072d986033a8d9",
+      "mhc_input_sha256": "af7d8d5c2b428a0df898fb4088112ca840b8861adef36b25770fdee5d00952b3",
+      "allele": "HLA-A*01:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "40687378.0",
+      "ref_iri": "http://www.iedb.org/reference/1047311"
+    },
+    {
+      "source_row_zero_based": 681,
+      "pair_identity_sha256": "3caaae4aa88d07141758797c4b3771116ed65644c46c5d1ded7bd2e61e3f0bfe",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "10593938.0",
+      "ref_iri": "http://www.iedb.org/reference/1013578"
+    },
+    {
+      "source_row_zero_based": 708,
+      "pair_identity_sha256": "49669504d9ae4de6fd2709c8ba6cf77ae43ad019762f3ba8976595007617d79a",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "20705101.0",
+      "ref_iri": "http://www.iedb.org/reference/1020872"
+    },
+    {
+      "source_row_zero_based": 711,
+      "pair_identity_sha256": "b7d169f6e3fd50dba9a30bbf48a95627141b646ba0d997744eb595654e90749c",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 712,
+      "pair_identity_sha256": "d900c1729f33ca0664557b248778d5666ef7bf0ef5791cb829afd10a6fc7fdd2",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 713,
+      "pair_identity_sha256": "126580bc749d898595165eefddbc481ae3d08902208b9a2612b19072d5ab3bce",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 724,
+      "pair_identity_sha256": "1b908940337bb1c664b84d4d0e6bb5143eae23dd0be8553eee1ed393ac20aff8",
+      "mhc_input_sha256": "149aa42d82ac6358139502127661cbda487eeac47f8c2fcbba2dffc495dee3d6",
+      "allele": "HLA-B*57:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "34093574.0",
+      "ref_iri": "http://www.iedb.org/reference/1038968"
+    },
+    {
+      "source_row_zero_based": 746,
+      "pair_identity_sha256": "ae03eefa095e70cf83fb4eaf146f2317fc4b4e49931500ad3568bcf1e8edfe28",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26398429.0",
+      "ref_iri": "http://www.iedb.org/reference/1044279"
+    },
+    {
+      "source_row_zero_based": 764,
+      "pair_identity_sha256": "adfffa87a16d8082371ec233af964da0d99b311fde7f8f69116b641473bcd59f",
+      "mhc_input_sha256": "c81b89f2fa937b065da829d4a7feebeb04887dd72ca3cfeef5fb41bf006dd9e8",
+      "allele": "HLA-A*24:02",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "40687378.0",
+      "ref_iri": "http://www.iedb.org/reference/1047311"
+    },
+    {
+      "source_row_zero_based": 767,
+      "pair_identity_sha256": "fd9482ed9c1a25285a46eae07e62e055a2ec3a11da872cfd8e32226ead3ee734",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22537173.0",
+      "ref_iri": "http://www.iedb.org/reference/1024956"
+    },
+    {
+      "source_row_zero_based": 770,
+      "pair_identity_sha256": "43a8094983a64f1856ed29402512198716833b816bcbf72e2f5bb2d875825471",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "15039371.0",
+      "ref_iri": "http://www.iedb.org/reference/621"
+    },
+    {
+      "source_row_zero_based": 774,
+      "pair_identity_sha256": "edf2e4727136ddbe03419d4c3544ddb3ee5ad3412eedfb6577e9394161b84135",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26398429.0",
+      "ref_iri": "http://www.iedb.org/reference/1044279"
+    },
+    {
+      "source_row_zero_based": 775,
+      "pair_identity_sha256": "8d87bcaf5e1bbe94db0f361892268bfad4e8eb89de19061edf7478779594ae91",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 777,
+      "pair_identity_sha256": "6df264b880b415d7fe2a76f5a1c4b5e4b0bf60a04f720fb36f70cffd4544a25b",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 783,
+      "pair_identity_sha256": "d89c51fe2086f57fb0c31610292337663a073dae1dc16ccae8b1716ef071e3de",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "30425106.0",
+      "ref_iri": "http://www.iedb.org/reference/1034283"
+    },
+    {
+      "source_row_zero_based": 802,
+      "pair_identity_sha256": "6bf20afaaea913d7643dcc720e3d51099f21c85f373709e315c3b03fa8371994",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 804,
+      "pair_identity_sha256": "347dd272fc701ac5ddf7e61a0a6f215fa635466f157711c650ad8c8ddd1be9af",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35080970.0",
+      "ref_iri": "http://www.iedb.org/reference/1040089"
+    },
+    {
+      "source_row_zero_based": 806,
+      "pair_identity_sha256": "0bbead0fa5cc3acf36b932523d8cf52565f35fe0bd60dd62690854cf64524f51",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "28536262.0",
+      "ref_iri": "http://www.iedb.org/reference/1043979"
+    },
+    {
+      "source_row_zero_based": 811,
+      "pair_identity_sha256": "058832fe5e0489f3829e01b70ec99b4f2453132529fe5c2ec5e8bebf63d38770",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22750229.0",
+      "ref_iri": "http://www.iedb.org/reference/1024552"
+    },
+    {
+      "source_row_zero_based": 813,
+      "pair_identity_sha256": "88696989d30a3422138e747ae5788ed5c8a91574aca2eaaed02fe2c1df9ab680",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "30425106.0",
+      "ref_iri": "http://www.iedb.org/reference/1034283"
+    },
+    {
+      "source_row_zero_based": 814,
+      "pair_identity_sha256": "cd6f7f50cbfdd4f9a0192dad333532fe6730306edea208c6ab59b0c431b3c0d3",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "30425106.0",
+      "ref_iri": "http://www.iedb.org/reference/1034283"
+    },
+    {
+      "source_row_zero_based": 866,
+      "pair_identity_sha256": "380eaed35af7d899cfa2bbf52ebbab332963a5076f1ff9755d38994b07761f05",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 870,
+      "pair_identity_sha256": "b4c72a70a04d670290f8e0c1ad2f67253d44b223b95eff685aa8597f5f88ce38",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 871,
+      "pair_identity_sha256": "55c93944e435e171da59b63de40e8bc21be7d875d5ddb51a652726b355309d50",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "22537173.0",
+      "ref_iri": "http://www.iedb.org/reference/1024956"
+    },
+    {
+      "source_row_zero_based": 876,
+      "pair_identity_sha256": "e5560886a32c5c3b149138b8342c84c764ca71d2db61a94cb8bac8c1665a2e09",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35959968.0",
+      "ref_iri": "http://www.iedb.org/reference/1041048"
+    },
+    {
+      "source_row_zero_based": 884,
+      "pair_identity_sha256": "3c14d273980d9f2effe9dc126066f909b2d34798df78a77d2729084b21332e12",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "33490292.0",
+      "ref_iri": "http://www.iedb.org/reference/1038020"
+    },
+    {
+      "source_row_zero_based": 886,
+      "pair_identity_sha256": "63ac3643bfc14d0cb75ec0bf5b64e6397cc99a5f1991fd0f9989079f3bdf3a37",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 917,
+      "pair_identity_sha256": "681d3624883320b0246206a1071a6636864d1f0d46bc1005b75077349377d96f",
+      "mhc_input_sha256": "af7d8d5c2b428a0df898fb4088112ca840b8861adef36b25770fdee5d00952b3",
+      "allele": "HLA-A*01:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7506728.0",
+      "ref_iri": "http://www.iedb.org/reference/315451"
+    },
+    {
+      "source_row_zero_based": 918,
+      "pair_identity_sha256": "c3384637b84652987d21ba87abc1c5e2f3da487d5420ec3609f04fd04dc2b9a7",
+      "mhc_input_sha256": "7b02f3d954c7c3f2e4745b0e62dbcfaf734b97c45b3e54edc23b1a72d30ca8ad",
+      "allele": "HLA-A*03:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7506728.0",
+      "ref_iri": "http://www.iedb.org/reference/315451"
+    },
+    {
+      "source_row_zero_based": 921,
+      "pair_identity_sha256": "4371d968d31c0be302356aa729ac7b25ec8d80c161348e1a46973b35abec4be6",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "40687378.0",
+      "ref_iri": "http://www.iedb.org/reference/1047311"
+    },
+    {
+      "source_row_zero_based": 922,
+      "pair_identity_sha256": "d5587b3ee29817a0df3c1ed439840cb680ca41c03999a33c9e2a3c488b1f13ca",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35959968.0",
+      "ref_iri": "http://www.iedb.org/reference/1041048"
+    },
+    {
+      "source_row_zero_based": 940,
+      "pair_identity_sha256": "2ed4fdd4eff7a759f04282a6668a0da3a53a466fb8b37698c823c44566bf5b92",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "29203107.0",
+      "ref_iri": "http://www.iedb.org/reference/1032584"
+    },
+    {
+      "source_row_zero_based": 950,
+      "pair_identity_sha256": "99e2d40670de5811d4d7259cf99a92be81c581ebdfddd4557cf2c3412b13a8bd",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 954,
+      "pair_identity_sha256": "bd51c742a000b124c3748f3a48a6ea2091ab8773ae143494af2c2d4e7d839c84",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "17030875.0",
+      "ref_iri": "http://www.iedb.org/reference/1006346"
+    },
+    {
+      "source_row_zero_based": 959,
+      "pair_identity_sha256": "f0c07738dcd189e7416e7f1cbfe3cb95c7dbeccde6d3d5cd53abeecf9429165c",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "26715028.0",
+      "ref_iri": "http://www.iedb.org/reference/1038327"
+    },
+    {
+      "source_row_zero_based": 960,
+      "pair_identity_sha256": "93ffa67641bc1262b5b3742e0e17379c3aa5912c873896cf72c2249a725c6174",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "12078650.0",
+      "ref_iri": "http://www.iedb.org/reference/1002962"
+    },
+    {
+      "source_row_zero_based": 961,
+      "pair_identity_sha256": "96836e02bbecfde44f0616c46eaa97d4ccdfe0a0127920af3bfc1f02193c636e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 965,
+      "pair_identity_sha256": "0a1c294db91ec3f4bc0e5613707472ac733ed15cf6c12bb6da4164f3f55b860e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 966,
+      "pair_identity_sha256": "821e909b663d093d2ce32bfb99f7920225e0968c05ef3ffac38d9729f3c84097",
+      "mhc_input_sha256": "149aa42d82ac6358139502127661cbda487eeac47f8c2fcbba2dffc495dee3d6",
+      "allele": "HLA-B*57:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "34093574.0",
+      "ref_iri": "http://www.iedb.org/reference/1038968"
+    },
+    {
+      "source_row_zero_based": 1007,
+      "pair_identity_sha256": "37e42f279d88580b32972441b60e0f15c4e0d15b053f1030308ccd014ceebba4",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "21692558.0",
+      "ref_iri": "http://www.iedb.org/reference/1036608"
+    },
+    {
+      "source_row_zero_based": 1009,
+      "pair_identity_sha256": "dab401545f8171e84e8872ec7c3adf570db2e419b1318b0eb63fc809eed7fbf8",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "21692558.0",
+      "ref_iri": "http://www.iedb.org/reference/1036608"
+    },
+    {
+      "source_row_zero_based": 1013,
+      "pair_identity_sha256": "dbe6198b54af46efe5991209a3963f4526c64e8f4cbdf2014713b5b0f8c174aa",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "19435415.0",
+      "ref_iri": "http://www.iedb.org/reference/1015108"
+    },
+    {
+      "source_row_zero_based": 1015,
+      "pair_identity_sha256": "d12fe1d24b4871b08b78279027589adb52cfd7fde9b6e65f3dd17b9dbf38afec",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "20123035.0",
+      "ref_iri": "http://www.iedb.org/reference/1019814"
+    },
+    {
+      "source_row_zero_based": 1019,
+      "pair_identity_sha256": "393061ce19271294c714d382177859652edf33ef120c42379606b312fb4d4bd4",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 1020,
+      "pair_identity_sha256": "7609e18d65bb7f7eac4433b5be7dc049a63f79d2ea05ef727b42cb7388f847c5",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 1024,
+      "pair_identity_sha256": "a8e96e13e3077fd08596bba95f2ae7d29c5344ce0523501aadb1d44c1a1d8c6e",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "19435415.0",
+      "ref_iri": "http://www.iedb.org/reference/1015108"
+    },
+    {
+      "source_row_zero_based": 1041,
+      "pair_identity_sha256": "3db628801f089425a566e82fc98cdf5c0297148310f678a2b38343c397698fa4",
+      "mhc_input_sha256": "149aa42d82ac6358139502127661cbda487eeac47f8c2fcbba2dffc495dee3d6",
+      "allele": "HLA-B*57:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "34093574.0",
+      "ref_iri": "http://www.iedb.org/reference/1038968"
+    },
+    {
+      "source_row_zero_based": 1045,
+      "pair_identity_sha256": "6207ad609839cd90f6ddf37e29b4a0274c64885209e72809a2070a4de0032ed3",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 1052,
+      "pair_identity_sha256": "143fcbcb084d07efc3fecaed406bad35c16a3b8b0c14aa19883563d717ee50fd",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "SPA",
+      "temperature_C": "37.0",
+      "pmid": "7526383.0",
+      "ref_iri": "http://www.iedb.org/reference/315035"
+    },
+    {
+      "source_row_zero_based": 1055,
+      "pair_identity_sha256": "3b06f944bb8c5f2965435de1e18efd7c48d37064b9715a198c8f58801cb06e04",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 1056,
+      "pair_identity_sha256": "05801ae3c008016450cdb4a5bfd45840ff11f3b85bd8f19a4c7ec7a0567fcc29",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "25376540.0",
+      "ref_iri": "http://www.iedb.org/reference/1044179"
+    },
+    {
+      "source_row_zero_based": 1066,
+      "pair_identity_sha256": "25dddb08a5e85a154af90a1cedd7afb05c51696472786b6e387a277841b95e96",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "35080970.0",
+      "ref_iri": "http://www.iedb.org/reference/1040089"
+    },
+    {
+      "source_row_zero_based": 1096,
+      "pair_identity_sha256": "a90c515f76810ba3bb67bb785b224521635b940c4e6ffc61fceab84300b70fef",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "30596107.0",
+      "ref_iri": "http://www.iedb.org/reference/1034286"
+    },
+    {
+      "source_row_zero_based": 1102,
+      "pair_identity_sha256": "deb45889873fe5e33172d65cec7dc895e97ebdccc72c2abb4e9b8a746ba26d53",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Cellular_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "20705101.0",
+      "ref_iri": "http://www.iedb.org/reference/1020872"
+    },
+    {
+      "source_row_zero_based": 1106,
+      "pair_identity_sha256": "34ea0b7400c35f48eacf50d0839f56763d9985f20c83de1a8c5af9bed8b22361",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "27198675.0",
+      "ref_iri": "http://www.iedb.org/reference/1037506"
+    },
+    {
+      "source_row_zero_based": 1124,
+      "pair_identity_sha256": "3a90dfba7a3895067aaaa1949e48ca802c5990f6869e4fc0de081ac28246077f",
+      "mhc_input_sha256": "a77c8fd26c1e0b5d0034384309cd3600fb1e3f8775e1979363d5db3a185be675",
+      "allele": "HLA-A*02:01",
+      "assay": "Purified_Fluor",
+      "temperature_C": "37.0",
+      "pmid": "24790791.0",
+      "ref_iri": "http://www.iedb.org/reference/1045240"
+    }
+  ]
+}

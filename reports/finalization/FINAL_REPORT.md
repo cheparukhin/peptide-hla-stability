@@ -5,7 +5,9 @@ authorized [third follow-up tranche](../followup3/REPORT.md) is assessed
 separately. The few-shot result is complete and independently audited;
 ProteinMPNN is complete and independently audited; its context increment
 beyond Boltz is inconclusive. Repaired-descriptor complementarity is complete and inconclusive beyond R5;
-one selected full-cohort ProteinMPNN extension remains pending.
+the selected full-cohort ProteinMPNN extension is complete and independently
+audited, without an established added benefit. Computational search stops;
+independent assay confirmation is next.
 The [third-primary amendment](../followup3/THIRD_PRIMARY_AMENDMENT.md)
 records the pre-efficacy extension and three-primary family control.
 Linked protocols and tables retain the methods and every frozen comparison.
@@ -191,21 +193,42 @@ Few-shot adaptation is the sole positive primary under the original three-questi
 family correction. These conditional development results do not establish
 kinetic mechanism or independent assay confirmation.
 
-After both audits, the [frozen full-cohort decision](../followup3/FULL_COHORT_DECISION.json)
-admits one final ProteinMPNN extension over all 19,716 original-training pairs:
-R5, R5+P and R5+P+C, with 300 MLP members and 150 ridge fits. The main
-comparison is MLP R5+P+C minus R5; results remain pending. A descriptive
-old/new prediction comparison on the original 4,449 query rows adds no fit or
-confidence interval. Source coverage, inner selection and stopping change
-together, so it does not isolate a causal sample-size effect. This selected
-development transport check is bounded by $40 and is neither independent
-confirmation nor a fourth primary in the original family. No full FoldX
-extension, combined arm or further grid is admitted. The
-[label-free cohort comparison](../followup3/inverse_fulltrain_metadata/cohort_metadata_comparison.json)
-keeps the same 75 alleles: rows grow 4,449 → 19,716 (4.43×), while inherited
-clusters grow 2,082 → 3,587 (1.72×). Coverage and within-cluster density both
-change; row expansion is not proportional independent evidence. Label-free
-≥20/≥50 row counts do not establish assay-rankability eligibility.
+## Does the full-cohort ProteinMPNN extension change the conclusion?
+
+The final [selected development extension](../followup3/REPORT.md#completed-selected-full-cohort-extension)
+is complete over all **19,716 original-training pairs**, preserving 4,449 native
+score records byte-exactly and verifying 15,267 new records. All 300 MLP members
+and 150 ridge fits pass independent prediction/selection/ancestry and interval
+arithmetic audits. MLP R5+P+C minus R5 is **−0.007026 [−0.022047,+0.013082]**
+under its **conditional pointwise 95% interval**, from 0.695498 to 0.688472.
+Ridge net is −0.001644 [−0.015097,+0.007286]; context, P-only and ≥50-panel
+sensitivities are also inconclusive. All three arms and 12 declared contrasts
+remain source-linked. This establishes neither added benefit nor harm or
+equivalence and does not change the main +0.0543 comparison.
+
+On the original 4,449 fixed queries, the MLP net increment changes from
++0.018816 to +0.001088, while R5's absolute point increases by +0.079745.
+These are descriptive saved-prediction comparisons without additional intervals;
+source coverage, inner selection and stopping change together, so no causal
+sample-size effect is identified. The same 75 alleles expand by 4.43× rows but
+1.72× inherited peptide clusters in the [label-free metadata](../followup3/inverse_fulltrain_metadata/cohort_metadata_comparison.json);
+that is coverage/density, not proportional independent evidence.
+
+The [operational metadata repair](../followup3/inverse_fulltrain_repair/manifest.json)
+followed a pre-fit failure, checked exact metadata parity and preserved the
+frozen recipe and all score bytes. No saved-weight replay, independent refitting
+or bootstrap regeneration is claimed. This outcome-selected extension uses
+reused original-training labels and overlapping clusters; it is not independent
+confirmation or a fourth primary in the original family. Original validation/test
+and external candidate outcomes remain excluded.
+
+**Stop computational search and seek independent kinetic-assay confirmation.**
+ProteinMPNN and repaired descriptors do not establish additional R5 value;
+few-shot remains the sole positive original-family primary. Retain the simpler
+embedding head. No full FoldX extension, combined arm, new grid or follow-on
+search is admitted. The [unsent assay brief](INDEPENDENT_ASSAY_BRIEF.md)
+keeps locked-model confirmation primary, with an optional separately frozen
+few-shot arm and no acquisition or outreach authorization.
 
 ## Cost, reproducibility and remaining evidence
 
@@ -221,6 +244,14 @@ $3 overhead allowance within the additional $100 ceiling. All compute and
 temporary finalization storage are closed; historical caches remain. Cached-feature experiments are cheap
 relative to obtaining representations for new pairs. [Original costs](../REPORT.md#6-compute-cost)
 and [current accounting](execution_manifest.json).
+
+The separately authorized third tranche is closed at **$67.302731** in
+conservative accounting, with **$0 reserved**, against its $139 ceiling.
+Failed attempts are included; the application stopped at 19:17 UTC. Scientific
+outputs are preserved locally and temporary tranche storage is deleted, with
+historical structure caches retained. [Closeout receipts](../followup3/resources/cloud_closeout.json). These
+figures are not reconciled provider invoices or a live credit balance.
+[Tranche ledger](../followup3/budget.json) and [execution record](../followup3/EXECUTION.md).
 
 The successful hybrid audit reproduced every held prediction and all 328
 stopping-MSE scalars exactly under the recorded numerical backend; failed

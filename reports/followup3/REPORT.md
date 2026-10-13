@@ -7,8 +7,10 @@ and independent arithmetic/ancestry audits are complete. Its added context
 increment beyond Boltz is inconclusive. Repaired FoldX extraction, all 300
 new head fits and independent audits are complete; its increment beyond R5 is
 also inconclusive. Few-shot adaptation is the only positive primary under the
-original three-question family correction. One selected full-cohort ProteinMPNN
-extension has been admitted; its assessment remains pending. The metadata/methods
+original three-question family correction. The final selected full-cohort
+ProteinMPNN extension is complete and independently audited; it does not
+establish an added benefit beyond R5. Computational search stops here, with
+independent assay confirmation next. The metadata/methods
 result below is complete. This report does not change earlier completed findings.
 [Shared protocol](PROTOCOL.md), [scientific review](SCIENCE_REVIEW.md) and
 [execution record](EXECUTION.md).
@@ -452,43 +454,151 @@ competitive selector and strict joint few-shot source ridge. The figure does
 not pool or directly compare those assessments. [PNG export](figures/descriptor_comparison.png)
 and [exact plotted rows and source hashes](figures/descriptor_comparison.json).
 
-## Selected full-cohort development extension
+## Completed selected full-cohort extension
 
-After both descriptor studies and their independent audits, the
-[frozen decision](FULL_COHORT_DECISION.json) admits **one final ProteinMPNN
-extension over all 19,716 original-training pairs**, under the
-[pre-results framework](FULL_COHORT_DECISION_FRAMEWORK.md). It reuses 4,449
-accepted native scores and extracts 15,267 additional rows. Three frozen arms,
-R5, R5+P and R5+P+C, require 300 MLP members and 150 ridge fits; the main
-comparison is MLP R5+P+C minus R5, with ridge and ≥50-panel sensitivities.
-All 19,716 rows are required before assessment. A descriptive comparison of
-old and new predictions on the same original 4,449 query rows examines changes
-in source coverage, inner selection and stopping. It introduces no additional
-fit or confidence interval and does not isolate a causal sample-size effect.
+After both balanced descriptor studies and independent audits, the
+[frozen decision](FULL_COHORT_DECISION.json) selected one final ProteinMPNN
+extension under the [pre-results framework](FULL_COHORT_DECISION_FRAMEWORK.md).
+All **19,716 original-training pairs** are now accepted: 4,449 cached native
+scores are byte-exact and 15,267 additional records are hash-verified. The
+[independent extraction audit](inverse_fulltrain_candidate/independent_extraction_audit.json)
+checks all record identities and values. Three arms—R5, R5+P and R5+P+C—were
+freshly fitted on the enlarged source populations with unchanged clean nested
+selection, 300 MLP members and 150 ridge fits. No R0, energy, blend or new
+architecture arm was introduced.
+
+The main MLP **R5+P+C minus R5** is **−0.007026 [−0.022047,+0.013082]**
+under its **conditional pointwise 95% interval**: R5 scores 0.695498 and
+R5+P+C scores 0.688472. Added context beyond P is −0.003714
+[−0.025597,+0.010449]; P-only augmentation is −0.003313
+[−0.013345,+0.020614]. Both are inconclusive. Ridge net is −0.001644
+[−0.015097,+0.007286]. The ≥50-panel net results are −0.008392
+[−0.022074,+0.011666] for MLP and +0.000114 [−0.014008,+0.006116] for ridge.
+Every declared contrast spans zero. These results establish neither an added
+ProteinMPNN benefit nor harm or equivalence. They do not replace the main
+competitive selector or its historical +0.0543 comparison.
+
+| Arm | MLP, ≥20 (69 alleles) | Ridge, ≥20 | MLP, ≥50 (68 alleles) | Ridge, ≥50 |
+|---|---:|---:|---:|---:|
+| R5 | 0.695498 | 0.666307 | 0.695107 | 0.663502 |
+| R5 + P | 0.692185 | 0.664884 | 0.691995 | 0.663541 |
+| R5 + P + C | 0.688472 | 0.664664 | 0.686715 | 0.663616 |
+
+The ≥20 eligible panel has 69 alleles and 19,647 rows; the ≥50 panel has
+68 alleles and 19,619 rows. Eligibility is distinct from extraction completeness.
+All 12 declared contrasts follow; none is selected as a replacement primary.
+
+| Learner | Panel | Comparison | Difference [conditional 95% interval] |
+|---|---|---|---:|
+| MLP | ≥20 | R5 + P + C minus R5 | −0.007026 [−0.022047,+0.013082] |
+| MLP | ≥20 | R5 + P + C minus R5 + P | −0.003714 [−0.025597,+0.010449] |
+| MLP | ≥20 | R5 + P minus R5 | −0.003313 [−0.013345,+0.020614] |
+| MLP | ≥50 | R5 + P + C minus R5 | −0.008392 [−0.022074,+0.011666] |
+| MLP | ≥50 | R5 + P + C minus R5 + P | −0.005279 [−0.024660,+0.009264] |
+| MLP | ≥50 | R5 + P minus R5 | −0.003112 [−0.013216,+0.019631] |
+| RIDGE | ≥20 | R5 + P + C minus R5 | −0.001644 [−0.015097,+0.007286] |
+| RIDGE | ≥20 | R5 + P + C minus R5 + P | −0.000220 [−0.013631,+0.007982] |
+| RIDGE | ≥20 | R5 + P minus R5 | −0.001423 [−0.006455,+0.004289] |
+| RIDGE | ≥50 | R5 + P + C minus R5 | +0.000114 [−0.014008,+0.006116] |
+| RIDGE | ≥50 | R5 + P + C minus R5 + P | +0.000076 [−0.012638,+0.006640] |
+| RIDGE | ≥50 | R5 + P minus R5 | +0.000038 [−0.005199,+0.003251] |
+
+### Fixed original queries: descriptive transport comparison
+
+On the same original 4,449 held query identities, the MLP net P+C increment
+changes from **+0.018816 to +0.001088** (change −0.017728), while R5's
+absolute point rises **0.600708 → 0.680453 (+0.079745)**. This comparison
+removes query-composition change, but source coverage, inner selection and
+stopping populations still change together. It does **not isolate a causal
+sample-size effect** and introduces no extra fit, bootstrap or confidence
+interval. Old and new results overlap and are not independent replications.
+All 24 saved fixed-query entries are preserved below and in the
+[descriptive CSV](inverse_fulltrain_candidate/fixed_query_descriptive.csv).
+
+<details>
+<summary>All fixed-query points and increments</summary>
+
+| Learner | Panel | Entry | Original subset | Full-trained, same queries | Change |
+|---|---|---|---:|---:|---:|
+| MLP | ≥20 | R5 point | 0.600708 | 0.680453 | +0.079745 |
+| MLP | ≥20 | R5 + P point | 0.595564 | 0.702650 | +0.107086 |
+| MLP | ≥20 | R5 + P + C point | 0.619524 | 0.681541 | +0.062017 |
+| MLP | ≥20 | net increment | 0.018816 | 0.001088 | −0.017728 |
+| MLP | ≥20 | context increment | 0.023960 | −0.021109 | −0.045069 |
+| MLP | ≥20 | peptide increment | −0.005144 | 0.022197 | +0.027341 |
+| MLP | ≥50 | R5 point | 0.597830 | 0.677871 | +0.080041 |
+| MLP | ≥50 | R5 + P point | 0.593336 | 0.699480 | +0.106144 |
+| MLP | ≥50 | R5 + P + C point | 0.619344 | 0.681294 | +0.061951 |
+| MLP | ≥50 | net increment | 0.021514 | 0.003423 | −0.018091 |
+| MLP | ≥50 | context increment | 0.026008 | −0.018185 | −0.044194 |
+| MLP | ≥50 | peptide increment | −0.004494 | 0.021609 | +0.026103 |
+| RIDGE | ≥20 | R5 point | 0.626800 | 0.678587 | +0.051788 |
+| RIDGE | ≥20 | R5 + P point | 0.630401 | 0.680634 | +0.050233 |
+| RIDGE | ≥20 | R5 + P + C point | 0.623753 | 0.678542 | +0.054788 |
+| RIDGE | ≥20 | net increment | −0.003047 | −0.000046 | +0.003001 |
+| RIDGE | ≥20 | context increment | −0.006648 | −0.002093 | +0.004556 |
+| RIDGE | ≥20 | peptide increment | 0.003602 | 0.002047 | −0.001555 |
+| RIDGE | ≥50 | R5 point | 0.625071 | 0.678073 | +0.053002 |
+| RIDGE | ≥50 | R5 + P point | 0.629116 | 0.676696 | +0.047580 |
+| RIDGE | ≥50 | R5 + P + C point | 0.623035 | 0.677720 | +0.054685 |
+| RIDGE | ≥50 | net increment | −0.002035 | −0.000352 | +0.001683 |
+| RIDGE | ≥50 | context increment | −0.006081 | 0.001024 | +0.007105 |
+| RIDGE | ≥50 | peptide increment | 0.004045 | −0.001377 | −0.005422 |
+
+</details>
 
 The [label-free cohort comparison](inverse_fulltrain_metadata/cohort_metadata_comparison.json)
 shows the same **75 alleles**, with rows increasing **4,449 → 19,716 (4.43×)**
 and inherited peptide clusters **2,082 → 3,587 (1.72×)**, including 1,505 new
 clusters. Of the 15,267 additional rows, 11,656 belong to previously covered
-clusters and 3,611 to new clusters. This quantifies both coverage and density;
+clusters and 3,611 to new clusters. This quantifies coverage and density;
 4.43× rows does not imply 4.43× independent evidence, and cluster counts are
-not effective sample size. The ≥20/≥50 counts in this label-free artifact are
-row-count thresholds only, without assay-rankability eligibility. No labels,
-predictions or ProteinMPNN scores entered this metadata comparison.
+not effective sample size. The ≥20/≥50 metadata counts are row-count
+thresholds only, without assay-rankability eligibility. No labels, predictions
+or ProteinMPNN scores entered this metadata comparison.
 
-The choice uses the small positive balanced-panel MLP net point and descriptive
-influence checks, despite inconclusive intervals and ridge disagreement. This
-is a selected development transport check, **not independent confirmation or
-a fourth primary in the original family**. Assessment is pending. No full FoldX
-expansion, combined descriptor arm, extra grid or follow-on search is admitted.
-The four disjoint extraction batches each have a $8.50 cap; extraction plus
-staging/fitting/reporting is bounded by **$40**, within the authorized $139
-tranche ceiling. Original validation/test and reserved external outcomes remain
-excluded; the independent-assay requirement remains open.
+### Audit and final decision
+
+The first full-cohort head launch failed before any fit at repeated metadata
+validation. The [reviewed operational repair](inverse_fulltrain_repair/manifest.json)
+verifies four identical metadata aliases and removes only those redundant
+copies in memory, preserving stored scores, frozen source/protocol bytes and
+all validator guards. Its review checks exact parity over all 19,716 rows;
+failed launch artifacts remain archived. The replacement phase completed the
+same 300/150 fit graph, without extraction or recipe changes.
+
+The [completion audit](inverse_fulltrain_candidate/completion_audit.json) and
+[independent saved-output audit](inverse_fulltrain_candidate/independent_audit.json) and
+[final independent review](inverse_fulltrain_candidate/INDEPENDENT_FINAL_REVIEW.json)
+verify full coverage, all fitted prediction/selection/ancestry artifacts,
+12 contrasts, 24 fixed-query entries and saved 2,000-draw percentile arithmetic.
+The [reproducible audit](../../scripts/followup3_fulltrain_independent_audit.py)
+does not refit models, regenerate bootstrap draws or replay weights; fitted
+states are not saved. This extension was selected after balanced-panel outcomes,
+uses reused training labels and overlapping clusters, and is **conditional
+selected development, not independent confirmation or a fourth original-family
+primary**. Its pointwise 95% intervals exclude extension-choice and repeated
+fitting/selection uncertainty. Original validation/test and external candidate
+outcomes were not opened.
+
+**Stop computational search.** Neither the completed ProteinMPNN extensions
+nor repaired FoldX descriptors establish added incumbent R5 benefit. Few-shot
+adaptation remains the sole positive primary under the original three-question
+family correction. Retain the simpler embedding head and freeze candidate
+artifacts for independent kinetic-assay confirmation. No full FoldX expansion,
+combined arm, new grid or follow-on computational search is admitted. The
+[unsent assay brief](../finalization/INDEPENDENT_ASSAY_BRIEF.md) preserves
+locked-model confirmation as primary and describes a clearly optional future
+few-shot arm; it does not authorize acquisition or provider contact.
 
 All heavy extraction, fitting and statistical resampling run on Modal. The new
 tranche has a separately authorized $139 inclusive ceiling with smaller bounded
 admissions; credits are a limit, not a spending target. Historical phase costs
 are separate. The [root-owned ledger](budget.json) and execution record retain
 failed attempts, reservations, conservative charges and resource-closure status.
-Runtime-derived accounting is not a reconciled invoice or live credit balance.
+The closed new tranche carries **$67.302731** conservatively with **$0 reserved**;
+its application stopped at 19:17 UTC. Scientific outputs were preserved locally
+before the temporary tranche volume was deleted; historical structure caches
+remain intact. The [final closeout](resources/cloud_closeout.json) binds
+preservation and deletion receipts. Runtime-derived accounting is not a
+reconciled invoice or live credit balance.

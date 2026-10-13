@@ -1,0 +1,11 @@
+{
+  "index": 1,
+  "returncode": 0,
+  "seconds": 5.020927667617798,
+  "command": [
+    "python",
+    "-c",
+    "import torch,biotite,numpy,scipy; assert torch.version.cuda is None; print({\"torch\":torch.__version__,\"biotite\":biotite.__version__,\"numpy\":numpy.__version__,\"scipy\":scipy.__version__})"
+  ],
+  "at_utc": "2026-10-13T11:49:21.461363+00:00"
+}

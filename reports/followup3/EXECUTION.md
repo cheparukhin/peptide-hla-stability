@@ -236,3 +236,75 @@ The complete existing Boltz feature cache is staged separately under a $0.75
 cap while native scoring proceeds. All 19,716 scores must pass before the
 frozen 300-MLP/150-ridge fit graph is admitted. Original validation/test and
 reserved external outcomes remain untouched.
+
+All four native-scoring batches terminated successfully by 18:47:48 UTC.
+Their conservative charges, including the fixed overhead allowance, are
+$3.956638, $5.843031, $4.071209 and $4.045269: $17.916146 in total against
+the $34 extraction reservation. The slower second batch completed within its
+original deadline; no resource extension or case resubmission was needed.
+The staged full-cohort baseline also completed successfully ($0.510628).
+Root checked each exact batch identity set and its own launch/provider/worker
+receipt before admitting the complete-cohort collector under a $0.75 cap.
+The collector must validate all 19,716 rows, preserve the 4,449 cached records,
+and archive all 15,267 new native-score records before fitting.
+
+Collection completed successfully in 235 seconds ($0.531046). The full score
+archive was downloaded and every new record hash checked locally; the separate
+`independent_extraction_audit.json` passed all record values and identities.
+Commit `620232aa` preserves the accepted full cohort and audit.
+
+The first head attempt failed after 52 seconds ($0.544101), before any model
+fit. All eight started children reached the same metadata merge error; the
+last two commands never started. The collector retains four verified
+`*_score` metadata copies, and the assessment's second validation collided
+with those column names. The failed launch and child logs remain intact.
+A separate repair wrapper checks exact equality of all four copies, rejects
+unexpected reserved columns, removes only the redundant copies in memory,
+and delegates to the unchanged validator and frozen assessment. The reviewer
+verified exact dataframe equality over all 19,716 rows after normalization;
+six focused guard tests passed. No protocol, score bytes, model recipe,
+comparison or output definition changes. A new explicit root admission is
+required for the repaired attempt; this is not an automatic retry.
+
+Commit `52f60be2` binds the reviewed repair. The separately admitted
+`inverse_fulltrain_heads_v2` attempt completed all ten commands and exactly
+300 MLP members plus 150 ridge fits in 249 seconds, with a $0.710076
+conservative charge. Root verified all fifty saved cell artifacts, exact
+held-row identities, immutable feature inputs and matched feature hashes
+before admitting the original frozen report under a $1 cap. The report plan
+also binds the repair review, failed-attempt ancestry and independent
+extraction audit. No additional fits were added.
+
+The full report completed in 143 seconds ($0.518953). Its independent final
+review passed all 19,716 rows, 450 fits, twelve paired comparisons, twenty-four
+fixed-query entries, saved-draw interval arithmetic and repair provenance.
+The neural R5+P+C minus R5 difference is −0.007026 with conditional 95%
+interval [−0.022047, +0.013082]; ridge is −0.001644 [−0.015097, +0.007286].
+All twelve comparisons span zero. At fixed original queries the neural net
+increment declines descriptively from +0.018816 to +0.001088. These findings
+do not establish an incremental benefit, harm, equivalence or independent
+confirmation. The manager closes computational searching here and retains
+the original main and few-shot findings, with independent kinetic measurement
+confirmation as the next evidence requirement.
+
+All thirty paid phases, including failed attempts and recoveries, are closed.
+The ledger reconciles every terminal receipt to **$67.302731 conservative
+accounting**, zero outstanding reservations, and the unchanged $139 ceiling.
+The selected full-cohort extension used $20.730950 against its $40 cap.
+The study app was stopped at 19:17:02 UTC and the subsequent provider listing
+reports state `stopped` with zero tasks. These amounts are resource allowances,
+not invoices or a verified remaining-credit balance. The
+[cloud closeout](resources/cloud_closeout.json) retains the terminal evidence.
+
+Artifact preservation covers 34,937 remote report paths across the closed
+studies and full-cohort scope, with zero conflicts or errors. The closed-study
+check preserved 529 NPZ states/caches and copied 358 previously missing files;
+the full-cohort check copied ten remaining terminal records and verified all
+15,267 native records against the accepted archive and extraction hashes.
+Its documented limits distinguish fresh small-file cloud reads from accepted
+archive proofs for large payloads. The new temporary volume
+`vo-v3jqoOK3YnChoWYBLMIvTx` was then deleted, and a fresh provider lookup
+confirmed it absent. Historical structure/feature volumes were not changed.
+The [closed-study](resources/closed_artifact_preservation.json),
+[full-cohort](resources/fulltrain_artifact_preservation.json) and
+[deletion](resources/volume_delete_receipt.json) receipts preserve this closeout.

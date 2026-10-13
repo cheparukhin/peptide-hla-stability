@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pip",
+    "install",
+    "--disable-pip-version-check",
+    "--no-compile",
+    "--target",
+    "/Users/cheparukhin/ai_science_hack/runs/followup3/dependencies",
+    "numpy==2.5.3",
+    "scipy==1.18.1",
+    "biotite==1.7.1",
+    "torch==2.14.1",
+    "--extra-index-url",
+    "https://download.pytorch.org/whl/cpu"
+  ],
+  "pid": 4,
+  "at_utc": "2026-10-13T11:48:39.362436+00:00"
+}

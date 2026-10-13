@@ -1,0 +1,29 @@
+{
+  "at_utc": "2026-10-13T18:52:09.100289+00:00",
+  "status": "complete",
+  "plan_sha256": "5371772bd2f25c9a18a2c2ce422dbf35769aee4348add2e4e411fda135eb0cd1",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 134.65523743629456,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain.py",
+        "collect"
+      ],
+      "at_utc": "2026-10-13T18:51:59.990481+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 7.009629487991333,
+      "command": [
+        "python",
+        "-c",
+        "from pathlib import Path; import tarfile; p=Path('reports/followup3/inverse_fulltrain_candidate'); names=['score_rows','scores.csv','extraction_receipt.json']+[f'batch_{i}.receipt.json' for i in range(4)]; t=tarfile.open(p/'scores_archive.tar.gz','x:gz',compresslevel=1); [t.add(p/n,arcname=n) for n in names]; t.close()"
+      ],
+      "at_utc": "2026-10-13T18:52:08.002611+00:00"
+    }
+  ]
+}

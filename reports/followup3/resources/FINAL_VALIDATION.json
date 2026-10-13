@@ -1,0 +1,39 @@
+{
+  "at_utc": "2026-10-13T19:30:14.944222+00:00",
+  "status": "passed",
+  "scientific_and_resource_evidence_sha256": {
+    "reports/followup3/inverse_fulltrain_candidate/independent_audit.json": "7d57077b5e23c81586882b12be29d70c5300fe92cec929ce32d63abce17576e9",
+    "reports/followup3/inverse_fulltrain_candidate/INDEPENDENT_FINAL_REVIEW.json": "5322067fc91ad13140777c54dbe4841f4c36d6a1b5e3e69270de2b3c4ead7c87",
+    "reports/followup3/inverse_fulltrain_repair/PRELAUNCH_REVIEW.json": "2055fe369b900573f62bc466cf92e220643586c524e7488a56acc30574ef7a6b",
+    "reports/followup3/resources/cloud_closeout.json": "a3eec76997523975f2939962cff06bdd46852e4e085152ec65d4bb31e5c49083"
+  },
+  "new_repair_guard_tests": {
+    "passed": 6,
+    "command": "python -m pytest -q tests/test_followup3_fulltrain_repair.py"
+  },
+  "presentation": {
+    "snapshot_check": "passed",
+    "full_cohort_gate": "passed: 12 absolute scores, 12 contrasts, 24 fixed-query entries",
+    "local_links": "passed",
+    "responsive_widths_checked": [
+      388,
+      1280
+    ],
+    "document_overflow": false,
+    "broken_images": 0,
+    "full_result_accordions": "both expanded and inspected",
+    "narrow_table_scroll": "available",
+    "direct_full_cohort_navigation": "passed",
+    "temporary_viewport_override": "reset"
+  },
+  "whitespace": {
+    "authored_content": "passed",
+    "raw_bytes_preserved": [
+      "reports/followup3/independent_data/candidate_source_groups.csv: CRLF CSV",
+      "reports/followup3/independent_data/study_method_status.csv: CRLF CSV",
+      "reports/followup3/resources/science_pilots/child_000.log: one original trailing-space line"
+    ],
+    "reason": "Keep exact hashed evidence; do not normalize archived raw records"
+  },
+  "external_publication": false
+}

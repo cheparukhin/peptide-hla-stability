@@ -1,0 +1,11 @@
+{
+  "index": 0,
+  "returncode": 0,
+  "seconds": 1.0065784454345703,
+  "command": [
+    "python",
+    "-c",
+    "from pathlib import Path; import json; src=Path('reports/followup3/fewshot/cells/cell_000'); dst=Path('reports/followup3/failed_attempts/science_pilots/cell_000'); assert src.exists() and not dst.exists(); dst.parent.mkdir(parents=True,exist_ok=True); src.rename(dst); (dst.parent/'disclosure.json').write_text(json.dumps({'reason':'exact scaler replay failed before efficacy assessment','known_completed_source_fits':1,'retained_scientific_fits':0,'source_commit':'1c6ca7e','original_protocol_preserved':True},indent=2)+'\\n')"
+  ],
+  "at_utc": "2026-10-13T12:01:57.183579+00:00"
+}

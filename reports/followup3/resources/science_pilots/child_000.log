@@ -1,0 +1,31 @@
+Traceback (most recent call last):
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_fewshot.py", line 354, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_fewshot.py", line 351, in main
+    result=run_cell(args.out,args.cell_index,args.features)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/__modal/volumes/vo-v3jqoOK3YnChoWYBLMIvTx/scripts/followup3_fewshot.py", line 172, in run_cell
+    np.testing.assert_array_equal(transformed,zp)
+  File "/Users/cheparukhin/ai_science_hack/runs/followup3/dependencies/numpy/testing/_private/utils.py", line 1128, in assert_array_equal
+    assert_array_compare(operator.__eq__, actual, desired, err_msg=err_msg,
+  File "/Users/cheparukhin/ai_science_hack/runs/followup3/dependencies/numpy/testing/_private/utils.py", line 988, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Arrays are not equal
+
+Mismatched elements: 65118 / 706920 (9.21%)
+First 5 mismatches are at indices:
+ [0, 0]: -0.24297012388706207 (ACTUAL), -0.24297013878822327 (DESIRED)
+ [0, 7]: -0.23546454310417175 (ACTUAL), -0.23546452820301056 (DESIRED)
+ [0, 10]: -0.3066657781600952 (ACTUAL), -0.3066657483577728 (DESIRED)
+ [0, 16]: -0.22136540710926056 (ACTUAL), -0.22136539220809937 (DESIRED)
+ [0, 44]: -0.32200855016708374 (ACTUAL), -0.32200852036476135 (DESIRED)
+Max absolute difference among violations: 1.9073486e-06
+Max relative difference among violations: 1.1069103e-06
+ ACTUAL: array([[-0.24297 , -0.083635, -0.113705, ...,  0.      ,  0.      ,
+         0.230075],
+       [-0.24297 , 11.956693, -0.113705, ...,  0.      ,  0.      ,...
+ DESIRED: array([[-0.24297 , -0.083635, -0.113705, ...,  0.      ,  0.      ,
+         0.230076],
+       [-0.24297 , 11.956693, -0.113705, ...,  0.      ,  0.      ,...

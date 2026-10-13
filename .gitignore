@@ -9,6 +9,8 @@ results/
 preds/
 *.npy
 *.npz
+# Transport archives duplicate the audited, versioned full-cohort records.
+reports/followup3/inverse_fulltrain_candidate/*_archive.tar.gz
 *.pt
 *.pkl
 *.h5

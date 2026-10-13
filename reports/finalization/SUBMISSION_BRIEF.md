@@ -6,7 +6,8 @@ audit. The few-shot result is complete and independently audited;
 ProteinMPNN is complete with an inconclusive context increment beyond Boltz;
 repaired-descriptor assessment is also complete and inconclusive beyond R5.
 Few-shot adaptation is the sole positive primary in the original family. One
-selected full-cohort ProteinMPNN extension is admitted, with results pending. The
+selected full-cohort ProteinMPNN extension is complete and independently audited,
+with no established added R5 benefit. Computational search stops here. The
 [pre-efficacy amendment](../followup3/THIRD_PRIMARY_AMENDMENT.md) declares three
 primaries and 98.333333% family intervals.
 Not submitted externally.
@@ -130,12 +131,24 @@ attempts. R0/R5 baselines are reused exactly with no refits; fitted-weight repla
 is not claimed. The [comparison figure](../followup3/figures/descriptor_comparison.svg)
 shows every balanced-panel MLP arm and both descriptor primary family intervals.
 
+The final [selected full-cohort ProteinMPNN extension](../followup3/REPORT.md#completed-selected-full-cohort-extension)
+completes all 19,716 original-training pairs and 450 fits. Its MLP net increment
+is **−0.007026 [−0.022047,+0.013082]**, from 0.695498 for R5 to 0.688472
+for R5+P+C. Ridge net is −0.001644 [−0.015097,+0.007286]; context, P-only
+and ≥50 sensitivities remain inconclusive. These are conditional pointwise
+95% intervals in a study selected after balanced outcomes, not independent
+confirmation or a fourth original-family primary. The fixed original-query
+MLP net changes from +0.018816 to +0.001088 descriptively; source coverage,
+selection and stopping change together. No harm or equivalence is established.
+All arms and contrasts are retained in the source-backed report.
+
 ## Three-minute demonstration
 
 1. Open the [project page](../../site/index.html). Show the main development
    comparison, then the positive few-shot adaptation result and its label
-   budget. Show the uncertain ranking and hybrid gains with their frozen
-   inner-selection fallbacks.
+   budget. Show the balanced descriptor figure and the completed full-cohort
+   result: no added ProteinMPNN benefit is established, so computational search
+   stops and independent assays are next.
 2. Show the [portable model contract](../../docs/ROUND2_INFERENCE.md) and inspect
    one saved head. Its files contain weights, scalers, configuration and hashes.
 3. Use the documented cached-feature prediction command on the identified
@@ -171,21 +184,16 @@ mechanism or establish an advantage for the designated contact map.
 was slightly higher, but the uncertainty interval spans zero and the frozen
 inner selector retained MSE in all R5 folds. We preserve that decision.
 
-**What is next?** After both descriptor audits, the
-[frozen decision](../followup3/FULL_COHORT_DECISION.json) selects one final
-ProteinMPNN development extension over all 19,716 original-training pairs,
-with R5, R5+P and R5+P+C, 300 MLP members and 150 ridge fits. Its main
-comparison is R5+P+C minus R5; results are pending. Old/new predictions on
-the original 4,449 query rows are compared descriptively, with no extra fit or
-interval; changes in source coverage, inner selection and stopping do not
-isolate a causal sample-size effect. The [label-free cohort comparison](../followup3/inverse_fulltrain_metadata/cohort_metadata_comparison.json)
-shows the same 75 alleles, with 4.43× rows but only 1.72× inherited peptide
-clusters; this is coverage/density, not 4.43× independent evidence. The $40 cap sits within
-the authorized tranche ceiling. This evidence-selected extension is not
-independent confirmation or a fourth original-family primary. No full FoldX
-extension or additional grid is admitted. Freeze candidate procedures before
-opening independent assay outcomes; an adequate independent cohort remains
-the stronger scientific requirement.
+**What is next?** Stop computational search and seek independent kinetic-assay
+confirmation. The frozen full-cohort extension does not establish additional
+ProteinMPNN value; no new grid, combination or FoldX expansion is admitted.
+Retain the simpler embedding head and freeze candidate procedures before opening
+independent outcomes. The [unsent assay brief](INDEPENDENT_ASSAY_BRIEF.md)
+keeps locked-model confirmation primary and describes a clearly optional
+few-shot arm with separate calibration supports and unopened query labels.
+It makes no acquisition, power or assay-savings claim or authorization. The
+new tranche is closed at $67.30 conservatively, with $0 reserved against the
+$139 ceiling; accounting includes failures and is not a provider invoice.
 
 **What remains limited?** Conditional uncertainty excludes assay and selection
 repetition. The historical extraction-wrapper bytes have a disclosed provenance
@@ -212,7 +220,7 @@ gives exact artifact provenance. These upstream methods do not establish that
 sequence likelihood or equilibrium energy predicts kinetic half-life. The
 [pre-results implementation audit](../followup3/ASSESSMENT_PRECHECK.md) passed;
 all three balanced/few-shot studies now have completed independent audits.
-The selected full-cohort extension requires its own completed-output audit.
+The selected full-cohort extension also passed independent saved-output auditing.
 
 ## Evidence and delivery
 

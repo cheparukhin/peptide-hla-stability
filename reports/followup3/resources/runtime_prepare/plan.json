@@ -1,0 +1,44 @@
+{
+  "profile": "a-cheparukhin",
+  "volume": "pepstab-followup3-20261013",
+  "app": "pepstab-followup3-20261013",
+  "name": "runtime-prepare-20261013",
+  "cpu": 2,
+  "memory_mib": 8192,
+  "workers": 1,
+  "threads": 2,
+  "timeout_seconds": 1800,
+  "deadline_utc": "2026-10-13T12:18:29.314720+00:00",
+  "rates_path": "reports/followup3/resources/rates.json",
+  "rate_usd_second": 0.00013216666666666666,
+  "reservation_usd": 1.5,
+  "overhead_usd": 1.0,
+  "output_directory": "reports/followup3/resources/runtime_prepare",
+  "inputs": {
+    "scripts/followup3_cloud.py": "e2a029efb7b494fc6aa9873ba6c07bdf1d0e5246afab81e04c72e16be6124fbf",
+    "reports/followup3/resources/rates.json": "56125a91baf10e3d84209a959a575076e1fce564239d1df78a2c1b0b558330aa"
+  },
+  "commands": [
+    [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "--disable-pip-version-check",
+      "--no-compile",
+      "--target",
+      "/Users/cheparukhin/ai_science_hack/runs/followup3/dependencies",
+      "numpy==2.5.3",
+      "scipy==1.18.1",
+      "biotite==1.7.1",
+      "torch==2.14.1",
+      "--extra-index-url",
+      "https://download.pytorch.org/whl/cpu"
+    ],
+    [
+      "python",
+      "-c",
+      "import torch,biotite,numpy,scipy; assert torch.version.cuda is None; print({\"torch\":torch.__version__,\"biotite\":biotite.__version__,\"numpy\":numpy.__version__,\"scipy\":scipy.__version__})"
+    ]
+  ]
+}
