@@ -1,0 +1,29 @@
+{
+  "status": "passed_prelaunch_source_review",
+  "reviewed_at_utc": "2026-10-13T13:23:20.992974+00:00",
+  "source_sha256": {
+    "scripts/followup3_fewshot_offset.py": "dbaa382f1f099360b926863c1bdac406459f57fb8841db12db605e726ef603d7",
+    "tests/test_followup3_fewshot_offset.py": "6877d92e35ca034ad5786fcac2a7b095b3f08bd751edf70e94469dfc017288d6",
+    "reports/followup3/fewshot_offset/SPECIFICATION.md": "17e48bca87d309b5224bf734bc1d719623e3369f01707a9079e6eec270a08546"
+  },
+  "scope": "exploratory post-hoc R5 k20 decomposition only; no fourth primary or family reallocation",
+  "verified": [
+    "exact saved cell/allele scalar plus original zero-shot predictions",
+    "support/query identity and original source hash binding",
+    "same full-population crossed RNG schedule and score-level three-draw averaging",
+    "original two bootstrap columns replayed and then reused",
+    "within-cell exact rank invariance and full coverage",
+    "point and every paired-bootstrap difference telescope",
+    "nominal conditional intervals and explicit post-hoc interpretation",
+    "original source/result artifacts rechecked before completion"
+  ],
+  "tests": "10 synthetic tests passed; compilation passed",
+  "new_control_metrics_inspected": false,
+  "local_canonical_bootstrap_or_fitting": false,
+  "conditions": [
+    "freeze these exact reviewed bytes before computation",
+    "run report on bounded root-authorized Modal resources",
+    "preserve original primary outputs and family intervals unchanged"
+  ],
+  "paid_launch_performed_by_reviewer": false
+}
