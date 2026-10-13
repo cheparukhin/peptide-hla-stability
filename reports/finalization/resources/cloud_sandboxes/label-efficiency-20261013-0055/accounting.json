@@ -1,0 +1,23 @@
+{
+  "schema": "final_cloud_accounting.1",
+  "phase": "label_efficiency",
+  "prior_conservative_liability_usd": 8.50938200305646,
+  "future_envelope_usd": 10,
+  "other_scopes_reserved_usd": 3,
+  "total_ceiling_usd": 100,
+  "phase_cap_usd": 10,
+  "reserved_phase_usd": 10,
+  "conservative_spend_usd": 0,
+  "overhead_reservation_usd": 3,
+  "current_closed_plus_pending_maximum_usd": 21.50938200305646,
+  "inclusive_label_scope_cap_usd": 10,
+  "closed_predecessor": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/closeout.json",
+    "sha256": "17896d005a88efc34eabe7ae32259c0de1d7d0c9490d864c1b541c1ed2a65075"
+  },
+  "interpretation": "Same100USD ceiling. Label cap10 includes its work and overhead; existing global3USD overhead remains conservatively reserved once. This does not authorize10USD compute plus additional unbounded label overhead. Exact continuous-resource upper bound plus the entire3USD overhead is below10USD.",
+  "closed_prelaunch": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0050/prelaunch_closeout.json",
+    "sha256": "854c74d025ddbf468606ed090d542b12c834b05d213199b97e607bab64c18566"
+  }
+}
