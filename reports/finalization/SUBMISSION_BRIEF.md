@@ -13,9 +13,13 @@ and model selection within the appropriate partitions. On the 69 eligible
 alleles, the embedding procedure increased median within-allele Spearman
 correlation from **0.6668 to 0.7212**: **Δ +0.0543, conditional 95% interval
 [+0.0314, +0.0808]**. Matched nonlinear comparisons also favoured embeddings
-when HLA groups, or both peptide and HLA groups, were held out. Positional
-features improved over pooled controls, whereas the specified contact map had
-no established advantage over shuffled contacts.
+when HLA groups, or both peptide and HLA groups, were held out. Token features
+outperformed matched token pooling, cleanly isolating positional indexing.
+Although the full 9x34 pair representation improved over its dimension-matched
+pooled control, that control averages only crystal-mask-selected contacts per
+peptide position before tiling across 34 columns, altering groove coverage and
+resolution together. Separately, the specified contact map had no established
+advantage over shuffled contacts.
 
 Twenty measurements per target allele improved adaptation from **0.5296 to
 0.5763**, with a three-primary 98.3333% interval for the gain of

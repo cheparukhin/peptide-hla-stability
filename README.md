@@ -10,7 +10,7 @@ On 19,716 development pairs, a nested Boltz-2 interface-feature procedure increa
 
 Before generating 3D atomic coordinates, the frozen Boltz-2 model computes internal representations that capture pairwise relationships between peptide positions and residues lining the HLA binding groove. Evaluating these learned features across controlled development splits yielded three supporting findings:
 
-- **Preserving position improves ranking.** Retaining position-resolved peptide–groove features from the frozen Boltz-2 trunk outperformed dimension-matched pooled controls, whereas the chosen crystal contact mask had no established benefit over shuffled contacts. This gain reflects useful positional information rather than a demonstrated structural mechanism.
+- **Positional detail and full pair features improve ranking.** Preserving token positions in frozen Boltz-2 features outperformed pooling the same tokens. Full peptide–groove pair features also outperformed a pooled control that changes both groove coverage and positional detail. Separately, the crystal contact mask had no established advantage over shuffled contact membership, so these gains do not demonstrate a specific physical mechanism.
 - **Interface representations transfer across held-out HLA allele groups.** When groups of closely related HLA binding grooves are held out during development cross-validation, a matched nonlinear predictor trained on sequence inputs achieves a median within-allele Spearman correlation of **0.1605**, compared with **0.5667** using Boltz-2 interface features. Under simultaneous holdout of both peptide clusters and HLA groups, correlation is **0.1242** for sequence inputs versus **0.4980** for interface features.
 - **Few-shot adaptation improves linear readouts on held-out alleles.** In the joint peptide and HLA holdout regime, adapting a linear predictor on frozen Boltz-2 interface features with **20 measured peptides** from a held-out allele improves median within-allele correlation from **0.5296 to 0.5763**.
 
@@ -20,6 +20,7 @@ All comparisons above are development assessments on existing scintillation prox
 
 The repository contains source code, saved predictions, numerical result tables, and portable model weights. Large precomputed feature caches are stored externally to Git.
 
+- [Manuscript draft](reports/MANUSCRIPT.md): Paper narrative and three figures presenting the completed experimental results.
 - [Scientific report](reports/REPORT.md): Complete scientific report, methods, interpretation, and source tables.
 - [Project page](https://cheparukhin.github.io/peptide-hla-stability/) ([page source](site/index.html)): Visual presentation of the findings.
 - [Evaluation protocol](EVALUATION.md) and [Dataset and assay](docs/DATASETS.md): Dataset provenance, split construction, and statistical analysis specification.

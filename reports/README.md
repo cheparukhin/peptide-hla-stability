@@ -2,6 +2,8 @@
 
 The [scientific report](REPORT.md) is the main account of the results, with a concise summary in the [submission abstract](finalization/SUBMISSION_BRIEF.md). [Methods](../EVALUATION.md) defines the assessment and uncertainty, and [Data](../docs/DATASETS.md) describes the assay and populations.
 
+The [Manuscript draft](MANUSCRIPT.md) develops a paper narrative from completed assessments, and [Figure sources](manuscript/README.md) provide saved values and reproduction instructions. The scientific report remains the fuller study record.
+
 ## Result tables
 
 Each assessment has its own population, comparator and fitting procedure, so scores from different rows of this index should not be treated as matched comparisons. Column names retain the representation identifiers defined in the [structural guide](../docs/STRUCTURES.md).
