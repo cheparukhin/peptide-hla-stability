@@ -1,16 +1,35 @@
-# Static Project Page (`site/`)
+# Scientific submission
 
-This directory contains the static project page deployed to [https://cheparukhin.github.io/peptide-hla-stability/](https://cheparukhin.github.io/peptide-hla-stability/):
+The [public results page](https://cheparukhin.github.io/peptide-hla-stability/)
+concisely presents the [scientific report](../reports/REPORT.md), covering
+development ranking results, transfer, few-shot adaptation, and the limits of
+those findings. The report is the authoritative narrative, while saved CSV and
+JSON files provide the numerical evidence.
 
-- **[`index.html`](index.html)**: Main web presentation of the study's background, methods, primary experimental results, zero-shot immunopeptidomics transfer, cross-allele transfer, 20-shot adaptation, and secondary extensions.
-- **[`round2-data.json`](round2-data.json)**: Snapshot of key evaluation metrics, confidence intervals, and SHA-256 hashes of the source CSV/JSON tables in `reports/`.
-- **[`figures/fewshot_curves.svg`](figures/fewshot_curves.svg)**: Vector figure of the 20-shot target-allele adaptation learning curves across 68 alleles.
-- **[`intro/index.html`](intro/index.html)**: Illustrated biological introduction to peptide–HLA class I presentation and T-cell recognition (built from [`src/animations/pmhc-intro/`](../src/animations/pmhc-intro/)).
+## Build and verify
 
-## Local Preview
+From the repository root:
 
 ```bash
+python3 site/round2-build.py
+python3 site/round2-build.py --check
+python3 site/round2-build.py --check-full-cohort
 python3 -m http.server 8000 --directory site
 ```
 
-Open `http://localhost:8000/` for the main project page or `http://localhost:8000/intro/` for the biology animation.
+Edit the narrative in `round2-build.py` and the page styles in `index.html`.
+The builder reads saved results, verifies arithmetic and audit records, copies
+the verified learning-curve figure, and writes `round2-data.json` with selected
+values and source hashes; it never runs models or changes research evidence.
+Run publication checks in a Git checkout, as they also verify that local assets
+and repository evidence links are tracked and present.
+
+The page is readable without JavaScript; review its tables at desktop and
+mobile widths. The optional `intro/` animation explains peptide–HLA biology—it
+is not a model prediction or a stability measurement—and the `film/` route
+redirects to the results page.
+
+The [Pages workflow](../.github/workflows/pages.yml) validates and uploads this
+folder after relevant changes reach `main`. Repository evidence links therefore
+use GitHub URLs rather than paths outside `site/`. A successful deployment,
+not a local build, confirms that the public page has changed.

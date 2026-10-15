@@ -1,48 +1,87 @@
-# Development and Reproducibility Guide
+# Reproduction and verification
 
-This guide describes the repository layout, local environment setup, and verification commands for checking the saved experimental artifacts and static project page.
+The [research report](../reports/REPORT.md) presents the study conclusions, the
+[evaluation guide](../EVALUATION.md) defines the statistical methods, and the
+[evidence index](../reports/README.md) catalogues the numerical records.
+Source data, split identities, and frozen experiment artifacts remain distinct
+from the current scientific narrative.
 
----
+## Environment and data
 
-## 1. Environment Setup
+Use Python 3.12.12 and the pinned package instructions in the
+[inference setup guide](ROUND2_INFERENCE.md#environment-setup) for the portable
+cached-head interface and its lightweight checks. Because feature extraction,
+trees, structural scoring, and full assessment rely on separate recorded
+environments, the inference environment alone cannot reproduce them.
 
-Local orchestration, data verification, and static site checks require Python $\ge 3.11$ managed via `uv` (or standard `venv`):
+Load canonical identities and splits through the supplied interface:
 
-```bash
-uv sync
+```python
+from pepstab.data import load_with_splits
+
+frame = load_with_splits()
+training = frame.loc[frame.split.eq("train")].copy()
 ```
 
-Compute-intensive structure predictions (`Boltz-2`), protein language model extractions (`ESM-2`), inverse-folding scoring (`ProteinMPNN`), and force-field calculations (`FoldX`) were executed on Modal cloud workers (`pepstab/modal_*.py`) and their resulting features, out-of-fold predictions, and bootstrap intervals are committed directly under `reports/`.
+The raw CSV is read-only; verify it from the repository's `data/` directory
+with `shasum -a 256 -c SHA256SUMS`. Preserve `data/splits.csv` and the supplied
+cluster/fold assignments, and do not regenerate splits for an existing
+assessment. Derived files must join by exact allele–peptide identity rather
+than using subset row positions as source `pair_id` values.
 
----
+## Saved evidence
 
-## 2. Repository Structure
+CSV predictions, comparison tables, bootstrap draws, and JSON manifests provide
+the reproducible numerical record. Check row coverage, identity alignment,
+metric eligibility, and paired differences against these artifacts. Auditing
+saved predictions does not refit a model, repeat its selection procedure, or
+establish independent biological replication. Some descriptor studies omit
+fitted weights; their scoring and ancestry remain auditable, though an exact
+weight-level replay is unavailable.
 
-| Directory / File | Role |
-| :--- | :--- |
-| [`reports/REPORT.md`](../reports/REPORT.md) | Main scientific paper |
-| [`site/`](../site/) | Static project page (`index.html`), figure assets (`figures/`), and interactive biology animation (`intro/`) |
-| [`EVALUATION.md`](../EVALUATION.md) | Specification of splits, primary ranking metric, and bootstrap inference |
-| [`data/`](../data/) | Curated Rasmussen et al. (2016) dataset ([`rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv)), homology splits ([`splits.csv`](../data/splits.csv)), HLA constructs ([`hla75_constructs.fasta`](../data/hla75_constructs.fasta)), and IEDB/MHCflurry affinity references ([`data_augmentation_iedb/`](../data/data_augmentation_iedb/)) |
-| [`pepstab/`](../pepstab/) | Core Python package for data ingestion, homology splitting, sequence/trunk modeling, and bootstrap evaluation |
-| [`models/finalization/`](../models/finalization/) | Exported `R4_ridge_100` and `R5_mlp_0.01` model heads and SHA-256 checksum manifests |
-| [`scripts/`](../scripts/) | Standalone CLI utilities, including [`scripts/round2_inference.py`](../scripts/round2_inference.py) for model verification and cached-feature inference |
-| [`reports/`](../reports/) | Saved experimental tables, out-of-fold predictions, bootstrap distributions, and provenance manifests |
-| [`tests/`](../tests/) | Automated verification suite (including [`tests/test_round2_inference.py`](../tests/test_round2_inference.py)) |
+The [protocol source archive](../reports/protocol_sources.zip) preserves
+original hash-bound protocol text at its repository-relative member paths. For
+a complete reconstruction with the original experiment scripts and prose
+inputs, check out source commit `f021bbac` in a separate working tree and
+materialise archive members there if needed. Do not unpack obsolete narrative
+files over the current documentation: frozen audits verify the original bytes,
+whereas the current documents reconcile the scientific interpretation.
+Workflows that depend on external feature caches and coordinates also require
+those inputs to be available.
 
----
+## Lightweight checks and inference
 
-## 3. Integrity and Reproducibility Checks
+Inspect a packaged head locally without training or accessing a feature cache:
 
-To verify that all saved full-cohort comparison tables and fixed-query evaluation records pass arithmetic and schema checks:
-
-```bash
-python3 site/round2-build.py --check-full-cohort
+```sh
+.venv/bin/python scripts/round2_inference.py inspect \
+  --model models/finalization/R4_ridge_100
 ```
 
-To serve the project page (`site/index.html`) and biology animation (`site/intro/index.html`) locally:
+Run the supported synthetic interface checks with:
 
-```bash
-python3 -m http.server 8000 --directory site
+```sh
+.venv/bin/python -m pytest -q tests/test_round2_inference.py
 ```
-Then open `http://localhost:8000/` in a browser.
+
+The [inference guide](ROUND2_INFERENCE.md) defines the verified feature-bundle
+contract and prediction command. Predictions from the exported fixed recipes
+must not inherit the main nested selector's reported accuracy. In addition,
+cache timing excludes feature extraction and is not end-to-end latency for a
+novel complex.
+
+## New computation
+
+Keep local work to editing, orchestration, and lightweight checks. Run
+substantial fitting, feature extraction, resampling, and structural
+calculations on Modal only within an explicitly authorised credit budget, with
+bounded resources and spending guards. Independent jobs may run concurrently
+within that budget, but reuse valid artifacts rather than duplicating
+experiments. Never treat a stored execution authorisation or an old budget as
+permission for a new paid run.
+
+New research must specify its population, question, comparator, partitions, and
+claim before inspecting new assessment outcomes. Whereas the reused training
+cohort provides development evidence, independent confirmation requires a
+separate measurement population and the assay design described in the
+[independent assay brief](../reports/finalization/INDEPENDENT_ASSAY_BRIEF.md).

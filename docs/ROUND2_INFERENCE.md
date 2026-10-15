@@ -1,63 +1,58 @@
-# Inference with Exported Boltz-2 Trunk Models (`R4_ridge_100` and `R5_mlp_0.01`)
+# Cached-feature inference
 
-This guide documents how to inspect, verify, and run stability predictions using the exported Stage II Boltz-2 trunk heads tracked in [`models/finalization/`](../models/finalization/) via [`scripts/round2_inference.py`](../scripts/round2_inference.py). Full benchmark methodology and empirical comparisons are presented in [`reports/REPORT.md`](../reports/REPORT.md).
+This package exports reusable **R4 ridge** and **R5 MLP** prediction heads that consume verified Boltz compact feature caches. It does not create features from a novel peptide/HLA sequence, call Boltz, produce structures, or run an MSA search; new-sequence inference still requires the separate pinned extraction workflow and its unmeasured new-case costs (see the [research report](../reports/REPORT.md)).
 
----
+The two demonstration recipes—`R4_ridge_100` (one fit) and `R5_mlp_0.01` (30 fits)—are explicitly locked development refits trained only on the original training partition. Neither recipe is selected from follow-up outer outcomes or designated a global winner. Because these exports do not reproduce the nested embedding selector, they do not inherit its reported 0.7212 score and carry no new held-out accuracy estimate.
 
-## 1. Exported Model Heads
+## Environment setup
 
-The repository exports two pre-specified development refits trained on the $19,716$-pair original training partition ([`reports/finalization/inference/distribution_manifest.json`](../reports/finalization/inference/distribution_manifest.json)):
+From the repository root on Linux or macOS, use **Python 3.12.12** to recreate the local environment used by the commands below. The core pins match the [saved head metadata](../models/finalization/R5_mlp_0.01/model.json) and [recorded runtime](../reports/finalization/transfer_controls/local_timing/runtime.json), while supporting dependency pins come from the recorded environment package inventory.
 
-| Model Directory | Representation | Input Dimension | Architecture & Training Recipe | Nested 5-Fold CV Median $\rho$ (69 Alleles) |
-| :--- | :--- | :---: | :--- | :---: |
-| **[`models/finalization/R4_ridge_100`](../models/finalization/R4_ridge_100)** | `R4` (9-position groove-averaged Boltz-2 trunk pair states) | $2,304$ ($9 \times 2 \times 128$) | Single `Ridge(alpha=100, solver='lsqr', tol=1e-5, max_iter=2000)` with training-cohort feature standardization | **0.6845** (**0.7238** when blended with sequence ensemble) |
-| **[`models/finalization/R5_mlp_0.01`](../models/finalization/R5_mlp_0.01)** | `R5` (anchor-resolved contact-pooled Boltz-2 trunk pair states) | $1,024$ ($4 \times 2 \times 128$) | 30-member ensemble (5 peptide-cluster early-stopping folds $\times$ 6 seeds `0..5`) of 64-unit ReLU MLPs ($\text{L2}=0.01$, Adam $\text{lr}=10^{-3}$, batch size $256$, max $200$ epochs, patience $15$) | **0.7210** (**0.5667** on unseen HLA groups) |
-
-Each model directory contains three immutable files verified by SHA-256 checksums:
-- `parameters.npz` (weights, biases, target offsets, and per-member feature standardization statistics, loaded safely with `allow_pickle=False`).
-- `model.json` ([`R4_ridge_100/model.json`](../models/finalization/R4_ridge_100/model.json), [`R5_mlp_0.01/model.json`](../models/finalization/R5_mlp_0.01/model.json): hyperparameter recipe, stopping-fold ancestry, feature/contact-map schema, and data provenance hashes).
-- `complete.json` (integrity checksum manifest).
-
----
-
-## 2. Environment Setup
-
-From the repository root on macOS or Linux, create a Python 3.12 virtual environment matching the recorded runtime ([`reports/finalization/transfer_controls/local_timing/runtime.json`](../reports/finalization/transfer_controls/local_timing/runtime.json)):
-
-```bash
+```sh
 python3.12 -m venv .venv
+.venv/bin/python -c 'import sys; assert sys.version_info[:3] == (3, 12, 12)'
 .venv/bin/python -m pip install \
   numpy==2.5.3 pandas==3.0.6 scipy==1.18.1 scikit-learn==1.9.1 \
-  threadpoolctl==3.7.0 joblib==1.6.0 python-dateutil==2.9.0.post0 six==1.17.0 \
-  pytest==9.1.1
+  threadpoolctl==3.7.0 joblib==1.6.0 python-dateutil==2.9.0.post0 six==1.17.0
+
+# Optional: the synthetic verification suite documented below.
+.venv/bin/python -m pip install \
+  pytest==9.1.1 iniconfig==2.3.0 packaging==26.3 pluggy==1.6.0 pygments==2.21.0
 ```
 
----
+This environment covers the cached-head CLI and its synthetic checks, whereas feature extraction uses separate pinned Boltz/ESM runtimes. Large feature caches remain external to Git and must be supplied as verified compact bundles; installing packages does not recreate them. Keep local work to lightweight inspection and checks, and run refits or large inference jobs on Modal within an explicitly authorized resource and credit budget. Matching package versions alone does not guarantee identical numerical results across platforms or BLAS libraries.
 
-## 3. Input Feature Contract
+## Input contract
 
-The inference CLI consumes verified compact Boltz-2 trunk feature bundles (`schema: pepstab-round2-representations-v1`; see [`docs/STRUCTURES.md`](STRUCTURES.md) for how `R4` and `R5` are constructed from the Boltz-2 pair state tensor $z \in \mathbb{R}^{L \times L \times 128}$):
-- **`R4` ($2,304\text{-d}$)**: Ordered as $[\text{P1}\dots\text{P9}] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over all 182 HLA $\alpha_1\alpha_2$ groove positions.
-- **`R5` ($1,024\text{-d}$)**: Ordered as $[\text{P1},\, \text{P2},\, \text{P9},\, \operatorname{mean}(\text{P3}\dots\text{P8})] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over the crystal-derived HLA contact subsets within the 34 polymorphic contact positions.
+Pass either a compact bundle directory containing `complete.json`, its content-addressed NPZ, and its manifest, or a complete production JSON manifest listing `feature_bundles`. The existing full training input is `reports/further_research/round2/extractor/full_training/feature_bundles.json`. Bare feature matrices and sequence strings are intentionally unsupported.
 
-Predictions are written as `prediction_y_log1p` on the variance-stabilized natural-logarithm target scale $y = \ln(1 + t_{1/2})$ alongside `pair_id` and `input_hash`, intended for **within-allele peptide ranking**.
+Before prediction, the tool verifies file hashes, the feature protocol, the contact map, and array dimensions, and confirms that array identities match the manifest. Each bundle must declare schema `pepstab-round2-representations-v1` and contain finite float32 vectors, unique ordered `pair_id` strings, and a nonempty `input_hash` per row. Both representations use pooling without channel projection: R4 has 2,304 columns in `[P1..P9, peptide-to-groove/groove-to-peptide, 128 channels]` order, whereas R5 has 1,024 columns in `[P1,P2,P9,mean(P3..P8), direction,128 channels]` order using the frozen crystal contact map.
 
----
+The optional `--pair-ids` file (one ID per line) selects a row subset and sets the output order; missing or duplicate requested IDs fail. Prediction outputs preserve `pair_id` and `input_hash` and return `prediction_y_log1p`, an uncalibrated prediction on the `log1p(thalf_hours)` scale. Because the tool does not silently clamp or calibrate outputs, values may be negative and are not guaranteed physical half-life estimates.
 
-## 4. Command-Line Usage (`scripts/round2_inference.py`)
+## Portable artifacts
 
-### Inspect a Model Configuration or Verify Saved Weights
-```bash
-# Display the locked architecture and fit count for a candidate
+Each model directory contains `parameters.npz`, `model.json`, and `complete.json`, which checksums both other files. Model and output paths are immutable, so each new run requires a new path. The NPZ archive is read with `allow_pickle=False` so no executable serialized objects are used; it stores weights, biases, target offsets, and exact per-member scaler means, scales, and variances. Fixed token/pair projection matrices are also preserved for provenance, although these two representations do not use them. The `model.json` metadata records the complete candidate configuration, training row/label/feature hashes, source hashes, versions, stopping-fold ancestry, authorization, and the feature/contact-map contract.
+
+R4 matches the frozen `Ridge(alpha=100, solver='lsqr', tol=1e-5, max_iter=2000)` recipe with a scaler fitted on all training rows. R5 matches the main study's 64-unit ReLU MLP (L2 0.01, Adam learning rate 0.001, batch 256, epoch cap 200, and patience 15), averaging five deterministic peptide-cluster stopping folds times seeds 0..5. Each MLP member's scaler sees only that member's gradient rows. This export implements the main study recipe and does not reproduce the HLA or joint outer assessment procedures or their selection. Predictions use the stored float32 scaler arithmetic and member order. Exact save/load equality is verified on the recorded platform, though cross-platform numerical identity is not promised.
+
+## Commands
+
+Show the fixed configuration and fit count without training:
+
+```sh
 .venv/bin/python scripts/round2_inference.py plan --candidate R5_mlp_0.01
-
-# Verify checksums, dimensions, and metadata of an exported model directory
-.venv/bin/python scripts/round2_inference.py inspect --model models/finalization/R4_ridge_100
-.venv/bin/python scripts/round2_inference.py inspect --model models/finalization/R5_mlp_0.01
 ```
 
-### Run Predictions on a Feature Bundle
-```bash
+Inspect a model and verify its files:
+
+```sh
+.venv/bin/python scripts/round2_inference.py inspect --model models/finalization/R4_ridge_100
+```
+
+Predict from an existing cached bundle:
+
+```sh
 .venv/bin/python scripts/round2_inference.py predict \
   --model models/finalization/R4_ridge_100 \
   --features reports/further_research/round2/extractor/full_training/feature_bundles.json \
@@ -65,9 +60,25 @@ Predictions are written as `prediction_y_log1p` on the variance-stabilized natur
   --out /tmp/r4_cached_predictions.csv
 ```
 
-### Run the Verification Test Suite
-[`tests/test_round2_inference.py`](../tests/test_round2_inference.py) verifies exact numerical parity between serialized models and `FeatureHead` across all 30 MLP ensemble members, tests corruption/hash rejection, and validates input contracts:
+For an authorised refit on Modal, the worker invocation is:
 
-```bash
+```sh
+.venv/bin/python scripts/round2_inference.py fit \
+  --candidate R4_ridge_100 --max-fits 1 \
+  --features reports/further_research/round2/extractor/full_training/feature_bundles.json \
+  --training-csv /tmp/original_training_rows.csv \
+  --authorization reports/finalization/inference/training_authorization.json \
+  --out /tmp/r4_development_refit
+```
+
+The training CSV must contain `pair_id`, `cluster_id`, `split`, and `y_log1p`. Before any fit, the CLI verifies these columns against canonical original training rows; validation/test rows or altered labels/clusters fail. The CLI also limits numerical work to two threads and writes a prefit authorization record with data/feature/source hashes before fitting. One candidate is exported per call (1/30 fits are the full recipes, not grid-search budgets), and the tool never chooses a candidate. For synthetic developer checks, the Python API relies on its caller to supply original-train membership while enforcing the marked training split, finite labels, row identity, and five nonempty grouped stopping folds.
+
+## Verification and measured scope
+
+`tests/test_round2_inference.py` checks exact prediction parity with the existing frozen `FeatureHead` on synthetic data, all 30 MLP members, exact serialization, budget rejection, training-scope/identity/provenance errors, corrupted files, and path traversal rejection. Run:
+
+```sh
 .venv/bin/python -m pytest -q tests/test_round2_inference.py
 ```
+
+The [distribution manifest](../reports/finalization/inference/distribution_manifest.json) records the packaged models and timing measurements. This timing check is a **performance-only, in-sample cached-head benchmark** on identified training cache rows: it includes package validation, scaling, member inference, and output-frame construction, but excludes cache reading, feature extraction, startup, and MSA generation, and calculates no predictive score. The two final model NPZ files are intentionally versioned alongside their JSON manifests, whereas other large feature caches remain external to Git. Distribute all three model files together; prediction also requires compatible feature bundles.
