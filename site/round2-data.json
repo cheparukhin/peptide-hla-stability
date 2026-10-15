@@ -1207,6 +1207,26 @@
     "point_inside_interval": "True",
     "bootstrap_mean_minus_point": "-0.0019727648847139042"
   },
+  "sequence_elution": {
+    "n_alleles": 51,
+    "n_ligands": 81600,
+    "n_decoys": 816000,
+    "excluded_peptides": 5633,
+    "sequence_ensemble": {
+      "none": {
+        "auroc": 0.9656,
+        "auprc": 0.7804
+      },
+      "swapped_decoys": {
+        "auroc": 0.9157,
+        "auprc": 0.5566
+      },
+      "wrong_allele_pseudoseq": {
+        "auroc": 0.6965,
+        "auprc": 0.1466
+      }
+    }
+  },
   "source_sha256": {
     "reports/finalization/hybrids_cloud_v1/comparisons.csv": "766197207dd5c439f42859e0bb60b6bb9cf1ee5dea56e7e04dd9a30c172636ec",
     "reports/finalization/hybrids_cloud_v1/coverage_audit.json": "5c4258590d98343e0d172d3ff9ed57187ec0d92c0bb5f0248a9d96c154f5d16f",
@@ -1252,6 +1272,11 @@
     "reports/further_research/round2/results/main/per_allele_scores.csv": "b6fad71af2c7c768fdc6119683b4e5e8b186f3245d7d6952c4e3bb2ed0e5e364",
     "reports/further_research/round2/results/main/pooled_scores.csv": "8bc5cb2f55be5667833dbe44c619c403a986ad2bcc40a335d082aae740a58a4a",
     "reports/manuscript/figure2_data.json": "ac73119063d4af36865984f50fb9671c29053d78390137747a9e576635964833",
+    "reports/stage3c_per_allele_seq_ensemble.csv": "a31ccddf78586a82fdf563566bbfe30bf01898e1b0892f23336f9100fd1e9302",
+    "reports/stage3c_per_allele_seq_ensemble__swapped_decoys.csv": "a97828de440ec10f1452cbfacb905ed2d42af265d5936a56e24ae49a2d448f0d",
+    "reports/stage3c_per_allele_seq_ensemble__wrong_allele.csv": "abf639063ec5bb37215f14e47827d1952a5d1c8cf1bb5aa3d93a621b1cfae434",
+    "reports/stage3c_provenance.json": "a9ec54dd9a513fe04738d84c480009558e9f94113213bf03a7aab8dbed183bd9",
+    "reports/stage3c_summary.csv": "234cacb8a8ad42374afac937bb7cf89e9097ff04a236442c372f66aec86c82b8",
     "scripts/followup3_fulltrain_independent_audit.py": "95f702188e0217a958ada54de529d67f6397d277c10aa48c54bc61d20617a4da",
     "scripts/followup3_inverse_fulltrain_repair.py": "214a06ac1e33e841f9f543a55b3e3106454ee56be340e28ade5260a364744ddd",
     "scripts/followup3_representation_independent_audit.py": "8cc2d0121b133590f39b87f0ad2bc169c5482dc0142b52e1b3fb20795eab3232"

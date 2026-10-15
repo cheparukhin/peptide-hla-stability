@@ -20,6 +20,12 @@ Using matched nonlinear predictors (MLPs) across 69 alleles, Boltz-2 pair featur
 
 These retrospective development assessments of one existing assay cohort rank stability measurements rather than calibrated physical half-lives or immunogenicity; independent kinetic validation remains needed.
 
+## Secondary result: sequence-model transfer to ligand presentation
+
+In a separate external benchmark, the sequence stability ensemble was evaluated without elution-label fitting on **81,600** positive nine-residue peptide–HLA pairs from the MHC Motif Atlas across **51** alleles, after excluding all stability-dataset peptide sequences from both classes. It reached a median per-allele AUROC of **0.9656** (AUPRC **0.7804**) against human-proteome decoys and **0.9157** when using ligands observed on other alleles as decoys.
+
+These results indicate that sequence-based stability scores transfer to distinguishing presented ligands from decoys in an external elution panel. However, this evaluation tests only sequence-model ligand presentation transfer, not independent kinetic validation or evidence of Boltz-2 improvement ([Benchmark details](reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation)).
+
 ## Repository guide
 
 The repository contains source code, saved predictions, numerical result tables, and portable model weights. Large precomputed feature caches are stored externally to Git.

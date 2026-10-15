@@ -10,6 +10,7 @@ import hashlib
 import html
 import json
 import math
+import statistics
 import subprocess
 import zipfile
 from html.parser import HTMLParser
@@ -238,6 +239,42 @@ def family_interval(base, row, draws):
     return family
 
 
+
+def elution_evidence():
+    """Bind the secondary sequence-model presentation result to saved tables."""
+    summary = read_path('reports/stage3c_summary.csv', 'csv')
+    provenance = read_path('reports/stage3c_provenance.json')
+    n_alleles = provenance['alleles_scored']
+    n_ligands = provenance['ligands_scored']
+    n_decoys = provenance['rows_scored'] - n_ligands
+    panel = {row['allele'] for row in provenance['per_allele']}
+    if (len(panel) != n_alleles
+            or sum(row['n_ligands_scored'] for row in provenance['per_allele']) != n_ligands
+            or sum(row['n_decoys'] for row in provenance['per_allele']) != n_decoys
+            or n_decoys != provenance['decoy_ratio'] * n_ligands):
+        raise ValueError('Elution cohort counts disagree')
+    scores = {}
+    for control, suffix in [('none', ''), ('swapped_decoys', '__swapped_decoys'),
+                            ('wrong_allele_pseudoseq', '__wrong_allele')]:
+        row = one(summary, arm='seq_ensemble', control=control)
+        per_allele = read_path(f'reports/stage3c_per_allele_seq_ensemble{suffix}.csv', 'csv')
+        if (int(row['n_alleles']) != n_alleles or len(per_allele) != n_alleles
+                or {r['allele'] for r in per_allele} != panel
+                or sum(int(r['n_ligands']) for r in per_allele) != n_ligands
+                or sum(int(r['n_decoys']) for r in per_allele) != n_decoys):
+            raise ValueError('Elution scoring panels disagree')
+        scores[control] = {}
+        for metric in ('auroc', 'auprc'):
+            value = float(row[metric + '_median'])
+            if not 0 <= value <= 1 or not math.isclose(value,
+                    statistics.median(float(r[metric]) for r in per_allele), abs_tol=1e-8):
+                raise ValueError('Elution summary and per-allele scores disagree')
+            scores[control][metric] = value
+    return {'n_alleles': n_alleles, 'n_ligands': n_ligands, 'n_decoys': n_decoys,
+            'excluded_peptides': provenance['stability_peptides_excluded_from_both_classes'],
+            'sequence_ensemble': scores}
+
+
 def build():
     SOURCES.clear()
     main_path = BASE + 'results/main/paired_comparisons.csv'
@@ -327,6 +364,8 @@ def build():
     if any(not row['ci_low'] < 0 < row['ci_high'] for row in (ranking, hybrid)):
         raise ValueError('Ranking or hybrid conclusion requires revision')
 
+    elution = elution_evidence()
+
     transfer_html = '\n'.join(f'<tr><th scope="row">{r["holdout"]}<span>{r["comparison"]}</span></th><td>{fmt(r["baseline_score"])}</td><td>{fmt(r["candidate_score"])}</td><td>{interval(r)}</td></tr>' for r in transfer_rows)
     matched_transfer_html = '\n'.join(f'<tr><th scope="row">{r["holdout"]}</th><td>{fmt(r["baseline_score"])}</td><td>{fmt(r["candidate_score"])}</td></tr>' for r in transfer_rows if r['comparison'] == 'Matched MLPs')
     descriptor_html = '\n'.join(f'<tr><th scope="row">{r["label"]}</th><td>{fmt(r["comparison"]["baseline_score"])}</td><td>{fmt(r["comparison"]["candidate_score"])}</td><td>{fmt(r["comparison"]["delta"], True)} [{fmt(r["family"]["ci_low"], True)}, {fmt(r["family"]["ci_high"], True)}]</td></tr>' for r in descriptor_rows)
@@ -337,8 +376,8 @@ def build():
   <p class="standfirst">Can representations from a structure model improve peptide–HLA stability prediction? We fit lightweight supervised predictors to frozen Boltz-2 residue-pair features and compare them against sequence models for ranking measured complex stability within HLA alleles.</p>
   <div class="main-result"><div><p class="metric-label">Paired difference in median within-allele Spearman</p><p class="effect">{fmt(primary['delta'], True)}</p><p class="uncertainty">Conditional 95% interval [{fmt(primary['ci_low'], True)}, {fmt(primary['ci_high'], True)}]</p></div>
   <div class="score-pair"><p><span>Competitive sequence selector</span><strong>{fmt(primary['baseline_score'])}</strong></p><p><span>Boltz-feature selector</span><strong>{fmt(primary['candidate_score'])}</strong></p></div></div>
-  <p>Within-allele Spearman correlation measures agreement with measured peptide stability ordering for each HLA allele. Across {cohort['n_rows']:,} development pairs and {allele['n_alleles']} eligible alleles, nested cross-validation selects procedures on inner folds and evaluates held-out peptide clusters. Per-allele scores are higher in {allele['higher']} of {allele['n_alleles']} alleles and lower in {allele['lower']}. Results come from one existing assay cohort; independent kinetic validation is still needed.</p>
-  <nav aria-label="Research navigation"><a href="#question">Approach</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#interpretation">Interpretation</a>{path_link('reports/MANUSCRIPT.md', 'Manuscript ↗')}</nav>
+  <p>Within-allele Spearman correlation measures agreement with measured peptide stability ordering for each HLA allele. Across {cohort['n_rows']:,} development pairs and {allele['n_alleles']} eligible alleles, nested cross-validation selects procedures on inner folds and evaluates held-out peptide clusters. Per-allele scores are higher in {allele['higher']} of {allele['n_alleles']} alleles and lower in {allele['lower']}. Stability results come from one existing assay cohort; independent kinetic validation is still needed.</p>
+  <nav aria-label="Research navigation"><a href="#question">Approach</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#elution">Elution</a><a href="#interpretation">Interpretation</a>{path_link('reports/MANUSCRIPT.md', 'Manuscript ↗')}</nav>
 </header>
 <section class="abstract" aria-labelledby="question">
   <h2 id="question">Biological context and modelling approach</h2>
@@ -386,10 +425,22 @@ def build():
   <p class="source">{path_link('reports/followup3/inverse_execution_v2/comparisons.csv', 'ProteinMPNN')} · {path_link('reports/followup3/energy_execution_v2/comparisons.csv', 'FoldX')} · {path_link('reports/followup3/inverse_fulltrain_candidate/comparisons.csv', 'Full-cohort extension')} · {path_link(ranking_base + 'comparisons.csv', 'Ranking loss')} · {path_link(hybrid_base + 'comparisons.csv', 'Hybrid learners')}</p>
   </div></details>
 </section>
+<section id="elution" aria-labelledby="elution-title">
+  <p class="eyebrow">04 · Secondary sequence-model benchmark</p>
+  <h2 id="elution-title">Sequence stability scores distinguish eluted ligands from decoys</h2>
+  <p>To test whether predicted stability transfers to antigen presentation, we evaluate the sequence stability ensemble on nine-residue MHC Motif Atlas ligands without fitting to elution labels. The benchmark comprises {elution['n_ligands']:,} positive peptide–HLA pairs and {elution['n_decoys']:,} human-proteome decoy pairs across {elution['n_alleles']} alleles (median per-allele AUPRC {fmt(elution['sequence_ensemble']['none']['auprc'])}), with all {elution['excluded_peptides']:,} unique peptide sequences in the stability dataset excluded from both classes.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Sequence stability ensemble · median per-allele AUROC across {elution['n_alleles']} alleles · 10:1 decoy ratio" tabindex="0"><table><caption>Sequence stability ensemble · median per-allele AUROC across {elution['n_alleles']} alleles · 10:1 decoy ratio</caption><thead><tr><th scope="col">Benchmark condition</th><th scope="col">AUROC</th></tr></thead><tbody>
+<tr><th scope="row">Human-proteome decoys</th><td>{fmt(elution['sequence_ensemble']['none']['auroc'])}</td></tr>
+<tr><th scope="row">Other-allele ligand decoys</th><td>{fmt(elution['sequence_ensemble']['swapped_decoys']['auroc'])}</td></tr>
+<tr><th scope="row">Permuted HLA pseudosequences with human-proteome decoys</th><td>{fmt(elution['sequence_ensemble']['wrong_allele_pseudoseq']['auroc'])}</td></tr>
+  </tbody></table></div>
+  <p>Predicted stability from the sequence ensemble transfers to distinguishing presented ligands from decoys in an external elution dataset, including against other-allele ligands. This sequence-model benchmark does not establish a Boltz-2 advantage, independent kinetic validation, or immunogenicity.</p>
+  <p class="source">{path_link('reports/stage3c_summary.csv', 'Elution summary CSV')} · {path_link('reports/stage3c_provenance.json', 'Dataset provenance')} · {path_link('reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation', 'Supplementary elution details')}</p>
+</section>
 <section id="interpretation" class="discussion" aria-labelledby="interpretation-title">
   <p class="eyebrow">Interpretation</p>
   <h2 id="interpretation-title">Scope of evidence and next decisive experimental test</h2>
-  <p>All evaluations rely on one existing scintillation proximity assay that tracks β2-microglobulin dissociation as a stability proxy and contains unresolved zero-valued labels. The models rank recorded stability rather than predicting calibrated half-lives or immunogenicity. The decisive next test is independent, blinded kinetic measurement using frozen models and raw replicate dissociation curves.</p>
+  <p>All stability evaluations rely on one existing scintillation proximity assay that tracks β2-microglobulin dissociation as a stability proxy and contains unresolved zero-valued labels. The models rank recorded stability rather than predicting calibrated half-lives or immunogenicity. The decisive next test is independent, blinded kinetic measurement using frozen models and raw replicate dissociation curves.</p>
   <details><summary>Conditional resampling intervals and three-comparison family adjustment</summary><div class="detail-content">
 <p>All confidence intervals resample saved out-of-fold predictions while holding fitted models and selection choices fixed, using peptide-cluster resampling for peptide holdout and crossed HLA-group by peptide-cluster resampling for transfer and adaptation. These conditional intervals omit variance from refitting models, collecting new measurements, and selecting follow-up studies adaptively. One three-comparison family spans 20-label R5 adaptation, ProteinMPNN complex context beyond peptide-only, and FoldX augmentation; the 98.33% intervals correct only that declared family, not project-wide exploration.</p>
   </div></details>
@@ -402,7 +453,7 @@ def build():
                'allele_summary': {key: allele[key] for key in ('n_alleles', 'higher', 'lower', 'ties')},
                'transfer': transfer_rows, 'transfer_original_reference': transfer_original, 'fewshot': {'primary': few, 'family_interval': few_family, 'curves': curves},
                'descriptor_comparisons': descriptor_rows, 'full_cohort': full,
-               'ranking': ranking, 'hybrid': hybrid, 'source_sha256': dict(sorted(SOURCES.items()))}
+               'ranking': ranking, 'hybrid': hybrid, 'sequence_elution': elution, 'source_sha256': dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + '\n'
 
 
