@@ -2,29 +2,31 @@
 
 **logic binders · London AI × Science · Protein Engineering Track**
 
-Human leukocyte antigen (HLA) class I proteins present short peptides at the cell surface for T-cell recognition. Kinetic stability—how long an assembled complex remains intact—differs from equilibrium affinity and shapes cell-surface persistence. Focusing on nine-residue peptides, we compare small supervised predictors using frozen Boltz-2 residue-pair features against sequence models for stability ranking.
+Human leukocyte antigen (HLA) class I proteins display short peptides on the cell surface for T-cell recognition. Kinetic stability—how long an assembled peptide–HLA complex remains intact—differs from equilibrium binding affinity and shapes cell-surface persistence. Focusing on nine-residue peptides, we rank candidate peptides by stability within each HLA type (allele).
 
-Across **19,716** development pairs and **69** eligible alleles, our Boltz-2 pair-feature selector raised median within-allele Spearman correlation from **0.6668** (competitive sequence selection) to **0.7212** (paired difference **+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). Under nested cross-validation, inner folds selected models while held-out peptide clusters were assessed separately; Spearman measures agreement with measured ordering within each allele, not calibrated half-life.
+We reuse internal features from Boltz-2, a biomolecular structure-prediction model, that describe pairs of amino acids in the peptide–HLA complex. Keeping Boltz-2 unchanged, we train small supervised predictors on these features and compare them with sequence-only predictors.
+
+Across **19,716** development pairs and **69** eligible alleles, the selected Boltz-2 pair-feature predictors ranked peptide stability within each allele more accurately than the selected sequence-only predictors. Median within-allele Spearman correlation rose from **0.6668** to **0.7212** (paired difference **+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). Spearman correlation measures agreement with the measured stability ordering within each allele, not calibrated physical half-life. Under nested cross-validation, model choice and final assessment used separate data splits and evaluated predictions on held-out groups of similar peptides.
 
 ## Supporting results
 
-Using matched nonlinear predictors (MLPs) across 69 alleles, Boltz-2 pair features generalized better than sequence inputs when related HLA groups were excluded from supervised fitting:
+Transfer comparison: median within-allele Spearman correlation across 69 alleles for matched neural predictors.
 
-| Supervised holdout (69 alleles, matched MLPs) | Sequence MLP | Boltz-2 pair MLP |
+| Excluded from predictor training | Sequence predictors | Boltz-feature predictors |
 | :--- | :---: | :---: |
-| HLA-group holdout | 0.1605 | **0.5667** |
-| Joint HLA-group/peptide-cluster holdout | 0.1242 | **0.4980** |
+| Related HLA groups | 0.1605 | **0.5667** |
+| Related HLA groups and peptide groups | 0.1242 | **0.4980** |
 
-- **Few-shot adaptation:** In a separate retrospective linear ridge study across 68 alleles under joint holdout, using **20** existing target labels per allele raised the median within-allele Spearman correlation from **0.5296** to **0.5763**, averaged over 3 fixed support-set designs. This evaluation uses a different model and query panel than the transfer comparison.
+- **Few-shot adaptation:** Using **20** existing stability measurements per target allele raised the median within-allele Spearman correlation from **0.5296** to **0.5763**, averaged over 3 fixed support-set designs. This separate retrospective analysis used a Boltz-feature ridge model across 68 alleles under joint peptide/HLA holdout. This evaluation uses a different model and query panel than the transfer comparison.
 - **Representations and extensions:** Learned pair features outperformed tested chain-average and residue-feature summaries, whereas extra ProteinMPNN/FoldX descriptors and ranking/hybrid heads had no established added benefit.
 
 These retrospective development assessments of one existing assay cohort rank stability measurements rather than calibrated physical half-lives or immunogenicity; independent kinetic validation remains needed.
 
 ## Secondary result: sequence-model transfer to ligand presentation
 
-In a separate external benchmark, the sequence stability ensemble was evaluated without elution-label fitting on **81,600** positive nine-residue peptide–HLA pairs from the MHC Motif Atlas across **51** alleles, after excluding all stability-dataset peptide sequences from both classes. It reached a median per-allele AUROC of **0.9656** (AUPRC **0.7804**) against human-proteome decoys and **0.9157** when using ligands observed on other alleles as decoys.
+We also tested whether stability predictions distinguish naturally presented peptides (ligands) from comparison peptides (decoys). Using the sequence-only stability ensemble on the MHC Motif Atlas without retraining, we evaluated **81,600** observed nine-residue peptide–HLA pairs across **51** alleles. All stability-dataset peptide sequences were excluded from both the presented-peptide and decoy sets. The ensemble reached a median per-allele AUROC of **0.9656** (AUPRC **0.7804**) against human-proteome decoys and **0.9157** in a harder comparison using ligands observed on other alleles as decoys.
 
-These results indicate that sequence-based stability scores transfer to distinguishing presented ligands from decoys in an external elution panel. However, this evaluation tests only sequence-model ligand presentation transfer, not independent kinetic validation or evidence of Boltz-2 improvement ([Benchmark details](reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation)).
+Here, decoys are comparison peptides rather than confirmed nonbinders or non-presented peptides. This benchmark evaluates only the sequence ensemble, not Boltz-2 improvement or independent kinetic validation ([Benchmark details](reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation)).
 
 ## Repository guide
 
