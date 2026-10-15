@@ -7,6 +7,8 @@ import csv
 import hashlib
 import json
 import math
+import statistics
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -20,6 +22,17 @@ OUT = Path(__file__).resolve().parent
 MAIN = "reports/further_research/round2/results/main/paired_comparisons.csv"
 TRANSFER = "reports/finalization/transfer_cloud_recovery/results/comparisons.csv"
 BLUE, GREY, INK = "#206b92", "#77828a", "#26343c"
+ALLELE_TEXT = {'title': 'Ranking gains vary across HLA molecules',
+ 'xlabel': 'Sequence selector\nWithin-allele Spearman',
+ 'ylabel': 'Embedding selector\nWithin-allele Spearman',
+ 'higher': 'Higher (60)',
+ 'lower': 'Lower (9)',
+ 'diagonal': 'Equal scores',
+ 'size_title': 'Pairs per label',
+ 'footer': 'Main peptide-cluster assessment (69 allele/construct labels); descriptive scores, '
+           'no allele-level intervals.',
+ 'rendering_message': 'Rendered four figures from saved comparisons, curves, and allele '
+                      'scores without fitting or resampling.'}
 
 
 def save_figure(fig, stem):
@@ -103,6 +116,91 @@ def render(rows, stem, title, limits):
     save_figure(fig, stem)
 
 
+def render_allele_variation(primary):
+    source = "reports/further_research/round2/results/main/per_allele_scores.csv"
+    raw = (ROOT / source).read_bytes()
+    source_rows = list(csv.DictReader(raw.decode().splitlines()))
+    arms = {}
+    for procedure in ("sequence_selector", "embedding_selector"):
+        selected = [r for r in source_rows if r["procedure"] == procedure and r["panel_min_rows"] == "20"]
+        arm = {r["allele"]: r for r in selected}
+        if len(arm) != len(selected):
+            raise ValueError("Duplicate allele rows")
+        arms[procedure] = arm
+    baseline, candidate = arms["sequence_selector"], arms["embedding_selector"]
+    if set(baseline) != set(candidate):
+        raise ValueError("Unpaired allele panel")
+    rows = []
+    for allele in sorted(baseline):
+        b, c = baseline[allele], candidate[allele]
+        if b["n"] != c["n"] or b["unranked"] != "False" or c["unranked"] != "False":
+            raise ValueError("Allele coverage or ranking status differs")
+        x, y = float(b["spearman"]), float(c["spearman"])
+        if not all(math.isfinite(v) for v in (x, y)):
+            raise ValueError("Nonfinite allele score")
+        rows.append(dict(allele=allele, n=int(b["n"]), baseline_score=x,
+                         candidate_score=y, delta=y-x))
+    if len(rows) != primary["n_alleles"] or sum(r["n"] for r in rows) != primary["n_rows_eligible"]:
+        raise ValueError("Allele panel differs from the primary comparison")
+    for field in ("baseline_score", "candidate_score"):
+        if not math.isclose(statistics.median(r[field] for r in rows), primary[field], abs_tol=1e-12):
+            raise ValueError("Per-allele scores disagree with the primary median")
+    higher = sum(r["delta"] > 0 for r in rows)
+    lower = sum(r["delta"] < 0 for r in rows)
+    if (len(rows), higher, lower) != (69, 60, 9):
+        raise ValueError("Saved allele-summary counts changed")
+    fig, ax = plt.subplots(figsize=(8.6, 6.7))
+    fig.subplots_adjust(left=.12, right=.77, bottom=.22, top=.86)
+    fig.suptitle(textwrap.fill(ALLELE_TEXT["title"], 66), x=.035, y=.975,
+                 ha="left", color=INK, fontsize=14, fontweight="bold")
+    ax.plot([.2, .9], [.2, .9], linestyle="--", color=GREY, linewidth=1,
+            label=ALLELE_TEXT["diagonal"], zorder=1)
+    orange = "#b96732"
+    for positive, color in [(True, BLUE), (False, orange)]:
+        chosen = [r for r in rows if (r["delta"] > 0) == positive]
+        ax.scatter([r["baseline_score"] for r in chosen],
+                   [r["candidate_score"] for r in chosen],
+                   s=[.22*r["n"] for r in chosen], color=color, alpha=.80,
+                   edgecolors="white", linewidths=.45, zorder=3)
+    ax.set(xlim=(.2, .9), ylim=(.2, .9))
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_xlabel(ALLELE_TEXT["xlabel"], fontsize=10, labelpad=10)
+    ax.set_ylabel(ALLELE_TEXT["ylabel"], fontsize=10, labelpad=10)
+    ax.set_axisbelow(True)
+    ax.grid(color="#e4e8eb", linewidth=.6)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines[["left", "bottom"]].set_color(GREY)
+    ax.tick_params(colors=INK, labelsize=9)
+    for row, location in [(min(rows, key=lambda r:r["delta"]), (.58, .30)),
+                          (max(rows, key=lambda r:r["delta"]), (.215, .64))]:
+        label = row["allele"].replace("HLA-", "") + f"\nn = {row['n']}"
+        ax.annotate(label, (row["baseline_score"], row["candidate_score"]),
+                    xytext=location, fontsize=9, color=INK,
+                    arrowprops=dict(arrowstyle="-", color=GREY, linewidth=.7))
+    legend = ax.legend(handles=[
+        Line2D([], [], marker="o", color=BLUE, ls="", label=ALLELE_TEXT["higher"]),
+        Line2D([], [], marker="o", color=orange, ls="", label=ALLELE_TEXT["lower"]),
+        Line2D([], [], color=GREY, ls="--", label=ALLELE_TEXT["diagonal"])],
+        loc="upper left", bbox_to_anchor=(1.01, 1.0), frameon=False, fontsize=9,
+        borderaxespad=0)
+    ax.add_artist(legend)
+    ax.legend(handles=[Line2D([], [], marker="o", mfc=GREY, mec="white", ls="",
+                              ms=math.sqrt(.22*n), label=str(n)) for n in (50, 300, 700)],
+              title=ALLELE_TEXT["size_title"], loc="upper left", bbox_to_anchor=(1.01, .68),
+              frameon=False, fontsize=9, title_fontsize=9, borderaxespad=0, labelspacing=1.3)
+    fig.text(.035, .035, textwrap.fill(ALLELE_TEXT["footer"], 105), fontsize=9, color=GREY)
+    save_figure(fig, "figure2_allele_variation")
+    (OUT / "figure2_data.json").write_text(json.dumps({
+        "source": source, "source_sha256": hashlib.sha256(raw).hexdigest(),
+        "panel_min_rows": 20, "baseline": "sequence_selector", "candidate": "embedding_selector",
+        "n_alleles": len(rows), "n_rows_eligible": sum(r["n"] for r in rows),
+        "higher": higher, "lower": lower, "ties": len(rows)-higher-lower,
+        "annotated_extremes": [min(rows, key=lambda r:r["delta"])["allele"],
+                               max(rows, key=lambda r:r["delta"])["allele"]],
+        "description": ALLELE_TEXT["footer"], "rows": rows,
+    }, indent=2) + "\n")
+
+
 def render_adaptation():
     source = "reports/followup3/figures/fewshot_curves.json"
     raw = (ROOT / source).read_bytes()
@@ -140,8 +238,8 @@ def render_adaptation():
     ax.legend(loc="lower left", bbox_to_anchor=(0, 1.02), ncol=3, frameon=False, fontsize=9, borderaxespad=0)
     ax.text(.98, .045, f"R5 adaptation: {family['point']:+.4f}\nConditional 98.33% family interval [{family['ci_low']:+.4f}, {family['ci_high']:+.4f}]", transform=ax.transAxes, ha="right", va="bottom", fontsize=9, color=INK)
     fig.text(.03, .028, "68 target alleles; three fixed support designs; joint HLA/peptide holdout. Curve uncertainty bands were not estimated.", fontsize=9, color=GREY)
-    save_figure(fig, "figure3_adaptation")
-    (OUT / "figure3_data.json").write_text(json.dumps({
+    save_figure(fig, "figure4_adaptation")
+    (OUT / "figure4_data.json").write_text(json.dumps({
         "source": source, "source_sha256": hashlib.sha256(raw).hexdigest(),
         "aggregation": data["aggregation"], "curve_rows": curves,
         "primary_family_interval": family,
@@ -161,15 +259,16 @@ def main():
         comparison(MAIN, "R5 crystal contact mask\nvs shuffled contact mask", "secondary", baseline="R5_shuffled_mlp", candidate="R5_mlp", panel_min_rows=20),
     ]
     render(generalization, "figure1_generalization", "Stability ranking within and across HLA sequence groups", (-0.035, 0.53))
-    render(ablations, "figure2_representation_controls", "Token indexing, pair coverage and resolution, and R5 contact-mask comparisons", (-0.035, 0.53))
+    render_allele_variation(generalization[0])
+    render(ablations, "figure3_representation_controls", "Token indexing, pair coverage and resolution, and R5 contact-mask comparisons", (-0.035, 0.53))
     render_adaptation()
     with (OUT / "figure_data.csv").open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=["figure", *generalization[0].keys()], lineterminator="\n")
         writer.writeheader()
-        for figure, rows in [(1, generalization), (2, ablations)]:
+        for figure, rows in [(1, generalization), (3, ablations)]:
             for row in rows:
                 writer.writerow(dict(figure=figure, **row))
-    print("Rendered three figures from eight saved comparisons and the verified adaptation curves; no estimates or intervals recomputed.")
+    print(ALLELE_TEXT["rendering_message"])
 
 
 if __name__ == "__main__":

@@ -6,29 +6,24 @@ Unless stated otherwise, scores are medians of within-allele Spearman correlatio
 
 ## Main procedure scores and sensitivities
 
-The component scores below use the 69-allele development panel. These components describe the individual assessed procedures and do not replace the nested selection rule.
+While Table 1 in the [manuscript](MANUSCRIPT.md) gives the R0–R5 matched-MLP ladder, the component scores below describe additional main-study procedures on the 69-allele development panel. These components describe the individual assessed procedures and do not replace the nested selection rule with the best component.
 
 | Main assessment procedure | Median within-allele Spearman |
 |---|---:|
 | Original sequence MLP ensemble | 0.6615 |
-| Competitive sequence selector | 0.6668 |
-| Chain-average Boltz MLP | 0.4219 |
 | Per-position interface ridge | 0.6845 |
-| Per-position interface MLP | 0.7136 |
-| Contact-pooled interface MLP | 0.7210 |
 | Same MLP with shuffled contact membership | 0.7203 |
 | Full 9 × 34 positional interface MLP | 0.7315 |
-| Prespecified embedding selector | 0.7212 |
 
 Full outputs are provided in [all scores](further_research/round2/results/main/pooled_scores.csv) and [paired comparisons](further_research/round2/results/main/paired_comparisons.csv). In the stricter ≥50-row panel of 68 alleles, the embedding-versus-sequence selector difference was +0.0564 [+0.0317, +0.0791]. The competitive sequence selector differed from the original ensemble by +0.0053 [−0.0093, +0.0123].
 
-In complementarity analyses, an inner-selected sequence/R4-ridge blend scored 0.7238 and exceeded R4 ridge alone by +0.0393 [+0.0220, +0.0567]. Residual correction scored 0.7114, a difference of +0.0446 [+0.0304, +0.0671] from the competitive sequence selector ([complementarity comparisons](further_research/round2/complementarity/results/paired_comparisons.csv)).
+In complementarity analyses, an inner-selected sequence/R4-ridge blend scored 0.7238 and exceeded R4 ridge (per-position interface ridge) alone by +0.0393 [+0.0220, +0.0567]. Residual correction scored 0.7114, a difference of +0.0446 [+0.0304, +0.0671] from the competitive sequence selector ([complementarity comparisons](further_research/round2/complementarity/results/paired_comparisons.csv)).
 
 ## Transfer and adaptation sensitivities
 
 The matched nonlinear transfer contrasts in manuscript Figure 1 retained positive lower bounds in the ≥50-row panel and positive point differences after deleting any single HLA group. The original sequence ensemble scored 0.1709 under HLA-group holdout and 0.1350 under joint holdout; these values serve as additional references rather than the expanded selector used in the selected-procedure comparisons ([all transfer contrasts](finalization/transfer_cloud_recovery/results/comparisons.csv); [group-deletion results](finalization/transfer_cloud_recovery/results/all_group_deletions.csv)).
 
-For few-shot adaptation, the ≥20-row and ≥50-row eligibility panels are identical, so agreement between them is not an additional robustness result ([absolute curves](followup3/fewshot/absolute_curves.csv)). The adaptation curve and fitted-cell offset interpretation appear in the manuscript, while [offset comparisons](followup3/fewshot_offset/comparisons.csv) retain the exploratory estimates.
+For few-shot adaptation, the ≥20-row and ≥50-row eligibility panels are identical, so agreement between them is not an additional robustness result ([absolute curves](followup3/fewshot/absolute_curves.csv)). The primary adaptation result appears in the manuscript, while [offset comparisons](followup3/fewshot_offset/comparisons.csv) retain the exploratory estimates for the fitted-cell offset, defined as an allele-specific scalar correction within each separately fitted joint-holdout cell so that pooling can change cross-cell ordering without changing within-cell ranks.
 
 ## Training-label budgets
 
@@ -76,6 +71,6 @@ On this panel, coarse geometry augmentation reduced ranking performance, and ESM
 
 ## Sequence predictions transfer to ligand presentation
 
-A separate benchmark evaluated the sequence stability ensemble on an MHC Motif Atlas snapshot ([Tadros et al., 2023](https://pubmed.ncbi.nlm.nih.gov/36318236/)) without fitting to elution labels. The dataset included 81,600 eluted nine-mers and 816,000 human-proteome decoys (897,600 pairs across 51 alleles), excluding all 5,633 stability-measured peptide sequences from both classes. Median per-allele AUROC was 0.9656 and AUPRC was 0.7804 ([results](stage3c_summary.csv); [provenance](stage3c_provenance.json)).
+A separate benchmark evaluated the sequence stability ensemble on an MHC Motif Atlas snapshot ([Tadros et al., 2023](https://pubmed.ncbi.nlm.nih.gov/36318236/)) without fitting to elution labels. The dataset included 81,600 eluted nine-mers and 816,000 human-proteome decoys (897,600 pairs across 51 alleles), excluding from both elution classes all 5,633 unique peptide sequences across the entire stability dataset (including training, validation, and test; this count happens to equal the 5,633 pair rows in the original test partition, though those quantities are distinct). Median per-allele AUROC was 0.9656 and AUPRC was 0.7804 ([results](stage3c_summary.csv); [provenance](stage3c_provenance.json)).
 
 In control evaluations, AUROC was 0.9157 against ligands observed on other alleles and 0.6965 with permuted HLA pseudosequences. These controls address generic presentability and allele specificity but do not eliminate all confounding or identify causal contributions to AUROC. Because the endpoint and model differ from those in the main study, this benchmark is neither independent confirmation of the Boltz kinetic-stability advantage nor evidence of immunogenicity prediction.
