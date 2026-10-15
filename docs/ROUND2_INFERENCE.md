@@ -37,10 +37,10 @@ python3.12 -m venv .venv
 ## 3. Input Feature Contract
 
 The inference CLI consumes verified compact Boltz-2 trunk feature bundles (`schema: pepstab-round2-representations-v1`; see [`docs/STRUCTURES.md`](STRUCTURES.md) for how `R4` and `R5` are constructed from the Boltz-2 pair state tensor $z \in \mathbb{R}^{L \times L \times 128}$):
-- **`R4` ($2,304\text{-d}$)**: Ordered as $[\text{P1}\dots\text{P9}] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over the 34 polymorphic HLA contact positions.
-- **`R5` ($1,024\text{-d}$)**: Ordered as $[\text{P1},\, \text{P2},\, \text{P9},\, \operatorname{mean}(\text{P3}\dots\text{P8})] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over the crystal-derived HLA contact subsets.
+- **`R4` ($2,304\text{-d}$)**: Ordered as $[\text{P1}\dots\text{P9}] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over all 182 HLA $\alpha_1\alpha_2$ groove positions.
+- **`R5` ($1,024\text{-d}$)**: Ordered as $[\text{P1},\, \text{P2},\, \text{P9},\, \operatorname{mean}(\text{P3}\dots\text{P8})] \times [\text{peptide}\to\text{groove},\, \text{groove}\to\text{peptide}] \times 128\text{ channels}$, averaged over the crystal-derived HLA contact subsets within the 34 polymorphic contact positions.
 
-Predictions are written as `prediction_y_log1p` on the stabilized logarithmic target scale $y = \log_{10}(1 + t_{1/2})$ alongside `pair_id` and `input_hash`, intended for **within-allele peptide ranking**.
+Predictions are written as `prediction_y_log1p` on the variance-stabilized natural-logarithm target scale $y = \ln(1 + t_{1/2})$ alongside `pair_id` and `input_hash`, intended for **within-allele peptide ranking**.
 
 ---
 

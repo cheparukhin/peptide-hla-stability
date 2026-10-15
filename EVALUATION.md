@@ -6,16 +6,16 @@ This document specifies the dataset splits, evaluation metrics, eligibility crit
 
 ## 1. Target Transformation and Assay Floor
 
-All supervised kinetic stability experiments use the Rasmussen et al. (2016) scintillation proximity assay (SPA) dataset ([`data/rasmussen_et_al_dataset.csv`](data/rasmussen_et_al_dataset.csv) and [`data/splits.csv`](data/splits.csv); $28,166$ unique `(allele_raw, peptide)` records across $5,633$ 9-mer peptides and $75$ HLA class I allele strings). Measured dissociation half-lives $t_{1/2}$ (hours, reported as two-replicate geometric means) are transformed to a stabilized logarithmic target:
-$$y = \log_{10}(1 + t_{1/2}) \quad \text{(or } y_{\text{cens}} = \log_{10}\!\bigl(\max(t_{1/2},\, 0.01)\bigr) \text{ in Stage I censored Tobit modeling)}.$$
-Because both transformations are strictly monotonic functions of $t_{1/2} \ge 0$, within-allele Spearman rank correlations $\rho$ are strictly invariant between the two parameterizations. Exactly **5,693 / 28,166 (20.21%)** observations have $t_{1/2} = 0\text{ h}$ (`is_zero = True`), mapping to the lower boundary ($y = 0.0$ under $\log_{10}(1 + t_{1/2})$, or $y_{\text{cens}} = -2.0$ under the $0.01\text{ h}$ floor).
+All supervised kinetic stability experiments use the Rasmussen et al. (2016) scintillation proximity assay (SPA) dataset ([`data/rasmussen_et_al_dataset.csv`](data/rasmussen_et_al_dataset.csv) and [`data/splits.csv`](data/splits.csv); $28,166$ unique `(allele, peptide)` records across $5,633$ 9-mer peptides and $75$ HLA class I allele strings). Measured dissociation half-lives $t_{1/2}$ (hours, reported as two-replicate geometric means) are transformed to a variance-stabilized natural-logarithm target (`pepstab/data.py`):
+$$y = \ln(1 + t_{1/2}) \quad (\text{\texttt{y\_log1p}}).$$
+Because $y = \ln(1 + t_{1/2})$ is a strictly monotonic function of $t_{1/2} \ge 0$, within-allele Spearman rank correlations $\rho$ are invariant to the logarithmic base. Exactly **5,693 / 28,166 (20.21%)** observations are recorded at $t_{1/2} = 0.0\text{ h}$ ($y = 0.0$), sitting below the assay's $t_{\text{floor}} = 0.1\text{ h}$ reporting limit ($c = \ln(1 + 0.1) \approx 0.0953$ in Tobit left-censored modeling; [`pepstab/censored.py`](pepstab/censored.py)).
 
 ---
 
 ## 2. Homology-Aware Splits and Cross-Validation Regimes
 
-### 2.1 Peptide-Cluster Split (`cluster_split`)
-To prevent sequence-similar peptides from leaking across training and evaluation partitions, all $5,633$ unique 9-mer peptides are grouped into connected components under single-linkage clustering at **Hamming distance $\le 3$** ($\ge 66.7\%$ sequence identity; implemented in `src/pmhc/split.py`). Connected peptide clusters are assigned to three disjoint partitions:
+### 2.1 Peptide-Cluster Split (`splits.csv`)
+To prevent sequence-similar peptides from leaking across training and evaluation partitions, all $5,633$ unique 9-mer peptides are grouped into connected components under single-linkage clustering at **Hamming distance $\le 3$** ($\ge 66.7\%$ sequence identity; implemented in [`pepstab/splits.py`](pepstab/splits.py)). Connected peptide clusters are assigned to three disjoint partitions:
 - **Training cohort (`train`)**: **19,716** rows (**70.0%**), **3,587** peptide clusters, **75** alleles (**69** eligible alleles with $\ge 20$ rows).
 - **Validation split (`val`)**: **2,817** rows (**10.0%**), **68** eligible alleles ($2,756$ rows).
 - **Test split (`test`)**: **5,633** rows (**20.0%**), **67** eligible alleles ($5,565$ rows).
@@ -33,7 +33,7 @@ To prevent sequence-similar peptides from leaking across training and evaluation
 ## 3. Primary Endpoint and Secondary Diagnostics
 
 ### 3.1 Allele Eligibility and Primary Metric
-Within any evaluation partition, an HLA allele (`allele_raw`) is **eligible** if it has at least **20 observations** ($n_a \ge 20$) and at least **2 distinct target values** in that partition.
+Within any evaluation partition, an HLA allele (`allele`) is **eligible** if it has at least **20 observations** ($n_a \ge 20$) and at least **2 distinct target values** in that partition.
 - In the $19,716$-pair training cohort, **69 of 75** alleles meet the $n_a \ge 20$ threshold (and all 69 also satisfy $n_a \ge 50$). The 6 excluded low-count alleles are `HLA-A*02:02`, `HLA-A*02:05`, `HLA-A*02:07`, `HLA-A*02:11`, `HLA-A*68:01`, and `HLA-B*58:01`.
 - In the few-shot joint-holdout adaptation study, target alleles require at least **40 joint-holdout observations** so that 20 support peptides can be sampled while leaving $\ge 20$ query peptides in disjoint peptide clusters, yielding **68** eligible alleles (`HLA-A*26:03` has 37 rows and is excluded).
 
@@ -44,9 +44,9 @@ Equal allele weighting prevents a small number of densely measured alleles (such
 ### 3.2 Secondary Metrics
 Secondary metrics reported across experimental tables include:
 - **Mean within-allele Spearman $\rho$** across eligible alleles.
-- **Pooled RMSE and MAE** on $y = \log_{10}(\max(t_{1/2}, 0.01))$ across all evaluated pairs.
+- **Pooled RMSE and MAE** on $y = \ln(1 + t_{1/2})$ across all evaluated pairs.
 - **Within-allele top-10% recall**: fraction of an allele's true top-decile most stable peptides recovered within the top decile of predicted scores.
-- **Assay-floor discrimination and calibration**: AUROC and Brier score for predicting the `is_zero` floor event ($y = -2.0$).
+- **Assay-floor discrimination and calibration**: AUROC and Brier score for predicting the censored floor event ($t_{1/2} < 0.1\text{ h}$).
 - **Zero-shot ligand elution metrics (`stage3c`)**: Per-allele AUROC, AUPRC, and top-1% precision (and fold enrichment over the $1/11 = 0.0909$ baseline prevalence) across $51$ MHC Motif Atlas alleles.
 
 ---

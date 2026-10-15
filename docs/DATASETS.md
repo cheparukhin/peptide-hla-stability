@@ -12,28 +12,26 @@ The primary supervised dataset is derived from Rasmussen et al., *J. Immunol.* *
 Dissociation half-lives ($t_{1/2}$, in hours) were measured using a high-throughput scintillation proximity assay (SPA). Recombinant biotinylated HLA class I heavy chains were refolded with peptide and radiolabeled $^{125}\text{I}$-$\beta_2$-microglobulin ($\beta_2\text{m}$) in streptavidin-coated FlashPlates, then incubated at **$37\,^\circ\text{C}$** in the presence of excess unlabeled $\beta_2\text{m}$ to prevent reassociation. Because $\beta_2\text{m}$ dissociates rapidly once the peptide leaves the binding groove, the decay of the proximity scintillation signal tracks complex dissociation kinetics ($t_{1/2} = \ln 2 / k_{\text{off}}$). Published values represent the **geometric mean of two independent experimental replicates**; raw time-resolved decay curves and replicate-level variance are not included in the source publication.
 
 ### 1.2 Cohort Composition and Censoring Floor
-After deterministic ingestion and deduplication, [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) contains **28,166** unique `(allele_raw, peptide)` records:
+After deterministic ingestion and deduplication, [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) contains **28,166** unique `(allele, peptide)` records:
 - **Peptides**: **5,633** unique 9-mer peptides composed exclusively of the 20 canonical amino acids.
-- **HLA class I alleles**: **75** distinct `allele_raw` strings ([`data/hla75_constructs.fasta`](../data/hla75_constructs.fasta)) mapping to **72** canonical four-digit alleles (**26** `HLA-A`, **34** `HLA-B`, **11** `HLA-C`, and **1** `HLA-E*01:01`) plus **3** engineered disulfide-modified constructs (`HLA-A*02:01 C67S`, `HLA-A*24:02 C67S`, and `HLA-B*07:02 C67S`, audited separately in [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv)).
-- **Engineered construct handling**: The `C67S` mutation lies outside the 34 canonical peptide-contacting groove positions (`contact_seq` is identical to the parent wild-type allele), but at position 67 of the 182-residue $\alpha_1\alpha_2$ domain (`domain_seq`). We preserve `allele_raw` as the distinct allele identifier (`is_engineered = True`), pass the exact mutated `domain_seq` to ESM-2 and Boltz-2 structure prediction, and exclude engineered rows when matching wild-type equilibrium affinity measurements.
-- **Target scale and assay floor**: Half-lives are transformed as $y = \log_{10}(1 + t_{1/2})$ (`y_log1p` in [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv)) or $y_{\text{cens}} = \log_{10}(\max(t_{1/2}, 0.01))$ in Stage I censored Tobit regression (since both transformations are strictly monotonic on $t_{1/2} \ge 0$, within-allele Spearman rank correlations $\rho$ are identical). Exactly **5,693** records (**20.21%**) have $t_{1/2} = 0\text{ h}$ (`is_zero = True`), reflecting complexes below the measurable sensitivity floor of the assay or complexes that failed initial refolding.
+- **HLA class I alleles**: **75** distinct `allele` strings ([`data/hla75_constructs.fasta`](../data/hla75_constructs.fasta)) mapping to **72** canonical four-digit alleles (**26** `HLA-A`, **34** `HLA-B`, **11** `HLA-C`, and **1** `HLA-E*01:01`) plus **3** engineered disulfide-modified constructs (`HLA-A*02:01 C67S`, `HLA-A*24:02 C67S`, and `HLA-B*07:02 C67S`, audited separately in [`data/c67s_cleanup/benchmark_C67S.csv`](../data/c67s_cleanup/benchmark_C67S.csv)).
+- **Engineered construct handling**: The `C67S` mutation lies outside the 34 canonical peptide-contacting groove positions (`hla_pseudoseq` is identical to the parent wild-type allele), but at position 67 of the 182-residue $\alpha_1\alpha_2$ domain (`hla_seq`). We preserve `allele` as the distinct allele identifier, pass the exact mutated `hla_seq` to ESM-2 and Boltz-2 structure prediction, and exclude engineered rows when matching wild-type equilibrium affinity measurements.
+- **Target scale and assay floor**: Half-lives are transformed in [`pepstab/data.py`](../pepstab/data.py) as $y = \ln(1 + t_{1/2})$ (`y_log1p`). Exactly **5,693** records (**20.21%**) have $t_{1/2} = 0.0\text{ h}$ ($y = 0.0$), reflecting complexes below the assay's $0.1\text{ h}$ detection limit ($c = \ln(1 + 0.1) \approx 0.0953$ in Tobit left-censored modeling; [`pepstab/censored.py`](../pepstab/censored.py)) or complexes that failed initial refolding.
 
 ### 1.3 Schema of [`data/rasmussen_et_al_dataset.csv`](../data/rasmussen_et_al_dataset.csv) and [`data/splits.csv`](../data/splits.csv)
 
-| Column | Type | Description |
-| :--- | :--- | :--- |
-| `allele_raw` | `string` | Exact allele identifier from Rasmussen et al. (75 distinct values, preserving `C67S` suffixes) |
-| `allele_canonical` | `string` | Normalized four-digit IMGT/HLA allele name (72 distinct values) |
-| `is_engineered` | `bool` | `True` for the 3 `C67S` constructs (216 rows total), `False` otherwise |
-| `peptide` | `string` | 9-mer amino-acid sequence (5,633 unique peptides) |
-| `thalf_hr` / `thalf_hours` | `float64` | Reported dissociation half-life $t_{1/2}$ in hours |
-| `y_log1p` / `y` | `float64` | Stabilized logarithmic target $\log_{10}(1 + t_{1/2})$ (or $\log_{10}(\max(t_{1/2}, 0.01))$ in Stage I) |
-| `is_zero` | `bool` | `True` if `thalf_hr == 0.0` (5,693 rows, 20.21%) |
-| `contact_seq` | `string` | 34-residue polymorphic HLA class I contact pseudosequence |
-| `domain_seq` | `string` | 182-residue HLA class I $\alpha_1\alpha_2$ groove domain sequence (reflecting `C67S` where applicable) |
-| `cluster_id` | `int64` | Connected-component ID under single-linkage peptide Hamming distance $\le 3$ |
-| `cluster_split` | `string` | Homology-aware split assignment: `train` (19,716), `val` (2,817), or `test` (5,633) |
-| `random_split` | `string` | Diagnostic within-allele random split (not used for benchmark claims) |
+| Column | Source | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `pair_id` | `splits.csv` / `data.py` | `int32` | Canonical 0-based row index (`0..28165`) joining all tables, embeddings, and structures |
+| `allele` | `rasmussen_et_al_dataset.csv` | `string` | Exact allele identifier from Rasmussen et al. (75 distinct values, preserving `C67S` suffixes) |
+| `peptide` | `rasmussen_et_al_dataset.csv` | `string` | 9-mer amino-acid sequence (5,633 unique peptides) |
+| `thalf_hours` | `rasmussen_et_al_dataset.csv` | `float64` | Reported dissociation half-life $t_{1/2}$ in hours ($5,693$ rows at $0.0\text{ h}$, $20.21\%$) |
+| `hla_seq` | `rasmussen_et_al_dataset.csv` | `string` | 182-residue HLA class I $\alpha_1\alpha_2$ groove domain sequence (reflecting `C67S` where applicable) |
+| `hla_pseudoseq` | `rasmussen_et_al_dataset.csv` | `string` | 34-residue polymorphic HLA class I contact pseudosequence |
+| `y_log1p` | `pepstab/data.py` | `float64` | Variance-stabilized natural-logarithm target $y = \ln(1 + t_{1/2})$ |
+| `cluster_id` | `splits.csv` | `int32` | Connected-component ID under single-linkage peptide Hamming distance $\le 3$ |
+| `split` | `splits.csv` | `string` | Homology-aware split assignment: `train` (19,716), `val` (2,817), or `test` (5,633) |
+| `dist_to_train` | `splits.csv` | `int8` | Minimum peptide Hamming distance to any training peptide ($\ge 4$ for all `val` and `test` rows) |
 
 ---
 
