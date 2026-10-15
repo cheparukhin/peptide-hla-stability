@@ -1,4 +1,4 @@
-# Scientific submission
+# Research results page
 
 The [public results page](https://cheparukhin.github.io/peptide-hla-stability/)
 concisely presents the [scientific report](../reports/REPORT.md), covering

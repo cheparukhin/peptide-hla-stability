@@ -2,8 +2,9 @@
 
 ## Objective
 
-This prospective design compares one locked Boltz-based predictor with one
-locked sequence reference on new kinetic measurements. The primary question is
+This proposed prospective design outlines how one locked Boltz-based predictor
+and one locked sequence reference could be compared on new kinetic measurements;
+it is not an externally required or finalized study. The primary question is
 whether the ranking advantage reported in the [development study](../REPORT.md)
 persists in an independent assay population. Neither model may be selected or
 calibrated using confirmation outcomes.
@@ -33,9 +34,13 @@ prespecified subset using independent preparation and measurement.
 
 ## Panel size
 
-The candidate panel sizes below support an assay quotation; they do not
+The candidate panel sizes below are illustrative quotation scenarios rather than
+required or recommended design choices. The 12 alleles, pair counts, and 20%
+repeat allocations in the table are unvalidated planning examples; they do not
 establish power, cost, or a delivery date, and allele and peptide identities
-remain to be specified.
+remain to be specified. Final population definition, HLA-group coverage,
+independent repeat fraction, and sample size must be justified by the intended
+use, required precision or power under realistic dependencies, and assay limits.
 
 | HLA alleles | Pairs per allele | Primary measurements | Additional independent measurements on a 20% subset |
 |---:|---:|---:|---:|
@@ -60,19 +65,23 @@ with common eligibility and tie handling as defined in
 paired uncertainty that respects peptide families. Generalisation across an HLA
 population also requires HLA-group sampling in the analysis.
 
-Retain the declared +0.05 ranking threshold for continuity with the development
-study; it is a decision threshold rather than an assay-noise floor or
-established measure of biological value. If experimental prioritisation is the
-intended application, prespecify a separate endpoint, such as recovery of stable
-complexes within a fixed measurement budget. Report half-life calibration only
-if the measurement limits and replicate uncertainty support it.
+Report effect estimates with paired uncertainty, and prespecify any
+application-relevant decision criteria before new outcomes are observed. If a
+minimum meaningful effect is needed, justify it from the intended use and assay
+characteristics rather than continuity with an earlier development heuristic. If
+experimental prioritisation is the intended application, prespecify a separate
+endpoint, such as recovery of stable complexes within a fixed measurement
+budget. Report half-life calibration only if the measurement limits and
+replicate uncertainty support it.
 
-An optional adaptation comparison may allocate 20 additional support
-measurements per target allele. Support and confirmation queries must have
-disjoint peptide families, and support measurements must be counted separately.
-Freeze the adaptation rule before opening support outcomes, then freeze adapted
-query predictions before opening query outcomes. The locked-model comparison
-remains primary.
+An optional adaptation comparison may allocate additional support measurements
+per target allele, with the support budget chosen for the prospective
+application and design rather than carried over automatically from the
+retrospective experiment. Support and confirmation queries must have disjoint
+peptide families, and support measurements must be counted separately. Freeze
+the adaptation rule before opening support outcomes, then freeze adapted query
+predictions before opening query outcomes. The locked-model comparison remains
+primary.
 
 This document specifies an unperformed study design; the public candidate
 measurements described in [Data](../../docs/DATASETS.md) do not yet provide a

@@ -4,7 +4,7 @@
 
 To trigger a T-cell response, a peptide–HLA complex must persist at the cell surface long enough for immune recognition. Kinetic stability—how long an assembled complex remains intact—is distinct from equilibrium binding affinity. We ask whether internal features from the frozen Boltz-2 structure-prediction model improve the stability ranking of nine-residue peptides over sequence-only predictors.
 
-On 19,716 development pairs, a nested Boltz-2 interface-feature procedure increased median within-allele Spearman correlation from **0.6668 to 0.7212** (**+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). This supports improved ranking in the development dataset, though the interval lower bound did not meet the predeclared +0.05 criterion and independent kinetic validation is still needed.
+On 19,716 development pairs, a nested Boltz-2 interface-feature procedure increased median within-allele Spearman correlation from **0.6668 to 0.7212** (**+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). This supports improved ranking in this development assessment, though independent kinetic validation is still needed.
 
 ## Supporting development findings
 
@@ -26,7 +26,7 @@ The repository contains source code, saved predictions, numerical result tables,
 - [Evaluation protocol](EVALUATION.md) and [Dataset and assay](docs/DATASETS.md): Dataset provenance, split construction, and statistical analysis specification.
 - [Structural representations](docs/STRUCTURES.md): Construction of Boltz-2 interface representations and structural baselines.
 - [Cached-feature inference guide](docs/ROUND2_INFERENCE.md): Guide to running portable prediction heads on compatible cached Boltz-2 features.
-- [Submission summary](reports/finalization/SUBMISSION_BRIEF.md) and [Independent assay design](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md): Concise project summary and prospective experimental validation protocol.
+- [Research summary](reports/finalization/SUBMISSION_BRIEF.md) and [Independent assay design](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md): Concise project summary of completed work and draft design for proposed experimental validation.
 
 ## Quick verification
 

@@ -1,6 +1,6 @@
 # Scientific results and supporting evidence
 
-The [scientific report](REPORT.md) is the main account of the results, with a concise summary in the [submission abstract](finalization/SUBMISSION_BRIEF.md). [Methods](../EVALUATION.md) defines the assessment and uncertainty, and [Data](../docs/DATASETS.md) describes the assay and populations.
+The [scientific report](REPORT.md) is the main account of the results, with a concise [research summary](finalization/SUBMISSION_BRIEF.md). [Methods](../EVALUATION.md) defines the assessment and uncertainty, and [Data](../docs/DATASETS.md) describes the assay and populations.
 
 The [Manuscript draft](MANUSCRIPT.md) develops a paper narrative from completed assessments, and [Figure sources](manuscript/README.md) provide saved values and reproduction instructions. The scientific report remains the fuller study record.
 

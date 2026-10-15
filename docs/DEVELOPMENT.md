@@ -83,5 +83,7 @@ permission for a new paid run.
 New research must specify its population, question, comparator, partitions, and
 claim before inspecting new assessment outcomes. Whereas the reused training
 cohort provides development evidence, independent confirmation requires a
-separate measurement population and the assay design described in the
-[independent assay brief](../reports/finalization/INDEPENDENT_ASSAY_BRIEF.md).
+separate measurement population; the
+[independent assay brief](../reports/finalization/INDEPENDENT_ASSAY_BRIEF.md)
+outlines one possible draft validation design rather than a sole mandated or
+externally given requirement.

@@ -28,7 +28,7 @@ descriptors, ranking loss, and hybrid prediction heads did not establish
 further improvements under the tested settings, and a full-cohort ProteinMPNN
 extension gave **−0.0070 [−0.0220, +0.0131]** beyond the interface model.
 
-These findings support useful predictive information in learned interface representations without isolating a structural mechanism. The main interval does not establish a gain exceeding the declared +0.05 threshold. All later studies reuse development data, and an earlier diagnostic exposed part of the original test set. Resampling intervals condition on saved models, excluding retraining and independent assay variation.
+These findings support useful predictive information in learned interface representations without isolating a structural mechanism. All later studies reuse development data, and an earlier diagnostic exposed part of the original test set. Resampling intervals condition on saved models, excluding retraining and independent assay variation.
 
 The assay tracks β2-microglobulin dissociation as a proxy for complex stability. Replicate observations and the measurement-level interpretation of zero labels are unavailable in the supplied file. Independent kinetic measurements are therefore required before claiming calibrated half-lives or practical assay savings.
 

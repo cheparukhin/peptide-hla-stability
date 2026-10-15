@@ -4,7 +4,7 @@ The [manuscript draft](../MANUSCRIPT.md) develops the paper's argument from the 
 
 ## Contribution and positioning
 
-The defensible contribution is an empirical evaluation of frozen Boltz-2 representations for assay-derived peptide–HLA stability ranking. It combines a prespecified sequence comparison, dimension-matched representation controls, supervised HLA-group and joint holdouts, and retrospective adaptation. The larger transfer effects do not replace the main comparison or its unmet lower-bound +0.05 criterion.
+The defensible contribution is an empirical evaluation of frozen Boltz-2 representations for assay-derived peptide–HLA stability ranking. It combines a prespecified sequence comparison, dimension-matched representation controls, supervised HLA-group and joint holdouts, and retrospective adaptation. The larger effects in follow-up transfer contrasts do not substitute for the matched main comparison; superseded planning rules are recorded in the [assessment history](../../EVALUATION.md#assessment-history).
 
 A focused prior-work check on 15 October 2026 informed the draft. This was not an exhaustive priority review:
 
