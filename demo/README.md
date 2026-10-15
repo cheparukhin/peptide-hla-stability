@@ -1,8 +1,5 @@
-# Results page
+# Legacy Demo Redirects (`demo/`)
 
-The [scientific submission](https://cheparukhin.github.io/peptide-hla-stability/)
-and [full report](../reports/REPORT.md) contain the project's results.
+The primary web presentation of this project is hosted at [`site/index.html`](../site/index.html) ([live page](https://cheparukhin.github.io/peptide-hla-stability/)), and the full scientific paper is in [`reports/REPORT.md`](../reports/REPORT.md).
 
-The HTML routes in this directory redirect to the submission so existing links
-lead to the same scientific account. The source data and experimental evidence
-are preserved in `data/` and `reports/`.
+The HTML files in this directory are lightweight redirects retained so that older links resolve cleanly to the main project page.
