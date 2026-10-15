@@ -20,13 +20,14 @@ All comparisons above are development assessments on existing scintillation prox
 
 The repository contains source code, saved predictions, numerical result tables, and portable model weights. Large precomputed feature caches are stored externally to Git.
 
-- [Manuscript draft](reports/MANUSCRIPT.md): Paper narrative and three figures presenting the completed experimental results.
-- [Scientific report](reports/REPORT.md): Complete scientific report, methods, interpretation, and source tables.
-- [Project page](https://cheparukhin.github.io/peptide-hla-stability/) ([page source](site/index.html)): Visual presentation of the findings.
-- [Evaluation protocol](EVALUATION.md) and [Dataset and assay](docs/DATASETS.md): Dataset provenance, split construction, and statistical analysis specification.
+- [Manuscript](reports/MANUSCRIPT.md): Primary scientific narrative and three figures presenting the completed experimental results.
+- [Supplementary report](reports/REPORT.md): Supplementary scores, sensitivity analyses, and historical benchmarks.
+- [Evidence index](reports/README.md): Numerical evidence index and source table directory.
+- [Project page](https://cheparukhin.github.io/peptide-hla-stability/) ([page source](site/index.html)): Visual overview of the findings.
+- [Evaluation protocol](EVALUATION.md) and [Dataset and assay](docs/DATASETS.md): Detailed statistical specification, dataset provenance, and split construction.
 - [Structural representations](docs/STRUCTURES.md): Construction of Boltz-2 interface representations and structural baselines.
 - [Cached-feature inference guide](docs/ROUND2_INFERENCE.md): Guide to running portable prediction heads on compatible cached Boltz-2 features.
-- [Research summary](reports/finalization/SUBMISSION_BRIEF.md) and [Independent assay design](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md): Concise project summary of completed work and draft design for proposed experimental validation.
+- [Independent assay design](reports/finalization/INDEPENDENT_ASSAY_BRIEF.md): Draft design for proposed experimental validation.
 
 ## Quick verification
 

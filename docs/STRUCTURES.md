@@ -1,6 +1,6 @@
 # Structural inputs and representations
 
-Boltz-2 supplies predicted coordinates and frozen learned features, whereas experimental PDB entries provide a limited structural reference. Predictive comparisons appear in the [research report](../reports/REPORT.md), with model selection and assessment defined in [EVALUATION.md](../EVALUATION.md).
+Boltz-2 supplies predicted coordinates and frozen learned features, whereas experimental PDB entries provide a limited structural reference. Predictive comparisons appear in the [manuscript](../reports/MANUSCRIPT.md), with model selection and assessment defined in [EVALUATION.md](../EVALUATION.md).
 
 ## Coordinate and feature provenance
 

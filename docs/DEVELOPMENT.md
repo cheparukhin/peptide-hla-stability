@@ -1,6 +1,6 @@
 # Reproduction and verification
 
-The [research report](../reports/REPORT.md) presents the study conclusions, the
+The [manuscript](../reports/MANUSCRIPT.md) presents the study conclusions, the
 [evaluation guide](../EVALUATION.md) defines the statistical methods, and the
 [evidence index](../reports/README.md) catalogues the numerical records.
 Source data, split identities, and frozen experiment artifacts remain distinct

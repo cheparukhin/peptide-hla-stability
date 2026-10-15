@@ -1,10 +1,12 @@
 # Research results page
 
 The [public results page](https://cheparukhin.github.io/peptide-hla-stability/)
-concisely presents the [scientific report](../reports/REPORT.md), covering
-development ranking results, transfer, few-shot adaptation, and the limits of
-those findings. The report is the authoritative narrative, while saved CSV and
-JSON files provide the numerical evidence.
+is a concise visual overview of the [manuscript](../reports/MANUSCRIPT.md),
+covering development ranking results, transfer, few-shot adaptation, and the
+limits of those findings. The manuscript is the main scientific narrative, the
+[supplementary report](../reports/REPORT.md) provides supplementary scores,
+sensitivities, and historical benchmarks, and saved CSV and JSON files provide
+the numerical evidence.
 
 ## Build and verify
 

@@ -1,6 +1,6 @@
 # Statistical methods
 
-The [research report](reports/REPORT.md) presents the study findings, whereas this specification defines the underlying populations, endpoints, comparison protocols, and uncertainty estimates. It documents the completed assessments without introducing a new validation study or altering saved protocols, split assignments, or predictions.
+The [manuscript](reports/MANUSCRIPT.md) presents the study findings, whereas this specification defines the underlying populations, endpoints, comparison protocols, and uncertainty estimates. It documents the completed assessments without introducing a new validation study or altering saved protocols, split assignments, or predictions.
 
 The [track brief](Serova%20Protein%20Engineering%20Track%20Challenge.pdf) supplied the research question and dataset and recommended comparing existing foundation models against a supervised sequence baseline, without mandating a specific benchmark or providing data splits, prescribed evaluation metrics, or a numerical improvement target. Accordingly, the split assignments, eligibility criteria, endpoints, and comparison rules documented here constitute the study's evaluation design.
 

@@ -1,6 +1,6 @@
 # Documentation
 
-The [research report](../reports/REPORT.md) is the main account of scientific results, while the technical references below answer distinct questions:
+The [manuscript](../reports/MANUSCRIPT.md) is the main account of scientific results, while the technical references below answer distinct questions:
 
 | Document | Purpose |
 |---|---|

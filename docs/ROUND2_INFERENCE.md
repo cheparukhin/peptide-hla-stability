@@ -1,6 +1,6 @@
 # Cached-feature inference
 
-This package exports reusable **R4 ridge** and **R5 MLP** prediction heads that consume verified Boltz compact feature caches. It does not create features from a novel peptide/HLA sequence, call Boltz, produce structures, or run an MSA search; new-sequence inference still requires the separate pinned extraction workflow and its unmeasured new-case costs (see the [research report](../reports/REPORT.md)).
+This package exports reusable **R4 ridge** and **R5 MLP** prediction heads that consume verified Boltz compact feature caches. It does not create features from a novel peptide/HLA sequence, call Boltz, produce structures, or run an MSA search; new-sequence inference still requires the separate pinned extraction workflow and its unmeasured new-case costs (see the [manuscript](../reports/MANUSCRIPT.md)).
 
 The two demonstration recipes—`R4_ridge_100` (one fit) and `R5_mlp_0.01` (30 fits)—are explicitly locked development refits trained only on the original training partition. Neither recipe is selected from follow-up outer outcomes or designated a global winner. Because these exports do not reproduce the nested embedding selector, they do not inherit its reported 0.7212 score and carry no new held-out accuracy estimate.
 

@@ -1,8 +1,6 @@
 # Scientific results and supporting evidence
 
-The [scientific report](REPORT.md) is the main account of the results, with a concise [research summary](finalization/SUBMISSION_BRIEF.md). [Methods](../EVALUATION.md) defines the assessment and uncertainty, and [Data](../docs/DATASETS.md) describes the assay and populations.
-
-The [Manuscript draft](MANUSCRIPT.md) develops a paper narrative from completed assessments, and [Figure sources](manuscript/README.md) provide saved values and reproduction instructions. The scientific report remains the fuller study record.
+The [manuscript](MANUSCRIPT.md) is the primary scientific narrative, [Supplementary results](REPORT.md) compiles additional scores, sensitivities and historical benchmarks, and this page indexes the numerical source tables. [Methods](../EVALUATION.md) defines the assessment and uncertainty, [Data](../docs/DATASETS.md) describes the assay and populations, and [Figure sources](manuscript/README.md) provide saved values and reproduction instructions.
 
 ## Result tables
 
@@ -26,6 +24,6 @@ The separate three-primary interval files supersede the two-primary interval col
 
 ## Reproducibility sources
 
-CSV and JSON artifacts retain predictions, decisions, fitting ancestry and numerical evidence. The [protocol source bundle](protocol_sources.zip) preserves original documents needed to interpret or replay hash-bound experiment records, and its [manifest](protocol_sources.json) records the source commit and each member's SHA-256. These are immutable experimental sources; use the current report and Methods for the scientific interpretation.
+CSV and JSON artifacts retain predictions, decisions, fitting ancestry and numerical evidence. The [protocol source bundle](protocol_sources.zip) preserves original documents needed to interpret or replay hash-bound experiment records, and its [manifest](protocol_sources.json) records the source commit and each member's SHA-256. These are immutable experimental sources; use the manuscript and Methods for the scientific interpretation.
 
-[Development instructions](../docs/DEVELOPMENT.md) describe the code and source versions, and [Independent validation](finalization/INDEPENDENT_ASSAY_BRIEF.md) specifies the next experiment needed to test assay generalisation.
+[Development instructions](../docs/DEVELOPMENT.md) describe the code and source versions, and [Independent validation](finalization/INDEPENDENT_ASSAY_BRIEF.md) outlines one draft design for future validation to test assay generalisation.

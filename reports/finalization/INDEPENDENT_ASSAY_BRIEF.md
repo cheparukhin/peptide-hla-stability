@@ -5,7 +5,7 @@
 This proposed prospective design outlines how one locked Boltz-based predictor
 and one locked sequence reference could be compared on new kinetic measurements;
 it is not an externally required or finalized study. The primary question is
-whether the ranking advantage reported in the [development study](../REPORT.md)
+whether the ranking advantage reported in the [manuscript](../MANUSCRIPT.md)
 persists in an independent assay population. Neither model may be selected or
 calibrated using confirmation outcomes.
 
