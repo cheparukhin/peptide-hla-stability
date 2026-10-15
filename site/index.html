@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Boltz embeddings improve peptide–HLA stability ranking</title>
+<title>Boltz-2 features improve peptide–HLA stability ranking</title>
 <meta name="description" content="Frozen Boltz-2 representations improve peptide–HLA stability ranking in development assessments. Results, transfer comparisons, and the next independent test.">
 <link rel="canonical" href="https://cheparukhin.github.io/peptide-hla-stability/">
 <style>
@@ -14,13 +14,13 @@ body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.7 -apple
 main { max-width:1040px; margin:auto; padding:0 44px; }
 a { color:var(--accent); text-underline-offset:3px; }
 a:hover { text-decoration-thickness:2px; }
-a:focus-visible,[tabindex]:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+a:focus-visible,summary:focus-visible,[tabindex]:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
 .skip { position:absolute; top:-100px; padding:10px; background:white; }.skip:focus { top:0; }
 p { margin:0 0 1rem; } p:last-child { margin-bottom:0; }
 h1,h2 { font-family:Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.024em; }
-h1 { font-size:clamp(2.4rem,5.8vw,4.2rem); line-height:1.12; max-width:22ch; margin:0 0 1.5rem; }
+h1 { font-size:clamp(2.15rem,5.2vw,3.65rem); line-height:1.12; max-width:26ch; margin:0 0 1.5rem; }
 h2 { font-size:clamp(1.6rem,3.2vw,2.25rem); line-height:1.25; max-width:35ch; margin:0 0 1.25rem; }
-.masthead { padding:70px 0 32px; border-bottom:1px solid var(--ink); }
+.masthead { padding:44px 0 32px; border-bottom:1px solid var(--ink); }
 .eyebrow { text-transform:uppercase; letter-spacing:.14em; color:var(--accent); font-size:.69rem; font-weight:650; margin-bottom:1.1rem; }
 .standfirst { font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.15rem,2.2vw,1.45rem); line-height:1.6; max-width:65ch; color:var(--muted); }
 nav { display:flex; flex-wrap:wrap; gap:9px 25px; margin-top:30px; font-size:.83rem; }
@@ -44,9 +44,16 @@ thead th { border-block:1px solid var(--ink); font-weight:600; }
 tbody th { font-weight:500; }tbody th span { display:block; font-size:.72rem; color:var(--muted); }
 figure { margin:27px 0 20px; }figure img { display:block; width:100%; height:auto; background:#fff; }
 figcaption { font-size:.78rem; color:var(--muted); line-height:1.6; margin-top:14px; }
+details { margin-top:24px; border-top:1px solid var(--line); padding-top:14px; }
+summary { cursor:pointer; color:var(--accent); font-size:.87rem; font-weight:600; }
+summary::marker { color:var(--accent); }
+.detail-content { margin-top:18px; font-size:.92rem; }
+.detail-content>p { max-width:83ch; }
+.compact-table th:first-child { min-width:0; width:58%; }
+.compact-table td { font-size:1.05rem; font-weight:600; }
 .source { font-size:.77rem; color:var(--muted); margin-top:22px; }.discussion { padding-bottom:42px; }
 footer { padding:29px 0 45px; font-size:.78rem; color:var(--muted); }footer p { margin-bottom:8px; }
-@media(max-width:640px) { main { padding:0 22px; } .masthead { padding-top:40px; } section { padding:34px 0; } .main-result { grid-template-columns:1fr; gap:15px; padding:22px; }.cohort { gap:10px; }.cohort dt { font-size:.65rem; }.cohort dd { font-size:1.7rem; }.table-scroll { margin-inline:-6px; padding-inline:6px; }.effect { font-size:2.8rem; } }
+@media(max-width:640px) { main { padding:0 22px; } .masthead { padding-top:30px; } section { padding:34px 0; } .main-result { grid-template-columns:1fr; gap:15px; padding:22px; }.cohort { gap:10px; }.cohort dt { font-size:.65rem; }.cohort dd { font-size:1.7rem; }.table-scroll { margin-inline:-6px; padding-inline:6px; }.effect { font-size:2.8rem; } }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 @media print { main { max-width:none; padding:0; } .masthead { padding-top:0; } nav,.source,footer { display:none; } section { break-inside:avoid; padding:20px 0; }.main-result { background:transparent; border:1px solid var(--line); }body { font-size:11pt; }h1 { font-size:30pt; }h2 { font-size:20pt; } }
 </style>
@@ -55,61 +62,73 @@ footer { padding:29px 0 45px; font-size:.78rem; color:var(--muted); }footer p { 
 <a class="skip" href="#results">Skip to results</a>
 <main>
 <!-- ROUND2 GENERATED START -->
-<header class="masthead">
+<header class="masthead" id="results">
   <p class="eyebrow">Peptide–HLA stability · Research findings</p>
-  <h1>Boltz embeddings improve peptide–HLA stability ranking</h1>
-  <p class="standfirst">Boltz-2 features improve within-allele ranking of peptide–HLA complex stability in development assessments and across held-out HLA groups. Adding twenty measurements per target allele further improves adaptation. Independent kinetic measurements are needed to test these findings.</p>
-  <nav aria-label="Research navigation"><a href="#results">Results</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#interpretation">Interpretation</a><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/MANUSCRIPT.md">Manuscript ↗</a></nav>
+  <h1>Boltz-2 features improve peptide–HLA stability ranking</h1>
+  <p class="standfirst">Can representations from a structure model improve peptide–HLA stability prediction? We fit lightweight supervised predictors to frozen Boltz-2 residue-pair features and compare them against sequence models for ranking measured complex stability within HLA alleles.</p>
+  <div class="main-result"><div><p class="metric-label">Paired difference in median within-allele Spearman</p><p class="effect">+0.0543</p><p class="uncertainty">Conditional 95% interval [+0.0314, +0.0808]</p></div>
+  <div class="score-pair"><p><span>Competitive sequence selector</span><strong>0.6668</strong></p><p><span>Boltz-feature selector</span><strong>0.7212</strong></p></div></div>
+  <p>Within-allele Spearman correlation measures agreement with measured peptide stability ordering for each HLA allele. Across 19,716 development pairs and 69 eligible alleles, nested cross-validation selects procedures on inner folds and evaluates held-out peptide clusters. Per-allele scores are higher in 60 of 69 alleles and lower in 9. Results come from one existing assay cohort; independent kinetic validation is still needed.</p>
+  <nav aria-label="Research navigation"><a href="#question">Approach</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#interpretation">Interpretation</a><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/MANUSCRIPT.md">Manuscript ↗</a></nav>
 </header>
 <section class="abstract" aria-labelledby="question">
-  <h2 id="question">Can representations from a structure model predict complex stability?</h2>
-  <p>Class I human leukocyte antigen (HLA) molecules display intracellular peptides on the cell surface for T-cell recognition. How long a peptide–HLA complex remains intact influences antigen presentation. Ordering candidate peptides by measured stability within each allele therefore complements binding-affinity prediction.</p>
-  <p>The trunk is Boltz-2's main processing stage. Its embeddings are numerical features describing individual residues and residue pairs in context. We test whether these frozen features improve peptide stability ranking, measured by median within-allele Spearman correlation.</p>
+  <h2 id="question">Biological context and modelling approach</h2>
+  <p>Class I human leukocyte antigen (HLA) molecules present intracellular peptides on the cell surface for T-cell recognition. How long a peptide–HLA complex remains intact influences antigen presentation. Using existing assay data, we train small supervised predictors on internal residue-pair features extracted from frozen Boltz-2.</p>
   <dl class="cohort"><div><dt>Development pairs</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div><div><dt>Eligible HLA alleles</dt><dd>69</dd></div></dl>
-  <p class="note">The development cohort comes from the original training split and spans 75 HLA allele/construct labels. Of these, 69 are eligible—having both at least 20 rows and varying labels—and receive equal weight in the primary endpoint. Nested cross-validation separates held-out peptide clusters from model fitting and selection.</p>
-</section>
-<section id="results" aria-labelledby="results-title">
-  <p class="eyebrow">01 · Peptide-cluster holdout</p>
-  <h2 id="results-title">Embeddings improve ranking over competitive sequence models</h2>
-  <div class="main-result"><div><p class="metric-label">Paired improvement in Spearman</p><p class="effect">+0.0543</p><p class="uncertainty">Conditional 95% interval [+0.0314, +0.0808]</p></div>
-  <div class="score-pair"><p><span>Embedding selector</span><strong>0.7212</strong></p><p><span>Sequence selector</span><strong>0.6668</strong></p></div></div>
-  <p>For unseen peptide clusters on known alleles, the prespecified embedding selector—defined as inner-selected frozen-feature procedures with the original sequence ensemble as fallback—outperforms the competitive sequence selector across the 69 eligible alleles on the development panel. The conditional interval supports a within-allele ranking gain from Boltz-2 trunk representations.</p>
-  <p>Retaining position-aware token features improves ranking over pooling the same underlying tokens, cleanly supporting positional indexing. While the full 9×34 interface representation also outperforms contact-restricted pooled pairs, this comparison changes both groove coverage and positional resolution jointly rather than isolating a positional effect. Separately, pooling over a crystal-derived peptide–HLA contact mask offers no established advantage over shuffled residue-pair membership (+0.0007 [−0.0096, +0.0236]). The positive performance comparisons show that the learned representations carry predictive signal without establishing a specific physical contact mechanism behind the gain.</p>
-  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Paired results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/pooled_scores.csv">All procedure scores</a></p>
+  <p>Residue-pair features outperform tested chain averages and projected residue summaries, though compact pooled pair readouts also perform strongly.</p>
+  <details><summary>Cohort eligibility, nested selection, and representation controls</summary><div class="detail-content">
+<p class="note">The development cohort comes from the original training split and spans 75 HLA allele/construct labels. Of these, 69 are eligible—having both at least 20 rows and varying labels—and receive equal weight in the primary endpoint. Nested cross-validation separates held-out peptide clusters from model fitting and selection.</p>
+<p>For unseen peptide clusters on known alleles, the prespecified embedding selector—defined as inner-selected frozen-feature procedures with the original sequence ensemble as fallback—outperforms the competitive sequence selector across the 69 eligible alleles on the development panel. The conditional interval supports a within-allele ranking gain from Boltz-2 trunk representations.</p>
+<p>Retaining position-aware token features improves ranking over pooling the same underlying tokens, cleanly supporting positional indexing. While the full 9×34 interface representation also outperforms contact-restricted pooled pairs, this comparison changes both groove coverage and positional resolution jointly rather than isolating a positional effect. Separately, pooling over a crystal-derived peptide–HLA contact mask offers no established advantage over shuffled residue-pair membership (+0.0007 [−0.0096, +0.0236]). The positive performance comparisons show that the learned representations carry predictive signal without establishing a specific physical contact mechanism behind the gain.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Paired results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/pooled_scores.csv">All procedure scores</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/manuscript/figure2_data.json">Saved per-allele results</a></p>
+  </div></details>
 </section>
 <section id="transfer" aria-labelledby="transfer-title">
-  <p class="eyebrow">02 · Held-out HLA groups</p>
-  <h2 id="transfer-title">The advantage persists when target HLA groups are excluded from fitting</h2>
-  <p>Generalizing across HLA groups requires predicting stability for alleles excluded from supervised training. Two comparisons test transfer under HLA-group holdout and under joint holdout of both target HLA groups and target peptide clusters: matched multilayer perceptrons (MLPs) comparing sequence against Boltz features, and a broader comparison between selected sequence and embedding procedures.</p>
-  <div class="table-scroll" role="region" aria-label="Transfer results" tabindex="0"><table><caption>Median within-allele Spearman · 69 alleles · conditional crossed 95% intervals</caption><thead><tr><th scope="col">Held out / comparison</th><th scope="col">Sequence</th><th scope="col">Embedding</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">HLA group<span>Matched MLPs</span></th><td>0.1605</td><td>0.5667</td><td>+0.4062 [+0.3073, +0.4733]</td></tr>
+  <p class="eyebrow">01 · Held-out HLA groups</p>
+  <h2 id="transfer-title">Ranking advantage transfers across held-out HLA groups</h2>
+  <p>We compare sequence and Boltz-2 inputs using the same nominal multilayer perceptron (MLP) architecture while excluding related HLA allele groups from supervised fitting, testing HLA-group holdout alone and jointly with peptide clusters.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Matched-MLP transfer comparison across held-out HLA regimes" tabindex="0"><table><caption>Median within-allele Spearman correlation across 69 alleles for matched MLPs</caption><thead><tr><th scope="col">Holdout regime</th><th scope="col">Sequence</th><th scope="col">Boltz-2 features</th></tr></thead><tbody><tr><th scope="row">HLA group</th><td>0.1605</td><td>0.5667</td></tr>
+<tr><th scope="row">HLA group + peptide cluster</th><td>0.1242</td><td>0.4980</td></tr></tbody></table></div>
+  <details><summary>Expanded sequence baselines, confidence intervals, and pretraining scope</summary><div class="detail-content">
+<div class="table-scroll" role="region" aria-label="Transfer results" tabindex="0"><table><caption>Median within-allele Spearman · 69 alleles · conditional crossed 95% intervals</caption><thead><tr><th scope="col">Held out / comparison</th><th scope="col">Sequence</th><th scope="col">Embedding</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">HLA group<span>Matched MLPs</span></th><td>0.1605</td><td>0.5667</td><td>+0.4062 [+0.3073, +0.4733]</td></tr>
 <tr><th scope="row">HLA group<span>Embedding vs expanded sequence selector</span></th><td>0.1921</td><td>0.5463</td><td>+0.3542 [+0.2762, +0.4563]</td></tr>
 <tr><th scope="row">HLA group + peptide cluster<span>Matched MLPs</span></th><td>0.1242</td><td>0.4980</td><td>+0.3738 [+0.3092, +0.4638]</td></tr>
 <tr><th scope="row">HLA group + peptide cluster<span>Embedding vs expanded sequence selector</span></th><td>0.1085</td><td>0.5067</td><td>+0.3982 [+0.3143, +0.4613]</td></tr></tbody></table></div>
-  <p class="note">Matched nonlinear MLPs provide the headline architectural comparison because an additive sequence-ridge model cannot express allele-specific peptide preferences across alleles. The original 30-member sequence ensemble scores 0.1709 under HLA holdout and 0.1350 under joint holdout; expanding sequence selection does not consistently improve this reference. Because Boltz-2 brings broader molecular context and prior structural training, holding out HLA groups from supervised fitting does not establish structural novelty during pretraining.</p>
+<p class="note">Matched nonlinear MLPs provide the headline architectural comparison because an additive sequence-ridge model cannot express allele-specific peptide preferences across alleles. The original 30-member sequence ensemble scores 0.1709 under HLA holdout and 0.1350 under joint holdout; expanding sequence selection does not consistently improve this reference. Because Boltz-2 brings broader molecular context and prior structural training, holding out HLA groups from supervised fitting does not establish structural novelty during pretraining.</p>
   <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/comparisons.csv">All transfer comparisons</a></p>
+  </div></details>
 </section>
 <section id="adaptation" aria-labelledby="adaptation-title">
-  <p class="eyebrow">03 · Few-shot adaptation</p>
-  <h2 id="adaptation-title">Twenty measurements per target allele improve transfer</h2>
-  <p>When a target HLA allele has limited experimental data, few-shot adaptation can adjust source predictions using a small support set of existing labels. Under strict joint holdout across 68 target alleles, adapting a Boltz-feature ridge model (R5) raises mean design-specific median within-allele Spearman correlation from <strong>0.5296</strong> without target labels to <strong>0.5763</strong> with 20 existing labels per allele, a paired improvement of <strong>+0.0468</strong> (98.33% three-primary Bonferroni family interval <strong>[+0.0140, +0.1195]</strong>). In this separate retrospective ridge study, query identities are fixed across label budgets within each of three support designs (not identical across all three designs), and the intersection of eligible allele labels across designs gives 68 alleles. Because its source/query exclusions differ from the 69-allele MLP transfer benchmark, these scores are not a matched cross-study comparison.</p>
-  <figure><img src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="Learning curves for sequence and Boltz representations, with the positive family-adjusted interval for Boltz adaptation at twenty labels."><figcaption>Scores average three fixed support-set sampling designs across 68 target alleles. Support and query peptide families are excluded from source-model fitting. R0 is additive sequence ridge, and R5 uses Boltz features. The four-member sequence ensemble is a reduced reference comparator, not the fully tuned sequence selector. The interval at 20 labels conditions on these three fixed support designs. Curve uncertainty bands are not estimated.</figcaption></figure>
-  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/absolute_curves.csv">Exact learning curves</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/primary_family3_interval.json">Primary family interval</a> · <a href="figures/fewshot_curves.svg">Download figure</a></p>
+  <p class="eyebrow">02 · Few-shot adaptation</p>
+  <h2 id="adaptation-title">Twenty existing labels per target allele improve transfer</h2>
+  <p>In a separate retrospective linear ridge study across 68 eligible alleles, adding 20 existing labels per target allele adapts frozen Boltz-feature source predictions under joint HLA-group and peptide-cluster holdout. Because the ridge head and query panel differ from the MLP transfer benchmark, scores are not directly comparable.</p>
+  <div class="main-result"><div><p class="metric-label">Paired gain from 20 target-allele labels</p><p class="effect">+0.0468</p><p class="uncertainty">Conditional 98.33% family-adjusted interval [+0.0140, +0.1195]</p></div>
+  <div class="score-pair"><p><span>0 target-allele labels</span><strong>0.5296</strong></p><p><span>20 target-allele labels</span><strong>0.5763</strong></p></div></div>
+  <details><summary>Learning curves, support-query design, and allele eligibility</summary><div class="detail-content">
+<p>In this separate retrospective ridge study, query identities are fixed across label budgets within each of three support designs (not identical across all three designs), and the intersection of eligible allele labels across designs gives 68 alleles. Because its source/query exclusions differ from the 69-allele MLP transfer benchmark, these scores are not a matched cross-study comparison.</p>
+<figure><img src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="Learning curves for sequence and Boltz representations, with the positive family-adjusted interval for Boltz adaptation at twenty labels."><figcaption>Scores average three fixed support-set sampling designs across 68 target alleles. Support and query peptide families are excluded from source-model fitting. R0 is additive sequence ridge, and R5 uses Boltz features. The four-member sequence ensemble is a reduced reference comparator, not the fully tuned sequence selector. The interval at 20 labels conditions on these three fixed support designs. Curve uncertainty bands are not estimated.</figcaption></figure>
+<p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/absolute_curves.csv">Exact learning curves</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/primary_family3_interval.json">Primary family interval</a> · <a href="figures/fewshot_curves.svg">Download figure</a></p>
+  </div></details>
 </section>
 <section id="extensions" aria-labelledby="extensions-title">
-  <p class="eyebrow">04 · Additional descriptors and learners</p>
-  <h2 id="extensions-title">Added complexity has no established benefit beyond Boltz</h2>
-  <p>We next test whether supplementing frozen Boltz trunk embeddings with explicit inverse-folding likelihoods or physical energy terms adds predictive signal. On an identity-selected, allele-balanced 4,449-pair panel (at most 64 rows per allele, with 69 scoring alleles eligible under at least 20 rows and varying labels), matched two-member MLPs evaluate two augmentations: adding complex-context ProteinMPNN scores (C) to a reference of Boltz plus peptide-only ProteinMPNN scores (Boltz+P), and adding repaired FoldX energy descriptors to Boltz features alone. The full-cohort extension described next evaluates a different contrast (R5+P+C versus R5) rather than a sample-size change alone.</p>
+  <p class="eyebrow">03 · Additional descriptors and learners</p>
+  <h2 id="extensions-title">Tested descriptors and learners show no established extra gain</h2>
+  <p>Adding ProteinMPNN inverse-folding scores, FoldX energy terms, pairwise ranking losses, or hybrid learners showed no established extra benefit beyond Boltz-2 features in tested comparisons. Confidence intervals span zero, which neither establishes equivalence nor rules out useful effects.</p>
+  <details><summary>ProteinMPNN, FoldX, ranking-loss, and hybrid-learner comparisons</summary><div class="detail-content">
+<p>We next test whether supplementing frozen Boltz trunk embeddings with explicit inverse-folding likelihoods or physical energy terms adds predictive signal. On an identity-selected, allele-balanced 4,449-pair panel (at most 64 rows per allele, with 69 scoring alleles eligible under at least 20 rows and varying labels), matched two-member MLPs evaluate two augmentations: adding complex-context ProteinMPNN scores (C) to a reference of Boltz plus peptide-only ProteinMPNN scores (Boltz+P), and adding repaired FoldX energy descriptors to Boltz features alone. The full-cohort extension described next evaluates a different contrast (R5+P+C versus R5) rather than a sample-size change alone.</p>
   <div class="table-scroll" role="region" aria-label="Descriptor results" tabindex="0"><table><caption>Matched MLPs · 69 alleles · conditional 98.33% family intervals</caption><thead><tr><th scope="col">Added information</th><th scope="col">Reference</th><th scope="col">Augmented</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">ProteinMPNN complex context</th><td>0.5956</td><td>0.6195</td><td>+0.0240 [−0.0219, +0.0659]</td></tr>
 <tr><th scope="row">Repaired FoldX descriptors</th><td>0.6007</td><td>0.6157</td><td>+0.0150 [−0.0524, +0.0450]</td></tr></tbody></table></div>
   <p>A post-hoc extension of the ProteinMPNN comparison to all 19,716 development pairs, selected after the subset analysis, yields −0.0070 [−0.0220, +0.0131] relative to Boltz alone (pointwise 95% interval). Alternative pairwise ranking losses (+0.0071 [−0.0051, +0.0098]) and hybrid learners (+0.0044 [−0.0055, +0.0100]) also yield intervals spanning zero. Because such intervals remain compatible with small effects, these experiments establish neither added benefit nor equivalence.</p>
   <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/comparisons.csv">ProteinMPNN</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/comparisons.csv">FoldX</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/comparisons.csv">Full-cohort extension</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/comparisons.csv">Ranking loss</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/comparisons.csv">Hybrid learners</a></p>
+  </div></details>
 </section>
 <section id="interpretation" class="discussion" aria-labelledby="interpretation-title">
   <p class="eyebrow">Interpretation</p>
-  <h2 id="interpretation-title">A useful development result; independent measurements must test generalisation</h2>
-  <p>The evidence supports improved within-allele stability ranking inside this development corpus, but does not establish calibrated physical half-lives, immunogenicity prediction, or experimental screening savings. The underlying assay measures β2-microglobulin dissociation as a stability proxy, and zero-valued summary records may reflect censoring or measurement limitations that aggregated labels cannot resolve.</p>
-  <p>All confidence intervals resample saved out-of-fold predictions while holding fitted models and selection choices fixed, using peptide-cluster resampling for peptide holdout and crossed HLA-group by peptide-cluster resampling for transfer and adaptation. These conditional intervals omit variance from refitting models, collecting new measurements, and selecting follow-up studies adaptively. One three-comparison family spans 20-label R5 adaptation, ProteinMPNN complex context beyond peptide-only, and FoldX augmentation; the 98.33% intervals correct only that declared family, not project-wide exploration.</p>
-  <p>The decisive next experiment is an independent, blinded kinetic-assay panel evaluated with frozen models and a prespecified analysis plan. Retaining raw dissociation curves and experimental replicates is needed to distinguish rapid decay from censoring or assay failure, providing the independent confirmation that development-split evaluation cannot supply.</p>
+  <h2 id="interpretation-title">Scope of evidence and next decisive experimental test</h2>
+  <p>All evaluations rely on one existing scintillation proximity assay that tracks β2-microglobulin dissociation as a stability proxy and contains unresolved zero-valued labels. The models rank recorded stability rather than predicting calibrated half-lives or immunogenicity. The decisive next test is independent, blinded kinetic measurement using frozen models and raw replicate dissociation curves.</p>
+  <details><summary>Conditional resampling intervals and three-comparison family adjustment</summary><div class="detail-content">
+<p>All confidence intervals resample saved out-of-fold predictions while holding fitted models and selection choices fixed, using peptide-cluster resampling for peptide holdout and crossed HLA-group by peptide-cluster resampling for transfer and adaptation. These conditional intervals omit variance from refitting models, collecting new measurements, and selecting follow-up studies adaptively. One three-comparison family spans 20-label R5 adaptation, ProteinMPNN complex context beyond peptide-only, and FoldX augmentation; the 98.33% intervals correct only that declared family, not project-wide exploration.</p>
+  </div></details>
 </section>
 <footer><p>For related context, see the supplementary results on <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons">earlier sequence baselines</a> and <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation">ligand presentation</a>.</p><p><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/MANUSCRIPT.md">Manuscript</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md">Supplementary results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/EVALUATION.md">Evaluation methods</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/DATASETS.md">Dataset and assay</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/ROUND2_INFERENCE.md">Use the released models</a></p><p><a href="round2-data.json">Source values and hashes</a> · <a href="intro/">Peptide–HLA biology animation</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability">Code and evidence</a></p></footer>
 <!-- ROUND2 GENERATED END -->

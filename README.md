@@ -1,20 +1,24 @@
-# Predicting peptide–HLA stability
+# Frozen Boltz-2 pair features improve peptide–HLA stability ranking
 
 **logic binders · London AI × Science · Protein Engineering Track**
 
-Peptide–HLA class I complexes must persist at the cell surface to be available for T-cell recognition, although complex persistence alone does not guarantee a T-cell response. Kinetic stability—how long an assembled complex remains intact—is distinct from equilibrium binding affinity. We ask whether internal features from the frozen Boltz-2 structure-prediction model improve the stability ranking of nine-residue peptides over sequence-only predictors.
+Human leukocyte antigen (HLA) class I proteins present short peptides at the cell surface for T-cell recognition. Kinetic stability—how long an assembled complex remains intact—differs from equilibrium affinity and shapes cell-surface persistence. Focusing on nine-residue peptides, we compare small supervised predictors using frozen Boltz-2 residue-pair features against sequence models for stability ranking.
 
-On 19,716 development pairs, the Boltz-2 interface-feature embedding selector outperformed the competitive sequence selector when assessed by nested cross-validation—which separates model selection from held-out assessment—increasing median within-allele Spearman correlation from **0.6668** to **0.7212** (**+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). This supports improved ranking in this development assessment, though independent kinetic validation is still needed.
+Across **19,716** development pairs and **69** eligible alleles, our Boltz-2 pair-feature selector raised median within-allele Spearman correlation from **0.6668** (competitive sequence selection) to **0.7212** (paired difference **+0.0543**, conditional 95% interval **[+0.0314, +0.0808]**). Under nested cross-validation, inner folds selected models while held-out peptide clusters were assessed separately; Spearman measures agreement with measured ordering within each allele, not calibrated half-life.
 
-## Supporting development findings
+## Supporting results
 
-Before generating 3D atomic coordinates, the frozen Boltz-2 model computes internal representations that capture pairwise relationships between peptide positions and residues lining the HLA binding groove. Evaluating these learned features across controlled development splits yielded three supporting findings:
+Using matched nonlinear predictors (MLPs) across 69 alleles, Boltz-2 pair features generalized better than sequence inputs when related HLA groups were excluded from supervised fitting:
 
-- **Peptide–groove pair representations improve ranking.** In the matched-MLP ladder, frozen Boltz-2 pair features outperformed tested chain-average and projected-token summaries. Preserving token positions outperformed pooling the same tokens, and full peptide–groove pair features outperformed a pooled control changing both groove coverage and positional resolution. Separately, the crystal contact mask had no established advantage over shuffled contact membership, isolating no specific physical mechanism.
-- **Interface representations transfer across held-out HLA allele groups.** When groups of closely related HLA binding grooves are held out during 69-allele development cross-validation, a matched nonlinear predictor trained on sequence inputs achieves a median within-allele Spearman correlation of **0.1605**, compared with **0.5667** using Boltz-2 interface features. Under simultaneous holdout of peptide clusters and HLA groups, correlation is **0.1242** for sequence inputs versus **0.4980** for interface features.
-- **Few-shot adaptation improves retrospective ridge readouts on held-out alleles.** In a separate retrospective ridge assessment with a fixed 68-allele query panel under joint peptide and HLA holdout, adapting a linear readout on frozen Boltz-2 interface features using **20 existing labels per allele** improves median within-allele correlation from **0.5296 to 0.5763**; different source models and query exclusions make this not directly comparable with the transfer result.
+| Supervised holdout (69 alleles, matched MLPs) | Sequence MLP | Boltz-2 pair MLP |
+| :--- | :---: | :---: |
+| HLA-group holdout | 0.1605 | **0.5667** |
+| Joint HLA-group/peptide-cluster holdout | 0.1242 | **0.4980** |
 
-All comparisons above are development assessments on existing scintillation proximity assay measurements. They evaluate relative peptide ranking within alleles and do not establish physical mechanisms, calibrated dissociation half-lives, or performance on independent experimental assays.
+- **Few-shot adaptation:** In a separate retrospective linear ridge study across 68 alleles under joint holdout, using **20** existing target labels per allele raised the median within-allele Spearman correlation from **0.5296** to **0.5763**, averaged over 3 fixed support-set designs. This evaluation uses a different model and query panel than the transfer comparison.
+- **Representations and extensions:** Learned pair features outperformed tested chain-average and residue-feature summaries, whereas extra ProteinMPNN/FoldX descriptors and ranking/hybrid heads had no established added benefit.
+
+These retrospective development assessments of one existing assay cohort rank stability measurements rather than calibrated physical half-lives or immunogenicity; independent kinetic validation remains needed.
 
 ## Repository guide
 
