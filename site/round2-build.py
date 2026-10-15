@@ -364,6 +364,22 @@ def build():
     if any(not row['ci_low'] < 0 < row['ci_high'] for row in (ranking, hybrid)):
         raise ValueError('Ranking or hybrid conclusion requires revision')
 
+    budget_base = 'reports/finalization/label_efficiency/'
+    budget_curves = [r for r in read_path(budget_base + 'absolute_curves.csv', 'csv')
+                     if r['min_rows'] == '20']
+    budget_scores = {fraction: {rep: float(one(budget_curves,
+        fraction=fraction, representation=rep)['mean_score']) for rep in ('R0', 'R5')}
+        for fraction in ('25', '100')}
+    budget_contrast = checked_interval(one(read_path(budget_base + 'comparisons.csv', 'csv'),
+        role='primary', fraction=25, min_rows=20))
+    advantage_change = ((budget_scores['25']['R5'] - budget_scores['25']['R0'])
+                        - (budget_scores['100']['R5'] - budget_scores['100']['R0']))
+    if (not math.isclose(advantage_change, budget_contrast['delta'], abs_tol=1e-12)
+            or budget_contrast['ci_low'] <= 0
+            or any(int(one(budget_curves, fraction=fraction, representation=rep)['n_subset_draws']) != draws
+                   for fraction, draws in [('25', 3), ('100', 1)] for rep in ('R0', 'R5'))
+            or any(not -1 <= score <= 1 for scores in budget_scores.values() for score in scores.values())):
+        raise ValueError('Training-label budget interpretation requires revision')
     elution = elution_evidence()
 
     transfer_html = '\n'.join(f'<tr><th scope="row">{r["holdout"]}<span>{r["comparison"]}</span></th><td>{fmt(r["baseline_score"])}</td><td>{fmt(r["candidate_score"])}</td><td>{interval(r)}</td></tr>' for r in transfer_rows)
@@ -383,13 +399,15 @@ def build():
   <h2 id="question">Biological context and modelling approach</h2>
   <p>Class I human leukocyte antigen (HLA) molecules present intracellular peptides on the cell surface for T-cell recognition. How long a peptide–HLA complex remains intact influences antigen presentation. Using existing assay data, we train small supervised predictors on internal residue-pair features extracted from frozen Boltz-2.</p>
   <dl class="cohort"><div><dt>Development pairs</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div><div><dt>Eligible HLA alleles</dt><dd>69</dd></div></dl>
-  <p>Residue-pair features outperform tested chain averages and projected residue summaries, though compact pooled pair readouts also perform strongly.</p>
+  <p>Residue-pair features outperform tested chain averages and projected token summaries in matched MLPs. Under separate assessments, an ESM-2 model and an implemented coordinate-and-confidence pipeline did not establish an advantage over their sequence baselines. {path_link('reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons', 'Earlier representation comparisons')}</p>
   <details><summary>Cohort eligibility, nested selection, and representation controls</summary><div class="detail-content">
 <p class="note">The development cohort comes from the original training split and spans 75 HLA allele/construct labels. Of these, 69 are eligible—having both at least 20 rows and varying labels—and receive equal weight in the primary endpoint. Nested cross-validation separates held-out peptide clusters from model fitting and selection.</p>
 <p>For unseen peptide clusters on known alleles, the prespecified embedding selector—defined as inner-selected frozen-feature procedures with the original sequence ensemble as fallback—outperforms the competitive sequence selector across the 69 eligible alleles on the development panel. The conditional interval supports a within-allele ranking gain from Boltz-2 trunk representations.</p>
 <p>Retaining position-aware token features improves ranking over pooling the same underlying tokens, cleanly supporting positional indexing. While the full 9×34 interface representation also outperforms contact-restricted pooled pairs, this comparison changes both groove coverage and positional resolution jointly rather than isolating a positional effect. Separately, pooling over a crystal-derived peptide–HLA contact mask offers no established advantage over shuffled residue-pair membership ({interval(contact)}). The positive performance comparisons show that the learned representations carry predictive signal without establishing a specific physical contact mechanism behind the gain.</p>
   <p class="source">{path_link(main_path, 'Paired results')} · {path_link(BASE + 'results/main/pooled_scores.csv', 'All procedure scores')} · {path_link('reports/manuscript/figure2_data.json', 'Saved per-allele results')}</p>
   </div></details>
+  <h3>Training-label budgets</h3>
+  <p>In a separate fixed two-member MLP study at 25% fitting clusters, the budget covers fitting and stopping labels. Across three fixed subsets, pair features average {fmt(budget_scores['25']['R5'])} median within-allele Spearman versus {fmt(budget_scores['25']['R0'])} for sequence. Because this sequence reference is weaker than the primary competitive selector, the result supports retrospective robustness to fewer labels, not measured prospective assay savings. {path_link('reports/REPORT.md#training-label-budgets', 'Training-label budget details')}</p>
 </section>
 <section id="transfer" aria-labelledby="transfer-title">
   <p class="eyebrow">01 · Held-out HLA groups</p>
@@ -453,7 +471,9 @@ def build():
                'allele_summary': {key: allele[key] for key in ('n_alleles', 'higher', 'lower', 'ties')},
                'transfer': transfer_rows, 'transfer_original_reference': transfer_original, 'fewshot': {'primary': few, 'family_interval': few_family, 'curves': curves},
                'descriptor_comparisons': descriptor_rows, 'full_cohort': full,
-               'ranking': ranking, 'hybrid': hybrid, 'sequence_elution': elution, 'source_sha256': dict(sorted(SOURCES.items()))}
+               'ranking': ranking, 'hybrid': hybrid, 'sequence_elution': elution,
+               'training_label_budget': {'curves': budget_curves, 'advantage_change_25_vs_100': budget_contrast},
+               'source_sha256': dict(sorted(SOURCES.items()))}
     return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + '\n'
 
 

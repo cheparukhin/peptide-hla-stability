@@ -1227,9 +1227,79 @@
       }
     }
   },
+  "training_label_budget": {
+    "curves": [
+      {
+        "min_rows": "20",
+        "fraction": "25",
+        "representation": "R0",
+        "mean_score": "0.26398917848498693",
+        "ci_low": "0.24346632335008495",
+        "ci_high": "0.28965773499029923",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "25",
+        "representation": "R5",
+        "mean_score": "0.5877122067686175",
+        "ci_low": "0.572273951087284",
+        "ci_high": "0.612078577299146",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "50",
+        "representation": "R0",
+        "mean_score": "0.4010496267616687",
+        "ci_low": "0.37640241933149937",
+        "ci_high": "0.4260769091694735",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "50",
+        "representation": "R5",
+        "mean_score": "0.6504165059657729",
+        "ci_low": "0.6313067214944016",
+        "ci_high": "0.6690913041954939",
+        "n_subset_draws": "3"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "100",
+        "representation": "R0",
+        "mean_score": "0.5372917624614432",
+        "ci_low": "0.5109935352557833",
+        "ci_high": "0.5678370530659691",
+        "n_subset_draws": "1"
+      },
+      {
+        "min_rows": "20",
+        "fraction": "100",
+        "representation": "R5",
+        "mean_score": "0.699478388239031",
+        "ci_low": "0.6756850376297431",
+        "ci_high": "0.7173879265677718",
+        "n_subset_draws": "1"
+      }
+    ],
+    "advantage_change_25_vs_100": {
+      "role": "primary",
+      "fraction": "25",
+      "min_rows": "20",
+      "delta": 0.16153640250604268,
+      "ci_low": 0.13332145858099087,
+      "ci_high": 0.20414174294783105,
+      "bootstrap_mean_minus_point": "0.007180198069863392",
+      "conditional_on_fixed_fits_and_subsets": "True"
+    }
+  },
   "source_sha256": {
     "reports/finalization/hybrids_cloud_v1/comparisons.csv": "766197207dd5c439f42859e0bb60b6bb9cf1ee5dea56e7e04dd9a30c172636ec",
     "reports/finalization/hybrids_cloud_v1/coverage_audit.json": "5c4258590d98343e0d172d3ff9ed57187ec0d92c0bb5f0248a9d96c154f5d16f",
+    "reports/finalization/label_efficiency/absolute_curves.csv": "520026f8261191a705ec1487365eeee158037ed4d04e1c04948b66abc7df6470",
+    "reports/finalization/label_efficiency/comparisons.csv": "0c13b87c4113b1f2a194cf719480eb5c96fcea6beb876b17cc0d357e32431396",
     "reports/finalization/ranking/comparisons.csv": "0a27b5d7c705cd2db489eef9fbb3cf24f78623b7fb9f8c2b05212b6317ae480b",
     "reports/finalization/ranking/completion_audit.json": "a163faa9ae6d73767febe96f7a6c36ad2612df6f8544cb2cdbe0e650cb56e8b2",
     "reports/finalization/transfer_cloud_recovery/results/comparisons.csv": "91c030233385f6f90819fe99edf49490c6bef7b828c447250286fbb753da125c",

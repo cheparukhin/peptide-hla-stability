@@ -19,6 +19,11 @@ Each assessment has its own population, comparator and fitting procedure, so sco
 | Repaired energy descriptors | [Scores](followup3/energy_execution_v2/pooled_scores.csv), [comparisons](followup3/energy_execution_v2/comparisons.csv) | [Three-primary interval](followup3/energy_execution_v2/primary_family3_interval.json) |
 | ProteinMPNN on the full training cohort | [Scores](followup3/inverse_fulltrain_candidate/scores.csv), [comparisons](followup3/inverse_fulltrain_candidate/comparisons.csv) | [Fixed-query sensitivity](followup3/inverse_fulltrain_candidate/fixed_query_descriptive.csv) |
 | Original geometry and language-model assessment | [Scores](stage6_test_summary.csv), [comparisons](stage6_test_paired_ci.csv) | [Scoring provenance](test_scoring_provenance.json) |
+| Zero-label probability calibration | [Scores](further_research/phase_b_pooled.csv), [comparisons](further_research/phase_b_paired.csv) | [Run table](further_research/phase_b_run_table.csv) |
+| Older leave-allele-out assessment | [Headline summary](stage7_allele_holdout_headline_seq_pep_pseudo.json) | [Per-allele scores](stage7_allele_holdout_per_allele_seq_pep_pseudo.csv) |
+| Weak-binder augmentation | [Comparisons](stage2b_deltas.csv) | [Arm scores](stage2b_arms.csv) |
+| Auxiliary affinity supervision | [Comparisons](stage2c_deltas_ensemble_pep_pseudo.csv) | [Affinity association](stage2c_affinity_ceiling.csv) |
+| Sequence-model elution assessment | [Scores](stage3c_summary.csv) | [Scoring provenance](stage3c_provenance.json) |
 
 The separate three-primary interval files supersede the two-primary interval columns retained in the original comparison tables. The source tables remain unchanged; Methods defines which interval supports each current claim.
 
@@ -27,3 +32,5 @@ The separate three-primary interval files supersede the two-primary interval col
 CSV and JSON artifacts retain predictions, decisions, fitting ancestry and numerical evidence. The [protocol source bundle](protocol_sources.zip) preserves original documents needed to interpret or replay hash-bound experiment records, and its [manifest](protocol_sources.json) records the source commit and each member's SHA-256. These are immutable experimental sources; use the manuscript and Methods for the scientific interpretation.
 
 [Development instructions](../docs/DEVELOPMENT.md) describe the code and source versions, and [Independent validation](finalization/INDEPENDENT_ASSAY_BRIEF.md) outlines one draft design for future validation to test assay generalisation.
+
+[Compute and inference scope](REPORT.md#compute-and-inference-scope) distinguishes shared feature extraction from downstream prediction on cached representations, backed by saved [extraction accounting](further_research/round2/resources/runtime_cost_summary.json) and [cached-head timings](finalization/inference/distribution_manifest.json).
