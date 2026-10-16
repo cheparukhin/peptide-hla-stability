@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*81:01",
+  "peptide": "VPRENATAF",
+  "cluster_id": 4443,
+  "outer_fold": 4,
+  "complex_id": "B8101_VPRENATAF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_81_01/B8101_VPRENATAF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B8101_VPRENATAF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o3tjsnsm/input",
+        "--output-dir=/tmp/energy_repaired_o3tjsnsm/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 273.3481287980003
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B8101_VPRENATAF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o3tjsnsm/output",
+        "--output-dir=/tmp/energy_repaired_o3tjsnsm/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.5478781070005425
+    }
+  ],
+  "metadata_sha256": "4589cecddfb3fcf77493bcc920a3d284e3f9e3db7d6a4ea9bb6eefcd3df79120",
+  "structure_sha256": "ab170615598e49af55c2a9b73088deacaadd756463ce91c94e1fbba3474eeca6",
+  "terms": {
+    "foldx_intraclashesgroup1": 1.53592,
+    "foldx_intraclashesgroup2": 14.8392,
+    "foldx_interaction_energy": -15.17,
+    "foldx_backbone_hbond": -4.17282,
+    "foldx_sidechain_hbond": -7.14104,
+    "foldx_van_der_waals": -17.9441,
+    "foldx_electrostatics": -1.71056,
+    "foldx_solvation_polar": 25.1284,
+    "foldx_solvation_hydrophobic": -23.3219,
+    "foldx_van_der_waals_clashes": 3.11729,
+    "foldx_entropy_sidechain": 7.14453,
+    "foldx_entropy_mainchain": 4.18037,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0904493,
+    "foldx_backbone_clash": 0.34556,
+    "foldx_helix_dipole": 0.00573857,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.546343,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "e4b11ee8a5474e4e8cae9eacaa61a701ebe527d1b6646a252a45a9aa7adbc950",
+  "repaired_pdb_sha256": "689583d8bf8e59904d32a0db86965123803e13e167fe57164e4d8b7fa8ae80eb",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0004999935626983643,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VPRENATAF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 278.9825690530006,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

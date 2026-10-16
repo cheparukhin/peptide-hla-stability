@@ -1,0 +1,106 @@
+{
+  "scores": [
+    {
+      "candidate": "original",
+      "pooled_inner_score": 0.060871489406954526
+    },
+    {
+      "candidate": "mlp_centred_k100",
+      "pooled_inner_score": 0.049087928396404815
+    },
+    {
+      "candidate": "mlp_centred_k20",
+      "pooled_inner_score": 0.054013569612880515
+    },
+    {
+      "candidate": "R4_ridge_10000",
+      "pooled_inner_score": 0.5065002286660854
+    },
+    {
+      "candidate": "R4_ridge_100",
+      "pooled_inner_score": 0.4800091405344495
+    },
+    {
+      "candidate": "R4_ridge_1",
+      "pooled_inner_score": 0.36907359093609904
+    },
+    {
+      "candidate": "R5_mlp_1",
+      "pooled_inner_score": 0.4446553626044445
+    },
+    {
+      "candidate": "R5_mlp_0.01",
+      "pooled_inner_score": 0.4422987781321186
+    },
+    {
+      "candidate": "R5_mlp_0.0001",
+      "pooled_inner_score": 0.43449734223349745
+    }
+  ],
+  "selected": {
+    "original": "original",
+    "mlp_centred": "mlp_centred_k20",
+    "R4_ridge": "R4_ridge_10000",
+    "R5_mlp": "R5_mlp_1",
+    "bounded_MLP_sequence_selector": "original",
+    "embedding_selector": "R4_ridge_10000"
+  },
+  "inner_panel": [
+    "HLA-A*03:01",
+    "HLA-A*11:01",
+    "HLA-A*23:01",
+    "HLA-A*24:02",
+    "HLA-A*24:03",
+    "HLA-A*24:07",
+    "HLA-A*24:19",
+    "HLA-A*25:01",
+    "HLA-A*26:01",
+    "HLA-A*26:02",
+    "HLA-A*26:03",
+    "HLA-A*30:02",
+    "HLA-A*31:01",
+    "HLA-A*32:01",
+    "HLA-A*32:07",
+    "HLA-A*33:03",
+    "HLA-A*43:01",
+    "HLA-A*66:01",
+    "HLA-A*68:01",
+    "HLA-A*68:23",
+    "HLA-A*74:01",
+    "HLA-A*80:01",
+    "HLA-B*07:02",
+    "HLA-B*08:01",
+    "HLA-B*08:03",
+    "HLA-B*14:01(C67S)",
+    "HLA-B*14:02(C67S)",
+    "HLA-B*15:01",
+    "HLA-B*15:02",
+    "HLA-B*15:10",
+    "HLA-B*15:17",
+    "HLA-B*18:01",
+    "HLA-B*27:02",
+    "HLA-B*27:03",
+    "HLA-B*27:05",
+    "HLA-B*27:20",
+    "HLA-B*35:01",
+    "HLA-B*35:03",
+    "HLA-B*39:01",
+    "HLA-B*39:02",
+    "HLA-B*39:06(C67S)",
+    "HLA-B*39:10",
+    "HLA-B*40:01",
+    "HLA-B*41:01",
+    "HLA-B*44:05",
+    "HLA-B*45:01",
+    "HLA-B*46:01",
+    "HLA-B*54:01",
+    "HLA-B*55:01",
+    "HLA-B*56:01",
+    "HLA-B*57:01",
+    "HLA-B*57:02",
+    "HLA-B*57:03",
+    "HLA-B*58:01",
+    "HLA-B*81:01"
+  ],
+  "selection_rule": "largest pooled inner score; frozen parsimony exact ties"
+}

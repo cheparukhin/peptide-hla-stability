@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-10-13T18:54:43.194268+00:00",
+  "error": "RuntimeError('child 0 failed: 1')",
+  "plan_sha256": "0c1a4898c09d7fce1fe1b511f52f522db084076ba962b920c578aafb10b43493",
+  "completed_children": [
+    {
+      "index": 0,
+      "returncode": 1,
+      "seconds": 29.239405155181885,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T18:54:43.193345+00:00"
+    }
+  ]
+}

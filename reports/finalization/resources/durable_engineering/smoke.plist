@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ExitTimeOut</key>
+	<integer>15</integer>
+	<key>KeepAlive</key>
+	<false/>
+	<key>Label</key>
+	<string>org.pepstab.durable-smoke-20261012</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/cheparukhin/ai_science_hack/.venv/bin/python</string>
+		<string>/Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/launchd_smoke.py</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/stderr.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/cheparukhin/ai_science_hack/reports/finalization/resources/durable_engineering/stdout.log</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/cheparukhin/ai_science_hack</string>
+</dict>
+</plist>

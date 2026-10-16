@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:02",
+  "peptide": "FMFNELLAL",
+  "cluster_id": 919,
+  "outer_fold": 2,
+  "complex_id": "B1502_FMFNELLAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_02/B1502_FMFNELLAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1502_FMFNELLAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_koils9cn/input",
+        "--output-dir=/tmp/energy_repaired_koils9cn/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 215.722017695
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1502_FMFNELLAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_koils9cn/output",
+        "--output-dir=/tmp/energy_repaired_koils9cn/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 1.9639019369999744
+    }
+  ],
+  "metadata_sha256": "9e26c5322b7e4e518e25627c1fc261028433efa4d96aca95785d696b30494df9",
+  "structure_sha256": "3b6aa0ef18f0463ae35f430ff222eedbf2bee08f76141227d41c684d3de80c58",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.77515,
+    "foldx_intraclashesgroup2": 12.0273,
+    "foldx_interaction_energy": -20.4307,
+    "foldx_backbone_hbond": -4.47289,
+    "foldx_sidechain_hbond": -7.64559,
+    "foldx_van_der_waals": -19.8127,
+    "foldx_electrostatics": -1.06017,
+    "foldx_solvation_polar": 24.9354,
+    "foldx_solvation_hydrophobic": -28.0355,
+    "foldx_van_der_waals_clashes": 2.17405,
+    "foldx_entropy_sidechain": 9.61713,
+    "foldx_entropy_mainchain": 3.83285,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.106228,
+    "foldx_backbone_clash": 0.827195,
+    "foldx_helix_dipole": -0.00740776,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.06211,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 52.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "72cc7f0b9a70e12b98268d22592b14dc4270c5b55fb0e38f9b94d186172df79a",
+  "repaired_pdb_sha256": "dfe627b35a968d27b173772b9bc18f65a79b3b2eb78d5569bb27bba47af4c2ae",
+  "conversion_validation": {
+    "n_atoms": 3146,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FMFNELLAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 222.646224375,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

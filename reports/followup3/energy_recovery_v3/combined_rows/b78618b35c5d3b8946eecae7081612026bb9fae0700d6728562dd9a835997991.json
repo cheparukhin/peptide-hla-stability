@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*30:01",
+  "peptide": "ITYGSVSWR",
+  "cluster_id": 1843,
+  "outer_fold": 1,
+  "complex_id": "A3001_ITYGSVSWR",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_30_01/A3001_ITYGSVSWR",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3001_ITYGSVSWR.pdb",
+        "--pdb-dir=/tmp/energy_repaired_jcsfjvi3/input",
+        "--output-dir=/tmp/energy_repaired_jcsfjvi3/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 221.25439923700014
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3001_ITYGSVSWR_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_jcsfjvi3/output",
+        "--output-dir=/tmp/energy_repaired_jcsfjvi3/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4140599649999785
+    }
+  ],
+  "metadata_sha256": "4f13a87d3e506a84d1628e882624a560dfea775202ddd20c7323c51ba37e54ab",
+  "structure_sha256": "2a12c69757bf71f8331010460515cf6dfd45a1c54a3ad6a168f22e5b199c812d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.191053,
+    "foldx_intraclashesgroup2": 10.3746,
+    "foldx_interaction_energy": -18.8577,
+    "foldx_backbone_hbond": -5.21489,
+    "foldx_sidechain_hbond": -7.71139,
+    "foldx_van_der_waals": -18.9987,
+    "foldx_electrostatics": -3.27712,
+    "foldx_solvation_polar": 28.8449,
+    "foldx_solvation_hydrophobic": -24.2425,
+    "foldx_van_der_waals_clashes": 0.225742,
+    "foldx_entropy_sidechain": 8.04188,
+    "foldx_entropy_mainchain": 4.15968,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.143685,
+    "foldx_backbone_clash": 1.37376,
+    "foldx_helix_dipole": 0.00726886,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.848465,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0122987,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "9fde05f5347e268261d25daa4d46b37c8d583b4b3a07b63762d0d6696a46570f",
+  "repaired_pdb_sha256": "ac91cb7d0e5ec7e909084e8ee26f7e22c65b96c9ffe8af2c4b0de13cbecb33ec",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "ITYGSVSWR"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 225.01803520600015,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

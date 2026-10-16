@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:02",
+  "peptide": "RAMACSALI",
+  "cluster_id": 3221,
+  "outer_fold": 3,
+  "complex_id": "A2402_RAMACSALI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_02/A2402_RAMACSALI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2402_RAMACSALI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_274i_cl7/input",
+        "--output-dir=/tmp/energy_repaired_274i_cl7/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 188.79287723799985
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2402_RAMACSALI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_274i_cl7/output",
+        "--output-dir=/tmp/energy_repaired_274i_cl7/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.0345990419998543
+    }
+  ],
+  "metadata_sha256": "f45b9ce1a7b3cad28c485fedfc5c46d526b0dda477dd600ea79eb4700e86f80f",
+  "structure_sha256": "cfbe846de4ad2f8f99001d1faa2b2ba87fa944975289ded89cae7ffcefb3ea4a",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0751463,
+    "foldx_intraclashesgroup2": 11.8982,
+    "foldx_interaction_energy": -17.4971,
+    "foldx_backbone_hbond": -5.95016,
+    "foldx_sidechain_hbond": -6.63555,
+    "foldx_van_der_waals": -18.2222,
+    "foldx_electrostatics": -3.68236,
+    "foldx_solvation_polar": 26.5528,
+    "foldx_solvation_hydrophobic": -24.427,
+    "foldx_van_der_waals_clashes": 2.8264,
+    "foldx_entropy_sidechain": 7.60512,
+    "foldx_entropy_mainchain": 5.11377,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0446259,
+    "foldx_backbone_clash": 0.888264,
+    "foldx_helix_dipole": 0.0227595,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.889318,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.143986,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 47.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "6e932f231310caa25ec0ab837b16213864dfb3c034fe9f26f1cce5b302c21062",
+  "repaired_pdb_sha256": "aa0a12381dfcf166d68cae6852ce1d4dfd54a7574095ddb2d7989d425491fe22",
+  "conversion_validation": {
+    "n_atoms": 3120,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RAMACSALI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 192.418928713,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

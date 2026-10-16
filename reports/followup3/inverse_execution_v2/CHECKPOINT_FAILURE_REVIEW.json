@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-13T14:27:31.982646+00:00",
+  "status": "held_before_continuation_or_assessment",
+  "attempted_records": 4164,
+  "successful_records": 4163,
+  "failed": [
+    {
+      "path": "reports/followup3/inverse_execution_v2/score_rows/6290fa2e6bee9533a8609d9ba17d57827d1662beee54ca423cfeae3117356e11.json",
+      "sha256": "1972c68c52a91a06d846df8910fd0ebdf240fc1320fb0959efa01a704b56bb79",
+      "record": {
+        "allele": "HLA-B*56:01",
+        "peptide": "YPAEITLTW",
+        "cluster_id": 4915,
+        "outer_fold": 3,
+        "complex_id": "B5601_YPAEITLTW",
+        "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_56_01/B5601_YPAEITLTW",
+        "status": "failed",
+        "error": "ValueError:peptide chain A is not peptide-only in /structures/stage4c/ectodomain-20261004/boltz2/production/HLA-B_56_01/B5601_YPAEITLTW",
+        "worker_total_s": 0.5426543940002375
+      }
+    }
+  ],
+  "unwritten_rows": 285,
+  "continuation_admitted": false,
+  "supervised_outcomes_inspected": false
+}

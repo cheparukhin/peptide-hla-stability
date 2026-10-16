@@ -1,0 +1,14 @@
+{
+  "schema": "final_transfer_interruption.1",
+  "at_utc": "2026-10-12T14:39:41.252473+00:00",
+  "observation": "Exact transfer controller PID89292, guard PID89617 and waiting hybrid queue PID11628 all absent; no matching process commands found. No driver/controller/queue exit receipts exist. Cause unknown.",
+  "last_guard_status_sha256": "7a93b1e7ecc8a16580e9d39e314b71999fb15ac3d2a725a56785b8fdfb267970",
+  "last_guard_update_utc": "2026-10-12T14:36:17.411638+00:00",
+  "app_id": "ap-RrFfbDvriD4rehaba5x7CA",
+  "provider_state_before_stop": {
+    "state": "ephemeral",
+    "tasks": 0
+  },
+  "safety_action": "Stop only this exact unguarded app; preserve all artifacts and do not retry or relaunch. Reconcile exact calls, reservations, metering and partial/completed cells before any separately documented recovery.",
+  "no_recovery_authorized_by_this_record": true
+}

@@ -1,0 +1,34 @@
+{
+  "app_id": "ap-GwmNX2i77HHXKL8r20lzM9",
+  "at_utc": "2026-10-12T20:17:59.515193+00:00",
+  "authorization": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+    "sha256": "9479c2bd877b23a0f58f046fcb2797ecc4ef14b5b980333dd6aad989d702c5f7"
+  },
+  "created": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/created.json",
+    "sha256": "9b08721e430b8ecb1a7204ef58c335bb852d471cfb3105aaf8264d025d21623f"
+  },
+  "launch_plan": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/launch_plan.json",
+    "sha256": "aef73ef0b4e415322d006bb487db32e777de45cb5a2fa6a901d3cc4755f04605"
+  },
+  "original_watchdog_exit": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/watchdog_exit.json",
+    "sha256": "8b865443205b89c7b24880c64cf82f6fdf0b28a1bfde6b76ee5679f59a46bf70"
+  },
+  "provider_returncode": 0,
+  "provider_tags": {
+    "authorization_sha256": "9479c2bd877b23a0f58f046fcb2797ecc4ef14b5b980333dd6aad989d702c5f7",
+    "phase": "transfer_recovery",
+    "phase_nonce": "transfer-recovery-20261012-1920"
+  },
+  "retrieval_source": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/download_reconciled.py",
+    "sha256": "dc58cf39981c6b87f7bfbdc77fe8722ec321e32574c984017c3c4010598cc38f"
+  },
+  "rule": "Preserve original failed_stop_observed receipt; independently require provider0 and complete scientific exit before retrieving. No success is inferred from guard error alone.",
+  "sandbox_id": "sb-01M4RRW8TNY5H1WRJN30PXVJF7",
+  "schema": "final_cloud_successful_terminal_reconciliation.1",
+  "status": "fresh_provider_success_after_guard_shutdown_race"
+}

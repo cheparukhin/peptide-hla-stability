@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*15:01",
+  "peptide": "TIINSSLHY",
+  "cluster_id": 4101,
+  "outer_fold": 1,
+  "complex_id": "B1501_TIINSSLHY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_15_01/B1501_TIINSSLHY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B1501_TIINSSLHY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_4xakxqw6/input",
+        "--output-dir=/tmp/energy_repaired_4xakxqw6/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 214.54182452700024
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B1501_TIINSSLHY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_4xakxqw6/output",
+        "--output-dir=/tmp/energy_repaired_4xakxqw6/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.5597439909997775
+    }
+  ],
+  "metadata_sha256": "de1ef7c9e7b409fd1d326dd307cbb27e887608a91ec0bff1b43091312b44f755",
+  "structure_sha256": "cebdf51e0803ddeb8a41f450755b1353be279b34cc102c9b60073509efdd9426",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.113522,
+    "foldx_intraclashesgroup2": 13.9465,
+    "foldx_interaction_energy": -20.2991,
+    "foldx_backbone_hbond": -6.2181,
+    "foldx_sidechain_hbond": -10.0622,
+    "foldx_van_der_waals": -20.0295,
+    "foldx_electrostatics": -0.591087,
+    "foldx_solvation_polar": 28.6647,
+    "foldx_solvation_hydrophobic": -26.8181,
+    "foldx_van_der_waals_clashes": 3.35193,
+    "foldx_entropy_sidechain": 8.32041,
+    "foldx_entropy_mainchain": 3.37826,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.127992,
+    "foldx_backbone_clash": 0.859919,
+    "foldx_helix_dipole": -0.000845974,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.437117,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0145224,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "2390fe3e6d257efd54d1aa833df0c59ff2dd024346ef623989eb9f13dbf07bae",
+  "repaired_pdb_sha256": "e629abe5086caf31507d3857f7217bffe602054bd148e4b15c9c42fa54e52d7f",
+  "conversion_validation": {
+    "n_atoms": 3147,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "TIINSSLHY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 220.2435321720004,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

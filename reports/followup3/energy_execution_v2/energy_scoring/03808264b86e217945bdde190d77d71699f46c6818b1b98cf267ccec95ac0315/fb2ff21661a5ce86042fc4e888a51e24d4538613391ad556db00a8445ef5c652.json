@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*57:01",
+  "peptide": "RSIPVNEAL",
+  "cluster_id": 3570,
+  "outer_fold": 3,
+  "complex_id": "B5701_RSIPVNEAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_57_01/B5701_RSIPVNEAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5701_RSIPVNEAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oc9f8cmk/input",
+        "--output-dir=/tmp/energy_repaired_oc9f8cmk/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 198.8970933920009
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5701_RSIPVNEAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_oc9f8cmk/output",
+        "--output-dir=/tmp/energy_repaired_oc9f8cmk/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.382682093000767
+    }
+  ],
+  "metadata_sha256": "7c54ad9006af657b98c01e0d9e11a4dd5419c9c7110a9974172625874609e0df",
+  "structure_sha256": "e11cbe76a71e3c0767e3eabd03b6e697815f6dc6c5b58a63d77f0e31733f1806",
+  "terms": {
+    "foldx_intraclashesgroup1": 1.02869,
+    "foldx_intraclashesgroup2": 11.4975,
+    "foldx_interaction_energy": -18.8297,
+    "foldx_backbone_hbond": -5.53381,
+    "foldx_sidechain_hbond": -9.16579,
+    "foldx_van_der_waals": -17.1534,
+    "foldx_electrostatics": -2.68839,
+    "foldx_solvation_polar": 24.7422,
+    "foldx_solvation_hydrophobic": -22.4769,
+    "foldx_van_der_waals_clashes": 1.67953,
+    "foldx_entropy_sidechain": 8.45941,
+    "foldx_entropy_mainchain": 3.83709,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.165295,
+    "foldx_backbone_clash": 0.696123,
+    "foldx_helix_dipole": 0.00647396,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.70157,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 44.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "46226ef86bdb4f473a75f231dd4afea845924b946503b4a4945bf20586449fb2",
+  "repaired_pdb_sha256": "85b7ce0c0c66225b8ff2a7ff54489d8ba711c5976b37a67df1d645d445ebff18",
+  "conversion_validation": {
+    "n_atoms": 3126,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RSIPVNEAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 204.8653013819985,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

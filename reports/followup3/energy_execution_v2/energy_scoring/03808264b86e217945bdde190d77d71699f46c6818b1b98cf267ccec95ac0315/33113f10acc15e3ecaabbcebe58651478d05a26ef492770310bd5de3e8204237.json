@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*57:02",
+  "peptide": "STAIELGAW",
+  "cluster_id": 3975,
+  "outer_fold": 1,
+  "complex_id": "B5702_STAIELGAW",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_57_02/B5702_STAIELGAW",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5702_STAIELGAW.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5j2n_7sb/input",
+        "--output-dir=/tmp/energy_repaired_5j2n_7sb/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 221.040700947
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5702_STAIELGAW_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5j2n_7sb/output",
+        "--output-dir=/tmp/energy_repaired_5j2n_7sb/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.3813050640001165
+    }
+  ],
+  "metadata_sha256": "3fcbf0c00d177633199bac179e607c53f19f7ac0825106739baa9c0ea149790e",
+  "structure_sha256": "cad73a5e1a02eafde96e4a5c88f2de7421342cb8426fff0c61bad71cfc14331c",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.142171,
+    "foldx_intraclashesgroup2": 11.9123,
+    "foldx_interaction_energy": -17.9865,
+    "foldx_backbone_hbond": -5.17413,
+    "foldx_sidechain_hbond": -9.88432,
+    "foldx_van_der_waals": -17.9,
+    "foldx_electrostatics": -4.57522,
+    "foldx_solvation_polar": 27.7924,
+    "foldx_solvation_hydrophobic": -23.0837,
+    "foldx_van_der_waals_clashes": 4.69474,
+    "foldx_entropy_sidechain": 5.92541,
+    "foldx_entropy_mainchain": 4.92673,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.131082,
+    "foldx_backbone_clash": 0.651028,
+    "foldx_helix_dipole": -0.00325394,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.836208,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "67b68446c28515e396e76b458a2830507676bc3ac28e1f88fc4e50779adfb51f",
+  "repaired_pdb_sha256": "9ae7da3160a829c0ff4582a7d82a105b11c859bd1a84aa4c524e2196952c8610",
+  "conversion_validation": {
+    "n_atoms": 3132,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "STAIELGAW"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 226.2762812410001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

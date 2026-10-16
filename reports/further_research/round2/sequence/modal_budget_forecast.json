@@ -1,0 +1,52 @@
+{
+  "schema": "round2_sequence_runtime_forecast.2",
+  "date": "2026-10-12",
+  "scope_ceiling_usd": 18,
+  "passed_smoke": true,
+  "worker_call_count": 900,
+  "full_gradient_rows": 10514,
+  "deep_gradient_rows": 4672,
+  "actual_fit_graph_counts": {
+    "full_d8": 90,
+    "medium_d8": 180,
+    "medium_d4": 90,
+    "deep_d8": 270,
+    "deep_d4": 270
+  },
+  "conservative_pricing_counts": {
+    "full_d8": 270,
+    "full_d4": 90,
+    "deep_d4": 270,
+    "deep_d8": 270
+  },
+  "platform_time_per_retained_tree_ratio": 1.7714822496880709,
+  "normalized_2000_iteration_seconds": {
+    "full_d8": 632.0457618288535,
+    "full_d4": 554.3091936230751,
+    "deep_d4": 148.45122260592484,
+    "deep_d8": 189.05696597070963
+  },
+  "model_based_runtime_usd": 10.960303356917139,
+  "per_call_startup_and_idle_allowance_usd": 1.9622999999999997,
+  "initial_smoke_and_build_reserve_usd": 1.35,
+  "forecast_margin": 1.25,
+  "model_based_total_with_margin_usd": 17.503254196146425,
+  "unconditional_full_graph_upper_usd": 34.9623,
+  "assumptions": [
+    "All medium-size models are priced at the measured full-size rate; selected configurations and repeat models assumed depth8.",
+    "Each observed member runtime is normalized to the declared 2000-iteration cap using retained tree count, then Linux/macOS throughput ratio per retained tree from full-size depth8.",
+    "Most nested mapping/selection models fit 4672 rows; their local depth4/depth8 pilots are measured separately.",
+    "All 900calls receive60startup+2idle seconds even if containers are reused; 25%margin applies to runtime plus this overhead.",
+    "Local pilots overlap other local tests/simulation and are exploratory conservative walltime measurements, not controlled hardware experiments.",
+    "The full-size local and remote ranker stopped at different iterations (1156 vs1823); small synthetic equivalence does not imply full-training platform invariance.",
+    "This is a model-based forecast, not a hard guarantee of finishing all 900calls within $18. The dynamic ledger prevents excess runtime-derived commitments by stopping at its bound.",
+    "Initial $1.35 debit covers smoke/build allowances; previous interrupted/failed smoke attempts remain recorded, not erased."
+  ],
+  "launch_authorized": false,
+  "evidence_files": [
+    "modal_smoke.json",
+    "profile_pairlogit.json",
+    "profile_pairlogit_depth4.json",
+    "profile_pairlogit_deep.json"
+  ]
+}

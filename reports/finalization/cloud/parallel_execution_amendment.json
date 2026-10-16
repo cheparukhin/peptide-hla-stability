@@ -1,0 +1,47 @@
+{
+  "schema": "final_cloud_parallel_execution_amendment.1",
+  "at_utc": "2026-10-12T20:23:08.339078+00:00",
+  "user_request": "Use multiple cores or containers when this accelerates independent experiments.",
+  "scientific_scope_unchanged": true,
+  "prerequisite": {
+    "path": "reports/finalization/cloud/portable_cloud_transfer_closure.json",
+    "sha256": "ac01ef60e2460bed375392166ee2dfc4f88c8c78eb562e80538eb66d159bf3c8"
+  },
+  "allowed_parallel_branches": [
+    "transfer_report",
+    "hybrid_pilot -> hybrid_main -> hybrid_report"
+  ],
+  "reason": "Hybrid protocol uses completed transfer closure and historical ranking/main references; it does not consume the new transfer report. Pilot remains unscored, main waits for pilot runtime forecast, report waits for main.",
+  "max_containers": 2,
+  "max_cpu_cores": 6,
+  "max_memory_mib": 24576,
+  "per_phase_caps_usd": {
+    "transfer_report": 5,
+    "hybrid_pilot": 2,
+    "hybrid_main": 20,
+    "hybrid_report": 5
+  },
+  "overhead_cap_usd": 3,
+  "total_future_envelope_usd": 35,
+  "prior_conservative_compute_liability_usd": 6.559382003056459,
+  "user_total_ceiling_usd": 100,
+  "maximum_total_commitment_usd": 41.559382003056456,
+  "max_retained_volumes": 2,
+  "max_upload_bytes_per_phase": 3221225472,
+  "max_download_bytes_per_future_phase": 8589934592,
+  "recovery_volume_deleted": true,
+  "recovery_download_bytes": 127024382,
+  "overhead_bound_usd": 2.745,
+  "overhead_bound_basis": "Conservative two-volume storage, four8GiB future downloads, worst10GiB recovery download/storage,0.25 build and0.5 contingency remain within3USD; verified actual recovery bytes are lower.",
+  "no_extra_fits": true,
+  "original_test_closed": true,
+  "independent_scientific_review": "Sol reviewed prerequisites; no dependency from hybrid study to new transfer outcomes.",
+  "resource_validation": "28 focused checks passed",
+  "watchdog_completion_validation": "57 focused checks passed; exact freshly observed terminal can resolve a shutdown NotFound race, preserving error evidence and all download checks.",
+  "sources": {
+    "scripts/final_cloud_resources.py": "9c0e4d44c5048de334b3937ab969c3a32fd06d7294f31aa82bbf6896a5fc650a",
+    "tests/test_final_cloud_resources.py": "779d2741e96d49fbe3c02868f0037358d80a3f5bedc99b5c212eabc364d5c395",
+    "scripts/final_sandbox_driver.py": "f805bfd5fe6d17052e3322a285dad740f1a7bc17fe24ac0631b2485418a49020",
+    "tests/test_final_sandbox_driver.py": "b6aa0e0669e0f546753071139ff49e539f83132693267ad5c429ef73ad88647c"
+  }
+}

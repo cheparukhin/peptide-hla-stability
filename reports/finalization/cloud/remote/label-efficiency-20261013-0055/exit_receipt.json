@@ -1,0 +1,86 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "label_efficiency",
+  "phase_nonce": "label-efficiency-20261013-0055",
+  "authorization_sha256": "d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6",
+  "input_manifest_sha256": "47745cee8bc28d0697671b47fac9fc5d30bfc3a96969d8e88575ad6c8962bd39",
+  "protocol_hash": "73c9215a258f12e929c283512401e7e8b8de952ab6b639088123c05009ccf40b",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-13T00:55:05.586086+00:00",
+  "protocol": {
+    "path": "reports/finalization/label_efficiency/protocol.json",
+    "sha256": "cd7ec72463fcab5eebceb3bf55b0043582d029a1447988486e83a73ffbf9cf7b"
+  },
+  "sandbox_id": "sb-01M4SC2YAXV4Z96XY8M5Z3AVF8",
+  "app_id": "ap-PlSRglCk86O6RZPcvN43hG",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-AvRCgkVpPihf94kxbJ29lz"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 120,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-13T01:01:33.289318+00:00",
+  "elapsed_fit_seconds": 194.04270235899997,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/label-efficiency-20261013-0055/output_manifest.json",
+    "sha256": "1e2a3530f58fbcc8900cf4c8e182c3869dabf4bba2dbbdb348287f277166636f"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "label_efficiency",
+      "axes": [
+        null,
+        null
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-AvRCgkVpPihf94kxbJ29lz/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-AvRCgkVpPihf94kxbJ29lz/reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-AvRCgkVpPihf94kxbJ29lz/scripts/final_label_efficiency.py",
+        "--",
+        "run",
+        "--approved",
+        "/__modal/volumes/vo-AvRCgkVpPihf94kxbJ29lz/reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/authorization.json"
+      ],
+      "intent_at_utc": "2026-10-13T00:58:19.247124+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-13T00:58:19.762012+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-13T01:01:31.424305+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 38348,
+    "last_sequence": 36,
+    "expires_at_utc": "2026-10-13T01:03:03.195499+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

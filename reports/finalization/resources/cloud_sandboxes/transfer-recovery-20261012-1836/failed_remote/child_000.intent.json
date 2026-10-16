@@ -1,0 +1,22 @@
+{
+  "index": 0,
+  "job": "joint/h4_p0",
+  "axes": [
+    "joint",
+    "h4_p0"
+  ],
+  "command": [
+    "/usr/local/bin/python",
+    "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/scripts/final_transfer.py",
+    "run-cell",
+    "--out-dir",
+    "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/reports/finalization/transfer_cloud_recovery",
+    "--approved",
+    "/__modal/volumes/vo-t4GBVVV1RihMTmyXIlRwYi/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/authorization.json",
+    "--regime",
+    "joint",
+    "--cell",
+    "h4_p0"
+  ],
+  "intent_at_utc": "2026-10-12T18:48:44.686530+00:00"
+}

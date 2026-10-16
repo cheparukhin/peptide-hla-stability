@@ -1,0 +1,59 @@
+{
+  "status": "passed_four_batch_candidate_review_only",
+  "reviewed_at_utc": "2026-10-13T16:43:02.729079+00:00",
+  "draft_sha256": "6a4c705bdd6c1acc6aeb3db0cf1514838f1ac93a0cf01fddd5e84e18831470d2",
+  "source_sha256": {
+    "pepstab/followup3_inverse_fulltrain.py": "81c405f96f98408d395c03d0354f371a8a0907d7e9e0940ba7b0e556288fdaa1",
+    "scripts/followup3_inverse_fulltrain.py": "2597007a8a1a549fd97320aa203b285cdabd3ecdb3b08dca859088c518c79b39",
+    "tests/test_followup3_inverse_fulltrain.py": "28b9a9ec03257c65c6670a112c2f50e4a422e7f3e3f46bfb71884657a559a274",
+    "scripts/followup3_fulltrain_independent_audit.py": "95f702188e0217a958ada54de529d67f6397d277c10aa48c54bc61d20617a4da",
+    "tests/test_followup3_fulltrain_independent_audit.py": "edbe33af3d5f35cc9c9a20cbccabeda3034283e4ab316bcb82b83e4d89eb0eba",
+    "reports/followup3/inverse_fulltrain_candidate/SPECIFICATION.md": "51d383e6e7d408bec720f007a136de3d8b408172e4816659d0b4519d7b5016a0",
+    "reports/followup3/inverse_fulltrain_candidate/RESOURCE_AMENDMENT_FOUR_BATCHES.md": "7c824333b76475bb12ff230316f5521c50d9a76116c29037b5705db17598c0b2"
+  },
+  "verified_bound_sources": 24,
+  "verified_bound_inputs": 39,
+  "verified_preserved_snapshot_files": 8,
+  "old_two_batch_draft_sha256": "2b466ce664f0e30a6f75073e91fff210f5abe0b2ae864a1038eaf15657f5b414",
+  "scientific_spec_identical_except_resource_proposal": true,
+  "exact_cohort_rows": 19716,
+  "cached_rows_unchanged": 4449,
+  "batch_rows": [
+    3817,
+    3817,
+    3817,
+    3816
+  ],
+  "batches_disjoint_cache_excluded_complete": true,
+  "assessment_fit_counts": {
+    "mlp": 300,
+    "ridge": 150
+  },
+  "tests": {
+    "passed": 16,
+    "seconds": 1.53,
+    "scope": "candidate, independent fulltrain audit, exact parser"
+  },
+  "resource_review": {
+    "jobs": 4,
+    "cpu_each": 16,
+    "memory_gib_each": 32,
+    "spawn_workers_each": 8,
+    "threads_each": 2,
+    "max_hours_each": 2.5,
+    "compute_at_stored_rate_usd": 30.384,
+    "overhead_usd_total": 2.0,
+    "max_compute_plus_overhead_usd": 32.384,
+    "total_extraction_reservation_usd": 34,
+    "total_study_envelope_usd": 40,
+    "account_sandbox_quota_verified": false
+  },
+  "blocking_findings": [],
+  "frozen": false,
+  "paid_launch_authorized": false,
+  "limitations": [
+    "Source/metadata review only; root must wait for energy audit before selecting/finally freezing this development study.",
+    "Account placement and completion inside hard lifetime remain unguaranteed; no automatic extension or complete-case assessment.",
+    "Original selected-development inference limits and three-primary family remain unchanged."
+  ]
+}

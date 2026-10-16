@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*08:03",
+  "peptide": "WAKAHWRAL",
+  "cluster_id": 4568,
+  "outer_fold": 4,
+  "complex_id": "B0803_WAKAHWRAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_08_03/B0803_WAKAHWRAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B0803_WAKAHWRAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_2pigcc4n/input",
+        "--output-dir=/tmp/energy_repaired_2pigcc4n/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 266.19276544199965
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B0803_WAKAHWRAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_2pigcc4n/output",
+        "--output-dir=/tmp/energy_repaired_2pigcc4n/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.8857149300001765
+    }
+  ],
+  "metadata_sha256": "b7b5492835de44b9ff8277fb53d578cdbcf29037b5fe31f29d3828f810bbb65d",
+  "structure_sha256": "b4228c8e4df45cd74317b2b563f65e370fa75000ec06a34c8d40db26dc244971",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0776783,
+    "foldx_intraclashesgroup2": 16.5019,
+    "foldx_interaction_energy": -22.0912,
+    "foldx_backbone_hbond": -7.78952,
+    "foldx_sidechain_hbond": -9.39363,
+    "foldx_van_der_waals": -20.3893,
+    "foldx_electrostatics": -1.74283,
+    "foldx_solvation_polar": 27.6002,
+    "foldx_solvation_hydrophobic": -27.7202,
+    "foldx_van_der_waals_clashes": 4.54686,
+    "foldx_entropy_sidechain": 8.16414,
+    "foldx_entropy_mainchain": 5.08713,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0910338,
+    "foldx_backbone_clash": 2.01145,
+    "foldx_helix_dipole": 0.00350638,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.623994,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0753448,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 52.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "a7d314f76b4d6656e35a22b814e44be6e0b7b090f0f54b29f214833af6a370b4",
+  "repaired_pdb_sha256": "5099bbed29c2488fdae363d13d62af3a328b569b3f018042cee2c460f0b45c37",
+  "conversion_validation": {
+    "n_atoms": 3160,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "WAKAHWRAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 274.7858565339993,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

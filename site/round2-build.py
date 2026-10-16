@@ -1,0 +1,524 @@
+#!/usr/bin/env python3
+"""Build and validate the scientific submission from saved results.
+
+Reads evidence without refitting models or changing research artifacts.
+Uses only the Python standard library and Git for publication-link checks.
+"""
+import argparse
+import csv
+import hashlib
+import html
+import json
+import math
+import statistics
+import subprocess
+import zipfile
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+BASE = "reports/further_research/round2/"
+REPO_URL = "https://github.com/cheparukhin/peptide-hla-stability/blob/main/"
+START = "<!-- ROUND2 GENERATED START -->"
+END = "<!-- ROUND2 GENERATED END -->"
+SOURCES = {}
+
+
+def read(name, kind="json"):
+    return read_path(BASE + name, kind)
+
+
+def read_path(path, kind="json"):
+    source = ROOT / path
+    if source.is_file():
+        raw = source.read_bytes()
+    else:
+        with zipfile.ZipFile(ROOT / "reports/protocol_sources.zip") as archive:
+            raw = archive.read(path)
+    SOURCES[path] = hashlib.sha256(raw).hexdigest()
+    if kind == "csv":
+        return list(csv.DictReader(raw.decode().splitlines()))
+    return json.loads(raw) if kind == "json" else raw.decode()
+
+
+def one(rows, **values):
+    matches = [r for r in rows if all(str(r[k]) == str(v) for k, v in values.items())]
+    if len(matches) != 1:
+        raise ValueError(f"Expected one evidence row for {values}; found {len(matches)}")
+    return matches[0]
+
+
+def compare(rows, baseline, candidate, panel=20, **extra):
+    row = one(rows, baseline=baseline, candidate=candidate, panel_min_rows=panel, **extra)
+    for key in ("baseline_score", "candidate_score", "delta", "ci_low", "ci_high"):
+        row[key] = float(row[key])
+        if not math.isfinite(row[key]):
+            raise ValueError(f"Nonfinite {key}: {row}")
+    if not math.isclose(row["candidate_score"] - row["baseline_score"], row["delta"], abs_tol=1e-12):
+        raise ValueError("Comparison scores and delta disagree")
+    if not row["ci_low"] <= row["delta"] <= row["ci_high"]:
+        raise ValueError("Reported point falls outside its interval")
+    return row
+
+
+def fmt(value, signed=False):
+    return format(float(value), "+.4f" if signed else ".4f").replace("-", "−")
+
+
+def interval(row):
+    return f'{fmt(row["delta"], True)} [{fmt(row["ci_low"], True)}, {fmt(row["ci_high"], True)}]'
+
+
+def link(name, label):
+    return path_link(BASE + name, label)
+
+
+def path_link(path, label):
+    return f'<a href="{html.escape(REPO_URL + quote(path, safe="/#"))}">{html.escape(label)}</a>'
+
+
+def publication_link_check(outputs):
+    """Reject path escapes, missing files and untracked release dependencies.
+
+    Requires a Git checkout and CLI; use a clean clone for release verification.
+    """
+    if not (ROOT / ".git").exists():
+        raise ValueError("Publication validation requires a Git checkout, not a source archive")
+    tracked = set(subprocess.run(["git", "ls-files", "-z"], cwd=ROOT,
+        check=True, capture_output=True, text=True).stdout.split("\0"))
+    site = ROOT / "site"
+    problems = []
+    checked = 0
+
+    class Links(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            for key, value in attrs:
+                if key in ("href", "src", "poster") and value:
+                    check(value, self.path)
+
+    def check(value, document):
+        nonlocal checked
+        parsed = urlsplit(value)
+        if value.startswith(REPO_URL):
+            target = (ROOT / unquote(urlsplit(value[len(REPO_URL):]).path)).resolve()
+        elif parsed.scheme or parsed.netloc or not parsed.path:
+            return
+        else:
+            target = (document.parent / unquote(parsed.path)).resolve()
+            if parsed.path.startswith("/") or not target.is_relative_to(site):
+                problems.append(f"{document.relative_to(ROOT)}: link escapes site artifact: {value}")
+                return
+        if not parsed.scheme and parsed.path.endswith("/"):
+            target = target / "index.html"
+        if not target.is_relative_to(ROOT):
+            problems.append(f"{document.relative_to(ROOT)}: repository link escapes checkout: {value}")
+        elif str(target.relative_to(ROOT)) not in tracked:
+            problems.append(f"{document.relative_to(ROOT)}: untracked publication dependency: {value}")
+        elif not target.is_file() and target not in outputs:
+            problems.append(f"{document.relative_to(ROOT)}: missing publication dependency: {value}")
+        checked += 1
+
+    for document in sorted(site.rglob("*.html")):
+        if str(document.relative_to(ROOT)) not in tracked:
+            problems.append(f"Untracked HTML would be absent from the release: {document.relative_to(ROOT)}")
+        parser = Links()
+        parser.path = document
+        parser.feed(outputs.get(document, document.read_bytes()).decode())
+    if problems:
+        raise ValueError("Publication links failed:\n" + "\n".join(problems))
+    return checked
+
+
+def full_cohort_evidence():
+    """Prepare tables only after complete saved outputs pass independent audit.
+
+    The default snapshot includes this completed, gated presentation.
+    It performs no fitting, metric recomputation or resampling.
+    """
+    base = "reports/followup3/inverse_fulltrain_candidate/"
+    required = ("completion_audit.json", "independent_audit.json", "comparisons.csv", "fixed_query_descriptive.csv", "INDEPENDENT_FINAL_REVIEW.json")
+    missing = [name for name in required if not (ROOT / base / name).is_file()]
+    if missing:
+        raise ValueError("Full-cohort presentation unavailable: missing " + ", ".join(missing))
+    complete = read_path(base + "completion_audit.json")
+    independent = read_path(base + "independent_audit.json")
+    protocol = read_path(base + "protocol.json")
+    final_review = read_path(base + "INDEPENDENT_FINAL_REVIEW.json")
+    extraction = read_path(base + "independent_extraction_audit.json")
+    repair_base = "reports/followup3/inverse_fulltrain_repair/"
+    repair_manifest = read_path(repair_base + "manifest.json")
+    repair_review = read_path(repair_base + "PRELAUNCH_REVIEW.json")
+    read_path("scripts/followup3_inverse_fulltrain_repair.py", "text")
+    if final_review["status"] != "passed" or final_review["protocol_hash"] != protocol["protocol_hash"] or extraction["status"] != "passed" or repair_review["status"] != "passed_prelaunch_repair_review":
+        raise ValueError("Passed full-cohort final/extraction and repair reviews required")
+    for key,name in (("independent_audit_sha256","independent_audit.json"),("completion_audit_sha256","completion_audit.json"),("independent_extraction_audit_sha256","independent_extraction_audit.json")):
+        if final_review[key] != SOURCES[base + name]:
+            raise ValueError("Full-cohort final review binds stale audit bytes")
+    repair = final_review["repair"]
+    if repair["manifest_file_sha256"] != SOURCES[repair_base+"manifest.json"] or repair["review_sha256"] != SOURCES[repair_base+"PRELAUNCH_REVIEW.json"] or repair["wrapper_sha256"] != SOURCES["scripts/followup3_inverse_fulltrain_repair.py"] or repair["manifest_hash"] != repair_manifest["manifest_hash"] or not repair["scientific_recipe_unchanged"] or not repair["metadata_revalidation_exact_parity"] or repair["prior_fits"] != 0:
+        raise ValueError("Reviewed full-cohort operational repair ancestry mismatch")
+    audit_source = "scripts/followup3_fulltrain_independent_audit.py"
+    shared_source = "scripts/followup3_representation_independent_audit.py"
+    read_path(audit_source, "text")
+    read_path(shared_source, "text")
+    if complete["status"] != "passed" or independent["status"] != "passed" or independent["study"] != "inverse_fulltrain_selected_development" or independent["protocol_hash"] != protocol["protocol_hash"]:
+        raise ValueError("Passed complete and independent full-cohort audits required")
+    if (complete["rows"], complete["mlp_fits"], complete["ridge_fits"]) != (19716,300,150) or independent["rows"] != 19716 or independent["fit_counts"] != {"mlp":300,"ridge":150} or independent["arms"] != ["R5","R5_P","R5_PC"]:
+        raise ValueError("Full-cohort frozen coverage/fit graph mismatch")
+    if complete["saved_weight_replay"] or complete["tranche_primary_success_claim"] or independent["saved_weight_replay"] or independent["bootstrap_regenerated"] or independent["tranche_primary"] or independent["independent_refits"] != 0:
+        raise ValueError("Full-cohort selected-development audit scope mismatch")
+    if (independent["cached_rows_unchanged"],independent["new_rows"],independent["fixed_query_rows"],independent["comparison_rows_checked"],independent["fixed_query_entries_checked"]) != (4449,15267,4449,12,24):
+        raise ValueError("Full-cohort cached/new/fixed-query coverage mismatch")
+    if independent["audit_source_sha256"] != SOURCES[audit_source] or independent["shared_audit_source_sha256"] != SOURCES[shared_source]:
+        raise ValueError("Full-cohort independent auditor source changed")
+    comparisons = read_path(base + "comparisons.csv", "csv")
+    fixed = read_path(base + "fixed_query_descriptive.csv", "csv")
+    for name in ("comparisons.csv", "fixed_query_descriptive.csv", "bootstrap_mlp_min20.csv", "bootstrap_mlp_min50.csv", "bootstrap_ridge_min20.csv", "bootstrap_ridge_min50.csv"):
+        if name.startswith("bootstrap_"):
+            read_path(base + name,"text")
+        if complete["outputs"][name] != SOURCES[base + name]:
+            raise ValueError("Full-cohort saved table changed after audit")
+    if len(comparisons) != 12 or len(fixed) != 24:
+        raise ValueError("All full-cohort result rows must remain visible")
+    arms = ("R5","R5_P","R5_PC")
+    contrasts = (("R5","R5_PC","Net"),("R5_P","R5_PC","Context"),("R5","R5_P","Peptide-only"))
+    absolute = independent["absolute_scores"]
+    score_cells = {}
+    for learner in ("mlp","ridge"):
+        for minimum in (20,50):
+            points = absolute[f"{learner}_min{minimum}"]
+            if set(points) != set(arms) or not all(math.isfinite(float(v)) and -1 <= float(v) <= 1 for v in points.values()):
+                raise ValueError("Complete finite full-cohort absolute scores required")
+            score_cells[learner,minimum] = points
+            panel = independent["panels"][str(minimum)]
+            for baseline,candidate,label in contrasts:
+                row = compare(comparisons,baseline,candidate,panel=minimum,learner=learner)
+                if int(row["n_rows"]) != 19716 or int(row["n_alleles"]) != len(panel) or int(row["n_boot"]) != 2000 or int(row["bootstrap_seed"]) != 20261003 or not math.isclose(row["baseline_score"],points[baseline],abs_tol=1e-12) or not math.isclose(row["candidate_score"],points[candidate],abs_tol=1e-12):
+                    raise ValueError("Full-cohort contrast/absolute score mismatch")
+            fixed_panel = independent["fixed_query_panels"][str(minimum)]
+            for kind,names in (("point",arms),("increment",("net","context","peptide"))):
+                for name in names:
+                    row = one(fixed,learner=learner,min_rows=minimum,kind=kind,comparison=name)
+                    before,after,change = (float(row[k]) for k in ("original_subset","fulltrained_same_queries","old_to_new_change"))
+                    if not all(math.isfinite(v) for v in (before,after,change)) or not math.isclose(after-before,change,abs_tol=1e-12) or int(row["query_rows"]) != 4449 or int(row["eligible_alleles"]) != len(fixed_panel) or row["panel_alleles"].split("|") != fixed_panel:
+                        raise ValueError("Full-cohort fixed-query descriptive arithmetic/panel mismatch")
+    main = compare(comparisons,"R5","R5_PC",learner="mlp")
+    if any(not float(row["ci_low"]) < 0 < float(row["ci_high"]) for row in comparisons) or not main["delta"] < 0:
+        raise ValueError("Final inconclusive full-cohort interpretation requires review")
+    return {"main": main, "absolute_scores": absolute, "comparisons": comparisons, "fixed_query_descriptive": fixed}
+
+
+def checked_interval(row):
+    row = dict(row)
+    for key in ('delta', 'ci_low', 'ci_high'):
+        row[key] = float(row[key])
+        if not math.isfinite(row[key]):
+            raise ValueError('Nonfinite interval')
+    if not row['ci_low'] <= row['delta'] <= row['ci_high']:
+        raise ValueError('Point lies outside saved interval')
+    return row
+
+
+def passed(path):
+    audit = read_path(path)
+    if audit['status'] != 'passed':
+        raise ValueError(f'Passed audit required: {path}')
+    return audit
+
+
+def family_interval(base, row, draws):
+    family = read_path(base + 'primary_family3_interval.json')
+    read_path(base + draws, 'text')
+    if (not math.isclose(family['interval_level'], 59/60)
+            or not math.isclose(family.get('delta', family.get('point')), float(row['delta']), abs_tol=1e-12)
+            or family['saved_draws_sha256'] != SOURCES[base + draws]):
+        raise ValueError('Family interval differs from saved comparison or bootstrap draws')
+    if family.get('amendment_sha256') not in (None, SOURCES['reports/followup3/THIRD_PRIMARY_AMENDMENT.md']):
+        raise ValueError('Family interval amendment changed')
+    return family
+
+
+
+def elution_evidence():
+    """Bind the secondary sequence-model presentation result to saved tables."""
+    summary = read_path('reports/stage3c_summary.csv', 'csv')
+    provenance = read_path('reports/stage3c_provenance.json')
+    n_alleles = provenance['alleles_scored']
+    n_ligands = provenance['ligands_scored']
+    n_decoys = provenance['rows_scored'] - n_ligands
+    panel = {row['allele'] for row in provenance['per_allele']}
+    if (len(panel) != n_alleles
+            or sum(row['n_ligands_scored'] for row in provenance['per_allele']) != n_ligands
+            or sum(row['n_decoys'] for row in provenance['per_allele']) != n_decoys
+            or n_decoys != provenance['decoy_ratio'] * n_ligands):
+        raise ValueError('Elution cohort counts disagree')
+    scores = {}
+    for control, suffix in [('none', ''), ('swapped_decoys', '__swapped_decoys'),
+                            ('wrong_allele_pseudoseq', '__wrong_allele')]:
+        row = one(summary, arm='seq_ensemble', control=control)
+        per_allele = read_path(f'reports/stage3c_per_allele_seq_ensemble{suffix}.csv', 'csv')
+        if (int(row['n_alleles']) != n_alleles or len(per_allele) != n_alleles
+                or {r['allele'] for r in per_allele} != panel
+                or sum(int(r['n_ligands']) for r in per_allele) != n_ligands
+                or sum(int(r['n_decoys']) for r in per_allele) != n_decoys):
+            raise ValueError('Elution scoring panels disagree')
+        scores[control] = {}
+        for metric in ('auroc', 'auprc'):
+            value = float(row[metric + '_median'])
+            if not 0 <= value <= 1 or not math.isclose(value,
+                    statistics.median(float(r[metric]) for r in per_allele), abs_tol=1e-8):
+                raise ValueError('Elution summary and per-allele scores disagree')
+            scores[control][metric] = value
+    return {'n_alleles': n_alleles, 'n_ligands': n_ligands, 'n_decoys': n_decoys,
+            'excluded_peptides': provenance['stability_peptides_excluded_from_both_classes'],
+            'sequence_ensemble': scores}
+
+
+def build():
+    SOURCES.clear()
+    main_path = BASE + 'results/main/paired_comparisons.csv'
+    main = read_path(main_path, 'csv')
+    scores = read('results/main/pooled_scores.csv', 'csv')
+    primary = compare(main, 'sequence_selector', 'embedding_selector')
+    contact = compare(main, 'R5_shuffled_mlp', 'R5_mlp')
+    for arm, key in [('sequence_selector', 'baseline_score'), ('embedding_selector', 'candidate_score')]:
+        score = one(scores, procedure=arm, panel_min_rows=20, scope='pooled_outer_held')
+        if not math.isclose(float(score['median_per_allele_spearman']), primary[key], abs_tol=1e-12):
+            raise ValueError('Main comparison and score table disagree')
+    allele = read_path('reports/manuscript/figure2_data.json')
+    read_path(allele['source'], 'text')
+    if (SOURCES[allele['source']] != allele['source_sha256']
+            or len(allele['rows']) != allele['n_alleles']
+            or sum(r['delta'] > 0 for r in allele['rows']) != allele['higher']
+            or sum(r['delta'] < 0 for r in allele['rows']) != allele['lower']
+            or (allele['n_alleles'], allele['higher'], allele['lower'], allele['ties']) != (69, 60, 9, 0)):
+        raise ValueError('Allele-level summary requires revision')
+    cohort = read('resources/cache_completion_audit.json')['cohort']
+    if (cohort['n_rows'], cohort['n_clusters'], cohort['n_alleles']) != (19716, 3587, 75):
+        raise ValueError('Cohort description requires revision')
+    if not 0 < primary['ci_low'] < .05 or not contact['ci_low'] < 0 < contact['ci_high']:
+        raise ValueError('Main or contact interpretation requires revision')
+
+    transfer_base = 'reports/finalization/transfer_cloud_recovery/results/'
+    passed(transfer_base + 'coverage_audit.json')
+    transfer = read_path(transfer_base + 'comparisons.csv', 'csv')
+    transfer_rows = []
+    for regime, label in [('hla', 'HLA group'), ('joint', 'HLA group + peptide cluster')]:
+        for baseline, candidate, method in [('R0_mlp', 'R5_mlp', 'Matched MLPs'), ('expanded_sequence_selector', 'embedding_selector', 'Embedding vs expanded sequence selector')]:
+            row = compare(transfer, baseline, candidate, regime=regime, mode='crossed')
+            if row['ci_low'] <= 0:
+                raise ValueError('Positive transfer conclusion requires revision')
+            transfer_rows.append({'holdout': label, 'comparison': method, **row})
+
+    transfer_original = {regime: compare(transfer, 'original', 'embedding_selector', regime=regime, mode='crossed') for regime in ('hla', 'joint')}
+
+    read_path('reports/followup3/THIRD_PRIMARY_AMENDMENT.md', 'text')
+    few_base = 'reports/followup3/fewshot/'
+    few_audit = passed(few_base + 'audit.json')
+    few_independent = passed(few_base + 'independent_audit.json')
+    if ((few_independent['cells'], few_independent['source_fits'], few_independent['target_adapters']) != (75, 450, 9180)
+            or not few_audit['saved_models_predictions_replayed_exactly']
+            or len(few_audit['panels']['20']) != 68):
+        raise ValueError('Few-shot description requires revision')
+    curves = read_path(few_base + 'absolute_curves.csv', 'csv')
+    few = checked_interval(one(read_path(few_base + 'comparisons.csv', 'csv'), contrast='primary_R5_adaptation20', panel_min_rows=20, mode='crossed'))
+    few_family = family_interval(few_base, few, 'bootstrap_crossed_min20.csv')
+    few_zero = float(one(curves, panel_min_rows=20, arm='R5', budget=0)['score'])
+    few_twenty = float(one(curves, panel_min_rows=20, arm='R5', budget=20)['score'])
+    if not math.isclose(few_twenty - few_zero, few['delta'], abs_tol=1e-12) or few_family['ci_low'] <= 0:
+        raise ValueError('Few-shot arithmetic or conclusion requires revision')
+    figure_base = 'reports/followup3/figures/'
+    figure = read_path(figure_base + 'fewshot_curves.json')
+    if figure['displayed_curve_rows'] != [r for r in curves if r['panel_min_rows'] == '20'] or figure['primary_family_interval'] != few_family:
+        raise ValueError('Few-shot figure does not match saved results')
+    for name in ('fewshot_curves.svg', 'fewshot_curves.png'):
+        raw = (ROOT / figure_base / name).read_bytes()
+        SOURCES[figure_base + name] = hashlib.sha256(raw).hexdigest()
+        if SOURCES[figure_base + name] != figure['output_sha256'][name]:
+            raise ValueError('Few-shot figure changed after validation')
+
+    descriptor_rows = []
+    for directory, baseline, candidate, label in [
+        ('inverse_execution_v2', 'R5_P', 'R5_PC', 'ProteinMPNN complex context'),
+        ('energy_execution_v2', 'R5', 'R5_E', 'Repaired FoldX descriptors')]:
+        base = f'reports/followup3/{directory}/'
+        complete = passed(base + 'completion_audit.json')
+        independent = passed(base + 'independent_audit.json')
+        comparisons = read_path(base + 'comparisons.csv', 'csv')
+        expected = complete.get('outputs', complete.get('output_sha256'))['comparisons.csv']
+        if expected != SOURCES[base + 'comparisons.csv'] or independent['rows'] != 4449:
+            raise ValueError('Descriptor comparison changed after audit')
+        row = compare(comparisons, baseline, candidate, learner='mlp')
+        family = family_interval(base, row, 'bootstrap_mlp_min20.csv')
+        if not family['ci_low'] < 0 < family['ci_high']:
+            raise ValueError('Descriptor conclusion requires revision')
+        descriptor_rows.append({'label': label, 'comparison': row, 'family': family})
+    full = full_cohort_evidence()
+    ranking_base = 'reports/finalization/ranking/'
+    hybrid_base = 'reports/finalization/hybrids_cloud_v1/'
+    passed(ranking_base + 'completion_audit.json')
+    passed(hybrid_base + 'coverage_audit.json')
+    ranking = checked_interval(one(read_path(ranking_base + 'comparisons.csv', 'csv'), contrast='R5_ranked-R5_mse', min_rows=20))
+    hybrid = checked_interval(one(read_path(hybrid_base + 'comparisons.csv', 'csv'), contrast='R5_hybrid_selector-R5_standard', min_rows=20))
+    if any(not row['ci_low'] < 0 < row['ci_high'] for row in (ranking, hybrid)):
+        raise ValueError('Ranking or hybrid conclusion requires revision')
+
+    budget_base = 'reports/finalization/label_efficiency/'
+    budget_curves = [r for r in read_path(budget_base + 'absolute_curves.csv', 'csv')
+                     if r['min_rows'] == '20']
+    budget_scores = {fraction: {rep: float(one(budget_curves,
+        fraction=fraction, representation=rep)['mean_score']) for rep in ('R0', 'R5')}
+        for fraction in ('25', '100')}
+    budget_contrast = checked_interval(one(read_path(budget_base + 'comparisons.csv', 'csv'),
+        role='primary', fraction=25, min_rows=20))
+    advantage_change = ((budget_scores['25']['R5'] - budget_scores['25']['R0'])
+                        - (budget_scores['100']['R5'] - budget_scores['100']['R0']))
+    if (not math.isclose(advantage_change, budget_contrast['delta'], abs_tol=1e-12)
+            or budget_contrast['ci_low'] <= 0
+            or any(int(one(budget_curves, fraction=fraction, representation=rep)['n_subset_draws']) != draws
+                   for fraction, draws in [('25', 3), ('100', 1)] for rep in ('R0', 'R5'))
+            or any(not -1 <= score <= 1 for scores in budget_scores.values() for score in scores.values())):
+        raise ValueError('Training-label budget interpretation requires revision')
+    elution = elution_evidence()
+
+    transfer_html = '\n'.join(f'<tr><th scope="row">{r["holdout"]}<span>{r["comparison"]}</span></th><td>{fmt(r["baseline_score"])}</td><td>{fmt(r["candidate_score"])}</td><td>{interval(r)}</td></tr>' for r in transfer_rows)
+    transfer_labels = {'HLA group': 'Related HLA groups', 'HLA group + peptide cluster': 'Related HLA groups and peptide groups'}
+    matched_transfer_html = '\n'.join(f'<tr><th scope="row">{html.escape(transfer_labels[r["holdout"]])}</th><td>{fmt(r["baseline_score"])}</td><td>{fmt(r["candidate_score"])}</td></tr>' for r in transfer_rows if r['comparison'] == 'Matched MLPs')
+    descriptor_html = '\n'.join(f'<tr><th scope="row">{r["label"]}</th><td>{fmt(r["comparison"]["baseline_score"])}</td><td>{fmt(r["comparison"]["candidate_score"])}</td><td>{fmt(r["comparison"]["delta"], True)} [{fmt(r["family"]["ci_low"], True)}, {fmt(r["family"]["ci_high"], True)}]</td></tr>' for r in descriptor_rows)
+    body = f'''
+<header class="masthead" id="results">
+  <p class="eyebrow">Peptide–HLA stability · Research findings</p>
+  <h1>Boltz-2 features improve peptide–HLA stability ranking</h1>
+  <p class="standfirst">Boltz-2 is a biomolecular structure-prediction model that we keep unchanged. Using its internal features that describe relationships between amino acids in the peptide and HLA, we train small predictors to rank measured complex stability and compare them with sequence-based models.</p>
+  <div class="main-result primary-result">
+    <div><p class="metric-label">Median within-allele Spearman ranking correlation</p><div class="score-pair"><p><span>Selected sequence-based models</span><strong>{fmt(primary['baseline_score'])}</strong></p><p><span>Selected Boltz-feature models</span><strong>{fmt(primary['candidate_score'])}</strong></p></div></div>
+    <div><p class="metric-label">Paired difference in ranking correlation</p><p class="effect">{fmt(primary['delta'], True)}</p><p class="uncertainty">Conditional 95% interval [{fmt(primary['ci_low'], True)}, {fmt(primary['ci_high'], True)}]</p></div>
+  </div>
+  <p>Median within-allele Spearman correlation measures how closely predicted stability rankings match measured orderings within each HLA type (allele); higher values mean better agreement. Per-allele scores are higher in {allele['higher']} of {allele['n_alleles']} eligible HLA types and lower in 9. Across {cohort['n_rows']:,} development pairs, model choice uses data separate from evaluation on held-out groups of similar peptides (clusters). Measurements come from one existing stability assay; independent kinetic validation is still needed.</p>
+  <nav aria-label="Research navigation"><a href="#question">Approach</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#elution">Presented peptides</a><a href="#interpretation">Interpretation</a>{path_link('reports/MANUSCRIPT.md', 'Manuscript ↗')}</nav>
+</header>
+<section class="abstract" aria-labelledby="question">
+  <h2 id="question">Biological question and approach</h2>
+  <p>Human leukocyte antigen (HLA) class I proteins display short intracellular peptides on the cell surface for immune recognition; we focus on nine-residue peptides. Complex stability, or how long a peptide–HLA complex persists, influences antigen presentation and differs from equilibrium binding affinity. Boltz-2 features provide learned numerical representations, not measured dissociation rates.</p>
+  <dl class="cohort"><div><dt>Development pairs</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div><div><dt>Eligible HLA alleles</dt><dd>69</dd></div></dl>
+  <p>Residue-pair features outperform tested chain averages and projected token summaries in matched MLPs. In separate tests, an ESM-2 model and an implemented Boltz-2 coordinate-and-confidence pipeline did not establish an advantage over their sequence baselines. {path_link('reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons', 'Earlier representation comparisons')}</p>
+  <details><summary>Cohort eligibility, nested selection, and representation controls</summary><div class="detail-content">
+<p class="note">The development cohort comes from the original training split and spans 75 HLA allele/construct labels. Of these, 69 are eligible—having both at least 20 rows and varying labels—and receive equal weight in the primary endpoint. Nested cross-validation separates held-out peptide clusters from model fitting and selection.</p>
+<p>For unseen peptide clusters on known alleles, the prespecified embedding selector—defined as inner-selected frozen-feature procedures with the original sequence ensemble as fallback—outperforms the competitive sequence selector across the 69 eligible alleles on the development panel. The conditional interval supports a within-allele ranking gain from Boltz-2 trunk representations.</p>
+<p>Retaining position-aware token features improves ranking over pooling the same underlying tokens, cleanly supporting positional indexing. While the full 9×34 interface representation also outperforms contact-restricted pooled pairs, this comparison changes both groove coverage and positional resolution jointly rather than isolating a positional effect. Separately, pooling over a crystal-derived peptide–HLA contact mask offers no established advantage over shuffled residue-pair membership ({interval(contact)}). The positive performance comparisons show that the learned representations carry predictive signal without establishing a specific physical contact mechanism behind the gain.</p>
+  <p class="source">{path_link(main_path, 'Paired results')} · {path_link(BASE + 'results/main/pooled_scores.csv', 'All procedure scores')} · {path_link('reports/manuscript/figure2_data.json', 'Saved per-allele results')}</p>
+  </div></details>
+</section>
+<section id="label-budget" aria-labelledby="label-budget-title">
+  <p class="eyebrow">01 · Reduced training data</p>
+  <h2 id="label-budget-title">Boltz-2 features maintain stronger stability ranking with less training data</h2>
+  <p>Using 25% of available groups of similar peptides, Boltz-2 pair features reach {fmt(budget_scores['25']['R5'])} median within-allele Spearman correlation versus {fmt(budget_scores['25']['R0'])} for sequence models. Scores are averaged across three fixed subsets in a separate analysis that holds out peptide groups.</p>
+  <p class="note">Both fitting and stopping labels count toward the budget for these two-network ensembles. The sequence reference is weaker than the primary baseline, limiting comparison to the main result. This retrospective test does not measure prospective assay savings.</p>
+  <p class="source">{path_link('reports/REPORT.md#training-label-budgets', 'Training-label budget details')}</p>
+</section>
+<section id="transfer" aria-labelledby="transfer-title">
+  <p class="eyebrow">02 · Held-out HLA groups</p>
+  <h2 id="transfer-title">Ranking advantage transfers across held-out HLA groups</h2>
+  <p>Using matched small nonlinear neural predictors, we test whether the ranking advantage holds when related HLA types are excluded from supervised fitting, or when both related HLA types and groups of similar peptides are excluded.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Matched-MLP transfer comparison across held-out HLA regimes" tabindex="0"><table><caption>Median within-allele Spearman correlation across {allele['n_alleles']} alleles for matched neural predictors</caption><thead><tr><th scope="col">Excluded from predictor training</th><th scope="col">Sequence</th><th scope="col">Boltz-2 features</th></tr></thead><tbody>{matched_transfer_html}</tbody></table></div>
+  <details><summary>Expanded sequence baselines, confidence intervals, and pretraining scope</summary><div class="detail-content">
+<div class="table-scroll" role="region" aria-label="Transfer results" tabindex="0"><table><caption>Median within-allele Spearman · 69 alleles · conditional crossed 95% intervals</caption><thead><tr><th scope="col">Held out / comparison</th><th scope="col">Sequence</th><th scope="col">Embedding</th><th scope="col">Difference [interval]</th></tr></thead><tbody>{transfer_html}</tbody></table></div>
+<p class="note">Matched nonlinear MLPs provide the headline architectural comparison because an additive sequence-ridge model cannot express allele-specific peptide preferences across alleles. The original 30-member sequence ensemble scores {fmt(transfer_original["hla"]["baseline_score"])} under HLA holdout and {fmt(transfer_original["joint"]["baseline_score"])} under joint holdout; expanding sequence selection does not consistently improve this reference. Because Boltz-2 brings broader molecular context and prior structural training, holding out HLA groups from supervised fitting does not establish structural novelty during pretraining.</p>
+  <p class="source">{path_link(transfer_base + 'comparisons.csv', 'All transfer comparisons')}</p>
+  </div></details>
+</section>
+<section id="adaptation" aria-labelledby="adaptation-title">
+  <p class="eyebrow">03 · Few-shot adaptation</p>
+  <h2 id="adaptation-title">Twenty existing measurements per target HLA type improve stability ranking</h2>
+  <p>Using 20 existing measurements for a target HLA type allows Boltz-feature models to adapt stability rankings for other peptides of that HLA.</p>
+  <p class="note">We fit a separate linear ridge model across 68 eligible alleles under joint HLA-group and peptide-group holdout. Because both the model and query panel differ from the transfer analysis, their scores are not directly comparable.</p>
+  <div class="main-result"><div><p class="metric-label">Paired gain in ranking correlation</p><p class="effect">{fmt(few['delta'], True)}</p><p class="uncertainty">Conditional 98.33% family-adjusted interval [{fmt(few_family['ci_low'], True)}, {fmt(few_family['ci_high'], True)}]</p></div>
+  <div class="score-pair"><p><span>0 target-allele measurements</span><strong>{fmt(few_zero)}</strong></p><p><span>20 existing target-allele measurements</span><strong>{fmt(few_twenty)}</strong></p></div></div>
+  <details><summary>Learning curves, support-query design, and allele eligibility</summary><div class="detail-content">
+<p>In this separate retrospective ridge study, query identities are fixed across label budgets within each of three support designs (not identical across all three designs), and the intersection of eligible allele labels across designs gives 68 alleles.</p>
+<figure><img src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="Learning curves for sequence and Boltz representations, with the positive family-adjusted interval for Boltz adaptation at twenty labels."><figcaption>Scores average three fixed support-set sampling designs across 68 target alleles. Support and query peptide families are excluded from source-model fitting. R0 is additive sequence ridge, and R5 uses Boltz features. The four-member sequence ensemble is a reduced reference comparator, not the fully tuned sequence selector. The interval at 20 labels conditions on these three fixed support designs. Curve uncertainty bands are not estimated.</figcaption></figure>
+<p class="source">{path_link(few_base + 'absolute_curves.csv', 'Exact learning curves')} · {path_link(few_base + 'primary_family3_interval.json', 'Primary family interval')} · <a href="figures/fewshot_curves.svg">Download figure</a></p>
+  </div></details>
+</section>
+<section id="extensions" aria-labelledby="extensions-title">
+  <p class="eyebrow">04 · Additional descriptors and learners</p>
+  <h2 id="extensions-title">Tested descriptors and learners show no established extra gain</h2>
+  <p>Adding ProteinMPNN inverse-folding scores, FoldX energy terms, pairwise ranking losses, or hybrid learners showed no established extra benefit beyond Boltz-2 features in tested comparisons. Confidence intervals span zero, which neither establishes equivalence nor rules out useful effects.</p>
+  <details><summary>ProteinMPNN, FoldX, ranking-loss, and hybrid-learner comparisons</summary><div class="detail-content">
+<p>We next test whether supplementing frozen Boltz trunk embeddings with explicit inverse-folding likelihoods or physical energy terms adds predictive signal. On an identity-selected, allele-balanced 4,449-pair panel (at most 64 rows per allele, with 69 scoring alleles eligible under at least 20 rows and varying labels), matched two-member MLPs evaluate two augmentations: adding complex-context ProteinMPNN scores (C) to a reference of Boltz plus peptide-only ProteinMPNN scores (Boltz+P), and adding repaired FoldX energy descriptors to Boltz features alone. The full-cohort extension described next evaluates a different contrast (R5+P+C versus R5) rather than a sample-size change alone.</p>
+  <div class="table-scroll" role="region" aria-label="Descriptor results" tabindex="0"><table><caption>Matched MLPs · 69 alleles · conditional 98.33% family intervals</caption><thead><tr><th scope="col">Added information</th><th scope="col">Reference</th><th scope="col">Augmented</th><th scope="col">Difference [interval]</th></tr></thead><tbody>{descriptor_html}</tbody></table></div>
+  <p>A post-hoc extension of the ProteinMPNN comparison to all 19,716 development pairs, selected after the subset analysis, yields {interval(full['main'])} relative to Boltz alone (pointwise 95% interval). Alternative pairwise ranking losses ({interval(ranking)}) and hybrid learners ({interval(hybrid)}) also yield intervals spanning zero. Because such intervals remain compatible with small effects, these experiments establish neither added benefit nor equivalence.</p>
+  <p class="source">{path_link('reports/followup3/inverse_execution_v2/comparisons.csv', 'ProteinMPNN')} · {path_link('reports/followup3/energy_execution_v2/comparisons.csv', 'FoldX')} · {path_link('reports/followup3/inverse_fulltrain_candidate/comparisons.csv', 'Full-cohort extension')} · {path_link(ranking_base + 'comparisons.csv', 'Ranking loss')} · {path_link(hybrid_base + 'comparisons.csv', 'Hybrid learners')}</p>
+  </div></details>
+</section>
+<section id="elution" aria-labelledby="elution-title">
+  <p class="eyebrow">05 · Secondary sequence-model benchmark</p>
+  <h2 id="elution-title">Sequence stability model separates naturally presented and comparison peptides</h2>
+  <p>The sequence stability model separates naturally presented peptides from proteome comparison peptides in external MHC Motif Atlas data without retraining. Across {elution['n_alleles']} alleles, we compare {elution['n_ligands']:,} observed nine-residue peptide–HLA pairs against {elution['n_decoys']:,} comparison pairs from the human proteome. These comparison peptides (decoys) are proteome reference sequences, not verified nonbinders or unpresented peptides.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Median per-allele AUROC across {elution['n_alleles']} alleles, measuring separation between observed and comparison peptides (higher is better)." tabindex="0"><table><caption>Median per-allele AUROC across {elution['n_alleles']} alleles, measuring separation between observed and comparison peptides (higher is better).</caption><thead><tr><th scope="col">Benchmark condition</th><th scope="col">AUROC</th></tr></thead><tbody>
+<tr><th scope="row">Comparison peptides from the human proteome</th><td>{fmt(elution['sequence_ensemble']['none']['auroc'])}</td></tr>
+<tr><th scope="row">Peptides observed on other HLA types used as comparisons</th><td>{fmt(elution['sequence_ensemble']['swapped_decoys']['auroc'])}</td></tr>
+<tr><th scope="row">Shuffled HLA inputs with the same human-proteome comparison peptides</th><td>{fmt(elution['sequence_ensemble']['wrong_allele_pseudoseq']['auroc'])}</td></tr>
+  </tbody></table></div>
+  <p class="note">All {elution['excluded_peptides']:,} unique peptides from the entire stability dataset are excluded from both observed and comparison sets. With ten comparison pairs per observed pair, the main proteome comparison reaches a median per-allele AUPRC of 0.7804.</p>
+  <p>Because this benchmark evaluates the sequence model only, it neither confirms the Boltz-2 stability advantage nor provides independent kinetic validation.</p>
+  <p class="source">{path_link('reports/stage3c_summary.csv', 'Elution summary CSV')} · {path_link('reports/stage3c_provenance.json', 'Dataset provenance')} · {path_link('reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation', 'Supplementary elution details')}</p>
+</section>
+<section id="interpretation" class="discussion" aria-labelledby="interpretation-title">
+  <p class="eyebrow">Interpretation</p>
+  <h2 id="interpretation-title">What remains to be tested</h2>
+  <p>All stability evaluations rely on one existing scintillation proximity assay that tracks β2-microglobulin dissociation as a stability proxy and contains unresolved zero-valued labels. The models rank recorded stability rather than predicting calibrated half-lives or immunogenicity. Independent kinetic validation is still needed.</p>
+  <details><summary>Conditional resampling intervals and three-comparison family adjustment</summary><div class="detail-content">
+<p>All confidence intervals resample saved out-of-fold predictions while holding fitted models and selection choices fixed, using peptide-cluster resampling for peptide holdout and crossed HLA-group by peptide-cluster resampling for transfer and adaptation. These conditional intervals omit variance from refitting models, collecting new measurements, and selecting follow-up studies adaptively. One three-comparison family spans 20-label R5 adaptation, ProteinMPNN complex context beyond peptide-only, and FoldX augmentation; the 98.33% intervals correct only that declared family, not project-wide exploration.</p>
+  </div></details>
+</section>
+<footer><p>For related context, see the supplementary results on <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons">earlier sequence baselines</a> and <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation">ligand presentation</a>.</p><p>{path_link('reports/MANUSCRIPT.md', 'Manuscript')} · {path_link('reports/REPORT.md', 'Supplementary results')} · {path_link('EVALUATION.md', 'Evaluation methods')} · {path_link('docs/DATASETS.md', 'Dataset and assay')} · {path_link('docs/ROUND2_INFERENCE.md', 'Use the released models')}</p><p><a href="round2-data.json">Source values and hashes</a> · <a href="intro/">Peptide–HLA biology animation</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability">Code and evidence</a></p></footer>
+'''
+    payload = {'schema': 'scientific-submission.2', 'endpoint': 'median within-allele Spearman',
+               'scope': 'conditional development assessment; no independent confirmation',
+               'cohort': cohort, 'main': primary, 'contact_control': contact,
+               'allele_summary': {key: allele[key] for key in ('n_alleles', 'higher', 'lower', 'ties')},
+               'transfer': transfer_rows, 'transfer_original_reference': transfer_original, 'fewshot': {'primary': few, 'family_interval': few_family, 'curves': curves},
+               'descriptor_comparisons': descriptor_rows, 'full_cohort': full,
+               'ranking': ranking, 'hybrid': hybrid, 'sequence_elution': elution,
+               'training_label_budget': {'curves': budget_curves, 'advantage_change_25_vs_100': budget_contrast},
+               'source_sha256': dict(sorted(SOURCES.items()))}
+    return body.strip(), json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + '\n'
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check', action='store_true', help='Check generated page, figures, evidence and links')
+    parser.add_argument('--check-full-cohort', action='store_true', help='Check all saved full-cohort comparison and fixed-query rows')
+    args = parser.parse_args()
+    if args.check_full_cohort:
+        full_cohort_evidence()
+        print('Full-cohort evidence passed: 12 contrasts and 24 fixed-query entries.')
+        return
+    body, payload = build()
+    index = ROOT / 'site/index.html'
+    content = index.read_text()
+    if content.count(START) != 1 or content.count(END) != 1:
+        raise ValueError('Expected one generated section boundary pair')
+    before, remainder = content.split(START)
+    _, after = remainder.split(END)
+    updated = before + START + '\n' + body + '\n' + END + after
+    outputs = {index: updated.encode(), ROOT / 'site/round2-data.json': payload.encode()}
+    for name in ('fewshot_curves.svg', 'fewshot_curves.png'):
+        outputs[ROOT / 'site/figures' / name] = (ROOT / 'reports/followup3/figures' / name).read_bytes()
+    publication_link_check(outputs)
+    if args.check:
+        stale = [str(path.relative_to(ROOT)) for path, data in outputs.items() if not path.exists() or path.read_bytes() != data]
+        if stale:
+            raise SystemExit('Stale submission files: ' + ', '.join(stale))
+        print('Submission matches saved results; arithmetic, audits, figures and links passed.')
+    else:
+        for path, data in outputs.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        print('Built scientific submission and source-hashed evidence snapshot.')
+
+
+if __name__ == '__main__':
+    main()

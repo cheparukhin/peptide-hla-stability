@@ -1,0 +1,155 @@
+{
+  "accepted_audits_unchanged": true,
+  "all_archive_members_match_existing_local_bytes": true,
+  "archives": {
+    "results_archive.tar.gz": {
+      "bytes": 24411096,
+      "regular_members": 70,
+      "sha256": "b77e2f74d7be1589414e67a9775fb50adda286336252690e9ddd791a5634c7f5"
+    },
+    "scores_archive.tar.gz": {
+      "bytes": 18994218,
+      "regular_members": 15273,
+      "sha256": "3f04ba4bd7cddaf444e931afe1795ec7bcb7163b3b27c37c4a323a8166f16aa0"
+    }
+  },
+  "authoritative_audits_sha256": {
+    "reports/followup3/inverse_fulltrain_candidate/INDEPENDENT_FINAL_REVIEW.json": "5322067fc91ad13140777c54dbe4841f4c36d6a1b5e3e69270de2b3c4ead7c87",
+    "reports/followup3/inverse_fulltrain_candidate/completion_audit.json": "e14be6aa8df24795c45c74333a232b1a85004a9cce82bd20ff8c2e12cd6bf7f0",
+    "reports/followup3/inverse_fulltrain_candidate/independent_audit.json": "7d57077b5e23c81586882b12be29d70c5300fe92cec929ce32d63abce17576e9",
+    "reports/followup3/inverse_fulltrain_candidate/independent_extraction_audit.json": "07537a814cf9b2dc6c4fed011e8709d45a1882f9f369766ff299fb56d7193bc3"
+  },
+  "base_features_sha256": "fdb15d5161637e3d4451e4678a5730a42a5e023012214f100b60fcf2b7aed2d4",
+  "cloud_mutated": false,
+  "conflicts": [],
+  "copied": [
+    {
+      "bytes": 213,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_0/child_000.start.json",
+      "sha256": "f453890f8e22ef5c99bf1caf8daf4b629cbd8f1adbc98be2ea9ef85845650177"
+    },
+    {
+      "bytes": 101,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_0/progress.json",
+      "sha256": "56e4832b7a61e1a54d334ddd7b2ff646593ac5daeb04b77a3b342bceb25dd46a"
+    },
+    {
+      "bytes": 213,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_1/child_000.start.json",
+      "sha256": "af08cb63e98172a8e810168a2ee34a607894b14cce1329ae04bddfed7cb7bb2a"
+    },
+    {
+      "bytes": 101,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_1/progress.json",
+      "sha256": "8d2991721c88ae9be78aff7665442b154e170d1dbddcd2dcbad2559e6ce5d4ae"
+    },
+    {
+      "bytes": 101,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_2/progress.json",
+      "sha256": "2be4e9cc272efff9b9155885785819ec8f78d7a4c7338e94fe47f0c951870c59"
+    },
+    {
+      "bytes": 213,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_2/child_000.start.json",
+      "sha256": "d78dfd89a572515c648deb96811392d20d2bb39c8c35fbe4ee6b7c7c4d3b0e86"
+    },
+    {
+      "bytes": 213,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_3/child_000.start.json",
+      "sha256": "67ead1eaa2e905d1721fb959ad592374ac321e276d856213d48358b99c9e8020"
+    },
+    {
+      "bytes": 101,
+      "path": "reports/followup3/resources/inverse_fulltrain_extract_3/progress.json",
+      "sha256": "296cf8ae9657e56b59ebe9e1564500e6ff78f3d64c09e7216d61ea3f7c5a1a8f"
+    },
+    {
+      "bytes": 155,
+      "path": "reports/followup3/resources/inverse_fulltrain_stage/child_000.start.json",
+      "sha256": "96b275e4bd40330adaf367930b07d86e1191f340d5e9da6c75821a5ecffeccf3"
+    },
+    {
+      "bytes": 101,
+      "path": "reports/followup3/resources/inverse_fulltrain_stage/progress.json",
+      "sha256": "e920c368aff5a9fd3f556a11570116cf455c3c30384d06ae1290415b7d8223b0"
+    }
+  ],
+  "deletion_action_performed": false,
+  "entries_checked": 15479,
+  "entries_in_scope": 15479,
+  "entry_ledger": "reports/followup3/resources/fulltrain_artifact_preservation_entries.jsonl",
+  "entry_ledger_sha256": "535b4edbb3ddb3db4a15a3cfdb54245b16bd02b84a54bce6979da64ce790712f",
+  "errors": [],
+  "existing_files_overwritten": false,
+  "finished_utc": "2026-10-13T19:22:47.597150+00:00",
+  "head_cell_artifacts_verified": 50,
+  "inventory_bytes": 242639222,
+  "limits": [
+    "Remote native JSON payloads were not reread; preservation relies on exact local archive member hashes plus authoritative independent extraction/final audits and remote path/size coverage.",
+    "Previously downloaded/verified archives, full baseline and archived head/report artifacts were not fetched again; current remote sizes are metadata consistency checks, not byte-hash proofs.",
+    "Dependency runtimes, model checkpoints, binaries and budget are outside this scientific-output preservation scope."
+  ],
+  "missing_copied": 10,
+  "native_archived_hashes_verified": 15267,
+  "native_remote_checks": "Exact path set and byte-size inventory; no per-row remote content RPC",
+  "native_rows": 15267,
+  "prior_closed_entries": 19458,
+  "prior_closed_preservation_sha256": "23f944e844b8bf7cd847b10cf16e483e9582e0ab07177e35761bab2652fddfc9",
+  "remote_content_rpcs": 138,
+  "remote_operations": [
+    "listdir",
+    "iterdir",
+    "read_file"
+  ],
+  "schema": "fulltrain-artifact-preservation/v1",
+  "status": "complete",
+  "terminal_resource_phases": {
+    "inverse_fulltrain_collect": {
+      "provider_exit_sha256": "61a33ca46351bae12c5d5d7347c37b5664017864b3c1fa4641c4e0a6a20d2ac9",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V9GFKYB9PNTNR9675FFQRV"
+    },
+    "inverse_fulltrain_extract_0": {
+      "provider_exit_sha256": "3d9adfd551f3f33f9d0ada2d2bf1052b7bdf72e5426d0af6c9a262a98a88f799",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V3DZGYGPG0PHZFYDAQVD4V"
+    },
+    "inverse_fulltrain_extract_1": {
+      "provider_exit_sha256": "3eb82c255dbf78174150e59277526d4be26be0cca0a43d69cb271a1a3f44774e",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V3E1QE48ZHAHA6FVFTQC8A"
+    },
+    "inverse_fulltrain_extract_2": {
+      "provider_exit_sha256": "13082a72b9adb4b30d0150a81b12c6b3ede8ca69eb99a7dc8b6cc78f25b7dda4",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V3E3YHZGAAEJ01NK65WH4J"
+    },
+    "inverse_fulltrain_extract_3": {
+      "provider_exit_sha256": "cc0f123d477548fcd70b812eebe6ef4304efab9d7a570c1823bded7ad7e9ef2e",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V3E652KKGZ94QB5SZMVS35"
+    },
+    "inverse_fulltrain_heads": {
+      "provider_exit_sha256": "7ce2cb27965cae640fa3fd281a2d7906e2f280578f9584ff69a71067c47f2c6e",
+      "returncode": 1,
+      "sandbox_id": "sb-01M4V9TJ13444F4GD283JD3ZRV"
+    },
+    "inverse_fulltrain_heads_v2": {
+      "provider_exit_sha256": "70f6d9bcd8ecffd8fd2a4a635e3c30aecc40e49dd8fd8f71090f89d2e9cf38a6",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4VADYT4RA01TNEQXVSF3123"
+    },
+    "inverse_fulltrain_report": {
+      "provider_exit_sha256": "7165900aafcb17ae33850b356056ba3e4dc51b804f674ee26dcad666d67a8dbc",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4VAXNMSNP6THGXGJF253VM7"
+    },
+    "inverse_fulltrain_stage": {
+      "provider_exit_sha256": "8b7c8c0e5fcc336de3c0f64b6ac4cbbaad3ba4da63a7458a38099ccbcfdc1767",
+      "returncode": 0,
+      "sandbox_id": "sb-01M4V3K5W5QJHCRZKNQGZAVAMD"
+    }
+  },
+  "volume": "pepstab-followup3-20261013",
+  "volume_id": "vo-v3jqoOK3YnChoWYBLMIvTx"
+}

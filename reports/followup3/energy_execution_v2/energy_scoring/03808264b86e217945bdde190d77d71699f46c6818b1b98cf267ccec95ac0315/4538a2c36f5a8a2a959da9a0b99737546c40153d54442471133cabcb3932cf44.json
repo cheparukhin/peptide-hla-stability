@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:11",
+  "peptide": "GLYLYRFHV",
+  "cluster_id": 1256,
+  "outer_fold": 3,
+  "complex_id": "A0211_GLYLYRFHV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_11/A0211_GLYLYRFHV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0211_GLYLYRFHV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_1pcipna8/input",
+        "--output-dir=/tmp/energy_repaired_1pcipna8/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 240.08467465499996
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0211_GLYLYRFHV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_1pcipna8/output",
+        "--output-dir=/tmp/energy_repaired_1pcipna8/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1838086230000044
+    }
+  ],
+  "metadata_sha256": "ce6a59c76880c4384fd1f6daba88938a9ebc067c0ce0d3a7998e06a0a5b05637",
+  "structure_sha256": "a9efe5914df2ca900db77e814f03218619f503286c13a9615238337eaaa48b16",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.177409,
+    "foldx_intraclashesgroup2": 15.9292,
+    "foldx_interaction_energy": -19.5564,
+    "foldx_backbone_hbond": -6.13231,
+    "foldx_sidechain_hbond": -9.28149,
+    "foldx_van_der_waals": -19.5953,
+    "foldx_electrostatics": -1.04016,
+    "foldx_solvation_polar": 25.4271,
+    "foldx_solvation_hydrophobic": -27.8747,
+    "foldx_van_der_waals_clashes": 5.6305,
+    "foldx_entropy_sidechain": 8.49714,
+    "foldx_entropy_mainchain": 4.93492,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.137587,
+    "foldx_backbone_clash": 1.46219,
+    "foldx_helix_dipole": -0.000666559,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.277512,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0185411,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 1.0,
+    "foldx_interface_residues_vdw_clashing": 1.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "e7286ebf28d0e8cc18387e12af5d6cc8fc4a9a95c46867d2873f05e3d8bd84f9",
+  "repaired_pdb_sha256": "6cf62b1f2e8885e40983afcb95ceb2b23e29ede20379bf08cdf76c6d5deb4af6",
+  "conversion_validation": {
+    "n_atoms": 3156,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "GLYLYRFHV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 248.94184657800008,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "round2_cloud_closeout.1",
+  "at_utc": "2026-10-12T06:57:36.433746+00:00",
+  "status": "authorized_compute_complete_all_apps_stopped",
+  "cache_app": {
+    "app_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+    "description": "pepstab-round2-boltz-extraction",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-10-12 02:03:50+01:00",
+    "stopped_at": "2026-10-12 07:46:25+01:00"
+  },
+  "cache_completed_rows": 19716,
+  "cache_completed_shards": 78,
+  "cache_unresolved_reservations": 0,
+  "cache_preemptions": 0,
+  "cache_runtime_budget_accounting_usd": 66.84310340712061,
+  "cache_limit_usd": 80,
+  "cache_provider_metered_usd_including_pilot": 65.08458831,
+  "sequence_conservative_accounting_including_preemptions_usd": 7.995705467500606,
+  "sequence_unresolved_reservations": 0,
+  "engineering_full_allowance_retained_usd": 2,
+  "conservative_total_including_full_engineering_allowance_usd": 76.83880887462121,
+  "incremental_limit_usd": 100,
+  "uncommitted_allowance_usd": 23.161191125378785,
+  "named_study_apps_provider_metered_usd": 70.28718361,
+  "account_ephemeral_metering_delta_from_before_usd": 73.44261062,
+  "metering_difference_unattributed_usd": 3.155427009999997,
+  "interpretation": [
+    "Runtime accounting includes startup/idle allowances and sequence lost-attempt reserves; full $2 engineering allowance remains retained rather than claimed spent.",
+    "Provider metering can lag. The monthly before/after account delta and hourly named-app totals use different snapshots and do not exactly reconcile; their difference is not assigned to an experiment without evidence.",
+    "This is not a final provider invoice or live remaining-credit balance. No unused allocation is transferred to another scope. Retained-volume storage remains separate.",
+    "Local-only supervised assessment is active; transfer and independent confirmation are incomplete."
+  ],
+  "watchdog_shutdown": "resources/runtime_guard/shutdown.json",
+  "source_sha256": {
+    "extractor/full_training/extraction_budget_ledger.json": "2fda32f79f7b87c2a581d4477a2eb31cb4149c84f1aaf17c486e62c8d29a4f27",
+    "extractor/full_training/fanout_controller/status.json": "a7cf77a453a2a4788040db5dd20d9f8ba7bcb15861083bac0927d4dfe2fb70da",
+    "extractor/full_training/feature_bundles.json": "24d1afeac0640e9b83d24aa75c3f23456c8629d2a1a82452acf3243f66c61799",
+    "resources/sequence_cost_closeout.json": "3f95cfcb7ad27ead383c64f9383d79e630910b726699812106d3b5ad86d1050a",
+    "resources/runtime_guard/shutdown.json": "3e545b3fbb7970e2cf236a985145fa74c7a73aa8b2384f3f12f97e71cc23d1e6",
+    "resources/modal_billing_20261012T065508Z.json": "bd9f068ebf08c575406905adaf1812d8dc97d2fb3f4bb501f3aecc608b148cae",
+    "resources/modal_billing_before.json": "1bd032dc2700c58718405d7e7c9787a417f1747b8c363c8aeb996a5fb58dd458"
+  }
+}

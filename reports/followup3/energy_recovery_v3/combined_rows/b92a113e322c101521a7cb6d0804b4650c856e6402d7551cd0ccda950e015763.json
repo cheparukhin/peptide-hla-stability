@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*44:05",
+  "peptide": "VEIGLGMPF",
+  "cluster_id": 4316,
+  "outer_fold": 4,
+  "complex_id": "B4405_VEIGLGMPF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_44_05/B4405_VEIGLGMPF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4405_VEIGLGMPF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5vylxa8a/input",
+        "--output-dir=/tmp/energy_repaired_5vylxa8a/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 229.5563316730004
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4405_VEIGLGMPF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5vylxa8a/output",
+        "--output-dir=/tmp/energy_repaired_5vylxa8a/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.175052971000696
+    }
+  ],
+  "metadata_sha256": "6a632ca4e544d26480c33bfb8c2b18151b2353a71a7a6fc0211f808e11464955",
+  "structure_sha256": "d541ec2c77859d9bddac37313855193eb14522899b40404495d397bed5f8c3a5",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.101033,
+    "foldx_intraclashesgroup2": 17.9511,
+    "foldx_interaction_energy": -26.1733,
+    "foldx_backbone_hbond": -6.20454,
+    "foldx_sidechain_hbond": -10.38,
+    "foldx_van_der_waals": -18.6144,
+    "foldx_electrostatics": -4.5135,
+    "foldx_solvation_polar": 26.507,
+    "foldx_solvation_hydrophobic": -25.1627,
+    "foldx_van_der_waals_clashes": 0.827259,
+    "foldx_entropy_sidechain": 7.68974,
+    "foldx_entropy_mainchain": 3.95269,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.181691,
+    "foldx_backbone_clash": 0.580744,
+    "foldx_helix_dipole": -0.00245064,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.454181,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "4aa59c5525b45797b8f90eca5de390cc4b8a537fdf6c8c27ac0a6ad66909f549",
+  "repaired_pdb_sha256": "54443455f3f6cdd20032110cfcc1d946636380c0586a53bc9000c21a7d3404d2",
+  "conversion_validation": {
+    "n_atoms": 3145,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VEIGLGMPF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 233.84269056399899,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

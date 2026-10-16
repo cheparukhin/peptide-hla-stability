@@ -1,0 +1,266 @@
+{
+  "schema": "round2_sequence_primary_completion_audit.1",
+  "generated_at_utc": "2026-10-12T02:56:49.052739+00:00",
+  "status": "passed",
+  "scope": "original-training development-only primary sequence outputs; no outcome scoring or fitting",
+  "protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+  "population_contract": {
+    "source_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "splits_sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data_hash": "558ab95517b6f0b7c3e9f60d088ad2afef4ace3a1d085a784ec8b7123c41c84b",
+    "fold_hash": "50fdca745c9e8e99e87b50741cfc9bd4c703e400aff8dd6469555ecdeea31b6f",
+    "n_rows": 19716
+  },
+  "coverage": {
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "n_alleles": 75,
+    "folds": 5,
+    "arms": [
+      "mlp_log",
+      "mlp_centred",
+      "tree_log",
+      "tree_centred",
+      "pairlogit",
+      "sequence_selector"
+    ],
+    "primary_members_total": 2100
+  },
+  "verified_checks": [
+    "All five primary completion markers exist and match the frozen protocol, outer-fold identity and held-row counts.",
+    "Frozen protocol content digest, original source/split/training population and five-fold manifest identity match.",
+    "Completion-bound prediction, ancestry, member, selection, selector and ranker-map input/content hashes match.",
+    "Every component and selector has unique exact held pair/cluster/allele identity and finite full-cohort predictions.",
+    "Per-component saved inner-score grid and mean/SE arithmetic replay; frozen one-SE parsimony selections replay.",
+    "Family selector replays from saved inner choices and its predictions equal the declared selected component.",
+    "Saved ancestry re-audits outer-cluster exclusion and predicted-cluster exclusion in all five folds.",
+    "Member totals, per-family fitting graph counts and final neural/tree ensemble sizes match the frozen fit graph.",
+    "Paired seed0/1 files match completion hashes and exact held identity for all five families in every fold.",
+    "Current active implementation hashes and each fold runtime code hashes match the reviewed implementation amendment."
+  ],
+  "limits": [
+    "Ranker mapping artifacts are hash-bound; this audit does not refit or independently replay ranker-map arithmetic.",
+    "Ancestry and selection checks validate saved evidence; no primary fitting repeated.",
+    "No scientific endpoint, test result or independent-confirmation claim produced."
+  ],
+  "folds": [
+    {
+      "outer_fold": 0,
+      "n_rows": 3944,
+      "n_clusters": 715,
+      "n_alleles": 75,
+      "members_total": 420,
+      "members_by_family": {
+        "mlp_centred": 102,
+        "mlp_log": 66,
+        "pairlogit": 168,
+        "tree_centred": 42,
+        "tree_log": 42
+      },
+      "final_members_by_family": {
+        "mlp_centred": 30,
+        "mlp_log": 30,
+        "pairlogit": 6,
+        "tree_centred": 6,
+        "tree_log": 6
+      },
+      "ancestry": {
+        "fold": 0,
+        "records": 473,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 1,
+      "n_rows": 3943,
+      "n_clusters": 718,
+      "n_alleles": 74,
+      "members_total": 420,
+      "members_by_family": {
+        "mlp_centred": 102,
+        "mlp_log": 66,
+        "pairlogit": 168,
+        "tree_centred": 42,
+        "tree_log": 42
+      },
+      "final_members_by_family": {
+        "mlp_centred": 30,
+        "mlp_log": 30,
+        "pairlogit": 6,
+        "tree_centred": 6,
+        "tree_log": 6
+      },
+      "ancestry": {
+        "fold": 1,
+        "records": 473,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 2,
+      "n_rows": 3943,
+      "n_clusters": 718,
+      "n_alleles": 75,
+      "members_total": 420,
+      "members_by_family": {
+        "mlp_centred": 102,
+        "mlp_log": 66,
+        "pairlogit": 168,
+        "tree_centred": 42,
+        "tree_log": 42
+      },
+      "final_members_by_family": {
+        "mlp_centred": 30,
+        "mlp_log": 30,
+        "pairlogit": 6,
+        "tree_centred": 6,
+        "tree_log": 6
+      },
+      "ancestry": {
+        "fold": 2,
+        "records": 473,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 3,
+      "n_rows": 3943,
+      "n_clusters": 718,
+      "n_alleles": 75,
+      "members_total": 420,
+      "members_by_family": {
+        "mlp_centred": 102,
+        "mlp_log": 66,
+        "pairlogit": 168,
+        "tree_centred": 42,
+        "tree_log": 42
+      },
+      "final_members_by_family": {
+        "mlp_centred": 30,
+        "mlp_log": 30,
+        "pairlogit": 6,
+        "tree_centred": 6,
+        "tree_log": 6
+      },
+      "ancestry": {
+        "fold": 3,
+        "records": 473,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    },
+    {
+      "outer_fold": 4,
+      "n_rows": 3943,
+      "n_clusters": 718,
+      "n_alleles": 74,
+      "members_total": 420,
+      "members_by_family": {
+        "mlp_centred": 102,
+        "mlp_log": 66,
+        "pairlogit": 168,
+        "tree_centred": 42,
+        "tree_log": 42
+      },
+      "final_members_by_family": {
+        "mlp_centred": 30,
+        "mlp_log": 30,
+        "pairlogit": 6,
+        "tree_centred": 6,
+        "tree_log": 6
+      },
+      "ancestry": {
+        "fold": 4,
+        "records": 473,
+        "rowsets": 90,
+        "outer_cluster_exclusion": true,
+        "predicted_cluster_exclusion": true
+      }
+    }
+  ],
+  "implementation_review": {
+    "reviewed_hashes_sha256": "ee2f066fc6ef41012e020529d06dfda3ffdb4830f94d10a9a0a0c7147124c56f",
+    "current_hashes_match": true,
+    "code_sha256": {
+      "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+      "pepstab/round2_sequence.py": "708ca3307ba71478eba62677982fcfe90dd6704165ce828ac6da7b7e77d6386f",
+      "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+      "scripts/round2_sequence.py": "a9986b6c7dfab5a6d347e6d7c6ce302d75bd8d614d4f53cc33d945ba0ccd3018",
+      "modal_app/round2_sequence.py": "aeb03a94960e9427a4d8ee1097e66fb73810268611615694e146fedd54b2db3a"
+    }
+  },
+  "primary_artifact_sha256": {
+    "reports/further_research/round2/sequence/protocol.json": "bf6d80e9aab50ea1737352b04035bdae524badf432584bbadebede1f0847871b",
+    "reports/further_research/round2/sequence/fold_manifest.csv": "d3a01774b286684dad438b55bb429d6bbd9fea648c9ad6d07b121afe430a9144",
+    "reports/further_research/round2/sequence/reviewed_implementation_hashes.json": "ee2f066fc6ef41012e020529d06dfda3ffdb4830f94d10a9a0a0c7147124c56f",
+    "reports/further_research/round2/sequence/fold_0/completed.json": "768e2058330fcc03dbb817c246ca75b0769945141f96c83b6bf874b455e230c4",
+    "reports/further_research/round2/sequence/fold_0/predictions.csv": "68b95d0ca6e488e9fd2bc9fd73f91efbb6c3005eec1572c8ba3024c6972c6ac8",
+    "reports/further_research/round2/sequence/fold_0/seed_predictions.csv": "3da42e546f526498bfe6803ebff0e2fcc869cf730fa36d0c3b4123602dc1d153",
+    "reports/further_research/round2/sequence/fold_0/ancestry.json": "be76c4c650f6b860a8bef18dc43f70e8f5355e5d1b6f79dc7c8287d5d6ab2564",
+    "reports/further_research/round2/sequence/fold_0/members.csv": "81c6769424c2de88629b21456790bcde5ed9dd2b6c78b92fedbd7434383d4c25",
+    "reports/further_research/round2/sequence/fold_0/selections.json": "3ec9701b752b3eb7ab95c773c8d40342df7c3932ff56fa2736bfd75da11fac0e",
+    "reports/further_research/round2/sequence/fold_0/selector.json": "7ab7d522b60bba9fb4b0e99c2e9e374311b613f8a1e8f8d8f40707e7878bd032",
+    "reports/further_research/round2/sequence/fold_0/ranker_map.json": "7ef3724d2b0a861f362283ea77efef77cf834b9cd1e341b091f0b4a1e499b0fa",
+    "reports/further_research/round2/sequence/fold_0/ranker_mapping_inputs.csv": "db5f34707ab6dcd4910013e30cc84385460230e1efad2082f5d9bc8fea6b0cbb",
+    "reports/further_research/round2/sequence/fold_0/runtime_manifest.json": "8872ed979da1b3a0feee78e447f2c2c2ed44509befd984c4dba851914df829ae",
+    "reports/further_research/round2/sequence/fold_1/completed.json": "cb8b873345aa6aff16edbe75dc46faff2e19e91181e04d9828d1655f8958786a",
+    "reports/further_research/round2/sequence/fold_1/predictions.csv": "47433761453158cd4e7c146dacc35e8582a08df08bc8b18bb6066fddb09ba906",
+    "reports/further_research/round2/sequence/fold_1/seed_predictions.csv": "21ae83f1333081c354de8da6f25b45cb7314d0eb7a4d1abd524443a54434bff5",
+    "reports/further_research/round2/sequence/fold_1/ancestry.json": "ce7f3d9a483d1333a338a49fa1cf783c9e4c9058aa4f82eff98a902664ef9a95",
+    "reports/further_research/round2/sequence/fold_1/members.csv": "6eb12b8b0d5643cbc67304636795676e6ec8bc66f722aeb551462a17aa05243a",
+    "reports/further_research/round2/sequence/fold_1/selections.json": "2d861e99156513bd27a0010c62e76f0a3574906b3728dd61bd92df95802e71fd",
+    "reports/further_research/round2/sequence/fold_1/selector.json": "94eedf1c39f47046f6314c55ac61dcb324c2206f1da710c3a3ccb1a3db5ab5d5",
+    "reports/further_research/round2/sequence/fold_1/ranker_map.json": "845be8629c40630c73ffceb102160aaf6e2794a10c439edf82cca478e6ca36a9",
+    "reports/further_research/round2/sequence/fold_1/ranker_mapping_inputs.csv": "e49d0937b3b6ce25392f06d50bfd0ff29fe16f5c016f33dc9c5eda466b68bcc9",
+    "reports/further_research/round2/sequence/fold_1/runtime_manifest.json": "a8e88faee7edd332aa0feb5ef3e0cc2c088ad374819551ddd1daa6dba784964a",
+    "reports/further_research/round2/sequence/fold_2/completed.json": "7132ea87dbd994798f06615dc622dd438f7c72e95d0cfd1ad48309e96d5a2f92",
+    "reports/further_research/round2/sequence/fold_2/predictions.csv": "86b47b27b0e472a03a5c85fa3873aa61a72a0fb3375b86f48fae5a5fc23adff3",
+    "reports/further_research/round2/sequence/fold_2/seed_predictions.csv": "18627044d66777c2ff35ccea28b63efcc1bf970c5546d2ae405dfb44bf7ff924",
+    "reports/further_research/round2/sequence/fold_2/ancestry.json": "4340376d4ae8307bc5df5a8a939a5a97428af42abc27dbe1c24c6b5e9226bb2e",
+    "reports/further_research/round2/sequence/fold_2/members.csv": "c175ed438f5cb756d586310267f3400963438f6ecc036b77904a31e059631eb5",
+    "reports/further_research/round2/sequence/fold_2/selections.json": "a1e6f589f2fd3047f901db38277128052f5f7fd56a6d9e7da9a7ba3575f8a1d6",
+    "reports/further_research/round2/sequence/fold_2/selector.json": "20ccdcf84873831b808462c5a8d69cd727ecec1b320f9e9a92347f037eed6044",
+    "reports/further_research/round2/sequence/fold_2/ranker_map.json": "edeffb859e1d9683a4bbd4ef32bd0e8e3c2414aad647e00ddd39c275b7a50ac5",
+    "reports/further_research/round2/sequence/fold_2/ranker_mapping_inputs.csv": "98511b2111631350e2ea247133e8a027901d6aca0653092daf69df2e740d3220",
+    "reports/further_research/round2/sequence/fold_2/runtime_manifest.json": "ad1f68309d66c4a89898a8ca23d1233f5dc2ddfe755b06d74327c956933a705b",
+    "reports/further_research/round2/sequence/fold_3/completed.json": "91791f2b536e7f9c9998a7b9587bd4fcc9c79be02abf7e44703c4cce1c3badd8",
+    "reports/further_research/round2/sequence/fold_3/predictions.csv": "06608de94f791c7cbd29cdcbd1691f98fb605718d733bbb3ec5d46f841485718",
+    "reports/further_research/round2/sequence/fold_3/seed_predictions.csv": "f9e418481538b67f4751daea9a7ed58532ba821c02169aa165ee8b357771fbd7",
+    "reports/further_research/round2/sequence/fold_3/ancestry.json": "8443f4bee0664b1e8fa17d8dc1af77338cbc8df8ea20047736ef305a5c1230b3",
+    "reports/further_research/round2/sequence/fold_3/members.csv": "abf087af8f1a075d152557fdab56fdfa29323f3f3893de8d2379d8e0b480c60a",
+    "reports/further_research/round2/sequence/fold_3/selections.json": "65372693c79e9cb36ffbc39fc4ec8c8533911fdc5771e0dce2b13657a80a018a",
+    "reports/further_research/round2/sequence/fold_3/selector.json": "403ccbb62063c05d8611caed96efafa7e3604b6bb79e9c7ce1095b67e2c97b5d",
+    "reports/further_research/round2/sequence/fold_3/ranker_map.json": "79fa0bef343e4f33d158688367393ccddaf87e1a5af91cff1a7642af29533f7f",
+    "reports/further_research/round2/sequence/fold_3/ranker_mapping_inputs.csv": "108b38857d10cddc93aa9527e0189404f4c7074b288efdc411dc6b62fa47b917",
+    "reports/further_research/round2/sequence/fold_3/runtime_manifest.json": "c1c0417e7f1179bb9f1c75c0e75cb921f39a769ebd35f9496723c8088f575e28",
+    "reports/further_research/round2/sequence/fold_4/completed.json": "a93f488500877515896db28fded2c52f093c644530a6538925777b3cfb348605",
+    "reports/further_research/round2/sequence/fold_4/predictions.csv": "f97e7706eb15723f55e85382f9462c01537a2ee89b7fc63943d5eeac50db3c12",
+    "reports/further_research/round2/sequence/fold_4/seed_predictions.csv": "e7aa75c3e630448f58e9d85f11a2f90ddc0a66b19a2c092f992b95d72f160765",
+    "reports/further_research/round2/sequence/fold_4/ancestry.json": "8976db93a408e13218964a565b0b1e58d7db2ac66c0f2c31604d35ac2a29e217",
+    "reports/further_research/round2/sequence/fold_4/members.csv": "9a94196d7d392e5894a47ea5ce64054309c322e5f76343168047c986ee17cb88",
+    "reports/further_research/round2/sequence/fold_4/selections.json": "89a2e8fb27c85645959838094c7752ba7f336b8b0f944ea21cdc6c789a892e8a",
+    "reports/further_research/round2/sequence/fold_4/selector.json": "2392585213abb4db82f0772f93d229612eb99648077aa7be91453d2c187005bd",
+    "reports/further_research/round2/sequence/fold_4/ranker_map.json": "a944fadbd27677a702a29dacfd7da4042d32e9d8a5943af3d9e9989dc6b4b0d4",
+    "reports/further_research/round2/sequence/fold_4/ranker_mapping_inputs.csv": "535c88a053ca89e3406ebb9c184598788deee2e2bbc99693c4c7ead46308ec84",
+    "reports/further_research/round2/sequence/fold_4/runtime_manifest.json": "8bfd7b3d8d4607599f98d9857dd57e3b56401fa8707aa1bb9261324051eabbf3"
+  },
+  "repeat_gate": {
+    "folds_present": [],
+    "folds_missing": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "all_five_complete": false,
+    "report_status": "pending_complete_execution_repeat_markers"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*41:01",
+  "peptide": "SESTIDIIL",
+  "cluster_id": 3758,
+  "outer_fold": 3,
+  "complex_id": "B4101_SESTIDIIL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_41_01/B4101_SESTIDIIL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4101_SESTIDIIL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_lusj2xvy/input",
+        "--output-dir=/tmp/energy_repaired_lusj2xvy/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 225.34376062
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4101_SESTIDIIL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_lusj2xvy/output",
+        "--output-dir=/tmp/energy_repaired_lusj2xvy/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.538850252999964
+    }
+  ],
+  "metadata_sha256": "0be7fea39969f51876926bb106ac30f9e4bf9e0c6963c3ff9adc453c7c37d72e",
+  "structure_sha256": "87f9637f37097b0cccb4f88427efbe41de06fa64674ddcb70c527ab9360e2c39",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.307226,
+    "foldx_intraclashesgroup2": 13.3121,
+    "foldx_interaction_energy": -14.4751,
+    "foldx_backbone_hbond": -5.02075,
+    "foldx_sidechain_hbond": -10.3931,
+    "foldx_van_der_waals": -17.9295,
+    "foldx_electrostatics": -4.94707,
+    "foldx_solvation_polar": 29.2484,
+    "foldx_solvation_hydrophobic": -23.4207,
+    "foldx_van_der_waals_clashes": 6.96187,
+    "foldx_entropy_sidechain": 7.50849,
+    "foldx_entropy_mainchain": 3.96534,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.1868,
+    "foldx_backbone_clash": 0.545558,
+    "foldx_helix_dipole": -0.00107813,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.786527,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.15274,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "112b2b92712366fcad235549c7b961a43afcc2ddadc0fced8f433c5b898773c7",
+  "repaired_pdb_sha256": "8d08564a1b28b3abd0a9c36b9f2229f4a6a13cc4a644c1f7634d85334c85e945",
+  "conversion_validation": {
+    "n_atoms": 3155,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005000010132789612,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SESTIDIIL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 229.91166111999974,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

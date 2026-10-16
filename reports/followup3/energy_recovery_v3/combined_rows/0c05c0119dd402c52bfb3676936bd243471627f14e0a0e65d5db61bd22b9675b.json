@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*41:01",
+  "peptide": "RQYERYTAL",
+  "cluster_id": 3490,
+  "outer_fold": 3,
+  "complex_id": "B4101_RQYERYTAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_41_01/B4101_RQYERYTAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4101_RQYERYTAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_e7js4tah/input",
+        "--output-dir=/tmp/energy_repaired_e7js4tah/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 249.7797757520002
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4101_RQYERYTAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_e7js4tah/output",
+        "--output-dir=/tmp/energy_repaired_e7js4tah/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.5355545000002166
+    }
+  ],
+  "metadata_sha256": "43499df9e07cdb150562061036eb173e0609f3004825f8b065540571b2885730",
+  "structure_sha256": "ef226566b615021d0c61443102de344819a9eaa022f2a82fd5d949f5774d8d6c",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.266937,
+    "foldx_intraclashesgroup2": 11.5694,
+    "foldx_interaction_energy": -10.2346,
+    "foldx_backbone_hbond": -5.74137,
+    "foldx_sidechain_hbond": -9.07436,
+    "foldx_van_der_waals": -19.5702,
+    "foldx_electrostatics": -2.71873,
+    "foldx_solvation_polar": 29.5873,
+    "foldx_solvation_hydrophobic": -24.1831,
+    "foldx_van_der_waals_clashes": 9.53335,
+    "foldx_entropy_sidechain": 7.97525,
+    "foldx_entropy_mainchain": 3.94907,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.177891,
+    "foldx_backbone_clash": 1.04786,
+    "foldx_helix_dipole": 0.0299635,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.340856,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.141191,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 51.0,
+    "foldx_interface_residues_clashing": 3.0,
+    "foldx_interface_residues_vdw_clashing": 3.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "97508502499e11f8973f370fdffe593a24a602542cf6cd8cebd39508ba4d8c8d",
+  "repaired_pdb_sha256": "4e09a8fe5adaaaaf7012053964b483c7d68fd6ae35e10c5a977e2db1d92bae5c",
+  "conversion_validation": {
+    "n_atoms": 3171,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RQYERYTAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 254.6593206969992,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:02",
+  "peptide": "KYMDNELVY",
+  "cluster_id": 2311,
+  "outer_fold": 1,
+  "complex_id": "A2402_KYMDNELVY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_02/A2402_KYMDNELVY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2402_KYMDNELVY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5ghvinat/input",
+        "--output-dir=/tmp/energy_repaired_5ghvinat/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 292.6224590850002
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2402_KYMDNELVY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5ghvinat/output",
+        "--output-dir=/tmp/energy_repaired_5ghvinat/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.852600874000018
+    }
+  ],
+  "metadata_sha256": "623cf201653c43177830ca4a9e67d2e83443dc6d58320499d5889e212e3df495",
+  "structure_sha256": "8383265bdf1f08e2731ce7b49369ca055727e8c5f94082f5a21dfec90248a4c2",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0229063,
+    "foldx_intraclashesgroup2": 12.4723,
+    "foldx_interaction_energy": -25.4737,
+    "foldx_backbone_hbond": -5.92293,
+    "foldx_sidechain_hbond": -9.84764,
+    "foldx_van_der_waals": -21.3316,
+    "foldx_electrostatics": -0.871129,
+    "foldx_solvation_polar": 25.8466,
+    "foldx_solvation_hydrophobic": -29.6617,
+    "foldx_van_der_waals_clashes": 1.76608,
+    "foldx_entropy_sidechain": 9.34997,
+    "foldx_entropy_mainchain": 5.35271,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.129138,
+    "foldx_backbone_clash": 1.07026,
+    "foldx_helix_dipole": 0.0124421,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.395472,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.099833,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 53.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "5907ecd2ae9c82e945cbee033772829e8fe6f354206b8c6663a3c84373e32ab5",
+  "repaired_pdb_sha256": "d3169d8b24b9e3611d9177ff99cb09ec94b245d623f44597d24f63df84130dcb",
+  "conversion_validation": {
+    "n_atoms": 3139,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "KYMDNELVY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 299.011123687,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

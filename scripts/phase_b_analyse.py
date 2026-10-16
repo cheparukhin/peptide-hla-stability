@@ -84,6 +84,8 @@ def oracle_sigma(mu: np.ndarray, is_floor: np.ndarray, threshold: float,
 
 
 def main() -> int:
+    from pepstab.legacy_assessment import refuse_legacy_assessment
+    refuse_legacy_assessment("phase_b_analyse.py")
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--suffix", default="")

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*24:03",
+  "peptide": "HYDAPVFPI",
+  "cluster_id": 1557,
+  "outer_fold": 2,
+  "complex_id": "A2403_HYDAPVFPI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_24_03/A2403_HYDAPVFPI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2403_HYDAPVFPI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_fikhzgv_/input",
+        "--output-dir=/tmp/energy_repaired_fikhzgv_/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 244.06876975699993
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2403_HYDAPVFPI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_fikhzgv_/output",
+        "--output-dir=/tmp/energy_repaired_fikhzgv_/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1557162630001585
+    }
+  ],
+  "metadata_sha256": "55ef2c55e798beb69b2567461c8b4b6113b621b4c218941cb64a3dfc71e50ab1",
+  "structure_sha256": "46575b440179a297f3c0277039c7b892cc49ed72cd0e3f8e81d0ac7b10b6bfbc",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.115017,
+    "foldx_intraclashesgroup2": 9.87105,
+    "foldx_interaction_energy": -24.5329,
+    "foldx_backbone_hbond": -5.53575,
+    "foldx_sidechain_hbond": -8.16646,
+    "foldx_van_der_waals": -20.1575,
+    "foldx_electrostatics": -5.00434,
+    "foldx_solvation_polar": 28.5861,
+    "foldx_solvation_hydrophobic": -28.0224,
+    "foldx_van_der_waals_clashes": 3.14396,
+    "foldx_entropy_sidechain": 7.3279,
+    "foldx_entropy_mainchain": 3.73663,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0262665,
+    "foldx_backbone_clash": 0.84685,
+    "foldx_helix_dipole": -0.00171332,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.701087,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.235486,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "f5190dbf9b2d9a48c7ce747e28f82f107b165aaeb9e0401aeb4766b25b452ddf",
+  "repaired_pdb_sha256": "ff7bcf2ec8bda304d9b6d77062ac2be668392ef81461cc1aad9c221c91a2f7cb",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "HYDAPVFPI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 253.34862439799986,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

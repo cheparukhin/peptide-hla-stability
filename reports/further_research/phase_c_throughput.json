@@ -1,0 +1,188 @@
+{
+  "gpu": "L4",
+  "device": "NVIDIA L4",
+  "total_gib": 22.03,
+  "load_seconds": 14.9,
+  "bf16_supported": true,
+  "cells": [
+    {
+      "regime": "frozen_extraction",
+      "dtype": "fp32",
+      "batch": 1,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.0625,
+      "seconds_per_pair": 0.06251,
+      "pairs_per_second": 16.0,
+      "peak_gib": 3.14
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "fp32",
+      "batch": 8,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.4544,
+      "seconds_per_pair": 0.0568,
+      "pairs_per_second": 17.6,
+      "peak_gib": 3.41
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "fp32",
+      "batch": 16,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.9034,
+      "seconds_per_pair": 0.05646,
+      "pairs_per_second": 17.7,
+      "peak_gib": 3.71
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "fp32",
+      "batch": 32,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 1.8443,
+      "seconds_per_pair": 0.05764,
+      "pairs_per_second": 17.4,
+      "peak_gib": 4.32
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "bf16",
+      "batch": 1,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.0649,
+      "seconds_per_pair": 0.06489,
+      "pairs_per_second": 15.4,
+      "peak_gib": 3.13
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "bf16",
+      "batch": 8,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.1381,
+      "seconds_per_pair": 0.01726,
+      "pairs_per_second": 57.9,
+      "peak_gib": 3.27
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "bf16",
+      "batch": 16,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.3094,
+      "seconds_per_pair": 0.01934,
+      "pairs_per_second": 51.7,
+      "peak_gib": 3.44
+    },
+    {
+      "regime": "frozen_extraction",
+      "dtype": "bf16",
+      "batch": 32,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.6638,
+      "seconds_per_pair": 0.02074,
+      "pairs_per_second": 48.2,
+      "peak_gib": 3.76
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "fp32",
+      "batch": 1,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.1042,
+      "seconds_per_pair": 0.1042,
+      "pairs_per_second": 9.6,
+      "peak_gib": 4.58
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "fp32",
+      "batch": 8,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.5565,
+      "seconds_per_pair": 0.06956,
+      "pairs_per_second": 14.4,
+      "peak_gib": 5.09
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "fp32",
+      "batch": 16,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 1.0919,
+      "seconds_per_pair": 0.06824,
+      "pairs_per_second": 14.7,
+      "peak_gib": 6.3
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "fp32",
+      "batch": 32,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 2.1941,
+      "seconds_per_pair": 0.06857,
+      "pairs_per_second": 14.6,
+      "peak_gib": 8.73
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "bf16",
+      "batch": 1,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.1192,
+      "seconds_per_pair": 0.11917,
+      "pairs_per_second": 8.4,
+      "peak_gib": 4.59
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "bf16",
+      "batch": 8,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.1989,
+      "seconds_per_pair": 0.02486,
+      "pairs_per_second": 40.2,
+      "peak_gib": 4.82
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "bf16",
+      "batch": 16,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.4031,
+      "seconds_per_pair": 0.02519,
+      "pairs_per_second": 39.7,
+      "peak_gib": 5.58
+    },
+    {
+      "regime": "adaptation_top4",
+      "dtype": "bf16",
+      "batch": 32,
+      "steps": 10,
+      "tokens_per_row": 195,
+      "seconds_per_step": 0.8401,
+      "seconds_per_pair": 0.02625,
+      "pairs_per_second": 38.1,
+      "peak_gib": 7.11
+    }
+  ],
+  "residues_per_pair": 191,
+  "profile": "a-cheparukhin",
+  "forecast_usd_with_margin": 0.164
+}

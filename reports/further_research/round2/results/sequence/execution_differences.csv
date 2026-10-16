@@ -1,0 +1,15 @@
+baseline,candidate,comparison_kind,interpretation,n_rows,mean_absolute_prediction_difference,maximum_absolute_prediction_difference,prediction_rms_difference
+mlp_log__seed0,mlp_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.12620041013634653,0.7912691831588745,0.1640774252697718
+mlp_centred__seed0,mlp_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.12922417023656405,0.8776733040809637,0.16817320136009045
+tree_log__seed0,tree_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.04633484626295896,0.3345692101899287,0.05924223790374699
+tree_centred__seed0,tree_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.0468029813025343,0.28852150292679823,0.05986258992275355
+pairlogit__seed0,pairlogit__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise,19716,0.14629545265850413,0.9715584196554539,0.18729016418202662
+mlp_log,mlp_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+mlp_log,mlp_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+mlp_log__repeat1,mlp_log__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0
+tree_log,tree_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+tree_log,tree_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+tree_log__repeat1,tree_log__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0
+pairlogit,pairlogit__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+pairlogit,pairlogit__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation,19716,0.0,0.0,0.0
+pairlogit__repeat1,pairlogit__repeat2,execution_repeat,two identical-seed locked refits,19716,0.0,0.0,0.0

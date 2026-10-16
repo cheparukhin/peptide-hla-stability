@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*29:02",
+  "peptide": "RINEGWPAY",
+  "cluster_id": 3306,
+  "outer_fold": 0,
+  "complex_id": "A2902_RINEGWPAY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_29_02/A2902_RINEGWPAY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A2902_RINEGWPAY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_n27gz1xg/input",
+        "--output-dir=/tmp/energy_repaired_n27gz1xg/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 215.34525913300013
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A2902_RINEGWPAY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_n27gz1xg/output",
+        "--output-dir=/tmp/energy_repaired_n27gz1xg/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.4292466470001273
+    }
+  ],
+  "metadata_sha256": "e0234d66811a0dc39c541339105b09beacea9e25ea5883075ac55bf627d63c5e",
+  "structure_sha256": "a7489793d744dd85d9c8540203af7d3bf5d98f61ec5e722630814704863cb7a2",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.159165,
+    "foldx_intraclashesgroup2": 10.3686,
+    "foldx_interaction_energy": -20.4031,
+    "foldx_backbone_hbond": -5.28253,
+    "foldx_sidechain_hbond": -9.79869,
+    "foldx_van_der_waals": -20.2333,
+    "foldx_electrostatics": -0.0812207,
+    "foldx_solvation_polar": 26.7918,
+    "foldx_solvation_hydrophobic": -26.8227,
+    "foldx_van_der_waals_clashes": 1.75787,
+    "foldx_entropy_sidechain": 9.56439,
+    "foldx_entropy_mainchain": 4.24649,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0687524,
+    "foldx_backbone_clash": 0.916143,
+    "foldx_helix_dipole": 0.0128427,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.626908,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "eb0d52882eb31efe39d66ec79df5ae8b6b1efea526fe97eb16ec326dfa715630",
+  "repaired_pdb_sha256": "d4a4dea89b6cacf5b63ac28694bcced313fa1b68af258f64667329753e20ace7",
+  "conversion_validation": {
+    "n_atoms": 3134,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0004999637603759766,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "RINEGWPAY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 219.22745352000038,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

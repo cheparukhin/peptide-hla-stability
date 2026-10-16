@@ -1,0 +1,41 @@
+{
+  "authorization": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2/authorization.json",
+    "sha256": "d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c"
+  },
+  "authorization_sha256": "d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c",
+  "cleanup_error": null,
+  "closure": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_main/interruption_20261012/closure.json",
+    "sha256": "de37a6bc83c8ef690eec98ac693873b9343eec46eda91c961e32e0af74c03fb2"
+  },
+  "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+  "dispatched_cells": [
+    "joint/h2_p3",
+    "joint/h2_p4",
+    "joint/h3_p0",
+    "joint/h3_p1",
+    "joint/h3_p2",
+    "joint/h3_p3",
+    "joint/h3_p4",
+    "joint/h4_p0",
+    "joint/h4_p1",
+    "joint/h4_p2"
+  ],
+  "error": "RuntimeError('worker failed: joint/h4_p2, exit 1; queued dispatch frozen')",
+  "exit_code": 1,
+  "finished_at_utc": "2026-10-12T17:26:54.688757+00:00",
+  "local_failure_closure": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_recovery/interruption_20261012_153054/closure.json",
+    "sha256": "8ee0c6abbbb8012d6004cf52497c6b545f9a42830e0af0371197fa939ea6eb06"
+  },
+  "local_failure_exit": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/controller/exit_receipt.json",
+    "sha256": "0b5e8443691204c11c3528932cdfb895970b4a919f7f6a4db7aaefd14c08a8f5"
+  },
+  "pid": 59308,
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "schema": "final_transfer_durable_exit.1",
+  "scope_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2",
+  "status": "failed"
+}

@@ -1,0 +1,125 @@
+{
+  "schema": "final_transfer_local_engineering_timing.1",
+  "approved": true,
+  "authorization_origin": "Root explicitly authorized exactly two extra engineering-only fits; no scientific scope expansion",
+  "created_at_utc": "2026-10-12T13:19:34.192863+00:00",
+  "pid": 78831,
+  "maximum_fit_count": 2,
+  "additional_to_scientific_graph": true,
+  "scientific_fit_count_unchanged": 10830,
+  "candidates": [
+    {
+      "id": "tree_log_d8",
+      "procedure": "tree_log",
+      "learner": "rmse",
+      "target": "log",
+      "depth": 8
+    },
+    {
+      "id": "tree_centred_d8",
+      "procedure": "tree_centred",
+      "learner": "rmse",
+      "target": "centred",
+      "depth": 8,
+      "k": 20
+    }
+  ],
+  "regime": "hla",
+  "outer_cell": "h0",
+  "stopping_cell": "h0",
+  "seed": 0,
+  "source_sha256": {
+    "pepstab/final_transfer.py": "aba5a72e1183a93df707bb2350d32a78b73a6a5cf44360ba73a3268256a9cb9d",
+    "scripts/final_transfer.py": "c20906775caa14616c03d94a36f34ce4b6925292edb506a9aa03ec9afb88e801",
+    "scripts/final_transfer_pipeline.py": "e98e5e1953d52745fcca5da7cdd164275ed27500575bdb8d56638a04facc31ff",
+    "scripts/final_transfer_report.py": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca",
+    "modal_app/final_transfer.py": "8603bf6989aa92a553df751aba28673cfc424efca3979205c978126c100e48c4",
+    "tests/test_final_transfer.py": "25278ee2e92d0d0f886c2ae0466479c3afe15a0a9ca807f76dd323d50f768886",
+    "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551",
+    "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
+    "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
+    "scripts/final_runtime_guard.py": "d1b247769f51e17d39ca72f4ff29dec25cdb8e283331ab7c510cd9b7f2a0a673",
+    "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+    "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
+    "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
+    "tests/test_final_runtime_guard.py": "0c40c13fa331e4651c4c471ce387afce6aa2258b9c8ad3bb189c8854d1473f21",
+    "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
+    "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
+    "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+    "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+    "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3"
+  },
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "protocol_sha256": "9c000ed2217e122977218d1049a88fdd3cddddc0b65c3ab91801afad930defa7",
+  "inputs_sha256": "cd1fac66d2756acc1291fb70a796ef35e075cc900a3eaaa2ceefa742c3f144fa",
+  "rowset_sha256": {
+    "gradient": "86bffeab71c164ced9e7045dc6273c0458b527a20cd2af6b43ef18938e68afc2",
+    "stopping": "4dfb3cd9f4c936cde80fc0d9043b92950a02c472e94ab9eb084f3c8e6e8329a5",
+    "held": "cb571348f81631f5cd2bb38ee55ad1e6c80840519cbe6c33793b2205d534e1a1"
+  },
+  "original_targets_sha256": {
+    "gradient": "7b67eb64506d5ee0aac6e840f118115d8b9f927b0b949b54d3da145585f89d2d",
+    "stopping": "361bad0c90cafe09a3db10b3f35a9c0cc3d1dd8312988b79f50b11e10b3d8cf0"
+  },
+  "training_targets_sha256": {
+    "tree_log_d8": {
+      "gradient": "7b67eb64506d5ee0aac6e840f118115d8b9f927b0b949b54d3da145585f89d2d",
+      "stopping": "361bad0c90cafe09a3db10b3f35a9c0cc3d1dd8312988b79f50b11e10b3d8cf0"
+    },
+    "tree_centred_d8": {
+      "gradient": "dc3723d7ff389bc9ccca08a20d2293e0f8a296369b71416fe960baab2bccf46f",
+      "stopping": "0b8048e9bd47af53441357a2beadf709f182c90f12b75227d7ea18ccc76daf19"
+    }
+  },
+  "feature_sha256": {
+    "gradient": "1bf0305f1095a314a083ec37299090b017be9c190c666f9bb6b9cf6d751ac2ba",
+    "stopping": "368aba6b90bb176c7b2e7e897b69c13c84817e1ddde994411c8700bda6571416",
+    "held": "53f0db6da2b53299b6017a24b858466cc4ddd20432500d81f6b6609351c92e41"
+  },
+  "shapes": {
+    "gradient": [
+      10379,
+      860
+    ],
+    "stopping": [
+      5378,
+      860
+    ],
+    "held": [
+      3959,
+      860
+    ]
+  },
+  "threads": 2,
+  "maximum_processes": 1,
+  "retries": 0,
+  "held_scores_forbidden": true,
+  "predictions_retained": "finite checks and SHA256 only",
+  "scaler": null,
+  "tree_params": {
+    "iterations": 2000,
+    "od_type": "Iter",
+    "od_wait": 100,
+    "bootstrap_type": "Bernoulli",
+    "subsample": 0.8,
+    "rsm": 1.0,
+    "random_strength": 1.0,
+    "border_count": 128,
+    "learning_rate": 0.06,
+    "l2_leaf_reg": 10.0,
+    "thread_count": 2,
+    "verbose": false,
+    "allow_writing_files": false
+  }
+}

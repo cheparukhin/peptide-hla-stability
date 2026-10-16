@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*30:02",
+  "peptide": "MTAAQIRRY",
+  "cluster_id": 2885,
+  "outer_fold": 0,
+  "complex_id": "A3002_MTAAQIRRY",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_30_02/A3002_MTAAQIRRY",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3002_MTAAQIRRY.pdb",
+        "--pdb-dir=/tmp/energy_repaired_l5vow6zs/input",
+        "--output-dir=/tmp/energy_repaired_l5vow6zs/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 220.71904061799978
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3002_MTAAQIRRY_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_l5vow6zs/output",
+        "--output-dir=/tmp/energy_repaired_l5vow6zs/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.2780209819998163
+    }
+  ],
+  "metadata_sha256": "c655c3e0229d446398a7ba021e43e2ebb999b9104a0f380419d20c198b47152d",
+  "structure_sha256": "ad054f0e2c51000f05da50ed14a0eb9a2848b8b1171436b62482618f4d5ffd75",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.287346,
+    "foldx_intraclashesgroup2": 12.6726,
+    "foldx_interaction_energy": -23.4748,
+    "foldx_backbone_hbond": -7.3368,
+    "foldx_sidechain_hbond": -14.5516,
+    "foldx_van_der_waals": -21.0761,
+    "foldx_electrostatics": -3.25135,
+    "foldx_solvation_polar": 30.0829,
+    "foldx_solvation_hydrophobic": -24.9921,
+    "foldx_van_der_waals_clashes": 2.88527,
+    "foldx_entropy_sidechain": 10.0466,
+    "foldx_entropy_mainchain": 5.13546,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.25449,
+    "foldx_backbone_clash": 1.25509,
+    "foldx_helix_dipole": 0.00304535,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.815889,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.141293,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 51.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "6c7d54d8f58dbddbbb3a06288b01035fced9018e85199a75e1c501510221c69f",
+  "repaired_pdb_sha256": "00127ca9e518fb702ea21078f2ca922d4b3b7112420bb2e9a2ee93d7cb10caaf",
+  "conversion_validation": {
+    "n_atoms": 3145,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "MTAAQIRRY"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 224.59826572099973,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

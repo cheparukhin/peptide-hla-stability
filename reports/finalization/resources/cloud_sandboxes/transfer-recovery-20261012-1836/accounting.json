@@ -1,0 +1,35 @@
+{
+  "schema": "final_cloud_accounting.1",
+  "phase": "transfer_recovery",
+  "prior_conservative_liability_usd": 5.28938200305646,
+  "future_envelope_usd": 10,
+  "other_scopes_reserved_usd": 35,
+  "total_ceiling_usd": 100,
+  "phase_cap_usd": 10,
+  "reserved_phase_usd": 10,
+  "conservative_spend_usd": 0,
+  "reconciliation": {
+    "path": "reports/finalization/resources/transfer_durable/interruption_20261012_172654/reconciliation.json",
+    "sha256": "4bde0316c72a8630c3e4b2b22f0b848dd5c48b0a0a67719396a9df1fee5532ca"
+  },
+  "interpretation": "Separate recovery reservation;35USD future finalization envelope remains reserved. Not invoiced spend or a live account balance.",
+  "zero_fit_startup_closeout": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1756/closeout.json",
+    "sha256": "05cacece6fa87f5cc579578e1648e2fa5bf5de48fecf96d5562195d2670833bd"
+  },
+  "image_build_reserve_usd_inside_other_scopes": 0.25,
+  "zero_fit_startup_closeouts": [
+    {
+      "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1756/closeout.json",
+      "sha256": "05cacece6fa87f5cc579578e1648e2fa5bf5de48fecf96d5562195d2670833bd"
+    },
+    {
+      "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1815/closeout.json",
+      "sha256": "f0ddca60fd3340337d052b8793cd058c6fec5c0e25cdc7f2d06199a42d3c126d"
+    }
+  ],
+  "startup_repair": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/repair_amendment.json",
+    "sha256": "7e04695b63d91153aa6412ccb246935102f65c770e5a751b7cc685b07df905ed"
+  }
+}

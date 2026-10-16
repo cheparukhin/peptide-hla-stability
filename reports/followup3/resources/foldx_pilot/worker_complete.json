@@ -1,0 +1,35 @@
+{
+  "at_utc": "2026-10-13T12:32:05.626159+00:00",
+  "status": "complete",
+  "plan_sha256": "cf7d9faeb94291724c39cf5f89565a1eb5ef335093e7dc31704bee26cf27a2c7",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 1.002577304840088,
+      "command": [
+        "python",
+        "-c",
+        "from pathlib import Path; Path('foldx5_Linux_0/foldx_20261231').chmod(0o700)"
+      ],
+      "at_utc": "2026-10-13T12:15:06.930583+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 1016.5682103633881,
+      "command": [
+        "python",
+        "scripts/followup3_foldx.py",
+        "run",
+        "--volume-root",
+        "/structures",
+        "--foldx-root",
+        "/Users/cheparukhin/ai_science_hack/foldx5_Linux_0",
+        "--workers",
+        "8"
+      ],
+      "at_utc": "2026-10-13T12:32:04.501186+00:00"
+    }
+  ]
+}

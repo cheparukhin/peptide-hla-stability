@@ -1,0 +1,209 @@
+{
+  "pid": 13236,
+  "started_at_utc": "2026-10-12T00:47:30.105449+00:00",
+  "status": "complete",
+  "cloud_spend_usd": 0,
+  "workers": 3,
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "input_state": {
+    "cached_rows": 19716,
+    "cache_complete": true,
+    "sequence_with_repeats_complete": true
+  },
+  "updated_at_utc": "2026-10-12T07:54:11.930236+00:00",
+  "stage": "complementarity_report",
+  "stage_status": "complete",
+  "active_children": [],
+  "finished_children": [
+    {
+      "index": 1,
+      "pid": 21715,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_embedding_screen.py",
+        "--fold",
+        "1",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/embedding_1.log",
+      "started_at": "2026-10-12T06:46:38.309760+00:00",
+      "stage": "embedding",
+      "exit_code": 0
+    },
+    {
+      "index": 0,
+      "pid": 21714,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_embedding_screen.py",
+        "--fold",
+        "0",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/embedding_0.log",
+      "started_at": "2026-10-12T06:46:38.307800+00:00",
+      "stage": "embedding",
+      "exit_code": 0
+    },
+    {
+      "index": 2,
+      "pid": 21716,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_embedding_screen.py",
+        "--fold",
+        "2",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/embedding_2.log",
+      "started_at": "2026-10-12T06:46:38.311290+00:00",
+      "stage": "embedding",
+      "exit_code": 0
+    },
+    {
+      "index": 3,
+      "pid": 24337,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_embedding_screen.py",
+        "--fold",
+        "3",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/embedding_3.log",
+      "started_at": "2026-10-12T07:03:49.223111+00:00",
+      "stage": "embedding",
+      "exit_code": 0
+    },
+    {
+      "index": 4,
+      "pid": 24413,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_embedding_screen.py",
+        "--fold",
+        "4",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/embedding_4.log",
+      "started_at": "2026-10-12T07:04:39.281149+00:00",
+      "stage": "embedding",
+      "exit_code": 0
+    },
+    {
+      "index": 0,
+      "pid": 25221,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_results.py",
+        "--embedding-directory",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/embedding",
+        "--output-directory",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/results/main"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/main_report_0.log",
+      "started_at": "2026-10-12T07:17:40.015110+00:00",
+      "stage": "main_report",
+      "exit_code": 0
+    },
+    {
+      "index": 0,
+      "pid": 25311,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity.py",
+        "--fold",
+        "0",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_0.log",
+      "started_at": "2026-10-12T07:19:50.156067+00:00",
+      "stage": "complementarity",
+      "exit_code": 0
+    },
+    {
+      "index": 1,
+      "pid": 25312,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity.py",
+        "--fold",
+        "1",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_1.log",
+      "started_at": "2026-10-12T07:19:50.162788+00:00",
+      "stage": "complementarity",
+      "exit_code": 0
+    },
+    {
+      "index": 2,
+      "pid": 25313,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity.py",
+        "--fold",
+        "2",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_2.log",
+      "started_at": "2026-10-12T07:19:50.167259+00:00",
+      "stage": "complementarity",
+      "exit_code": 0
+    },
+    {
+      "index": 3,
+      "pid": 27075,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity.py",
+        "--fold",
+        "3",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_3.log",
+      "started_at": "2026-10-12T07:36:11.005782+00:00",
+      "stage": "complementarity",
+      "exit_code": 0
+    },
+    {
+      "index": 4,
+      "pid": 27270,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity.py",
+        "--fold",
+        "4",
+        "--production-manifest",
+        "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_4.log",
+      "started_at": "2026-10-12T07:37:21.084821+00:00",
+      "stage": "complementarity",
+      "exit_code": 0
+    },
+    {
+      "index": 0,
+      "pid": 30051,
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "scripts/round2_complementarity_report.py"
+      ],
+      "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/pipeline/complementarity_report_0.log",
+      "started_at": "2026-10-12T07:53:01.862257+00:00",
+      "stage": "complementarity_report",
+      "exit_code": 0
+    }
+  ],
+  "scope": "frozen main and complementarity development assessments",
+  "remaining": "transfer selection/refits and independent confirmation gates remain with orchestrator"
+}

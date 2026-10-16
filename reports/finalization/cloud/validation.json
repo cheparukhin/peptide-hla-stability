@@ -1,0 +1,39 @@
+{
+  "schema": "final_cloud_implementation_validation.1",
+  "status": "passed_lightweight_checks",
+  "at_utc": "2026-10-12T17:14:53.322482+00:00",
+  "tests": {
+    "tests/test_final_cloud_protocol.py": 38,
+    "tests/test_final_sandbox_driver.py": 52,
+    "tests/test_final_cloud_resources.py": 20,
+    "tests/test_final_cloud_inputs.py": 16,
+    "tests/test_final_cloud_transport.py": 46
+  },
+  "n_tests_passed": 172,
+  "real_scientific_fits": 0,
+  "provider_calls_in_tests": 0,
+  "source_sha256": {
+    "pepstab/final_cloud_protocol.py": "405dec784d6df035125d40d1c82d4ab36b22b46fc07b8dec16baccbb12d05498",
+    "scripts/final_cloud_inputs.py": "b6154e63d03b9eef74242a5156d23030a1a8312f1a281ab1416330b5729bebd4",
+    "scripts/final_cloud_phase.py": "173e5bd64a9af7831792a6d6764686c5d3b38cc3265736fdefdccd1e6395c9bc",
+    "scripts/final_hybrids_cloud.py": "3ea418ed86e48c4543e62c2b83a4521d33e255bb5623b8fc92a4a217cf68c33b",
+    "scripts/final_hybrids_cloud_report.py": "91acbae5d5bd1635e6f811924758edded696b6fbb7f005eab4efc288545d8f09",
+    "scripts/final_sandbox_driver.py": "6847cbde6c33fb24816c8f22df260dba9bfce5f2c0e2f829f64c844178c23914",
+    "scripts/final_cloud_resources.py": "abb016c1345ecff51418b7cdbd746eba44050b52028d5f5aed594566f2790e28",
+    "scripts/final_cloud_transport.py": "bb7d9cca19de7d14604f7b193f13395c78c77c83dd4507cf9c75c832dcfa6725",
+    "tests/test_final_cloud_protocol.py": "82160b9c37fd6f92d796b5c8aae4adf69a7bd95717149ff5c86e8d515d6c0a32",
+    "tests/test_final_cloud_inputs.py": "96ba962186fca5d63ae2e475f7467487ec829791a3d015ddd7c87d532b0603a0",
+    "tests/test_final_sandbox_driver.py": "3e51b754d2b58a8bbeeb7844344349899a609ddf9604ad199e6e8fc2723b1c25",
+    "tests/test_final_cloud_resources.py": "6b4e4006a8385a1ad23f86ee43a8c4252ed548abd34f1cf640e56b1cad1aabe2",
+    "tests/test_final_cloud_transport.py": "69abd9f82b7183c92c74a23f8b5c63940611246a87bdc0335eeab93813d1b734"
+  },
+  "protected_transfer_sources_unchanged": 35,
+  "protected_hybrid_sources_unchanged": 23,
+  "scientific_worker_and_report_equivalence": "Exact scientific AST/body comparisons pass; only documented operational seams differ.",
+  "independent_review": "Astra reviewed science/portability, parent and child supervision, persistent stdin ownership and resource preparation; root reviewed transport and independently ran all172 tests. No concrete blocker remains in this reviewed scope.",
+  "limitations": [
+    "These tests use mocked provider calls; actual Linux environment and upload are verified at phase startup.",
+    "Successful transfer closure remains required before any cloud phase.",
+    "No cloud phase is approved or launched by this record."
+  ]
+}

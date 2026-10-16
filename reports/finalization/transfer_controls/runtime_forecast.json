@@ -1,0 +1,228 @@
+{
+  "schema": "final_transfer_runtime_forecast.1",
+  "status": "FORECAST_ONLY_NOT_LAUNCH_AUTHORIZATION",
+  "created_at_utc": "2026-10-12T13:31:13.337533+00:00",
+  "scientific_protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "scientific_scope": {
+    "regimes": {
+      "hla": {
+        "outer_cells": 5,
+        "inner_cells": 3,
+        "fits_per_cell": 166,
+        "members_per_procedure": {
+          "tree_log": 42,
+          "tree_centred": 42,
+          "R0_ridge": 10,
+          "R0_mlp": 48,
+          "fixed_ranker8": 24
+        },
+        "total_fits": 830
+      },
+      "joint": {
+        "outer_cells": 25,
+        "inner_cells": 9,
+        "fits_per_cell": 400,
+        "members_per_procedure": {
+          "tree_log": 114,
+          "tree_centred": 114,
+          "R0_ridge": 28,
+          "R0_mlp": 84,
+          "fixed_ranker8": 60
+        },
+        "total_fits": 10000
+      }
+    },
+    "by_procedure": {
+      "tree_log": 3060,
+      "tree_centred": 3060,
+      "R0_ridge": 750,
+      "R0_mlp": 2340,
+      "fixed_ranker8": 1620
+    },
+    "total_fits": 10830,
+    "reused_fits": 0,
+    "selector_extra_fits": 0,
+    "mapping_extra_fits": 0
+  },
+  "engineering_runtime_fits_separate": {
+    "local_tree_fits": 2,
+    "cloud_smoke_calls": 2,
+    "local_synthetic_cloud_parity_fits": 1
+  },
+  "topology": {
+    "local_workers": 3,
+    "numerical_threads_each": 2,
+    "cloud_members_per_batch": 6,
+    "max_active_cloud": 18,
+    "provider_container_hard_cap": 18,
+    "one_root_owned_app_context": true
+  },
+  "measurement": {
+    "cloud_full_HLA_h0_final_member_seconds": 128.26209114899999,
+    "cloud_tree_count": 148,
+    "cloud_member_shapes": {
+      "gradient": 10379,
+      "stopping": 5378,
+      "held": 3959
+    },
+    "cloud_synthetic_max_absolute_difference": 3.3306690738754696e-16,
+    "local_tree_seconds": {
+      "tree_log_d8": 4.324502583942376,
+      "tree_centred_d8": 5.771480542025529
+    },
+    "local_tree_retained_counts": {
+      "tree_log_d8": 420,
+      "tree_centred_d8": 625
+    },
+    "local_process_peak_rss_mib": 696.546875,
+    "matched_head_runtime_proxies": {
+      "legacy_R5_regression_MLP": {
+        "n": 2340,
+        "mean_seconds": 0.6872209301273613,
+        "median_seconds": 0.5662095000152476,
+        "p95_seconds": 1.564380779513158,
+        "maximum_seconds": 4.586987082962878
+      },
+      "legacy_R4_ridge": {
+        "n": 750,
+        "mean_seconds": 3.659325588898423,
+        "median_seconds": 1.8198889994528145,
+        "p95_seconds": 12.747656804521101,
+        "maximum_seconds": 25.304391292040236
+      }
+    },
+    "proxy_limit": "R5 regression MLP and R4 ridge share frozen transfer heads/stopping/regularization recipes; R0 changes feature dimensions and conditioning. These are runtime proxies, not R0 timing measurements; no numerical predictions or outcomes were read."
+  },
+  "rates": {
+    "cpu_core_hour_usd": 0.0473,
+    "memory_gib_hour_usd": 0.008,
+    "two_cpu_four_gib_container_hour_usd": 0.1266,
+    "full18_container_hour_usd": 2.2788
+  },
+  "prior_charge": {
+    "carried_usd": 1.3895622678414123,
+    "basis": "root requires higher completed-smoke guard commitment, including stale outstanding reservation; no double addition of1.35 already included; not a provider invoice"
+  },
+  "forecast_scenarios": [
+    {
+      "cloud_runtime_multiplier": 1,
+      "cloud_seconds_per_member": 128.26209114899999,
+      "cloud_compute_usd": 7.307091332758529,
+      "cloud_per_call_startup_idle_allowance_usd": 3.5321399999999996,
+      "main_cloud_estimate_usd": 10.839231332758528,
+      "cumulative_estimate_plus_main_build_reserve_usd": 12.728793600599941,
+      "cumulative_commitment_plus_shutdown_allowance_usd": 13.228793600599941,
+      "local_ideal_hours": 3.263546253114225,
+      "cloud_ideal_hours_including_per_call_overhead": 4.756552278725,
+      "additive_local_cloud_hours": 8.020098531839224,
+      "planning_wall_hours_with_25pct_interleaving_io_allowance": 10.02512316479903
+    },
+    {
+      "cloud_runtime_multiplier": 2,
+      "cloud_seconds_per_member": 256.52418229799997,
+      "cloud_compute_usd": 14.614182665517058,
+      "cloud_per_call_startup_idle_allowance_usd": 3.5321399999999996,
+      "main_cloud_estimate_usd": 18.146322665517058,
+      "cumulative_estimate_plus_main_build_reserve_usd": 20.03588493335847,
+      "cumulative_commitment_plus_shutdown_allowance_usd": 20.53588493335847,
+      "local_ideal_hours": 3.263546253114225,
+      "cloud_ideal_hours_including_per_call_overhead": 7.9631045574499995,
+      "additive_local_cloud_hours": 11.226650810564225,
+      "planning_wall_hours_with_25pct_interleaving_io_allowance": 14.03331351320528
+    },
+    {
+      "cloud_runtime_multiplier": 3,
+      "cloud_seconds_per_member": 384.786273447,
+      "cloud_compute_usd": 21.921273998275588,
+      "cloud_per_call_startup_idle_allowance_usd": 3.5321399999999996,
+      "main_cloud_estimate_usd": 25.45341399827559,
+      "cumulative_estimate_plus_main_build_reserve_usd": 27.342976266117002,
+      "cumulative_commitment_plus_shutdown_allowance_usd": 27.842976266117002,
+      "local_ideal_hours": 3.263546253114225,
+      "cloud_ideal_hours_including_per_call_overhead": 11.169656836175001,
+      "additive_local_cloud_hours": 14.433203089289226,
+      "planning_wall_hours_with_25pct_interleaving_io_allowance": 18.04150386161153
+    }
+  ],
+  "expected_planning_estimate": {
+    "wall_hours": 10.02512316479903,
+    "cumulative_cloud_usd_including_carried_prior_main_build_and_shutdown_allowances": 13.228793600599941,
+    "interpretation": "pilot-representative point forecast; 2x/3x cloud-runtime scenarios are sensitivities, not confidence intervals or runtime bounds"
+  },
+  "conservative_complete_call_bound": {
+    "main_calls": 1620,
+    "timeout_seconds": 1000,
+    "startup_idle_allowance_seconds_per_call": 62,
+    "per_call_upper_usd": 0.037347,
+    "main_calls_upper_usd": 60.50213999999999,
+    "plus_main_build_reserve_prior_usd": 62.3917022678414,
+    "plus_main_build_reserve_prior_shutdown_usd": 62.8917022678414,
+    "cloud_only_full_timeout_hours_at18_including62s_each": 26.55,
+    "limitation": "Successful-call reservation bound alone excludes unobserved provider preemption restarts; the independent wall/resource guard remains mandatory. At all call timeouts the cloud stage alone takes26.55h, so26h is a spending stop, not a guarantee of complete fitting."
+  },
+  "proposed_fixed_wall_resource_guard": {
+    "wall_hours": 26,
+    "wall_seconds": 93600,
+    "cumulative_allocation_usd": 65,
+    "prior_charge_usd": 1.3895622678414123,
+    "main_build_reserve_usd": 0.5,
+    "shutdown_cushion_usd": 0.5,
+    "continuous18_active_main_resource_usd": 59.248799999999996,
+    "continuous_resource_plus_main_build_and_shutdown_usd": 60.248799999999996,
+    "cumulative_continuous_resource_bound_usd": 61.63836226784141,
+    "headroom_below65_usd": 3.361637732158592,
+    "requires": "deadline fixed from observable app-ready time; independent guard binds exact app and resources, checks every batch, freezes submissions before shutdown margin; main source/runtime approval and successful prerequisite ranking exit/process absence remain separate gates",
+    "no_extensions_no_retries_no_scope_expansion": true
+  },
+  "caveats": [
+    "One real cloud member and two local tree members do not bound all seeds, stopping cells or targets; deeper stopping trajectories can run to the2000-iteration limit or worker timeout.",
+    "Depth8 timings are used for all6120 depth4/depth8 tree fits as a cautious throughput proxy; smaller inner/joint gradient sets may be faster, but this is not assured.",
+    "The3 local cell workers block during their remote batches. Local/cloud stages interleave and peak18 concurrency need not be sustained; startup, idle, uneven batches, serialization and NPZ/report I/O can lengthen elapsed time.",
+    "Matched R0 heads have not been separately timed. Existing matched transfer-head runtime proxies are included; feature dimensions and regularization/conditioning can alter speed.",
+    "The fixed26h resource bound constrains spend under hard18-container/2CPU/4GiB resources and the frozen rate; completion is uncertain. A deadline, provider failure or preemption may leave an incomplete immutable attempt requiring explicit reconciliation, with no automatic rerun.",
+    "Mainbuild/shutdown allowances are reservations, not measured charges. Prior-smoke carried commitment is intentionally conservative."
+  ],
+  "source_receipt_sha256": {
+    "reports/finalization/transfer_controls/protocol.json": "3f4c0eacd46a432a66ed81d453dbae4d96bdedce2dc957cd0701889bd93bef23",
+    "reports/finalization/transfer_controls/local_timing/authorization.json": "dc61da0776543b2061e04d4aa1d403689f6a22960593503515cd199495f00e35",
+    "reports/finalization/transfer_controls/local_timing/completed.json": "98b40222117ede327c49814f27d3a9891e3f4b6c03390b3f8299002aca1b8ed7",
+    "reports/finalization/transfer_controls/local_timing/exit_receipt.json": "89f6ef54f0476846d6ae02084eef3569b8d8fc027c98f69d1eb7da39f2a9a754",
+    "reports/finalization/transfer_controls/local_timing/runtime.json": "ab1c3e12498fc265b7d12d9ee7b85e3c686a0c1ac4d5a628ccc6d239d86cf6ff",
+    "reports/finalization/resources/transfer_smoke/smoke.completed.json": "3d91f71d2407309f7e2cbb4dfe82c0a5a4f39f5108d904247935011e21e9c2c5",
+    "reports/finalization/resources/transfer_smoke/guard_status.json": "1dc70ca053e1bdc6e0aefa1dafcfaf8187ccb25d9cce6e21eee0690694798441",
+    "reports/finalization/resources/transfer_smoke/budget.jsonl": "b351d37182cd74019a2bb859c5900c10fca11f520d7fe43072692ead4a2777c5",
+    "reports/finalization/resources/transfer_smoke/reconciled_hourly_metering.json": "b762c45526de20143fec8aa63b5970c9ac63bfc344eea8c61bef9bfb2e7139e3",
+    "reports/finalization/resources/modal_baseline.json": "c458be1f66d2099b8ce684deccaedef437da3919e0fe87ae841ca501d11457bf",
+    "reports/further_research/round2/transfer/hla/h0/members.json": "9252d660739eceea74113cfbfb8407eaf07df1ce9158509ff0eafcafed9120c5",
+    "reports/further_research/round2/transfer/hla/h1/members.json": "1cea4bc7652e39d2b87cfedaf372f30a05a98be297f31c91e2326c17833602d3",
+    "reports/further_research/round2/transfer/hla/h2/members.json": "7f525ca3aab41e47c5b90496e7f4878550b5fdb2ce659e1aac26d30006cbbfe1",
+    "reports/further_research/round2/transfer/hla/h3/members.json": "8447b1832585f72beda6037b323ec2c0653c7019e1bcba679501bbd044707684",
+    "reports/further_research/round2/transfer/hla/h4/members.json": "18e6e04de897cf360d852227ed603436c39b022c67bb7a536feab65a91f98e7b",
+    "reports/further_research/round2/transfer/joint/h0_p0/members.json": "2ab6a7fff900e1f33187cc949ec73da4590e491623bb7bcf2a9f75828e5c9942",
+    "reports/further_research/round2/transfer/joint/h0_p1/members.json": "9402e9622355a9a440a8119537b01a9a8f71d2e54e2d1fea4963de30c67976a3",
+    "reports/further_research/round2/transfer/joint/h0_p2/members.json": "3c7ec30c6a237a14536acd198e93306b7cae14cc8dec2f9b48d27f85e82812b8",
+    "reports/further_research/round2/transfer/joint/h0_p3/members.json": "b6ae58eccf0c1d830917e39beeaf11ab41b76571ea4ab11d98a3a750460b9141",
+    "reports/further_research/round2/transfer/joint/h0_p4/members.json": "d53c239aa92b59a7daa1856d7c8da0fd0bcf9fb594aa4c263f722788804b7270",
+    "reports/further_research/round2/transfer/joint/h1_p0/members.json": "db2e75f8bf3877a5662fd042d89360f84c2fee5bb0a6b972f6cf9ac1ef4097ab",
+    "reports/further_research/round2/transfer/joint/h1_p1/members.json": "95d1beb8ced8fa9a3f3dd9bc5f03ee27b3acefd1c4923e7c8824c7b41fe99952",
+    "reports/further_research/round2/transfer/joint/h1_p2/members.json": "2ddda2e4bcfbaca73ce16a76dc78ef82f0c1da08fe248bb866fbfc2e8abbdd52",
+    "reports/further_research/round2/transfer/joint/h1_p3/members.json": "d39ac8092ddf6dd1bcd2e0177b1ef034f2273ffa91d9151037835d803016fc9e",
+    "reports/further_research/round2/transfer/joint/h1_p4/members.json": "01f00b76167ef7897af676cb36f58eeb6806e9df075c50bf522ce38092322ee6",
+    "reports/further_research/round2/transfer/joint/h2_p0/members.json": "2386f76baa2eaabdb23386d690e3cf1c472193aacdb495c4aa60e3ecf98f745c",
+    "reports/further_research/round2/transfer/joint/h2_p1/members.json": "7e27685d4d8a16a33441bb8dea4f5c20a2dae71297194a469a4f28e746cb483f",
+    "reports/further_research/round2/transfer/joint/h2_p2/members.json": "0622f0bdbb81b332ea356482b4a9b1c122cb4320e41ef00b5ed123d8b5273cb8",
+    "reports/further_research/round2/transfer/joint/h2_p3/members.json": "2d6ec271ec7f9c269aeb91fe0e00322c31dd6a6e3be9f262b76786bb451cd2c4",
+    "reports/further_research/round2/transfer/joint/h2_p4/members.json": "78926a4ae702024a683cd9a61d283179831706ed1c99b66cceb66113c1f6203f",
+    "reports/further_research/round2/transfer/joint/h3_p0/members.json": "25fc4396496d3770f4633aedc5a4ead42c67e904d969453ba4c301e83fa50a84",
+    "reports/further_research/round2/transfer/joint/h3_p1/members.json": "0833aab26cb3cc245438f2b62e16cb2369f80d7db18e96e3141cddadb80a0f35",
+    "reports/further_research/round2/transfer/joint/h3_p2/members.json": "b8e32aa99ac397aa0d127c6c0e835e0a4e56fbf68b460bd4524c9e88ddcd9f3e",
+    "reports/further_research/round2/transfer/joint/h3_p3/members.json": "2794b9cde79bd773fa13ecee704ebc0ef6d351324956b5eeb435bdfb159a00eb",
+    "reports/further_research/round2/transfer/joint/h3_p4/members.json": "05d50f5af6923edf7e3ebe04f71376faecc719e38c7cf2540a090bacb631376f",
+    "reports/further_research/round2/transfer/joint/h4_p0/members.json": "d73c7371f17afdf43508c47d1aed40f61015428fcbfb312d351dd505a2146d2a",
+    "reports/further_research/round2/transfer/joint/h4_p1/members.json": "743acf8fa03e0724c9c40ecb4c84d23c84a199d0ef2b133ea242a5d18d6a7a3f",
+    "reports/further_research/round2/transfer/joint/h4_p2/members.json": "d0167d539148e1a087f49d4c0e41682f2ffe49c188eb2cefcf61271022417ed5",
+    "reports/further_research/round2/transfer/joint/h4_p3/members.json": "17b4e282263694f20bcdfeb374dc5b4069cb8d8ba6cba87db36d08729591c6d8",
+    "reports/further_research/round2/transfer/joint/h4_p4/members.json": "3caf31a456a855107766a9790a9ace5e463c6a8c5c5be5fdda7f117ec9b26adb"
+  },
+  "no_new_fits_cloud_calls_or_source_edits": true
+}

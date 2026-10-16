@@ -1,0 +1,83 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "hybrid_report",
+  "phase_nonce": "hybrid-report-20261013-0020",
+  "authorization_sha256": "dac98e3de1ea5ba62046b37045283a038dcc5f90a5a8b69e56dcae982ecd8695",
+  "input_manifest_sha256": "f1cad975c46415043cf72d919af1dc4af8c1573a8706227e716ce27944feeae1",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-13T00:16:18.766065+00:00",
+  "sandbox_id": "sb-01M4S9VY6NV4WYNP3JHCNNZ98N",
+  "app_id": "ap-tXZim3RKtP1MEpna5Nmgxj",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 0,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-13T00:29:21.050515+00:00",
+  "elapsed_fit_seconds": 514.859692322,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/hybrid-report-20261013-0020/output_manifest.json",
+    "sha256": "0efbb2ef079a8cf99f6f0d15f12913a3699af7da7f4be1608516265d7933e13a"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "hybrid_report",
+      "axes": [
+        null,
+        null
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev/scripts/final_hybrids_cloud_report.py",
+        "--",
+        "--out-dir",
+        "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-A71FrGIxlb9M6L3hwubYev/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/authorization.json"
+      ],
+      "intent_at_utc": "2026-10-13T00:20:46.191430+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-13T00:20:46.572230+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-13T00:29:18.992088+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 27319,
+    "last_sequence": 72,
+    "expires_at_utc": "2026-10-13T00:30:48.886307+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

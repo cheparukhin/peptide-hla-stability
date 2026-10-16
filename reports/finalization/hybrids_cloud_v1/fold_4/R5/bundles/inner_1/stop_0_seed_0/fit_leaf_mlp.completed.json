@@ -1,0 +1,39 @@
+{
+  "best_epoch": 55,
+  "best_stopping_mse": 0.6860088109970093,
+  "component": "leaf_mlp",
+  "config": {
+    "batch_size": 256,
+    "hidden": [
+      64
+    ],
+    "l2": 0.01,
+    "lr": 0.001,
+    "max_epochs": 200,
+    "patience": 15,
+    "seed": 0
+  },
+  "dimensions": {
+    "hidden": [
+      64
+    ],
+    "input": 1024,
+    "output": 1
+  },
+  "epochs": 70,
+  "fit_seconds": 1.4150110179998592,
+  "gradient_features_sha256": "0f2c1f59d0178db70ad13fe379de48757f6a20aee3753b30e60168101a16cc48",
+  "gradient_rows": "f312fcd945131e23972604bd0e50342528bde9e0fbff91294cb640ffe4ec4ba0",
+  "held_features_sha256": "607789378c4ab972f5ed0137274998d9d97dc382c7ccd2c000e9011b8602667e",
+  "leaf_dictionary_sha256": "be67b2178bb5cbced8f374513f61117a227ef608f3886ffb9c7397397f05d024",
+  "learner": "mlp",
+  "n_features": 1024,
+  "n_fit": 8412,
+  "n_predict": 5258,
+  "n_stop": 2103,
+  "prediction_rows": "b54fd4fbb8d82ab3236f6089e914173d442e65a0a9f575922d7c9199e3074c26",
+  "stopping_features_sha256": "e65e992b7ca1ebecb27c4950d53eef907d2fa630baecca3ce58ce86999123274",
+  "stopping_rows": "a89197ed4f7551f4d48aff7ad29adff3456cda3268221a5fa98ff4c6f50c4d5c",
+  "transform_fit_rows": "f312fcd945131e23972604bd0e50342528bde9e0fbff91294cb640ffe4ec4ba0",
+  "tree_rmse_sha256": "ab25f9fd49c3eddcb0f7dfe5ffe6eee8e43e422c595ed662f114ba436825817b"
+}

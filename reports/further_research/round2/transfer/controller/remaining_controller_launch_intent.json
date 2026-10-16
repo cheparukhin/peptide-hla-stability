@@ -1,0 +1,22 @@
+{
+  "schema": "round2_transfer_controller_launch.1",
+  "status": "launch_intent",
+  "created_at_utc": "2026-10-12T07:58:03.086581+00:00",
+  "phase": "remaining",
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+    "/Users/cheparukhin/ai_science_hack/scripts/round2_transfer_pipeline.py",
+    "--phase",
+    "remaining",
+    "--approved",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/transfer/remaining_authorization.json",
+    "--workers",
+    "3",
+    "--feature-manifest",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/feature_bundles.json"
+  ],
+  "authorization_sha256": "ba6d2fc9fc36564b126c69976d0c79fe732c50bfffd6d8ceaf62c605f2cfe6d1",
+  "controller_sha256": "ebd1175080ffc049dcaa256d3539c9e72cdea378a9013e7b8cf0899a1a7f1e20",
+  "cloud_spend_usd": 0,
+  "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/transfer/controller/remaining_controller.log"
+}

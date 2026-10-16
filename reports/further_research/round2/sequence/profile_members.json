@@ -1,0 +1,50 @@
+[
+  {
+    "learner": "mlp",
+    "encoding": "onehot",
+    "seconds": 1.16128333308734,
+    "epochs": 28,
+    "best_epoch": 13,
+    "fit_rows": 10514
+  },
+  {
+    "learner": "catboost_rmse",
+    "encoding": "onehot",
+    "depth": 4,
+    "seconds": 2.3530660000396892,
+    "trees": 2000,
+    "fit_rows": 10514
+  },
+  {
+    "learner": "catboost_rmse",
+    "encoding": "onehot",
+    "depth": 6,
+    "seconds": 5.020904958015308,
+    "trees": 2000,
+    "fit_rows": 10514
+  },
+  {
+    "learner": "mlp",
+    "encoding": "blosum",
+    "seconds": 2.1669817089568824,
+    "epochs": 51,
+    "best_epoch": 36,
+    "fit_rows": 10514
+  },
+  {
+    "learner": "catboost_rmse",
+    "encoding": "blosum",
+    "depth": 4,
+    "seconds": 22.152515250025317,
+    "trees": 1999,
+    "fit_rows": 10514
+  },
+  {
+    "learner": "catboost_rmse",
+    "encoding": "blosum",
+    "depth": 6,
+    "seconds": 36.94991329207551,
+    "trees": 2000,
+    "fit_rows": 10514
+  }
+]

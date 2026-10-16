@@ -1,0 +1,61 @@
+{
+  "family": "mlp_log",
+  "scores": [
+    {
+      "family": "mlp_log",
+      "candidate": "mlp_log",
+      "fold_scores": [
+        0.6102962335731701,
+        0.567057758407316,
+        0.5972273381387945
+      ],
+      "mean": 0.5915271100397602,
+      "se": 0.012803136125611448
+    },
+    {
+      "family": "mlp_centred",
+      "candidate": "mlp_centred_k100",
+      "fold_scores": [
+        0.602762554807468,
+        0.5627523036147695,
+        0.6053542701018482
+      ],
+      "mean": 0.5902897095080285,
+      "se": 0.013789014825086378
+    },
+    {
+      "family": "tree_log",
+      "candidate": "tree_log_d8",
+      "fold_scores": [
+        0.6040236001646211,
+        0.5864376370218741,
+        0.5972147839729096
+      ],
+      "mean": 0.5958920070531349,
+      "se": 0.005119532172608811
+    },
+    {
+      "family": "tree_centred",
+      "candidate": "tree_centred_d8",
+      "fold_scores": [
+        0.5978846970349364,
+        0.5764811774070847,
+        0.607642869969979
+      ],
+      "mean": 0.594002914804,
+      "se": 0.009202607344522797
+    },
+    {
+      "family": "pairlogit",
+      "candidate": "pairlogit_d8",
+      "fold_scores": [
+        0.5882830005862645,
+        0.5928977375644611,
+        0.6007982480562057
+      ],
+      "mean": 0.5939929954023104,
+      "se": 0.0036541094267046625
+    }
+  ],
+  "rule": "first frozen family within 1 fold-SE of best inner mean; no outer outcomes"
+}

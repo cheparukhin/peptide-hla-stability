@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*31:01",
+  "peptide": "GTHPFSRIR",
+  "cluster_id": 1379,
+  "outer_fold": 1,
+  "complex_id": "A3101_GTHPFSRIR",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_31_01/A3101_GTHPFSRIR",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A3101_GTHPFSRIR.pdb",
+        "--pdb-dir=/tmp/energy_repaired_71d7bfv5/input",
+        "--output-dir=/tmp/energy_repaired_71d7bfv5/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 210.0170457979998
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A3101_GTHPFSRIR_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_71d7bfv5/output",
+        "--output-dir=/tmp/energy_repaired_71d7bfv5/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.3345163039998624
+    }
+  ],
+  "metadata_sha256": "974d2b75130a8f6105c4f82e08d42606c4d835821934432dffec0f3feb4b098e",
+  "structure_sha256": "2b5930ef5db24d64cdec5fce28aa56b7a520bcd73382c9d509d76563333a3004",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.197486,
+    "foldx_intraclashesgroup2": 10.6102,
+    "foldx_interaction_energy": -16.5872,
+    "foldx_backbone_hbond": -5.72117,
+    "foldx_sidechain_hbond": -11.7754,
+    "foldx_van_der_waals": -16.935,
+    "foldx_electrostatics": -4.00625,
+    "foldx_solvation_polar": 27.294,
+    "foldx_solvation_hydrophobic": -20.6231,
+    "foldx_van_der_waals_clashes": 0.855628,
+    "foldx_entropy_sidechain": 9.66739,
+    "foldx_entropy_mainchain": 5.09875,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.111907,
+    "foldx_backbone_clash": 0.778499,
+    "foldx_helix_dipole": 0.0108654,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": -8.88178e-16,
+    "foldx_electrostatic_kon": -0.727324,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.162576,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "d807d7c4cd4c3747566c86a844cb24a96a97bf2150820f4fa00958f5d4669a1d",
+  "repaired_pdb_sha256": "01962559092f7e549b7f0287deed31dcb49e527039d508e3c00663170a8a2057",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "GTHPFSRIR"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 214.58731410400014,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

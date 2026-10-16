@@ -1,0 +1,35 @@
+{
+  "status": "passed_pre_outcome_parser_recovery_review",
+  "reviewed_at_utc": "2026-10-13T14:46:03.968044+00:00",
+  "source_sha256": {
+    "pepstab/followup3_inverse_parser.py": "aadea505fe0814e03eb25a2d80197e53ecfda9fff8532c3bc9275999ad7147d7",
+    "scripts/followup3_inverse_parser_recovery.py": "29b040b6a74e7c4f9b2628ee12c4b74fa70d6f2dbb398e8b5e088654c9ec88d9",
+    "tests/test_followup3_inverse_parser.py": "350823daefd83e844cd0f5cbe4eaea93c293a75056383526c4dcdc4393ffcb3a",
+    "reports/followup3/inverse_parser_recovery/SOURCE_BOUND_PARSER_AMENDMENT.md": "422e8c955bec269c49729e49b898fc1e1ae6e30df445f2940cfbc3d1d7768b5b",
+    "reports/followup3/inverse_parser_recovery/FAILED_STRUCTURE_INSPECTION.json": "fefa3fc416ff062e2f0dc47fbc67be138c45c9593fe33edca4ccbdc3fdafb9d0"
+  },
+  "original_protocol_file_sha256": "063c4aeaaa2685601e27e6aabb37f6a9e07fa2712274d276854635627296ac51",
+  "original_scientific_source_mismatches": [],
+  "verified": [
+    "first-substring ambiguity proven on actual failed source metadata/CIF",
+    "unique whole-native-chain selector rejects zero/multiple matches",
+    "unchanged loader retains all metadata/backbone/coordinate checks",
+    "selector installed independently in every spawned child",
+    "parse-only preflight covers both frozen motif cases",
+    "4163 inherited OK record hashes verified before/after and never rescored",
+    "failed record moved only under exact SHA precondition; failed bytes retained",
+    "286 missing/corrected cases retain all original identities/scoring settings",
+    "separate manifest and final receipt bind corrected runtime and aggregate features",
+    "FoldX unique-length/exact-sequence selection does not share this failure"
+  ],
+  "tests": "5 parser and 3 audit-helper synthetic tests passed in 0.71 seconds; compilation passed",
+  "paid_launch_performed_by_reviewer": false,
+  "requirements": [
+    "freeze reviewed new bytes and exact 4164-record checkpoint",
+    "root fresh <=1-hour hard deadline and resource reservation",
+    "complete 4449 valid records or no head assessment",
+    "head admission binds final scores and parser recovery receipt/manifest hashes",
+    "completed output audit requires cached hashes, preserved failure and both preflight case hashes"
+  ],
+  "scientific_scope_changed": false
+}

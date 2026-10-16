@@ -1,0 +1,101 @@
+{
+  "additional_cloud_spend_usd": 0,
+  "approved": false,
+  "cells": [
+    "joint/h2_p3",
+    "joint/h2_p4",
+    "joint/h3_p0",
+    "joint/h3_p1",
+    "joint/h3_p2",
+    "joint/h3_p3",
+    "joint/h3_p4",
+    "joint/h4_p0",
+    "joint/h4_p1",
+    "joint/h4_p2",
+    "joint/h4_p3",
+    "joint/h4_p4"
+  ],
+  "closure": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_main/interruption_20261012/closure.json",
+    "sha256": "de37a6bc83c8ef690eec98ac693873b9343eec46eda91c961e32e0af74c03fb2"
+  },
+  "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+  "max_workers": 3,
+  "n_new_fits": 4800,
+  "no_retry": true,
+  "preparation": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/preparation.json",
+    "sha256": "93db694e021c44e45bf200afef304c139849d5ed1ef2522d2993e747681fe620"
+  },
+  "preserved_audit": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_main/interruption_20261012/preserved_cells_audit.json",
+    "sha256": "1a7eb613a6633e47489afb6b8b6afdd844abc10e2249277c2fb03f5b0cc4fa6e"
+  },
+  "protocol": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/protocol.json",
+    "sha256": "3f4c0eacd46a432a66ed81d453dbae4d96bdedce2dc957cd0701889bd93bef23"
+  },
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "ranker_backend": "local",
+  "reused_cell_hashes": {
+    "hla/h0": "3be1cad5d58b5601db65b0e70f7eea9bea5e9952bb1ae7510f11e63671bf176e",
+    "hla/h1": "656fad011d3e4b170bed697251ff4a03afbf8d6544c99e9174686d71917db3db",
+    "hla/h2": "1f708fbd605b4090ff9110bcfa9a1d4077ada2ca42987b9e8438760007dd311d",
+    "hla/h3": "849917f323a9dc948ce817b8e3bfd9dd3ebd590d92468ee616436758219b3458",
+    "hla/h4": "c732d5edc3ba58da5a6649e56df3aaf23a2176a94b0fba1b704c4908419c053f",
+    "joint/h0_p0": "ed214515ca8aaeb536cd3f94016db20c44678d2f0f5910fc05212e6bfaeb84a7",
+    "joint/h0_p1": "74fe3af62b2a28fb1c25cd283f0bb2915d8ce25ed85be57ccb858ccd92edd59d",
+    "joint/h0_p2": "fa2d836150bb55d20a21327a17c25104a16547120d02980a98fafcb88c6691f1",
+    "joint/h0_p3": "25c24ad0a8ff9db0534b5da44d39b1d0bd0b611794aaf2c915cf5c2ca132f146",
+    "joint/h0_p4": "7a434357b59b3d017a62f4509bf4afc90ce7e7a26d08e6796b68939646c96514",
+    "joint/h1_p0": "f2f15efd20725f3addec8dda650fe9860e3e938614981897fe6a79e6838c45f5",
+    "joint/h1_p1": "54484049397416fe4a51a72ee3be81a8595fbf806cee0e9732d7774e64e22339",
+    "joint/h1_p2": "240cb53af40f9dc2a87a16a720efdf72f5f391de8f8718cb2382bfedb2d6ab9f",
+    "joint/h1_p3": "15089ff3d6c0abd582aa26d4088ebce9bc16510dfcdb7dd2e138ebfff7121862",
+    "joint/h1_p4": "35a5efb6521e01d046d9a6f6c6e7b17dd2bd3d639ca595060919c85b331e081a",
+    "joint/h2_p0": "bb4ef1a072f2d6d62580118669aa266464f1697c43a5a8e96e3a602fb5f3a876",
+    "joint/h2_p1": "781d85ff038fef6e18e5ab92ce4e27941ce2c7231ceb3c1912f474674245dfbc",
+    "joint/h2_p2": "e66ee0e3a24519e5624d95a20fa1f5bdc82b40b0ac0ff04c4dc0009536f1f758"
+  },
+  "runtime_forecast": {
+    "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/runtime_forecast.json",
+    "sha256": "b948874ac77a3b48ba10a6ffd447cd0a4aeccc39552b2fd8419f1bc0ff05bc2b"
+  },
+  "schema": "final_transfer_recovery_authorization.1",
+  "scope_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery",
+  "sources": {
+    "modal_app/final_transfer.py": "8603bf6989aa92a553df751aba28673cfc424efca3979205c978126c100e48c4",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
+    "pepstab/final_transfer.py": "aba5a72e1183a93df707bb2350d32a78b73a6a5cf44360ba73a3268256a9cb9d",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+    "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
+    "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
+    "scripts/final_runtime_guard.py": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627",
+    "scripts/final_transfer.py": "c20906775caa14616c03d94a36f34ce4b6925292edb506a9aa03ec9afb88e801",
+    "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
+    "scripts/final_transfer_pipeline.py": "e98e5e1953d52745fcca5da7cdd164275ed27500575bdb8d56638a04facc31ff",
+    "scripts/final_transfer_recovery.py": "1566ceae4b9ae16a92e192a86c2e611bbb4f26176f70479ef86d439d0680da80",
+    "scripts/final_transfer_report.py": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+    "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+    "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
+    "tests/test_final_runtime_guard.py": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b",
+    "tests/test_final_transfer.py": "25278ee2e92d0d0f886c2ae0466479c3afe15a0a9ca807f76dd323d50f768886",
+    "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
+    "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551",
+    "tests/test_final_transfer_recovery.py": "db752732345e32b77f11bb32fb3d82f094f1066040988dc52a93e0a0ed4e5aa9"
+  },
+  "threads_each": 2
+}

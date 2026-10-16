@@ -1,0 +1,13 @@
+source,rows,alleles,unique_pairs,unique_peptides_all_lengths,standard_9mer_rows,standard_9mer_peptides,exact_pair_overlap_rows,exact_peptide_overlap_rows,direct_hamming_le3_overlap_rows,component_overlap_rows,component_novel_9mer_rows,non_9mer_or_nonstandard_rows,duplicate_pair_rows,component_graph
+binding_stability/train,21626,72,21626,4515,21626,4515,21626,21626,21626,21626,0,0,0,canonical + binding_stability/all
+binding_stability/val,2705,71,2705,567,2705,567,2705,2705,2705,2705,0,0,0,canonical + binding_stability/all
+binding_stability/test,2700,71,2700,551,2700,551,2700,2700,2700,2700,0,0,0,canonical + binding_stability/all
+binding_stability/all,27031,72,27031,5633,27031,5633,27031,27031,27031,27031,0,0,0,canonical + binding_stability/all
+binding_affinity/train,126683,109,126683,30319,91805,17940,4844,34583,39322,41454,50351,34878,0,canonical + binding_affinity/all
+binding_affinity/val,21712,109,21712,4759,16847,3006,1369,9973,10504,10685,6162,4865,0,canonical + binding_affinity/all
+binding_affinity/test,21712,109,21712,4592,17723,3055,1414,10126,11104,11335,6388,3989,0,canonical + binding_affinity/all
+binding_affinity/all,170107,109,170107,39029,126375,23404,7627,54682,60930,63474,62901,43732,0,canonical + binding_affinity/all
+stage3_assay_conditioning/train,8465,34,8399,5357,8183,5121,5718,5821,5931,5939,2244,282,66,canonical + stage3_assay_conditioning/all
+stage3_assay_conditioning/val,543,15,543,512,530,499,417,417,420,421,109,13,0,canonical + stage3_assay_conditioning/all
+stage3_assay_conditioning/test,1133,27,1130,813,876,588,0,0,66,84,792,257,3,canonical + stage3_assay_conditioning/all
+stage3_assay_conditioning/all,10141,40,10072,6682,9589,6208,6135,6238,6417,6444,3145,552,69,canonical + stage3_assay_conditioning/all

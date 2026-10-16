@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:12",
+  "peptide": "YLINGRIPV",
+  "cluster_id": 4827,
+  "outer_fold": 3,
+  "complex_id": "A0212_YLINGRIPV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_12/A0212_YLINGRIPV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0212_YLINGRIPV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_0hl0aeu3/input",
+        "--output-dir=/tmp/energy_repaired_0hl0aeu3/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 182.795788011
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0212_YLINGRIPV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_0hl0aeu3/output",
+        "--output-dir=/tmp/energy_repaired_0hl0aeu3/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.126207840999996
+    }
+  ],
+  "metadata_sha256": "3132af91bd5a9e1260cbdf63f8c4907e32a00e5244093a980e50ff0028da5d6b",
+  "structure_sha256": "6daaf5c65bb70302c4cb5c62579c1c7529532b555da7a44484b9fc6c15503af9",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.247257,
+    "foldx_intraclashesgroup2": 14.7255,
+    "foldx_interaction_energy": -24.4943,
+    "foldx_backbone_hbond": -6.26942,
+    "foldx_sidechain_hbond": -9.68972,
+    "foldx_van_der_waals": -19.3685,
+    "foldx_electrostatics": -3.04641,
+    "foldx_solvation_polar": 27.0073,
+    "foldx_solvation_hydrophobic": -26.8402,
+    "foldx_van_der_waals_clashes": 1.84519,
+    "foldx_entropy_sidechain": 8.72421,
+    "foldx_entropy_mainchain": 3.01989,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0806131,
+    "foldx_backbone_clash": 0.912576,
+    "foldx_helix_dipole": 0.000683366,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.0431824,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0851685,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "c179f4adca2e0b9ca8679a7e58272d624c7b7a2080f81351b3249fcf4e35acdb",
+  "repaired_pdb_sha256": "0686706ac4e95c156695ff80713e920d193568382b92a3b95ae42af29153850e",
+  "conversion_validation": {
+    "n_atoms": 3148,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "YLINGRIPV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 186.727884388,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

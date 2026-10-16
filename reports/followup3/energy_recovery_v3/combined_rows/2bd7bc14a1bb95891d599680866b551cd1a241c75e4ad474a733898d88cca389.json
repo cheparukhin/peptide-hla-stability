@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*56:01",
+  "peptide": "MAWERGPAL",
+  "cluster_id": 2695,
+  "outer_fold": 4,
+  "complex_id": "B5601_MAWERGPAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_56_01/B5601_MAWERGPAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5601_MAWERGPAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_k1j5l5iy/input",
+        "--output-dir=/tmp/energy_repaired_k1j5l5iy/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 216.90242663800018
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5601_MAWERGPAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_k1j5l5iy/output",
+        "--output-dir=/tmp/energy_repaired_k1j5l5iy/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.253789977999986
+    }
+  ],
+  "metadata_sha256": "8ce62f93c0e40ff6d96e02431084d0391254979a762674e1c8eaff94d9cd37eb",
+  "structure_sha256": "d2c3c98a493b7665293b070efa87980b4b1e9a5d06a64acb75da80b37b27b9c8",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0668648,
+    "foldx_intraclashesgroup2": 11.0312,
+    "foldx_interaction_energy": -21.543,
+    "foldx_backbone_hbond": -4.21411,
+    "foldx_sidechain_hbond": -6.85268,
+    "foldx_van_der_waals": -18.903,
+    "foldx_electrostatics": -1.49935,
+    "foldx_solvation_polar": 23.394,
+    "foldx_solvation_hydrophobic": -27.1892,
+    "foldx_van_der_waals_clashes": 2.66088,
+    "foldx_entropy_sidechain": 8.02842,
+    "foldx_entropy_mainchain": 3.67367,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0381226,
+    "foldx_backbone_clash": 0.932017,
+    "foldx_helix_dipole": -0.00534459,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.674349,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "23957c41e84ebbe9ee9a4fa6bf64dc39501a5b1eb3fe5e3ec4aa6857831eeaef",
+  "repaired_pdb_sha256": "c52365b2aed334592269e3a056c1295c85850fe76293abf4f3ae10b254d6471b",
+  "conversion_validation": {
+    "n_atoms": 3145,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005000010132789612,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "MAWERGPAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 221.19486684700132,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

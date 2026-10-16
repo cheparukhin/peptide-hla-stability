@@ -1,0 +1,367 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "hybrid_main",
+  "phase_nonce": "hybrid-main-20261012-2050",
+  "authorization_sha256": "8562ad472f4563106ba39312c730716c11d3a290e7fc9e02f8407308a807490c",
+  "input_manifest_sha256": "3dd6472c2b03dc6084ca95076d9ed3a37c726e3d9f32e849461eb7ab95961def",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T20:51:34.006974+00:00",
+  "sandbox_id": "sb-01M4RY4YCXH56DDWFCZGN6Y7KX",
+  "app_id": "ap-wmOBffnJfZWFATGFardDin",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 480,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-12T21:56:50.924885+00:00",
+  "elapsed_fit_seconds": 3132.497224694,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/hybrid-main-20261012-2050/output_manifest.json",
+    "sha256": "6d10f9dfbbd93397164c685d276fb5f67275189aa407fcce97876adf52e3f6f3"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "fold_0/R0",
+      "axes": [
+        0,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "0",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T21:04:38.428311+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-12T21:04:38.970456+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:12:10.943101+00:00"
+    },
+    {
+      "index": 1,
+      "job": "fold_0/R5",
+      "axes": [
+        0,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "0",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T21:04:39.633679+00:00",
+      "pid": 10,
+      "started_at_utc": "2026-10-12T21:04:40.233422+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:15:36.314696+00:00"
+    },
+    {
+      "index": 2,
+      "job": "fold_1/R0",
+      "axes": [
+        1,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "1",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T21:12:13.168172+00:00",
+      "pid": 239,
+      "started_at_utc": "2026-10-12T21:12:13.707533+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:20:59.350102+00:00"
+    },
+    {
+      "index": 3,
+      "job": "fold_1/R5",
+      "axes": [
+        1,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "1",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T21:15:44.705318+00:00",
+      "pid": 336,
+      "started_at_utc": "2026-10-12T21:15:45.348028+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:26:54.271855+00:00"
+    },
+    {
+      "index": 4,
+      "job": "fold_2/R0",
+      "axes": [
+        2,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "2",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T21:21:00.525800+00:00",
+      "pid": 463,
+      "started_at_utc": "2026-10-12T21:21:01.257193+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:28:43.991820+00:00"
+    },
+    {
+      "index": 6,
+      "job": "fold_3/R0",
+      "axes": [
+        3,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "3",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T21:28:45.711112+00:00",
+      "pid": 672,
+      "started_at_utc": "2026-10-12T21:28:46.185755+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:35:57.098574+00:00"
+    },
+    {
+      "index": 5,
+      "job": "fold_2/R5",
+      "axes": [
+        2,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "2",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T21:26:55.138989+00:00",
+      "pid": 620,
+      "started_at_utc": "2026-10-12T21:26:55.889718+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:37:46.610949+00:00"
+    },
+    {
+      "index": 8,
+      "job": "fold_4/R0",
+      "axes": [
+        4,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "4",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T21:37:48.314096+00:00",
+      "pid": 926,
+      "started_at_utc": "2026-10-12T21:37:48.959970+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:45:08.220479+00:00"
+    },
+    {
+      "index": 7,
+      "job": "fold_3/R5",
+      "axes": [
+        3,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "3",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T21:35:58.688676+00:00",
+      "pid": 883,
+      "started_at_utc": "2026-10-12T21:35:59.491823+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:46:45.265531+00:00"
+    },
+    {
+      "index": 9,
+      "job": "fold_4/R5",
+      "axes": [
+        4,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/scripts/final_hybrids_cloud.py",
+        "--",
+        "run-component",
+        "--out-dir",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-NlgR5DEpQf5cc0Ta3tZRKg/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "--fold",
+        "4",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T21:45:09.309188+00:00",
+      "pid": 1143,
+      "started_at_utc": "2026-10-12T21:45:10.074570+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T21:56:48.269139+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 40012,
+    "last_sequence": 351,
+    "expires_at_utc": "2026-10-12T21:58:16.847563+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*39:06(C67S)",
+  "peptide": "EHAGVISVL",
+  "cluster_id": 552,
+  "outer_fold": 2,
+  "complex_id": "B3906_C67S_EHAGVISVL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_39_06_C67S/B3906_C67S_EHAGVISVL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B3906_C67S_EHAGVISVL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rnh3r_of/input",
+        "--output-dir=/tmp/energy_repaired_rnh3r_of/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 275.47825602500006
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B3906_C67S_EHAGVISVL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rnh3r_of/output",
+        "--output-dir=/tmp/energy_repaired_rnh3r_of/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.9426583939998636
+    }
+  ],
+  "metadata_sha256": "c615fcc6fb11719464ab59cea2d29b3b9beb43cc281f8cad83d6b2c6e830dc3a",
+  "structure_sha256": "e6b39821ae7d0747dd48e99bf3677b951b80e73f91b908227b69b4be6993ee45",
+  "terms": {
+    "foldx_intraclashesgroup1": 1.05495,
+    "foldx_intraclashesgroup2": 14.7589,
+    "foldx_interaction_energy": -20.2286,
+    "foldx_backbone_hbond": -4.3463,
+    "foldx_sidechain_hbond": -10.8019,
+    "foldx_van_der_waals": -18.1278,
+    "foldx_electrostatics": -4.81627,
+    "foldx_solvation_polar": 25.7169,
+    "foldx_solvation_hydrophobic": -25.0524,
+    "foldx_van_der_waals_clashes": 5.37405,
+    "foldx_entropy_sidechain": 7.80075,
+    "foldx_entropy_mainchain": 3.94257,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0895997,
+    "foldx_backbone_clash": 0.978488,
+    "foldx_helix_dipole": -0.0143056,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.431477,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.437891,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "f828514702b2ef4269ac8af68bccdc92bd4e21c2615954e3c117dfa80bdc9986",
+  "repaired_pdb_sha256": "53d9681400db771344370b1776438dcd7fd7e9806e1f9bff2d328230d88cda55",
+  "conversion_validation": {
+    "n_atoms": 3139,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "EHAGVISVL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 282.1037838450002,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

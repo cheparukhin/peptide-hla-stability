@@ -1,0 +1,123 @@
+{
+  "protocol_hash": "8def0d0f32d5efc8e86ea14624fe97564ab9e87456b95e78941a99f852b764c9",
+  "frozen_at_utc": "2026-10-12T00:37:46.383267+00:00",
+  "specification": {
+    "schema": "round2_complementarity.1",
+    "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md sections3,5",
+    "source_sha256": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "splits_sha256": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data_hash": "558ab95517b6f0b7c3e9f60d088ad2afef4ace3a1d085a784ec8b7123c41c84b",
+    "fold_hash": "50fdca745c9e8e99e87b50741cfc9bd4c703e400aff8dd6469555ecdeea31b6f",
+    "n_rows": 19716,
+    "population": "original training only; development evidence",
+    "sequence_protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+    "embedding_protocol_hash": "2251f3e6db0ff8f106f2a0050e7d8930cff5b3054196a40561f10ff42dc5b013",
+    "representations": [
+      "R2",
+      "R4"
+    ],
+    "baseline": {
+      "candidate": {
+        "id": "mlp_log",
+        "learner": "mlp",
+        "target": "log"
+      },
+      "recipe": "fixed original architecture/encodings; final=True everywhere; 5stoppingfolds x2encodings x3seeds=30 members",
+      "outer_application": "audited exact original30-member outer predictions; no renormalisation"
+    },
+    "embedding": {
+      "R2": [
+        {
+          "id": "R2_ridge_10000",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R2_ridge_100",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R2_ridge_1",
+          "representation": "R2",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ],
+      "R4": [
+        {
+          "id": "R4_ridge_10000",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 10000.0
+        },
+        {
+          "id": "R4_ridge_100",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 100.0
+        },
+        {
+          "id": "R4_ridge_1",
+          "representation": "R4",
+          "learner": "ridge",
+          "regularization": 1.0
+        }
+      ]
+    },
+    "blending": {
+      "simplex_weights": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "inputs": "fresh original OOF and nested-selected ridge OOF inside outer fitting partition; alpha selection excludes each predicted meta fold",
+      "selection": "three meta-inner cluster panels; first weight within one fold-SE of best mean inner median Spearman; zero first"
+    },
+    "residual": {
+      "alpha": 10000.0,
+      "correction_weights": [
+        0.0,
+        1.0
+      ],
+      "targets": "inner-fit labels minus fresh3fold fixed-original cleanOOF inside that innerfit, excluding metaheld from gradient/stopping/selection; final targets from outer-fit cleanOOF",
+      "scaling": "StandardScaler fitted on residual fitting rows only",
+      "selection": "three meta-inner cluster panels; first correction weight within one fold-SE; zero first"
+    },
+    "min_rows_inner": 20,
+    "n_meta_inner_folds": 3,
+    "no_other_outer_predictions": "other outer folds are never stacking inputs; assessed outer artifacts used only in final application",
+    "fit_graph": {
+      "per_outer": {
+        "fixed_original_base_members": 360,
+        "blend_ridge_fits": 60,
+        "residual_ridge_fits": 8,
+        "total_actual_model_fits": 428
+      },
+      "five_outer_actual_model_fits": 2140,
+      "base_breakdown": "3 outer-fit OOF blocks x30 +3 meta folds x3 deeper OOF blocks x30",
+      "ridge_breakdown": "2 representations x3 meta folds x(3alpha x3selectionfolds +1 refit) +2x(3meta residualfits+1final)",
+      "outer_reference_refits": 0,
+      "reuse": "outer references reused only for final assessed rows; fresh crossfits shared across both representations",
+      "cost": "local CPU only; execution runtime measured separately; no cloud launch"
+    },
+    "execution": {
+      "device": "CPU",
+      "threads": 2,
+      "cloud_cost_usd": 0
+    },
+    "comparisons": "both blend/residual procedures and embedding-alone versus original and competitive sequence; standalone gain and complementarity gain reported separately",
+    "limitations": "conditional development assessment; inner models fit fewer rows than outer application; no independent confirmation or full channel claim"
+  },
+  "code_sha256": {
+    "scripts/round2_complementarity.py": "0246bc45461b345f73bd8e36e9fe0b9f56fab89dbcf2bb1c3920ad29572ee50f",
+    "pepstab/round2_complementarity.py": "fc885156035d3d80033aa00c1def7b4b59b49472c10eb2cacb9f1690e314a2f8",
+    "pepstab/round2_sequence.py": "708ca3307ba71478eba62677982fcfe90dd6704165ce828ac6da7b7e77d6386f",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36"
+  }
+}

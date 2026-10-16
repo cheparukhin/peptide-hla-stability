@@ -1,0 +1,17 @@
+baseline,candidate,comparison_kind
+mlp_log,R2_ridge,standalone
+sequence_selector,R2_ridge,standalone
+mlp_log,R2_blend,complementarity
+sequence_selector,R2_blend,complementarity
+R2_ridge,R2_blend,complementarity_vs_embedding_alone
+mlp_log,R2_residual,complementarity
+sequence_selector,R2_residual,complementarity
+R2_ridge,R2_residual,complementarity_vs_embedding_alone
+mlp_log,R4_ridge,standalone
+sequence_selector,R4_ridge,standalone
+mlp_log,R4_blend,complementarity
+sequence_selector,R4_blend,complementarity
+R4_ridge,R4_blend,complementarity_vs_embedding_alone
+mlp_log,R4_residual,complementarity
+sequence_selector,R4_residual,complementarity
+R4_ridge,R4_residual,complementarity_vs_embedding_alone

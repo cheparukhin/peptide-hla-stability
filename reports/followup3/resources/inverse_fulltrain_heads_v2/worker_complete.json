@@ -1,0 +1,157 @@
+{
+  "at_utc": "2026-10-13T19:08:38.267826+00:00",
+  "status": "complete",
+  "plan_sha256": "340c3b58bcaf8f628e16fe6299fb46e7dbce07ed210252bde6f37fc7cea76fce",
+  "children": [
+    {
+      "index": 5,
+      "returncode": 0,
+      "seconds": 92.90996718406677,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T19:06:22.903752+00:00"
+    },
+    {
+      "index": 6,
+      "returncode": 0,
+      "seconds": 92.90919184684753,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T19:06:22.904732+00:00"
+    },
+    {
+      "index": 7,
+      "returncode": 0,
+      "seconds": 94.91424751281738,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T19:06:24.911508+00:00"
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "seconds": 157.02258038520813,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "2"
+      ],
+      "at_utc": "2026-10-13T19:07:27.010775+00:00"
+    },
+    {
+      "index": 3,
+      "returncode": 0,
+      "seconds": 157.02207398414612,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T19:07:27.011758+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 161.0314269065857,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "1"
+      ],
+      "at_utc": "2026-10-13T19:07:31.017927+00:00"
+    },
+    {
+      "index": 8,
+      "returncode": 0,
+      "seconds": 69.11379432678223,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "3"
+      ],
+      "at_utc": "2026-10-13T19:07:33.020925+00:00"
+    },
+    {
+      "index": 9,
+      "returncode": 0,
+      "seconds": 71.1149206161499,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "ridge",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T19:07:35.024277+00:00"
+    },
+    {
+      "index": 4,
+      "returncode": 0,
+      "seconds": 169.03875279426575,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "4"
+      ],
+      "at_utc": "2026-10-13T19:07:39.029914+00:00"
+    },
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 227.13286876678467,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain_repair.py",
+        "assess",
+        "--learner",
+        "mlp",
+        "--outer-fold",
+        "0"
+      ],
+      "at_utc": "2026-10-13T19:08:37.117321+00:00"
+    }
+  ]
+}

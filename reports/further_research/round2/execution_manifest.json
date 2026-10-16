@@ -1,0 +1,260 @@
+{
+  "date": "2026-10-12",
+  "started_utc": "2026-10-12T00:04:17.797805+00:00",
+  "source_revision": "8148166ce2af7b0f846d56242f1129208aa32876",
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "evidence_status": "development only; original held-out benchmark remains untouched",
+  "user_reported_modal_credit_usd": 213,
+  "incremental_modal_cap_usd": 100,
+  "minimum_reported_credit_reserve_usd": 113,
+  "engineering_pilot_cap_usd": 2,
+  "full_cache_requires": "one passed and settled 256-case production shard; unchanged complete 19716-row cohort/source/feature/code hashes; max(frozen cost forecast, measured full-cohort projection plus 10 percent) <=80; total allocations <=100",
+  "authorised_cloud_scope": "bounded frozen representations, no new coordinate production except full-forward equivalence audit",
+  "independent_confirmation": "open: no adequate independently reserved cohort or assay arrangement; external candidate outcomes remain reserved",
+  "model_delegation": "6.1 Sol for simpler bounded work; Astra only for complex judgment",
+  "updated_at_utc": "2026-10-12T09:18:38.334808+00:00",
+  "branch": "codex/round2-research",
+  "allocations_usd": {
+    "cache": 80,
+    "sequence_including_smoke": 18,
+    "engineering": 2,
+    "total": 100
+  },
+  "full_cache_authorization": "extractor/full_training/fanout_authorization.json",
+  "sequence_authorization": "sequence/launch_authorization.json",
+  "controllers": {
+    "first_cache_shard": "extractor/full_training/controller_launch.json",
+    "conditional_cache_fanout": "extractor/full_training/fanout_controller/controller_launch.json",
+    "sequence": "sequence/controller_launch.json",
+    "local_main_pipeline": "pipeline/controller_launch.json",
+    "runtime_budget_guard": "resources/runtime_guard/controller_launch.json"
+  },
+  "continuation": {
+    "kind": "current-thread heartbeat",
+    "id": "continue-round-two-research",
+    "interval_minutes": 30,
+    "policy": "quiet on unchanged healthy jobs; continue gated work autonomously",
+    "morning_progress_checkpoint": "2026-10-12T11:00:00+01:00",
+    "scope": "Continue unfinished authorized work after morning checkpoint; preserve fixed spending deadlines."
+  },
+  "operations": "OPERATIONS.md",
+  "cache_fanout": {
+    "status_at_recording": "complete",
+    "app_id": "ap-wYa6yW8KQunK4VNxPInsPd",
+    "pilot_gate": "extractor/full_training/production_pilot_gate.json",
+    "forecast_with_contingency_usd": 73.99009822360709
+  },
+  "runtime_guard_authorization": "resources/runtime_guard/authorization.json",
+  "sequence_primary_completion": {
+    "audit": "resources/sequence_primary_completion_audit.json",
+    "all_five_folds_complete": true,
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "members": 2100,
+    "audited_at_utc": "2026-10-12T02:56:49.052739+00:00",
+    "scope": "Primary fits only; execution repeats and numerical report remain pending at this checkpoint.",
+    "provider_snapshot": "resources/modal_billing_20261012T025553Z.json"
+  },
+  "sequence_completion": {
+    "status": "complete",
+    "cloud_app_stopped_at_utc": "2026-10-12T03:14:15Z",
+    "remote_calls": 900,
+    "unresolved_reservations": 0,
+    "primary_members": 2100,
+    "repeat_members": 420,
+    "cost_closeout": "resources/sequence_cost_closeout.json",
+    "preemption_adjusted_conservative_cost_usd": 7.995705467500606,
+    "results": "results/sequence/REPORT.md",
+    "report_manifest": "results/sequence/manifest.json",
+    "repeat_and_report_audit": "resources/sequence_repeat_completion_audit.json",
+    "interpretation": "Conditional development evidence; no demonstrated improvement of sequence selector over original reference. Completed main evidence now supports the separately amended frozen transfer scope."
+  },
+  "transfer_preparation": {
+    "status": "frozen_scope_completed",
+    "readiness": "transfer/implementation_readiness.md",
+    "draft": "transfer/assessment_protocol_draft.json",
+    "nominations": [
+      "R4_ridge",
+      "R5_mlp"
+    ],
+    "sequence_fits_all_30_cells": 10440,
+    "additional_fits_per_ridge_nominee": 750,
+    "additional_fits_per_neural_nominee": 2340,
+    "max_nominees": 2,
+    "real_transfer_fits_launched": true,
+    "remaining_gate": "None for the frozen development scope; independent confirmation remains a separate open gate.",
+    "validation": "32 focused tests before integrity fix; four focused agent regressions and five independently rerun freeze/nomination tests after fix; all 30 real split preflight cells passed."
+  },
+  "cache_completion": {
+    "status": "complete",
+    "n_rows": 19716,
+    "n_shards": 78,
+    "n_clusters": 3587,
+    "n_alleles": 75,
+    "app_stopped_at_utc": "2026-10-12T06:46:25Z",
+    "unresolved_reservations": 0,
+    "preemptions": 0,
+    "runtime_budget_accounting_usd": 66.84310340712061,
+    "audit": "resources/cache_completion_audit.json"
+  },
+  "cloud_closeout": {
+    "status": "all_authorized_cloud_compute_stopped",
+    "receipt": "resources/cloud_closeout.json",
+    "conservative_total_including_full_engineering_allowance_usd": 76.83880887462121,
+    "watchdog_shutdown": "resources/runtime_guard/shutdown.json",
+    "new_cloud_work_queued": false,
+    "final_app_inventory": "resources/modal_final_app_inventory.json"
+  },
+  "local_assessment": {
+    "status_at_recording": "complete_all_stages",
+    "stage_started_at_utc": "2026-10-12T07:19:50Z",
+    "controller_pid": 13236,
+    "workers": 3,
+    "durable_status": "pipeline/status.json",
+    "completed_at_utc": "2026-10-12T07:54:11.930236+00:00",
+    "closeout": "resources/local_pipeline_closeout.json",
+    "processes_stopped": true
+  },
+  "embedding_completion": {
+    "status": "complete_audited",
+    "completed_report_at_utc": "2026-10-12T07:19:40Z",
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "components": 100,
+    "head_fits": 2900,
+    "audit": "resources/embedding_completion_audit.json",
+    "report": "results/main/REPORT.md",
+    "manifest": "results/main/manifest.json",
+    "primary_vs_competitive_sequence": {
+      "delta": 0.0543221015392099,
+      "ci_low": 0.0313950215012441,
+      "ci_high": 0.0808054612875619,
+      "min_rows": 20
+    },
+    "interpretation": "Positive conditional development gain; lower bound does not exceed0.05. Inherited cache wrapper provenance limitation; no independent confirmation or unseen-HLA conclusion."
+  },
+  "embedding_reproducibility": {
+    "status": "complete_audited",
+    "fold_repeat_cells": 10,
+    "fresh_fits": 242,
+    "n_rows_per_execution": 19716,
+    "max_prediction_difference": 0.0,
+    "all_reported_metric_differences": 0.0,
+    "audit": "resources/embedding_repeat_completion_audit.json",
+    "report": "reproducibility/embedding_selector/README.md",
+    "processes_stopped": true,
+    "scope": "Locked per-fold selector decisions only; no reselection, transfer-regime or assay variation claim."
+  },
+  "transfer_execution": {
+    "status_at_recording": "complete_audited",
+    "protocol": "transfer/assessment_protocol.json",
+    "protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
+    "nomination_decision": "transfer/nomination_decision.json",
+    "total_fits": 13530,
+    "all_hla_cells": 5,
+    "all_joint_cells": 25,
+    "phase": "remaining",
+    "authorized_cells": [
+      "hla/h1",
+      "hla/h2",
+      "hla/h3",
+      "hla/h4",
+      "joint/h0_p1",
+      "joint/h0_p2",
+      "joint/h0_p3",
+      "joint/h0_p4",
+      "joint/h1_p0",
+      "joint/h1_p1",
+      "joint/h1_p2",
+      "joint/h1_p3",
+      "joint/h1_p4",
+      "joint/h2_p0",
+      "joint/h2_p1",
+      "joint/h2_p2",
+      "joint/h2_p3",
+      "joint/h2_p4",
+      "joint/h3_p0",
+      "joint/h3_p1",
+      "joint/h3_p2",
+      "joint/h3_p3",
+      "joint/h3_p4",
+      "joint/h4_p0",
+      "joint/h4_p1",
+      "joint/h4_p2",
+      "joint/h4_p3",
+      "joint/h4_p4"
+    ],
+    "workers": 3,
+    "controller_pid": 30808,
+    "keep_awake_pid": 30809,
+    "controller_launch": "transfer/controller/remaining_controller_launch.json",
+    "authorization": "transfer/remaining_authorization.json",
+    "durable_status": "transfer/controller/remaining_status.json",
+    "remaining_phase_authorized": true,
+    "cloud_spend_usd": 0,
+    "controller_tests_passed": 37,
+    "independent_controller_review": "passed_after_cleanup_fix",
+    "constraint": "No cell retry, duplication, source/grid change or held-outcome-dependent scheduling.",
+    "timing_forecast": "transfer/timing_forecast.json",
+    "timing_phase_complete": true,
+    "remaining_fits": 12808,
+    "completed_cells": 30,
+    "completed_fits": 13530,
+    "completed_at_utc": "2026-10-12T09:06:05.310416+00:00",
+    "report_completed_at_utc": "2026-10-12T09:10:42.388616+00:00",
+    "processes_stopped": true,
+    "remaining_exit_receipt": "transfer/controller/remaining_exit_receipt.json",
+    "report_exit_receipt": "transfer/controller/report_exit_receipt.json",
+    "report_completion": "transfer/results/completed.json",
+    "report_invocations": 1,
+    "completion_audit": "resources/transfer_completion_audit.json",
+    "runtime_closeout": "resources/transfer_runtime_closeout.json",
+    "primary_results": {
+      "hla": {
+        "delta": 0.372342,
+        "crossed_ci": [
+          0.290338,
+          0.453269
+        ]
+      },
+      "joint": {
+        "delta": 0.395844,
+        "crossed_ci": [
+          0.295075,
+          0.445743
+        ]
+      },
+      "panel_min_rows": 20,
+      "comparator": "bounded_MLP_sequence_selector",
+      "interpretation": "Conditional development comparison of complete procedures; not superiority over full main sequence selector or independent confirmation. Transfer lower bounds exceed0.05; main peptide lower bound still does not."
+    },
+    "audit_evidence_hashes": 236,
+    "runtime_evidence_hashes": 206
+  },
+  "complementarity_completion": {
+    "status": "complete_audited",
+    "n_rows": 19716,
+    "n_clusters": 3587,
+    "logical_model_fits": 2140,
+    "count_limitation": "Includes compatible safe fit-cache reuse; not an independent count of fresh hardware executions.",
+    "procedures": 8,
+    "declared_contrasts_per_panel": 16,
+    "panels": [
+      20,
+      50
+    ],
+    "evidence_hashes": 224,
+    "audit": "resources/complementarity_completion_audit.json",
+    "report": "complementarity/results/REPORT.md",
+    "primary_R4_blend_vs_sequence_selector": {
+      "delta": 0.056948,
+      "ci_low": 0.042591,
+      "ci_high": 0.083811
+    },
+    "interpretation": "R4 complements improve specified conditional development comparisons; R2 does not establish improvement over sequence. No declared comparison with main R5/embedding selector and no transfer shortlist changes."
+  },
+  "runtime_cost_summary": "resources/runtime_cost_summary.json",
+  "execution_status": "bounded_development_complete_audited",
+  "consolidated_report": "REPORT.md",
+  "completion_closeout": "resources/development_closeout.json"
+}

@@ -1,0 +1,326 @@
+{
+  "arm": "A5/ESM",
+  "description": "the stage 3 frozen ESM-2 arm refitted under the Phase A training-only nested cluster protocol, as the ESM component of A5's blends",
+  "written_utc": "2026-10-04T20:01:10+00:00",
+  "quick": true,
+  "why_not_preds_esm_ensemble_oof": "preds/esm_ensemble_oof.csv was built on pepstab.stage6.nested_folds, which partitions by peptide and deliberately splits near-neighbour mutant families across folds. Phase A assesses on whole-cluster folds; the two schemes are not interchangeable.",
+  "selected_esm_config": {
+    "checkpoint": "esm2_t12_35M_UR50D",
+    "pep_rep": "pos",
+    "hla_rep": "contact",
+    "layers": [
+      "mid",
+      "final"
+    ],
+    "pep_pca": 256,
+    "hla_pca": 74,
+    "hidden": [
+      256,
+      64
+    ],
+    "l2": 0.01,
+    "source": "reports/stage3_headline.json, selected at stage 3 on validation",
+    "stage3_verdict": "inconclusive at 0, and rules out a 0.05 gain",
+    "axis_declared_at_stage3": "ESM layer (mid, final)"
+  },
+  "arity": {
+    "members_per_outer_fold": 4,
+    "a0_members_per_outer_fold": 30,
+    "axes": "2 inner folds x 2 ESM layers ['mid', 'final'] x 1 seeds",
+    "axes_at_full_run": "5 inner folds x 2 ESM layers ['mid', 'final'] x 3 seeds = 30",
+    "networks_at_full_run": 900,
+    "is_full_arity": false,
+    "a0_axes": "5 inner folds x 2 encodings (onehot, blosum) x 3 seeds",
+    "note": "the ESM layer axis is the two-way axis stage 3 declared as the stand-in for stage 2's encoding axis (scripts/esm_arm.py::mode_ensemble --axis layer), so member count, fold protocol, seeds and head family match A0 and only the features differ"
+  },
+  "outer_folds": 1,
+  "inner_folds": 2,
+  "sub_folds": 2,
+  "members_per_outer_fold": {
+    "level2_outer_held_and_inner_oof_6": 4,
+    "level3_inner_oof_30": 8
+  },
+  "networks_total": 12,
+  "seeds": [
+    0
+  ],
+  "block_axis": [
+    "mid",
+    "final"
+  ],
+  "n_features": 330,
+  "member_config": {
+    "hidden": [
+      256,
+      64
+    ],
+    "l2": 0.01,
+    "lr": 0.001,
+    "batch_size": 256,
+    "max_epochs": 300,
+    "patience": 15,
+    "source": "reports/stage3_headline.json head, reached via scripts.esm_arm.SWEEP_CONFIG on top of pepstab.nested.REFERENCE_MLP; not re-tuned here"
+  },
+  "fit_rows_by_level": {
+    "outer_held": 7886,
+    "inner_oof_30": 3943,
+    "note": "the irreducible remainder of nested CV: each level removes another fifth, so inner_oof_30 members are fitted on fewer rows than outer_held members. Same remainder A0 carries."
+  },
+  "transforms_refitted_per_fitting_partition": true,
+  "transform_note": "standardisation and PCA are fitted on the unique sequences of whichever fitting partition is being handed to assemble(), at every nesting level, so no PCA basis sees a row it will later predict",
+  "min_rows_per_allele_fold": 20,
+  "sensitivity_min_rows_per_allele_fold": 50,
+  "floor_event": {
+    "definition": "thalf_hours == 0",
+    "n_train_rows": 3977,
+    "share": 0.201714
+  },
+  "blas_threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "package_versions": {
+    "python": "3.12.12",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "platform": "macOS-27.0-arm64-arm-64bit"
+  },
+  "input_digests": {
+    "data/splits.csv": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data/rasmussen_et_al_dataset.csv": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658",
+    "reports/further_research/phase_a_outer_folds.csv": "c61fb616d556bcb967b2ebb21c2832ba379c4ffeb4eb38f74bda2b2a65251fa9",
+    "reports/stage3_headline.json": "38852dea32c3b785891df83e73885b2dd113ffa4eade8cd5c2c307487b0245d2"
+  },
+  "embedding_cache_digests": {
+    "features/esm/esm2_t12_35M_UR50D/peptide.index.json": "13f979bbd67659958f317ac6869a184a11b38a4ac28f19c390ef7b8cd9776c4a",
+    "peptide.index.json::content_hash": "2692804aee87df4d",
+    "features/esm/esm2_t12_35M_UR50D/peptide_L6.npz": "e5af22f6322f0bff89b41632da8ebabb021b7e58f1d8a9a7eab6d94df3b8237e",
+    "features/esm/esm2_t12_35M_UR50D/peptide_L12.npz": "4c886eea2fec68986112214bbf58c16b1fe0a50d5029a56aacbcf2f7b91cf0df",
+    "features/esm/esm2_t12_35M_UR50D/hla.index.json": "966949b9c15ac6f61964b6a4f400c4289f735b84ff1fe5e71704a8b6ce547da6",
+    "hla.index.json::content_hash": "bc5a9d2c5234553c",
+    "features/esm/esm2_t12_35M_UR50D/hla_L6.npz": "83b39484e8c6965801dd2160f4955f9b100d5042e755f07f0b6a72993cd3c948",
+    "features/esm/esm2_t12_35M_UR50D/hla_L12.npz": "54c59ea22075a8f2e65ea696e3258dbcd58f9159e84a041ffa7ee6f86846c4e6"
+  },
+  "source": "local fit",
+  "payload_digest": "",
+  "payload_properties": {
+    "training_sequences_only": true,
+    "n_sequences": {
+      "peptide": 3942,
+      "hla": 75
+    },
+    "note": "the artifact holds 3,942 of the cache's 5,633 peptides and 75 HLA domains pre-sliced to their 34 contact positions, so a container CANNOT read a frozen validation or test sequence -- this arm's one unrecoverable mistake is impossible by construction, not merely avoided by discipline",
+    "bit_identical_to_cache_path": true,
+    "bit_identical_note": "build_payload preserves the cache's row order so standardisation sums identically, and randomized_svd projects over the 4,320 columns, which are unchanged; verified with assert_array_equal on both layers and atol=0 on predictions and inner_oof, so the cloud run and the local pilot are comparable rather than merely similar"
+  },
+  "rows": {
+    "train": 19716,
+    "oof_csv": 35488,
+    "runs_csv": 12
+  },
+  "fold_scores": [
+    {
+      "outer_fold": 0,
+      "n_alleles_eligible": 68,
+      "n_rows": 3944,
+      "eligible_row_coverage": 0.9961967545638946,
+      "median_spearman": 0.6282984050738775,
+      "iqr_low": 0.4877630543390879,
+      "iqr_high": 0.6964332202828136,
+      "mae_log1p": 0.5344970718233198,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6448036448574477,
+      "n_alleles_eligible_min50": 48,
+      "eligible_row_coverage_min50": 0.7667342799188641
+    }
+  ],
+  "a0_comparator": {
+    "available": true,
+    "source": "reports/further_research/phase_a_a0_provenance.json",
+    "five_fold_median_of_medians": 0.6492987333936656,
+    "per_fold_median_spearman": [
+      0.6764711251024863,
+      0.6280868563122883,
+      0.6418172566070978,
+      0.6492987333936656,
+      0.651475454592825
+    ],
+    "fold_spread": 0.04838426879019797,
+    "networks_total": 900,
+    "members_per_outer_fold": {
+      "level2_outer_held_and_inner_oof_6": 30,
+      "level3_inner_oof_30": 150
+    },
+    "caveat": "A0's fold spread is ~0.048 with the model held fixed, which is essentially the whole 0.05 worthwhile bar from fold assignment alone. Read the per-fold vectors, not a single fold difference."
+  },
+  "inner_oof_residual_scale": {
+    "outer_held": {
+      "n_rows": 3944,
+      "rmse": 0.7146288932631047,
+      "rmse_paired": 0.7146288932631047
+    },
+    "inner_oof_6": {
+      "n_rows": 15772,
+      "rmse": 0.7675656413520773,
+      "rmse_paired": 0.7675656413520773,
+      "rmse_ratio_to_outer_held": 1.0740758575367073,
+      "rmse_ratio_to_outer_held_paired": 1.0740758575367073
+    },
+    "inner_oof_30": {
+      "n_rows": 15772,
+      "rmse": 0.7819799766766059,
+      "rmse_paired": 0.7819799766766059,
+      "rmse_ratio_to_outer_held": 1.0942462361211927,
+      "rmse_ratio_to_outer_held_paired": 1.0942462361211927
+    },
+    "interpretation": "A ratio above 1 means the inner role sits further from the label than outer_held does. inner_oof_6 is optimistic by construction (its members early-stopped on the rows they predict) and inner_oof_30 pays a training-row penalty (~10,094 fit rows against ~12,618), so neither is a clean estimate of outer_held's error scale. Which is the better stacking input is OPEN and A5 decides it on a paired blend outcome."
+  },
+  "five_fold_median_of_medians": 0.6282984050738775,
+  "five_fold_median_of_medians_min50": 0.6448036448574477,
+  "wall_seconds": 33.7,
+  "members": [
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": -1,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 7886,
+      "best_epoch": 139,
+      "dev_mse": 0.6381023526191711,
+      "fit_seconds": 3.24
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": -1,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 7886,
+      "best_epoch": 146,
+      "dev_mse": 0.6607124209403992,
+      "fit_seconds": 3.25
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": -1,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 7886,
+      "best_epoch": 165,
+      "dev_mse": 0.6476463079452515,
+      "fit_seconds": 3.62
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": -1,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 7886,
+      "best_epoch": 146,
+      "dev_mse": 0.6528134346008301,
+      "fit_seconds": 3.25
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": 0,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 217,
+      "dev_mse": 0.7624357342720032,
+      "fit_seconds": 2.32
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": 1,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 178,
+      "dev_mse": 0.7852254509925842,
+      "fit_seconds": 1.92
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": 0,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 203,
+      "dev_mse": 0.7935675382614136,
+      "fit_seconds": 2.16
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "sub_fold": 1,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 143,
+      "dev_mse": 0.842186450958252,
+      "fit_seconds": 1.57
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": 0,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 221,
+      "dev_mse": 0.7805522680282593,
+      "fit_seconds": 2.38
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": 1,
+      "block": "mid",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 238,
+      "dev_mse": 0.7727802991867065,
+      "fit_seconds": 2.55
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": 0,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 236,
+      "dev_mse": 0.7627583742141724,
+      "fit_seconds": 2.55
+    },
+    {
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "sub_fold": 1,
+      "block": "final",
+      "seed": 0,
+      "n_fit_rows": 3943,
+      "best_epoch": 238,
+      "dev_mse": 0.7601039409637451,
+      "fit_seconds": 2.54
+    }
+  ],
+  "asserted": [
+    "outer fold assignment == phase_a_outer_folds.csv for all 19,716 rows (loaded and compared, not recomputed)",
+    "np.isfinite on all 35,488 predictions",
+    "members: 4 level-2 + 8 level-3 = 12",
+    "6 fit/predict disjointness checks, covering every one of the 12 members"
+  ]
+}

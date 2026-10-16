@@ -10,6 +10,9 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'reports/**'
+      - 'docs/**'
+      - 'scripts/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -31,6 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify saved submission evidence and publication links
+        run: |
+          python3 site/round2-build.py --check
+          python3 site/round2-build.py --check-full-cohort
       # enablement:true turns Pages on for the repo the first time this runs,
       # using the workflow's own pages:write token. Without it the action only
       # reads existing Pages config and fails with 404 on a repo that has

@@ -9,6 +9,8 @@ results/
 preds/
 *.npy
 *.npz
+# Transport archives duplicate the audited, versioned full-cohort records.
+reports/followup3/inverse_fulltrain_candidate/*_archive.tar.gz
 *.pt
 *.pkl
 *.h5
@@ -39,3 +41,121 @@ demo/structures.json
 
 # Artifact staging — the published copy of site/ lives in site/
 .site_build/
+
+# CatBoost writes training logs beside the process that fits
+catboost_info/
+
+# Phase A/B screen intermediates. Per-unit prediction arrays, ~500 MB each: the
+# journal and its CSV twin hold every member's predictions for every unit, which
+# the assembled and scored outputs supersede. Regenerate with
+# modal_app/phase_a_experiments.py::run --resume; the small derived tables
+# (scores, selection, comparisons) are the committed record.
+reports/further_research/*_runs*.partial.jsonl
+reports/further_research/phase_a_runs.csv
+reports/further_research/phase_a_screen_assembled.csv
+reports/further_research/*_members.npz
+
+# Round-two live controller logs/locks and transient fitting journals. Final
+# predictions, member tables, provenance and budget records remain versioned.
+reports/further_research/round2/**/*.log
+reports/further_research/round2/**/*.lock
+reports/further_research/round2/**/*.tmp
+reports/further_research/round2/**/*.partial.csv
+reports/further_research/round2/**/members.jsonl
+
+# Completed round-two analytical reports are evidence, unlike generic model
+# output directories covered by the broad results/ rule above.
+!reports/further_research/round2/**/results/
+!reports/further_research/round2/**/results/**
+
+# Closed finalization runs: keep private fitted states, caller caches and
+# execution history on disk. Published tables/audits remain tracked; the
+# predecessor record linked by RECOVERY_OPERATIONS.md remains visible.
+/reports/finalization/hybrids_cloud_v1/**/tree_*.cbm
+/reports/finalization/hybrids_cloud_v1/**/bundles_*.launch.json
+/reports/finalization/hybrids_cloud_v1/**/attempt.json
+/reports/finalization/hybrids/controller/pilot/queue_attempt.json
+/reports/finalization/hybrids_recovery/controller/pilot/queue_attempt.json
+/reports/finalization/ranking/*.log
+/reports/finalization/resources/transfer_main/calls/
+/reports/further_research/round2/transfer/**/progress.jsonl
+/reports/further_research/round2/results/sequence/report_execution.log
+/venv-packages-2026-10-12.txt
+/reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/
+/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/
+/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2240/
+/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2320/
+/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2350/
+/reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/
+/reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0050/
+/reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/
+/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1756/
+/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1815/
+/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/
+/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/
+/reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/
+/reports/finalization/resources/image_pin_20261012/
+/reports/finalization/transfer_controls/controller/attempt.json
+/reports/finalization/transfer_controls/controller/exit_receipt.json
+/reports/finalization/transfer_controls/controller/state.json
+/reports/finalization/transfer_controls/controller/ownership.lock
+/reports/finalization/transfer_controls/joint/*/attempt.json
+/reports/finalization/transfer_controls/joint/*/progress.jsonl
+/reports/finalization/transfer_controls/joint/*/runtime.json
+/reports/finalization/transfer_recovery/controller/attempt.json
+/reports/finalization/transfer_recovery/controller/exit_receipt.json
+/reports/finalization/transfer_recovery/controller/state.json
+/reports/finalization/transfer_recovery/controller/ownership.lock
+/reports/finalization/transfer_recovery/joint/*/attempt.json
+/reports/finalization/transfer_recovery/joint/*/progress.jsonl
+/reports/finalization/transfer_recovery/joint/*/runtime.json
+/reports/finalization/transfer_recovery_v2/controller/attempt.json
+/reports/finalization/transfer_recovery_v2/controller/exit_receipt.json
+/reports/finalization/transfer_recovery_v2/controller/state.json
+/reports/finalization/transfer_recovery_v2/controller/ownership.lock
+/reports/finalization/transfer_recovery_v2/joint/*/attempt.json
+/reports/finalization/transfer_recovery_v2/joint/*/progress.jsonl
+/reports/finalization/transfer_recovery_v2/joint/*/runtime.json
+/reports/finalization/transfer_recovery/controller/launch_intents/
+/reports/finalization/transfer_recovery/controller/launches/
+/reports/finalization/transfer_recovery_v2/controller/launch_intents/
+/reports/finalization/transfer_recovery_v2/controller/launches/
+/reports/finalization/transfer_recovery_v2/controller/exits/
+/reports/finalization/transfer_recovery_v2/joint/*/exit_receipt.json
+/reports/finalization/transfer_cloud_recovery/hla/*/attempt.json
+/reports/finalization/transfer_cloud_recovery/hla/*/exit_receipt.json
+/reports/finalization/transfer_cloud_recovery/hla/*/progress.jsonl
+/reports/finalization/transfer_cloud_recovery/joint/*/attempt.json
+/reports/finalization/transfer_cloud_recovery/joint/*/exit_receipt.json
+/reports/finalization/transfer_cloud_recovery/joint/*/progress.jsonl
+/reports/finalization/transfer_cloud_recovery/joint/*/runtime.json
+
+# Undated local lifecycle records from those closed runs (exact paths).
+/reports/finalization/resources/cloud_guard/ownership.lock
+/reports/finalization/resources/cloud_guard/status.json
+/reports/finalization/resources/hybrid_durable_pilot/predecessor_validation.json
+/reports/finalization/resources/hybrid_pilot/queue_launch_intent.json
+/reports/finalization/resources/hybrid_pilot/root_launch.json
+/reports/finalization/resources/hybrid_recovery_pilot/launch_intent.json
+/reports/finalization/resources/hybrid_recovery_pilot/root_launch.json
+/reports/finalization/resources/transfer_durable/controller.stderr.log
+/reports/finalization/resources/transfer_durable/keep_awake.plist
+/reports/finalization/resources/transfer_durable/keep_awake_launch.json
+/reports/finalization/resources/transfer_durable/launch_plan.json
+/reports/finalization/resources/transfer_durable/root_launch.json
+/reports/finalization/resources/transfer_main/app_ready.json
+/reports/finalization/resources/transfer_main/budget.jsonl
+/reports/finalization/resources/transfer_main/budget.jsonl.lock
+/reports/finalization/resources/transfer_main/driver.launched.json
+/reports/finalization/resources/transfer_main/driver.log
+/reports/finalization/resources/transfer_main/guard.lock
+/reports/finalization/resources/transfer_main/guard_launch.json
+/reports/finalization/resources/transfer_main/guard_status.json
+/reports/finalization/resources/transfer_main/root_launch.json
+/reports/finalization/resources/transfer_recovery/controller.log
+/reports/finalization/resources/transfer_recovery/launch_intent.json
+/reports/finalization/resources/transfer_recovery/root_launch.json
+/reports/finalization/resources/transfer_smoke/STOP_SUBMISSIONS
+/reports/finalization/resources/transfer_smoke/budget.jsonl.lock
+/reports/finalization/resources/transfer_smoke/driver.log
+/reports/finalization/resources/transfer_smoke/guard.lock

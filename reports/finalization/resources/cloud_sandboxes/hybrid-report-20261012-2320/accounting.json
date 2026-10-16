@@ -1,0 +1,41 @@
+{
+  "schema": "final_cloud_accounting.1",
+  "phase": "hybrid_report",
+  "prior_conservative_liability_usd": 6.559382003056459,
+  "future_envelope_usd": 35,
+  "other_scopes_reserved_usd": 0,
+  "total_ceiling_usd": 100,
+  "phase_cap_usd": 5,
+  "reserved_phase_usd": 5,
+  "conservative_spend_usd": 1.55,
+  "all_pending_phase_reservations_usd": {
+    "hybrid_report": 5
+  },
+  "overhead_reservation_usd": 3,
+  "aggregate_future_reserved_and_spent_usd": 9.55,
+  "current_closed_plus_pending_maximum_usd": 16.10938200305646,
+  "closed_phase_bindings": [
+    {
+      "path": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/closeout.json",
+      "sha256": "db9dea5bb6b38323dbc1c6082a161b923b7f0d13b017cee4630fcdebc01870d3"
+    },
+    {
+      "path": "reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/closeout.json",
+      "sha256": "2a02403efcb78cdc7fe898f26be1ab9bf3022a2b907a5361f7e9ebf375978b07"
+    },
+    {
+      "path": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/closeout.json",
+      "sha256": "8039e26d40f399ad603685809554ec67355204a7cfed1522552df92c9df1fa96"
+    }
+  ],
+  "interpretation": "One shared 35 USD envelope; pilot/report/main are reconciled conservatively. Only the frozen hybrid report and overhead remain reserved; no spending target.",
+  "closed_failed_report": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2240/failure_closeout.json",
+    "sha256": "7cb78cc60bb210e979ad6a76d352c247be78be81d96a85c20dbde909a0606279"
+  },
+  "numerical_amendment": {
+    "path": "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+    "sha256": "52706610025afcb82eead1625ff27fb5b76397f8a4a28be2bdb9ca2a314083f6"
+  },
+  "original_deadline_not_extended": true
+}

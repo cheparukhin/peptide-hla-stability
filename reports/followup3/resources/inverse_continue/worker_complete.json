@@ -1,0 +1,24 @@
+{
+  "at_utc": "2026-10-13T14:57:04.277116+00:00",
+  "status": "complete",
+  "plan_sha256": "ff56f774d5990b469ff612fdee9db802865cd97c176cc6666832b1fe12942e12",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 505.2314250469208,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_parser_recovery.py",
+        "extract",
+        "--out",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/inverse_parser_recovery",
+        "--volume-root",
+        "/structures",
+        "--workers",
+        "8"
+      ],
+      "at_utc": "2026-10-13T14:57:02.329401+00:00"
+    }
+  ]
+}

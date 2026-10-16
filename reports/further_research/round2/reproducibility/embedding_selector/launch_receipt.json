@@ -1,0 +1,27 @@
+{
+  "schema": "round2_embedding_repeats_launch.1",
+  "started_at_utc": "2026-10-12T07:27:37.829051+00:00",
+  "pid": 26167,
+  "process_group_id": 26167,
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+    "/Users/cheparukhin/ai_science_hack/scripts/round2_embedding_repeats.py",
+    "--production-manifest",
+    "reports/further_research/round2/extractor/full_training/feature_bundles.json",
+    "--execute"
+  ],
+  "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/reproducibility/embedding_selector/execution.log",
+  "keep_awake_pid": 26168,
+  "keep_awake_command": [
+    "/usr/bin/caffeinate",
+    "-i",
+    "-w",
+    "26167"
+  ],
+  "protocol_hash": "a54f902baf3f57bbae102d66b29819fd9301c8397ef82361bd4847659998f1ba",
+  "locked_additional_model_fits": 242,
+  "thread_limit": 2,
+  "device": "CPU",
+  "cloud_spend_usd": 0,
+  "source_hashes_verified": 630
+}

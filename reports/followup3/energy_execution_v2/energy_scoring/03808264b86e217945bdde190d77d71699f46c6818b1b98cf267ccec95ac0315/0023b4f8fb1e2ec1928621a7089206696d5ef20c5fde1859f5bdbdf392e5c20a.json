@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:16",
+  "peptide": "QLAGYILTV",
+  "cluster_id": 3128,
+  "outer_fold": 0,
+  "complex_id": "A0216_QLAGYILTV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_16/A0216_QLAGYILTV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0216_QLAGYILTV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o0mggmtz/input",
+        "--output-dir=/tmp/energy_repaired_o0mggmtz/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 245.62849563199995
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0216_QLAGYILTV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_o0mggmtz/output",
+        "--output-dir=/tmp/energy_repaired_o0mggmtz/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.008892733000039
+    }
+  ],
+  "metadata_sha256": "0db834ead819ccc8944459b39fbf5b9fdea227df442b7f4d403a40b173e02444",
+  "structure_sha256": "8661258eb0f932ae9b9e0160ec32fcd83c1751894a42f1787676ff5d9a346476",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.103338,
+    "foldx_intraclashesgroup2": 14.9863,
+    "foldx_interaction_energy": -24.3744,
+    "foldx_backbone_hbond": -6.54015,
+    "foldx_sidechain_hbond": -9.22284,
+    "foldx_van_der_waals": -18.914,
+    "foldx_electrostatics": -1.76987,
+    "foldx_solvation_polar": 26.9527,
+    "foldx_solvation_hydrophobic": -26.3543,
+    "foldx_van_der_waals_clashes": 0.822954,
+    "foldx_entropy_sidechain": 6.81034,
+    "foldx_entropy_mainchain": 3.93863,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0644744,
+    "foldx_backbone_clash": 0.844143,
+    "foldx_helix_dipole": 0.0184077,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.264841,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0841738,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 46.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "92037e6f55027719acb237f61207e17adb550aa8e8fc91813dac3f86b42e4f9e",
+  "repaired_pdb_sha256": "c2f1d9d643091b0f97724d2537d3173c37e82b260eb32ae4cb06e82443bb29c6",
+  "conversion_validation": {
+    "n_atoms": 3144,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "QLAGYILTV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 251.437106534,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

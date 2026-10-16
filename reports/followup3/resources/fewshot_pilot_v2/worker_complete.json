@@ -1,0 +1,35 @@
+{
+  "at_utc": "2026-10-13T12:02:43.814901+00:00",
+  "status": "complete",
+  "plan_sha256": "343d63e97dedd2e04740ed854f8ef4284465a07ae165d7fd38569a7411dcf537",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 1.0065784454345703,
+      "command": [
+        "python",
+        "-c",
+        "from pathlib import Path; import json; src=Path('reports/followup3/fewshot/cells/cell_000'); dst=Path('reports/followup3/failed_attempts/science_pilots/cell_000'); assert src.exists() and not dst.exists(); dst.parent.mkdir(parents=True,exist_ok=True); src.rename(dst); (dst.parent/'disclosure.json').write_text(json.dumps({'reason':'exact scaler replay failed before efficacy assessment','known_completed_source_fits':1,'retained_scientific_fits':0,'source_commit':'1c6ca7e','original_protocol_preserved':True},indent=2)+'\\n')"
+      ],
+      "at_utc": "2026-10-13T12:01:57.183579+00:00"
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "seconds": 43.36455225944519,
+      "command": [
+        "python",
+        "scripts/followup3_fewshot.py",
+        "run-cell",
+        "--cell-index",
+        "0",
+        "--features",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/shared/features.npz",
+        "--protocol",
+        "/Users/cheparukhin/ai_science_hack/reports/followup3/fewshot/protocol_replay_v2.json"
+      ],
+      "at_utc": "2026-10-13T12:02:41.551044+00:00"
+    }
+  ]
+}

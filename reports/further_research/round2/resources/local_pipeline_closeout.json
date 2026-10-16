@@ -1,0 +1,23 @@
+{
+  "schema": "round2_local_pipeline_closeout.1",
+  "at_utc": "2026-10-12T08:00:13.192010+00:00",
+  "status": "completed_all_stages_exit_zero",
+  "stages": {
+    "embedding_folds": 5,
+    "main_report": 1,
+    "complementarity_folds": 5,
+    "complementarity_report": 1
+  },
+  "controller_pid": 13236,
+  "keep_awake_pid": 13237,
+  "pipeline_completed_at_utc": "2026-10-12T07:54:11.930236+00:00",
+  "cloud_spend_usd": 0,
+  "scientific_validation": "Main and locked repeats independently audited; complementarity completion audit in progress at this closeout. This records process completion, not new independent scientific confirmation.",
+  "source_sha256": {
+    "pipeline/status.json": "7fd5702f3633a83e59d6929a603ba81770c20ccf2985a0e64bfa8fd08a6b441b",
+    "results/main/manifest.json": "fa635174761599d39e1a6210ea5ccd065f0971e54dfbfd199c674342f2e3327b",
+    "complementarity/results/manifest.json": "727081bead836d07262bdbca3c2367d40e18c2f10e7136123e7d90fdaf5ad466"
+  },
+  "processes_verified_absent_before_utc": "2026-10-12T07:57:17.845557+00:00",
+  "process_reconciliation_note": "Read-only ps returned no matching prior main/timing controller or helper processes immediately before the recorded timing forecast."
+}

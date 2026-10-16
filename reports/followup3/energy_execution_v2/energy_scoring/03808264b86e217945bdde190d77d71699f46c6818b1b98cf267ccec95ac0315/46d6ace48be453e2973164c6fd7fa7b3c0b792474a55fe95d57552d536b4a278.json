@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*54:01",
+  "peptide": "VPATATASI",
+  "cluster_id": 12,
+  "outer_fold": 0,
+  "complex_id": "B5401_VPATATASI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_54_01/B5401_VPATATASI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5401_VPATATASI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_y22h0eip/input",
+        "--output-dir=/tmp/energy_repaired_y22h0eip/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 214.2715926790006
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5401_VPATATASI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_y22h0eip/output",
+        "--output-dir=/tmp/energy_repaired_y22h0eip/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.6216660469999624
+    }
+  ],
+  "metadata_sha256": "676624a7157f19a7a1396a1d568c18e1b22d8821dcbff0f2c161bded70ed7953",
+  "structure_sha256": "cae56cc0420eaf1d5cddc2658e2066bf878937952417157cacd09e47969bea3e",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0910959,
+    "foldx_intraclashesgroup2": 12.592,
+    "foldx_interaction_energy": -18.2395,
+    "foldx_backbone_hbond": -4.35289,
+    "foldx_sidechain_hbond": -5.10582,
+    "foldx_van_der_waals": -15.8588,
+    "foldx_electrostatics": -1.0189,
+    "foldx_solvation_polar": 22.0518,
+    "foldx_solvation_hydrophobic": -22.2254,
+    "foldx_van_der_waals_clashes": 1.456,
+    "foldx_entropy_sidechain": 3.83811,
+    "foldx_entropy_mainchain": 3.17344,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0816136,
+    "foldx_backbone_clash": 0.629324,
+    "foldx_helix_dipole": 0.000719234,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 8.88178e-16,
+    "foldx_electrostatic_kon": -0.279334,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 42.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "e0c2a88ea33e3ceffe6a3dd885cafb01699c1705d750ecc591e506f3db1f05c3",
+  "repaired_pdb_sha256": "a238f58b44f61e472c1753de85a41299158123882e08fc2fc67e28359c3f43c5",
+  "conversion_validation": {
+    "n_atoms": 3124,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VPATATASI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 219.83670322499893,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

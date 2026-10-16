@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*68:23",
+  "peptide": "EVIPYTPAM",
+  "cluster_id": 700,
+  "outer_fold": 3,
+  "complex_id": "A6823_EVIPYTPAM",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_68_23/A6823_EVIPYTPAM",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A6823_EVIPYTPAM.pdb",
+        "--pdb-dir=/tmp/energy_repaired_03u4rk78/input",
+        "--output-dir=/tmp/energy_repaired_03u4rk78/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 232.34748059100002
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A6823_EVIPYTPAM_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_03u4rk78/output",
+        "--output-dir=/tmp/energy_repaired_03u4rk78/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.810397350999665
+    }
+  ],
+  "metadata_sha256": "28c6a0012ac8208bdfd36f212782d051370ae0c43cae0425cbffee69b92df722",
+  "structure_sha256": "2088672ccf2535fb6a5fd7ca0b54b26db87f2c07e3cf76db684ff2fe36281077",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.048402,
+    "foldx_intraclashesgroup2": 11.8155,
+    "foldx_interaction_energy": -23.5867,
+    "foldx_backbone_hbond": -5.11666,
+    "foldx_sidechain_hbond": -10.9112,
+    "foldx_van_der_waals": -17.9283,
+    "foldx_electrostatics": -3.08339,
+    "foldx_solvation_polar": 24.0424,
+    "foldx_solvation_hydrophobic": -24.9884,
+    "foldx_van_der_waals_clashes": 2.92188,
+    "foldx_entropy_sidechain": 7.71856,
+    "foldx_entropy_mainchain": 3.9287,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0648381,
+    "foldx_backbone_clash": 0.602309,
+    "foldx_helix_dipole": -0.0218819,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.213194,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 1.0,
+    "foldx_interface_residues_vdw_clashing": 1.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "3d9a641ba8cd946eee7b187a2160735de20df134b9cd98b98132131769ac1c52",
+  "repaired_pdb_sha256": "0a54dcd001435b5349337c58b1e44ca98c11f6fe705300d9ba697e4e429957ec",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "EVIPYTPAM"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 240.6228961400002,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

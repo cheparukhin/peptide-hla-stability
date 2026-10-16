@@ -1,0 +1,31 @@
+{
+  "schema": "final_cloud_accounting.1",
+  "phase": "hybrid_main",
+  "prior_conservative_liability_usd": 6.559382003056459,
+  "future_envelope_usd": 35,
+  "other_scopes_reserved_usd": 0,
+  "total_ceiling_usd": 100,
+  "phase_cap_usd": 20,
+  "reserved_phase_usd": 20,
+  "conservative_spend_usd": 0.1,
+  "all_pending_phase_reservations_usd": {
+    "transfer_report": 5,
+    "hybrid_main": 20,
+    "hybrid_report": 5
+  },
+  "overhead_reservation_usd": 3,
+  "aggregate_future_reserved_usd": 33,
+  "concurrency_amendment": {
+    "path": "reports/finalization/cloud/parallel_execution_amendment.json",
+    "sha256": "68c4e009da7a516e31c025b39d5c79b434f187262cb376ba4f33f141a5613988"
+  },
+  "closed_recovery": {
+    "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/closeout.json",
+    "sha256": "3ef8eb6f82c3b3393e16c72c85ce11de0a9b45b34143b625e5698f810c62a23c"
+  },
+  "interpretation": "Shared35USD envelope:0.1USD pilot carry plus30USD pending phase caps and3USD overhead; transfer report remains concurrent. No additional35USD allocation.",
+  "completed_pilot": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/closeout.json",
+    "sha256": "db9dea5bb6b38323dbc1c6082a161b923b7f0d13b017cee4630fcdebc01870d3"
+  }
+}

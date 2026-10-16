@@ -1,0 +1,30 @@
+{
+  "status": "passed_operational_recovery_source_review",
+  "reviewed_at_utc": "2026-10-13T13:03:49.085563+00:00",
+  "source_sha256": {
+    "modal_app/followup3_energy_v2.py": "285a4980afd24a3ec03d78c5a508ab3deb83a758711b3067578dcbb4611c6498",
+    "scripts/followup3_energy_v2.py": "81c091fe8255f60780bcebdd63793cc703a87c9e1956448400689924368a88c2",
+    "scripts/followup3_energy_guard_v2.py": "0d29ce1803cddd49d321b5556451b47fc378f03429180dd20e371576d2ae5c2b",
+    "scripts/followup3_energy_guard.py": "8c2f2f8332e724123fccd6fad415766c5c8665cf65f121eb296edfc7026075bd",
+    "reports/followup3/energy_execution_v2/EXECUTION_AMENDMENT.md": "2eb46e897972a0a77a5806baa5aed48f062c5158cf3656baf482919b89759e9d",
+    "tests/test_followup3_energy_v2.py": "d372fa5641e71f6079c613585510c03eec9d4862940e98303184f3c717dfe8c1"
+  },
+  "original_protocol_file_sha256": "2124b7bb695d6c2143b9cdb78aca4f88e3ec2da60b4929707eea2ef0b849598f",
+  "review_scope": [
+    "original scientific source/specification/panel/pilot reuse preserved and snapshotted",
+    "native libraries pinned in image and required outside source-volume path",
+    "documented source-volume reload/commit retained outside FoldX commands",
+    "one predetermined fresh uncached case must succeed before fanout and is excluded from later tasks",
+    "hard CPU/memory/concurrency/case/runtime/deadline caps preserved",
+    "new guard wrapper binds exact v2 app description through unchanged reviewed guard"
+  ],
+  "tests": "3 recovery tests and 3 audit-helper tests passed; compilation passed",
+  "paid_launch_performed_by_reviewer": false,
+  "requirements": [
+    "freeze reviewed bytes and verify exact original specification/panel before admission",
+    "bind fresh root reservation and guard before image build/dispatch",
+    "same fixed global deadline includes build and serial production-path pilot",
+    "preserve initial failed attempt; no repeated completed case or automatic interrupted-case retry"
+  ],
+  "limitation": "source review does not prove live reload compatibility; production-path gate must establish it before fanout"
+}

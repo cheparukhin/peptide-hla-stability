@@ -1,0 +1,157 @@
+{
+  "profile": "colleague",
+  "n": 3,
+  "ok": 3,
+  "failed": 0,
+  "keys": [
+    "L2_o0",
+    "L3_o0_i0",
+    "L3_o0_i1"
+  ],
+  "levels": [
+    2,
+    3,
+    3
+  ],
+  "units_schema_version": 1,
+  "payload_digests": [
+    "6f5200968670ea7d59ddcb788efcb069dcac4e390178462b5353cd5a2efe7248"
+  ],
+  "n_members_per_unit": [
+    30
+  ],
+  "n_features": [
+    330
+  ],
+  "seconds_per_unit": 317.387,
+  "seconds_per_unit_median": 244.594,
+  "chunk_wall_s": 800.5,
+  "client_wall_s": 810.1,
+  "peak_gib": 0.00068359375,
+  "worker_memory_mib": 4096,
+  "threads": 2,
+  "shape": {
+    "cpu": 2.0,
+    "memory_gib": 4.0,
+    "containers": 1
+  },
+  "scores": {
+    "L2_o0": 0.6769067755749725,
+    "L3_o0_i0": 0.6078095806304646,
+    "L3_o0_i1": 0.5978191245099755
+  },
+  "all_ok": true,
+  "rows": [
+    {
+      "key": "L2_o0",
+      "level": 2,
+      "outer_fold": 0,
+      "inner_fold": -1,
+      "role": "outer_held",
+      "ok": true,
+      "n_members": 30,
+      "n_features": 330,
+      "n_predicted": 3944,
+      "median_per_allele_spearman": 0.6769067755749725,
+      "iqr_low": 0.536299107529635,
+      "iqr_high": 0.7599140944317939,
+      "mae_log1p": 0.4953350883860906,
+      "n_alleles_unranked": 0,
+      "n_alleles_eligible": 68,
+      "eligible_row_coverage": 0.9961967545638946,
+      "median_per_allele_spearman_min50": 0.6785780717626129,
+      "n_alleles_eligible_min50": 48,
+      "eligible_row_coverage_min50": 0.7667342799188641,
+      "payload_digest": "6f5200968670ea7d59ddcb788efcb069dcac4e390178462b5353cd5a2efe7248",
+      "payload_sequences": {
+        "peptide": 3942,
+        "hla": 75
+      },
+      "units_schema_version": 1,
+      "unit_seconds": 317.387,
+      "peak_rss_mb": 0.7,
+      "threads": 2,
+      "threads_observed": 2,
+      "thread_pin_ok": true,
+      "worker_cpu": 2.0,
+      "worker_memory_mib": 4096,
+      "unit_wall_s": 319.662,
+      "chunk_wall_s": 800.5,
+      "self_max_rss_gib": 0.673
+    },
+    {
+      "key": "L3_o0_i0",
+      "level": 3,
+      "outer_fold": 0,
+      "inner_fold": 0,
+      "role": "inner_oof_30",
+      "ok": true,
+      "n_members": 30,
+      "n_features": 330,
+      "n_predicted": 3155,
+      "median_per_allele_spearman": 0.6078095806304646,
+      "iqr_low": 0.5322652806378184,
+      "iqr_high": 0.689408193127478,
+      "mae_log1p": 0.5094606793059367,
+      "n_alleles_unranked": 0,
+      "n_alleles_eligible": 68,
+      "eligible_row_coverage": 0.9942947702060222,
+      "median_per_allele_spearman_min50": 0.6600017438559693,
+      "n_alleles_eligible_min50": 10,
+      "eligible_row_coverage_min50": 0.2551505546751189,
+      "payload_digest": "6f5200968670ea7d59ddcb788efcb069dcac4e390178462b5353cd5a2efe7248",
+      "payload_sequences": {
+        "peptide": 3942,
+        "hla": 75
+      },
+      "units_schema_version": 1,
+      "unit_seconds": 236.289,
+      "peak_rss_mb": 0.7,
+      "threads": 2,
+      "threads_observed": 2,
+      "thread_pin_ok": true,
+      "worker_cpu": 2.0,
+      "worker_memory_mib": 4096,
+      "unit_wall_s": 236.291,
+      "chunk_wall_s": 800.5,
+      "self_max_rss_gib": 0.673
+    },
+    {
+      "key": "L3_o0_i1",
+      "level": 3,
+      "outer_fold": 0,
+      "inner_fold": 1,
+      "role": "inner_oof_30",
+      "ok": true,
+      "n_members": 30,
+      "n_features": 330,
+      "n_predicted": 3155,
+      "median_per_allele_spearman": 0.5978191245099755,
+      "iqr_low": 0.44849082331779905,
+      "iqr_high": 0.7242917286931865,
+      "mae_log1p": 0.508371282521413,
+      "n_alleles_unranked": 0,
+      "n_alleles_eligible": 68,
+      "eligible_row_coverage": 0.9939778129952457,
+      "median_per_allele_spearman_min50": 0.6566670348182118,
+      "n_alleles_eligible_min50": 12,
+      "eligible_row_coverage_min50": 0.2849445324881141,
+      "payload_digest": "6f5200968670ea7d59ddcb788efcb069dcac4e390178462b5353cd5a2efe7248",
+      "payload_sequences": {
+        "peptide": 3942,
+        "hla": 75
+      },
+      "units_schema_version": 1,
+      "unit_seconds": 244.594,
+      "peak_rss_mb": 0.7,
+      "threads": 2,
+      "threads_observed": 2,
+      "thread_pin_ok": true,
+      "worker_cpu": 2.0,
+      "worker_memory_mib": 4096,
+      "unit_wall_s": 244.596,
+      "chunk_wall_s": 800.5,
+      "self_max_rss_gib": 0.673
+    }
+  ]
+}

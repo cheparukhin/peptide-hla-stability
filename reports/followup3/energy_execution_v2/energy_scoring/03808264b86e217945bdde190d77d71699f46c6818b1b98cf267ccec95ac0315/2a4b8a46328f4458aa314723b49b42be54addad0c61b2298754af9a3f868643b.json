@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*27:02",
+  "peptide": "KMFNRASYF",
+  "cluster_id": 2072,
+  "outer_fold": 4,
+  "complex_id": "B2702_KMFNRASYF",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_27_02/B2702_KMFNRASYF",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B2702_KMFNRASYF.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tkqbx7t1/input",
+        "--output-dir=/tmp/energy_repaired_tkqbx7t1/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 260.52631461799956
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B2702_KMFNRASYF_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tkqbx7t1/output",
+        "--output-dir=/tmp/energy_repaired_tkqbx7t1/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.71383205300026
+    }
+  ],
+  "metadata_sha256": "c263118f1ccf1ac46f378fbba6bd60b2d839b82d53460ef1b9fe301a09b7041f",
+  "structure_sha256": "981877586297fb4bac81962494f1642cd3d876c2a137b7a22ae9c874383ebdf0",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.150971,
+    "foldx_intraclashesgroup2": 12.7125,
+    "foldx_interaction_energy": -19.5739,
+    "foldx_backbone_hbond": -5.46368,
+    "foldx_sidechain_hbond": -6.59582,
+    "foldx_van_der_waals": -19.4393,
+    "foldx_electrostatics": -2.47957,
+    "foldx_solvation_polar": 22.9208,
+    "foldx_solvation_hydrophobic": -27.4379,
+    "foldx_van_der_waals_clashes": 3.26473,
+    "foldx_entropy_sidechain": 11.1078,
+    "foldx_entropy_mainchain": 5.19728,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0465604,
+    "foldx_backbone_clash": 1.19987,
+    "foldx_helix_dipole": 0.0254315,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.732798,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.012533,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "e4263482da5c5704858cb90779ac5252c311fafb40459fbe36c34f5bb7cb07f8",
+  "repaired_pdb_sha256": "210a1b6bd38563834c6216154b272873a975c7de0b3b32e4380e85c05320f714",
+  "conversion_validation": {
+    "n_atoms": 3151,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "KMFNRASYF"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 265.1431125700001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

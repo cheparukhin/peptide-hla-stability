@@ -1,0 +1,54 @@
+{
+  "schema": "finalization_cloud_operational_amendment.1",
+  "status": "implementation_reviewed_awaiting_exact_phase_authorizations",
+  "at_utc": "2026-10-12T17:14:53.322482+00:00",
+  "reason": "User requests future heavy compute on Modal and prioritizes scientific experiments and interpretation over further execution infrastructure.",
+  "proposal": {
+    "path": "reports/finalization/cloud/proposed_operational_amendment.json",
+    "sha256": "72352ba7c566329e5c5e3c95df3e84992208c8b70b68ad6ad7c085713e0bf037"
+  },
+  "runbook": {
+    "path": "reports/finalization/cloud/CONTINUATION.md",
+    "sha256": "4d250a0676722b80aa4c00373dc2f7f345887d20d6450fae276acf027ab95f6c"
+  },
+  "validation": {
+    "path": "reports/finalization/cloud/validation.json",
+    "sha256": "4e8fa50235a02f6af6321df03bce6061eff1cf3bbdfe888a04681c5c46d06141"
+  },
+  "scientific_copy": {
+    "path": "reports/finalization/cloud/scientific_copy_validation.json",
+    "sha256": "449c26c73cfe6cc51020891eee8a5da0c7ac7d482ac50de9e51544b55beecb7c"
+  },
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "n_pilot_fits": 12,
+  "n_scientific_fits": 480,
+  "scientific_grid_changed": false,
+  "original_test_reopened": false,
+  "phases": [
+    "transfer_report",
+    "hybrid_pilot",
+    "hybrid_main",
+    "hybrid_report"
+  ],
+  "phase_caps_usd": {
+    "transfer_report": 5,
+    "hybrid_pilot": 2,
+    "hybrid_main": 20,
+    "hybrid_report": 5
+  },
+  "overhead_cap_usd": 3,
+  "maximum_future_all_in_usd": 35,
+  "carried_new_phase_liability_usd": 5.1793820030564595,
+  "user_new_phase_ceiling_usd": 100,
+  "current_phase_allocation_usd": 0,
+  "provider_resources_created": false,
+  "image_id": "im-b7zNuOIkXIwp4tdIyIggdN",
+  "compatibility": "Reuse exact immutable provider image and strictly verify Python3.12.12 and six pinned package versions before scientific work. Original wheel-archive hashes are unavailable; this implementation does not claim them or cross-platform numerical equivalence.",
+  "implementation_notes": [
+    "One persistent watchdog stdin writer owns initial release and all90-second leases; no provider stream offset manipulation.",
+    "Each Sandbox supervises exact owned subprocess groups; lease loss stops fitting even during parent filesystem I/O.",
+    "Separate phase-specific source/input/budget/resource gates remain mandatory.",
+    "No extra harness features or new scientific scope are planned. Continue with experiments and reporting."
+  ],
+  "latest_outer_provider_stop_utc": "2026-10-14T14:15:17.567539+00:00"
+}

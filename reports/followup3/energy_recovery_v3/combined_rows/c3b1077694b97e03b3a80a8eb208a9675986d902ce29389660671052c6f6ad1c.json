@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*55:01",
+  "peptide": "SPLHVFVAV",
+  "cluster_id": 3890,
+  "outer_fold": 4,
+  "complex_id": "B5501_SPLHVFVAV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_55_01/B5501_SPLHVFVAV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B5501_SPLHVFVAV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5vjvs6wh/input",
+        "--output-dir=/tmp/energy_repaired_5vjvs6wh/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 234.70534029400005
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B5501_SPLHVFVAV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_5vjvs6wh/output",
+        "--output-dir=/tmp/energy_repaired_5vjvs6wh/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.695102809000673
+    }
+  ],
+  "metadata_sha256": "1e111b39782b4d735634a161c406449a290f5936f2fb29115295d6930aa092db",
+  "structure_sha256": "d4d1f0b76233d4804c52f912d03f8d8b4dfbffd8603b81c164444a285d090674",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.14218,
+    "foldx_intraclashesgroup2": 10.2786,
+    "foldx_interaction_energy": -15.7668,
+    "foldx_backbone_hbond": -5.87238,
+    "foldx_sidechain_hbond": -9.04226,
+    "foldx_van_der_waals": -16.9916,
+    "foldx_electrostatics": -0.0606151,
+    "foldx_solvation_polar": 24.5572,
+    "foldx_solvation_hydrophobic": -23.353,
+    "foldx_van_der_waals_clashes": 4.66091,
+    "foldx_entropy_sidechain": 6.72389,
+    "foldx_entropy_mainchain": 3.65876,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0786752,
+    "foldx_backbone_clash": 0.88479,
+    "foldx_helix_dipole": -0.00235685,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.125444,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.00141333,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 44.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "5229fda1bc5511fb90d8c2c4d2a2d297a16d2cc3ee1d29cd5c8fe6b8fd58985f",
+  "repaired_pdb_sha256": "b967e9e811e0c23134ef66b8fddadede0a9bc231eb3b0fb703de91e886b83e81",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SPLHVFVAV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 241.3950070990004,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

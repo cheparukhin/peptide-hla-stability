@@ -1,0 +1,32 @@
+{
+  "schema": "finalization_transfer_cost_plan.1",
+  "at_utc": "2026-10-12T12:52:24.943477+00:00",
+  "status": "planning_only_no_launch_authorization",
+  "rate_source": "modal_baseline.json",
+  "cpu_cores_per_container": 2,
+  "memory_gib_per_container": 4,
+  "usd_per_container_hour": 0.1266,
+  "ranker_calls": 1620,
+  "call_timeout_seconds": 1000,
+  "startup_and_idle_allowance_seconds": 62,
+  "per_call_upper_usd": 0.037347,
+  "all_calls_timeout_usd": 60.50214,
+  "provisional_smoke_build_reserve_usd": 1.35,
+  "timeout_bound_including_smoke_usd": 61.85214,
+  "proposed_total_scope_allocation_usd": 65,
+  "new_phase_ceiling_usd": 100,
+  "proposed_scope_concurrency_max": 18,
+  "full_concurrency_usd_per_hour": 2.2788,
+  "limits": [
+    "Pilot has not run; allocation and deadline are not launch authorization.",
+    "Provider preemption restarts can add charges beyond a successful-call ledger; independent fixed deadline and lost-attempt reservations required.",
+    "Local tree and matched-head fits add no Modal compute charge if kept local.",
+    "No new Boltz extraction.",
+    "Do not infer remaining balance from metered monthly totals.",
+    "The $1.35 image-build reserve is provisional and root-monitored before the independent guard can bind an observable exact app ID."
+  ],
+  "smoke_scope_ceiling_usd": 2,
+  "smoke_initial_build_reserve_usd": 1.35,
+  "smoke_remote_calls": 2,
+  "all_call_timeout_including_smoke_and_build_usd": 61.926834
+}

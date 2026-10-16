@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>MKL_NUM_THREADS</key>
+		<string>2</string>
+		<key>NUMEXPR_NUM_THREADS</key>
+		<string>2</string>
+		<key>OMP_NUM_THREADS</key>
+		<string>2</string>
+		<key>OPENBLAS_NUM_THREADS</key>
+		<string>2</string>
+		<key>PYTHONUNBUFFERED</key>
+		<string>1</string>
+		<key>VECLIB_MAXIMUM_THREADS</key>
+		<string>2</string>
+	</dict>
+	<key>ExitTimeOut</key>
+	<integer>30</integer>
+	<key>KeepAlive</key>
+	<false/>
+	<key>Label</key>
+	<string>org.pepstab.transfer-recovery-v2-20261012</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/cheparukhin/ai_science_hack/.venv/bin/python</string>
+		<string>/Users/cheparukhin/ai_science_hack/scripts/final_transfer_durable.py</string>
+		<string>run</string>
+		<string>--out-dir</string>
+		<string>/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2</string>
+		<string>--approved</string>
+		<string>/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2/authorization.json</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_durable/controller.stderr.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_durable/controller.stdout.log</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/cheparukhin/ai_science_hack</string>
+</dict>
+</plist>

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:16",
+  "peptide": "VLAGIFAGV",
+  "cluster_id": 4349,
+  "outer_fold": 1,
+  "complex_id": "A0216_VLAGIFAGV",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_16/A0216_VLAGIFAGV",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0216_VLAGIFAGV.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rtaez071/input",
+        "--output-dir=/tmp/energy_repaired_rtaez071/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 216.84719592699992
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0216_VLAGIFAGV_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_rtaez071/output",
+        "--output-dir=/tmp/energy_repaired_rtaez071/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.789954284000032
+    }
+  ],
+  "metadata_sha256": "7f9ac8e473b6a6847192e216ca4185735f535022b46de158912d0b55c83bdc64",
+  "structure_sha256": "bb49efbada55fc442b323c54e42dc1271ce4602f0b33b4595ef36ca91435b06d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0288948,
+    "foldx_intraclashesgroup2": 11.1906,
+    "foldx_interaction_energy": -25.5601,
+    "foldx_backbone_hbond": -7.59615,
+    "foldx_sidechain_hbond": -6.93999,
+    "foldx_van_der_waals": -17.5173,
+    "foldx_electrostatics": -2.10555,
+    "foldx_solvation_polar": 23.7383,
+    "foldx_solvation_hydrophobic": -25.6578,
+    "foldx_van_der_waals_clashes": 0.461273,
+    "foldx_entropy_sidechain": 6.20872,
+    "foldx_entropy_mainchain": 3.9564,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0521159,
+    "foldx_backbone_clash": 1.02187,
+    "foldx_helix_dipole": -0.000533526,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.255127,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0954769,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 43.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "eff41ad18beeb81f42c0efe93fe4eebcbb0c8d92b74af7a8b316f3e1d69efe06",
+  "repaired_pdb_sha256": "518ca8ec989e99d10808baf8f2bc482c5e1afea8ee9e018c6c53028b08d4d14e",
+  "conversion_validation": {
+    "n_atoms": 3135,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VLAGIFAGV"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 221.7912988129999,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

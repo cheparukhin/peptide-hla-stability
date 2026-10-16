@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*39:10",
+  "peptide": "VPALTIACM",
+  "cluster_id": 4426,
+  "outer_fold": 3,
+  "complex_id": "B3910_VPALTIACM",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_39_10/B3910_VPALTIACM",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B3910_VPALTIACM.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gwghtg15/input",
+        "--output-dir=/tmp/energy_repaired_gwghtg15/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 235.3175211280004
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B3910_VPALTIACM_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_gwghtg15/output",
+        "--output-dir=/tmp/energy_repaired_gwghtg15/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.6946209170000657
+    }
+  ],
+  "metadata_sha256": "14523120b230ec3d76912a034210f3b7786c435141af6d6e811ec8d85e98789e",
+  "structure_sha256": "3fda0b6b23f26b971cb1d5b80ad6824b580c61224af2ae9807df13fa2affdef2",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.051662,
+    "foldx_intraclashesgroup2": 14.9945,
+    "foldx_interaction_energy": -19.4303,
+    "foldx_backbone_hbond": -3.60588,
+    "foldx_sidechain_hbond": -4.22863,
+    "foldx_van_der_waals": -19.2863,
+    "foldx_electrostatics": -0.917637,
+    "foldx_solvation_polar": 24.044,
+    "foldx_solvation_hydrophobic": -27.8059,
+    "foldx_van_der_waals_clashes": 2.78187,
+    "foldx_entropy_sidechain": 6.48863,
+    "foldx_entropy_mainchain": 3.32229,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0649397,
+    "foldx_backbone_clash": 0.53213,
+    "foldx_helix_dipole": 0.00252647,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.290217,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "1abcff12a2a235e7302e8992f3a659ea6b3a41bb82c656daa29b4327133d7eb9",
+  "repaired_pdb_sha256": "e76e74a59b12c0e5b8c07ea5199b7d10b66844bf74d902a07fe420352c90566f",
+  "conversion_validation": {
+    "n_atoms": 3140,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "VPALTIACM"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 241.77593442800026,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "final_local_recovery_interruption.1",
+  "status": "failed_stopped_no_new_complete_cells",
+  "at_utc": "2026-10-12T15:40:34.774024+00:00",
+  "controller_pid": 37822,
+  "hybrid_queue_pid": 44698,
+  "controller_exit_path": "reports/finalization/transfer_recovery/controller/exit_receipt.json",
+  "controller_exit_sha256": "0b5e8443691204c11c3528932cdfb895970b4a919f7f6a4db7aaefd14c08a8f5",
+  "controller_state_sha256": "b50b52270f9312a3314599fcf8d73a1f25d7c9f950fba5ad7b8513770ec5c767",
+  "cleanup_error": null,
+  "termination": "SIGTERM at2026-10-12T15:30:54UTC; handler recorded failure and cleaned owned workers. Exact parent/helper/queue PIDs absent.",
+  "diagnosis": "App logs show local app-server transport stopping2026-10-12T15:30:50.735Z and app-server starting2026-10-12T15:31:05.191Z. This supports app lifecycle shutdown as the termination source; initiator is not established.",
+  "partial_cells": {
+    "h2_p3": {
+      "recorded_completed_fits": 394,
+      "progress_path": "reports/finalization/transfer_recovery/joint/h2_p3/progress.jsonl",
+      "progress_sha256": "b225e9827d54254951f13a54898372e796a97f2534ec8db2f0c60fa0c764e0f9",
+      "attempt_sha256": "21882f7cafc5c08a277d11cf94d0134b5ac416d4bf6cce0a2f7153a43afc0dcb"
+    },
+    "h2_p4": {
+      "recorded_completed_fits": 347,
+      "progress_path": "reports/finalization/transfer_recovery/joint/h2_p4/progress.jsonl",
+      "progress_sha256": "91108e16bcd8af50921488a3b6a449db51e67f43ffd1d17d2a4c2bd889df0327",
+      "attempt_sha256": "80f4d1ee5fb45f0472221b34aa44c51ea41263fecf4646e4e05394d4bee911d6"
+    },
+    "h3_p0": {
+      "recorded_completed_fits": 345,
+      "progress_path": "reports/finalization/transfer_recovery/joint/h3_p0/progress.jsonl",
+      "progress_sha256": "c2c419895a8332f3ef1f7ac626cd2e18a46b67cf3504ab3d9dde00e22e60fa7e",
+      "attempt_sha256": "6ccee9d4c4ca538a7128725dbab6bae59ce3eb9a34021cad6ba601757e2a8c58"
+    }
+  },
+  "additional_discarded_recorded_completed_fits": 1086,
+  "total_discarded_recorded_completed_fits": 1785,
+  "retained_complete_cells": 18,
+  "retained_complete_fits": 6030,
+  "remaining_scientific_fits": 4800,
+  "known_completed_after_eventual_success_including_discarded": 12615,
+  "uncertain_remote_attempts_from_original_scope": 12,
+  "additional_cloud_spend_usd": 0,
+  "next_action": "Prepare reviewed one-shot operating-system-managed local execution and complete-call checkpoints before any new attempt. Preserve original deadline and sources; no automatic retries. Hybrid predecessor gates remain closed."
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*39:01",
+  "peptide": "HEAEYNLSL",
+  "cluster_id": 1438,
+  "outer_fold": 0,
+  "complex_id": "B3901_HEAEYNLSL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_39_01/B3901_HEAEYNLSL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B3901_HEAEYNLSL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_lyspowqs/input",
+        "--output-dir=/tmp/energy_repaired_lyspowqs/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 201.69994744700034
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B3901_HEAEYNLSL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_lyspowqs/output",
+        "--output-dir=/tmp/energy_repaired_lyspowqs/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.441762077999556
+    }
+  ],
+  "metadata_sha256": "22dd1e7b41556b4a4402cc81087167eba1580f4564430c71b84001ab362c2c15",
+  "structure_sha256": "119b0ebc850b5cf2d4229bba39cea9b0e9cf91a3ad069d52071ae2e7f4a9f5d8",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.185871,
+    "foldx_intraclashesgroup2": 15.3506,
+    "foldx_interaction_energy": -23.719,
+    "foldx_backbone_hbond": -5.57537,
+    "foldx_sidechain_hbond": -14.9424,
+    "foldx_van_der_waals": -18.806,
+    "foldx_electrostatics": -2.96103,
+    "foldx_solvation_polar": 26.9951,
+    "foldx_solvation_hydrophobic": -25.2708,
+    "foldx_van_der_waals_clashes": 3.92668,
+    "foldx_entropy_sidechain": 9.59871,
+    "foldx_entropy_mainchain": 3.77049,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0861912,
+    "foldx_backbone_clash": 0.327241,
+    "foldx_helix_dipole": -0.014087,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.571674,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.045185,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 53.0,
+    "foldx_interface_residues_clashing": 2.0,
+    "foldx_interface_residues_vdw_clashing": 2.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "89af8a94e02ef07ec93b65eb13f6e51fa090a727a25d9debf1f8c1bd7bd95a7f",
+  "repaired_pdb_sha256": "e71307a9e9b846eb2afdffbb18b3a3c513e1af35f968780bf2079230cac2e5f2",
+  "conversion_validation": {
+    "n_atoms": 3148,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "HEAEYNLSL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 206.55156365600033,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

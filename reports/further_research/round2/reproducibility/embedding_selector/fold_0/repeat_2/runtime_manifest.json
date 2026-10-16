@@ -1,0 +1,42 @@
+{
+  "recorded_at_utc": "2026-10-12T07:29:41.951824+00:00",
+  "hardware": {
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "logical_cpus": 8
+  },
+  "python": "3.12.12",
+  "libraries": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.0.6",
+    "threadpoolctl": "3.7.0"
+  },
+  "threadpools": [
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 2,
+      "prefix": "libomp",
+      "filepath": "/Users/cheparukhin/ai_science_hack/.venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+      "version": null
+    }
+  ],
+  "thread_limit": 2,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "VECLIB_MAXIMUM_THREADS": "2"
+  },
+  "precision": {
+    "features": "float32",
+    "MLP_parameters_activations": "float32",
+    "targets": "original y_log1p dtype",
+    "ridge": "frozen sklearn lsqr; float32 features, original targets"
+  },
+  "device": "CPU",
+  "cloud_spend_usd": 0
+}

@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python",
+    "-c",
+    "from pathlib import Path; import tarfile; root=Path('reports/followup3/inverse_fulltrain_candidate'); names=['assessment','protocol.json','panel.csv','cache_manifest.json','extraction_receipt.json','base_features.provenance.json','completion_audit.json']+[p.name for p in root.glob('*.csv') if p.name not in {'scores.csv','panel.csv'}]+[f'batch_{i}.receipt.json' for i in range(4)]; t=tarfile.open(root/'results_archive.tar.gz','x:gz',compresslevel=1); [t.add(root/name,arcname=name) for name in names]; t.close()"
+  ],
+  "pid": 7,
+  "at_utc": "2026-10-13T19:15:24.312814+00:00"
+}

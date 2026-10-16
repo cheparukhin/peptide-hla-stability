@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:03",
+  "peptide": "KLINTLFHA",
+  "cluster_id": 2016,
+  "outer_fold": 3,
+  "complex_id": "A0203_KLINTLFHA",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_03/A0203_KLINTLFHA",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0203_KLINTLFHA.pdb",
+        "--pdb-dir=/tmp/energy_repaired_6z6ow6ya/input",
+        "--output-dir=/tmp/energy_repaired_6z6ow6ya/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 244.65268879400003
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0203_KLINTLFHA_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_6z6ow6ya/output",
+        "--output-dir=/tmp/energy_repaired_6z6ow6ya/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1217475080000554
+    }
+  ],
+  "metadata_sha256": "0a89c6f790d44781ba950ea7b5060e30c55101f0a33160cb36c3605272b59a69",
+  "structure_sha256": "36c061be67e6744417ae2e834a7f8d798a1f999e570585f5f3b6a1d7728eebb7",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0864699,
+    "foldx_intraclashesgroup2": 8.65467,
+    "foldx_interaction_energy": -25.6337,
+    "foldx_backbone_hbond": -7.63286,
+    "foldx_sidechain_hbond": -8.56237,
+    "foldx_van_der_waals": -20.0653,
+    "foldx_electrostatics": -3.34295,
+    "foldx_solvation_polar": 28.3179,
+    "foldx_solvation_hydrophobic": -28.1859,
+    "foldx_van_der_waals_clashes": 0.659956,
+    "foldx_entropy_sidechain": 8.16553,
+    "foldx_entropy_mainchain": 5.03064,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0836061,
+    "foldx_backbone_clash": 1.32875,
+    "foldx_helix_dipole": 0.0101755,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.233408,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.1213,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 45.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "07db3f63c7a681b5278ffe0cca43fa950e6836c353ba6840b31a1a78ea7a0ff9",
+  "repaired_pdb_sha256": "1b617ec32fdb606526f82fe1291a2f3f23724280a61b6d2e65f3cf50cb8f47ae",
+  "conversion_validation": {
+    "n_atoms": 3158,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "KLINTLFHA"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 249.64697962999998,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

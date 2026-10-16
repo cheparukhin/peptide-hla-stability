@@ -1,0 +1,21 @@
+{
+  "schema": "final_transfer_durable_recovery_amendment.2",
+  "at_utc": "2026-10-12T15:42:12.239174+00:00",
+  "prior_interruption_path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_recovery/interruption_20261012_153054/closure.json",
+  "prior_interruption_sha256": "8ee0c6abbbb8012d6004cf52497c6b545f9a42830e0af0371197fa939ea6eb06",
+  "scientific_protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "original_deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+  "retained_completed_cells": 18,
+  "retained_completed_fits": 6030,
+  "remaining_cells": 12,
+  "remaining_scientific_fits": 4800,
+  "discarded_known_completed_fits": 1785,
+  "known_completed_fits_after_success_including_discarded": 12615,
+  "uncertain_original_remote_attempts": 12,
+  "additional_cloud_spend_usd": 0,
+  "execution_change": "One-time macOS job-manager-owned local controller, so Codex app lifecycle does not own the scientific process. No KeepAlive, recurring schedule or automatic retry. Same fixed absolute deadline and at most3workers2threads. Record exact job label/PID and stop/cleanup commands; remove registration after completion. Approval review remains required for launch.",
+  "checkpoint_change": "Additive worker delegates each fresh candidate-call to unchanged ControlPredictor/assess_cell. Atomically persist complete-call predictions, member metadata/arrays, input/source identities and ancestry. Replay only exact validated completed calls; incomplete calls fail closed pending explicit reconciliation. Synthetic parity and replay tests required. Old sources/attempts remain immutable.",
+  "new_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2",
+  "hybrid_change": "Original and operational-v2 waiting queues died without any hybrid fitting. Keep both records. A later versioned gate must bind the durable recovery attempt and certificate, updated physical-fit accounting, same unchanged480+12scientificscope. No fabricated old success.",
+  "launch_authorized_by_this_record": false
+}

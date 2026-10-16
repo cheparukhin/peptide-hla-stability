@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*40:02",
+  "peptide": "FEPPHAATI",
+  "cluster_id": 764,
+  "outer_fold": 0,
+  "complex_id": "B4002_FEPPHAATI",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_40_02/B4002_FEPPHAATI",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4002_FEPPHAATI.pdb",
+        "--pdb-dir=/tmp/energy_repaired_djb4od8v/input",
+        "--output-dir=/tmp/energy_repaired_djb4od8v/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 249.12194096700023
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4002_FEPPHAATI_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_djb4od8v/output",
+        "--output-dir=/tmp/energy_repaired_djb4od8v/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.7473691919994963
+    }
+  ],
+  "metadata_sha256": "378e991b1392b567fe448da7f643de83ef4b0be8f5c4d84329689bfd055236b5",
+  "structure_sha256": "7402bea0713279c4369c33c36638c49e6f9650e5698a074fe7fee26490e96934",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.646062,
+    "foldx_intraclashesgroup2": 17.238,
+    "foldx_interaction_energy": -27.8453,
+    "foldx_backbone_hbond": -6.06464,
+    "foldx_sidechain_hbond": -8.52667,
+    "foldx_van_der_waals": -17.6858,
+    "foldx_electrostatics": -8.73867,
+    "foldx_solvation_polar": 25.8203,
+    "foldx_solvation_hydrophobic": -24.0866,
+    "foldx_van_der_waals_clashes": 0.889247,
+    "foldx_entropy_sidechain": 7.41845,
+    "foldx_entropy_mainchain": 3.30583,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.417359,
+    "foldx_backbone_clash": 0.407007,
+    "foldx_helix_dipole": -0.0073933,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.679774,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0931108,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "6129ecc0f2fe4579a994d6a00f35f6b410e224e2ee1c6ef75998013602cb93a0",
+  "repaired_pdb_sha256": "bff38b7dd9bf0e643c182c03fe8a19998c0175a5a7a5612c48cd6b47b0fad54b",
+  "conversion_validation": {
+    "n_atoms": 3148,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "FEPPHAATI"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 253.95214242400016,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-12",
+  "full_suite": {
+    "passed": 823,
+    "warnings": 17,
+    "seconds": 374.63,
+    "note": "Existing parser warnings only; full suite before later Modal backend edits"
+  },
+  "latest_focused_suite": {
+    "passed": 27,
+    "seconds": 3.68,
+    "command": ".venv/bin/python -m pytest tests/test_round2_sequence_budget.py tests/test_round2_nested.py tests/test_round2_sequence.py -q",
+    "additional_checks": [
+      "dynamic worst-case reserve/settle across threads",
+      "900-call quota distinct from released cost",
+      "failure and controller interruption burn full reserves",
+      "single-controller recovery lock",
+      "unexpected controller errors unblock budget waiters without releasing credit",
+      "seed/repeat/ancestry completion hashes",
+      "per-arm per-repeat84-member counts"
+    ]
+  },
+  "supervised_assessment_started": false,
+  "cloud_smoke_status": "Passed durable third attempt:576.11s full-size depth8; synthetic local/remote max error9.7e-17, remote repeat0; import-failed and interrupted prior attempts retained",
+  "full_launch_gate": "Root approved18ceiling and900calls; root will write authorization and launch durable controller"
+}

@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*40:01",
+  "peptide": "LEYGANYFL",
+  "cluster_id": 2375,
+  "outer_fold": 3,
+  "complex_id": "B4001_LEYGANYFL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_40_01/B4001_LEYGANYFL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4001_LEYGANYFL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_e0oezeet/input",
+        "--output-dir=/tmp/energy_repaired_e0oezeet/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 291.198245221
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4001_LEYGANYFL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_e0oezeet/output",
+        "--output-dir=/tmp/energy_repaired_e0oezeet/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.8342161609998584
+    }
+  ],
+  "metadata_sha256": "7b9795f4716e35c6737e8a93f4ed02e6d10a6f60c5b992bec543ef2d9ea49d16",
+  "structure_sha256": "7f07f1ff7d71f7ff3a59933f45d7ff36d25d928d09b68ea80d3cda37c04c2f1f",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.893075,
+    "foldx_intraclashesgroup2": 12.7616,
+    "foldx_interaction_energy": -27.1721,
+    "foldx_backbone_hbond": -7.23344,
+    "foldx_sidechain_hbond": -13.5779,
+    "foldx_van_der_waals": -19.2704,
+    "foldx_electrostatics": -4.44859,
+    "foldx_solvation_polar": 28.8006,
+    "foldx_solvation_hydrophobic": -25.6237,
+    "foldx_van_der_waals_clashes": 0.573414,
+    "foldx_entropy_sidechain": 10.1261,
+    "foldx_entropy_mainchain": 3.97896,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0771982,
+    "foldx_backbone_clash": 1.02944,
+    "foldx_helix_dipole": -0.00734376,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.596884,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0298567,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "0976451702615899811ce9ce9a8f20d902e780c50a0b996fdbec8af856002484",
+  "repaired_pdb_sha256": "7fb6e7fad27e6cb4c214b15fa6555461ca05e7ee78703abb1113a72c1f9e111c",
+  "conversion_validation": {
+    "n_atoms": 3155,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "LEYGANYFL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 296.5601357380001,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

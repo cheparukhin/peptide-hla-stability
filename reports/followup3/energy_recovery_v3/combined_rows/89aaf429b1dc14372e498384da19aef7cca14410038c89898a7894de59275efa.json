@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*40:01",
+  "peptide": "HENARLRAL",
+  "cluster_id": 1443,
+  "outer_fold": 2,
+  "complex_id": "B4001_HENARLRAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_40_01/B4001_HENARLRAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4001_HENARLRAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_34t4y0t5/input",
+        "--output-dir=/tmp/energy_repaired_34t4y0t5/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 271.88500402399995
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4001_HENARLRAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_34t4y0t5/output",
+        "--output-dir=/tmp/energy_repaired_34t4y0t5/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.9173624439999912
+    }
+  ],
+  "metadata_sha256": "b193a91552080888d9118aae7a27da02a2a28409739d23bf4af27d6ce017571a",
+  "structure_sha256": "1055dc54ecdb26532c73389dc560883dc0cd54c5fd01a870b0cd3b68d526d29d",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.229927,
+    "foldx_intraclashesgroup2": 12.4152,
+    "foldx_interaction_energy": -20.5733,
+    "foldx_backbone_hbond": -7.75538,
+    "foldx_sidechain_hbond": -12.8299,
+    "foldx_van_der_waals": -19.8343,
+    "foldx_electrostatics": -4.59262,
+    "foldx_solvation_polar": 32.205,
+    "foldx_solvation_hydrophobic": -24.7717,
+    "foldx_van_der_waals_clashes": 1.8413,
+    "foldx_entropy_sidechain": 11.7428,
+    "foldx_entropy_mainchain": 3.79367,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.147716,
+    "foldx_backbone_clash": 1.10289,
+    "foldx_helix_dipole": 0.0287962,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.82187,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.273221,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "bb68cee895153beaa01d9504885a82c0f3072601b269049f92d04ab370d09145",
+  "repaired_pdb_sha256": "d1bafd800ea77819f032789f557df175dd54bf26b9161c5b4c64a1721ca4a424",
+  "conversion_validation": {
+    "n_atoms": 3153,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "HENARLRAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 278.34428314399975,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

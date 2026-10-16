@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*45:01",
+  "peptide": "IEVTNATEL",
+  "cluster_id": 1606,
+  "outer_fold": 2,
+  "complex_id": "B4501_IEVTNATEL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_45_01/B4501_IEVTNATEL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4501_IEVTNATEL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_dey4_147/input",
+        "--output-dir=/tmp/energy_repaired_dey4_147/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 254.929873563
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4501_IEVTNATEL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_dey4_147/output",
+        "--output-dir=/tmp/energy_repaired_dey4_147/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.6714272669996717
+    }
+  ],
+  "metadata_sha256": "98091b0004358bd4b7515712aa49bcdf0db88aae86a8abd5e5c7ac757ac6ccb8",
+  "structure_sha256": "6b52d04f34143ddaeabb204805673377f0a4f97576147dcc1497eae4d7b5c044",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.218944,
+    "foldx_intraclashesgroup2": 20.0231,
+    "foldx_interaction_energy": -23.3463,
+    "foldx_backbone_hbond": -6.32787,
+    "foldx_sidechain_hbond": -12.5078,
+    "foldx_van_der_waals": -17.7722,
+    "foldx_electrostatics": -4.29221,
+    "foldx_solvation_polar": 27.206,
+    "foldx_solvation_hydrophobic": -23.97,
+    "foldx_van_der_waals_clashes": 2.50335,
+    "foldx_entropy_sidechain": 8.31832,
+    "foldx_entropy_mainchain": 3.96384,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0804167,
+    "foldx_backbone_clash": 0.309059,
+    "foldx_helix_dipole": -0.00504595,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.567886,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0248437,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "cd4872617efe313fb0467eacf6b597cf2db754c14a3fecf2dc719d388f595633",
+  "repaired_pdb_sha256": "00a168ea6df88729de26ff083987d7c0a1aad7bcb4398bb2f33af9342779d00d",
+  "conversion_validation": {
+    "n_atoms": 3143,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "IEVTNATEL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 260.43049702400003,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

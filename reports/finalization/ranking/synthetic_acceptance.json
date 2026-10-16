@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "lambda0_bit_exact": true,
+  "command": ".venv/bin/python -m pytest tests/test_final_ranking.py tests/test_final_ranking_pipeline.py tests/test_round2_embedding.py tests/test_round2_reporting.py -q",
+  "result": "44 passed in 4.04s",
+  "real_biological_fits": 0,
+  "at_utc": "2026-10-12T12:58:35.291489+00:00",
+  "source_hashes": {
+    "pepstab/final_ranking.py": "5da325790c2902ba32dc7757db631ddcfd2033084a3667f4d7aff1110089d535",
+    "scripts/final_ranking.py": "dffd748c758e706d0d2712d0cdc8b6ee8e1608c0fc44b52ac74ce79ccfb05db4",
+    "scripts/final_ranking_report.py": "e4b90805e2196d24da9e745e8e32f94813e10929f724a888ee8c91d4b0119a15",
+    "scripts/final_ranking_pipeline.py": "2ff2e8a34e0486f573334ca34d41572c25292e5a39378d0f2ccf68305f155d74",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/nested.py": "f301b7ed4f0799bc2c17f61de3fc9a4429b576f246b69a4426fe71cf2d91efd0",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/splits.py": "3da9638c8d48b8a0f5d16a9f90b2f58364cec6ca4da94c8a0487c0ff0891254f",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "tests/test_final_ranking.py": "67e44e246e622adbb989b26a82fd01d3548f4d5ea26006328878a73526369bbb",
+    "tests/test_final_ranking_pipeline.py": "0eb4df5fe0c8e7642acf956f30f4809bff0124bb076b2560790f193395496376"
+  }
+}

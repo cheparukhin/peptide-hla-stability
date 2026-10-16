@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "controller_pid": 15111,
+  "child_pid": 16698,
+  "launch_attempted": true,
+  "authorization_sha256": "ee069f144437c39d4ea9a7966b54144feb4ee3321217acc1d00a0bf0c4174580",
+  "started_utc": "2026-10-12T00:54:26.771313+00:00",
+  "command": [
+    "/Users/cheparukhin/ai_science_hack/.venv/bin/modal",
+    "run",
+    "modal_app/round2_boltz_extract.py",
+    "--cohort",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/cohort.csv",
+    "--forecast",
+    "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/forecast.json",
+    "--run-id",
+    "round2-fulltrain-20261012",
+    "--budget-usd",
+    "80",
+    "--workers",
+    "8"
+  ],
+  "budget_gate": {
+    "existing_forecast_usd": 71.46858017216334,
+    "pilot_scaled_forecast_usd": 73.99009822360709,
+    "gated_forecast_usd": 73.99009822360709
+  },
+  "log": "/Users/cheparukhin/ai_science_hack/reports/further_research/round2/extractor/full_training/fanout_controller/child.log",
+  "child_returncode": 0,
+  "completed_rows": 19716,
+  "spent_upper_usd": 66.84310340712061
+}

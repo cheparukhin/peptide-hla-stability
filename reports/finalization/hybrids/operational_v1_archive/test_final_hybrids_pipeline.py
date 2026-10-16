@@ -1,0 +1,226 @@
+from datetime import datetime,timedelta,timezone
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import numpy as np
+import pandas as pd
+import pytest
+from scripts import final_hybrids as worker
+from scripts import final_hybrids_pipeline as pipe
+
+
+def population():
+    return pd.DataFrame([dict(pair_id=g*30+p,cluster_id=p,allele='A',split='train',y_log1p=float(p%7),thalf_hours=float(p%7),peptide='A'*9,hla_pseudoseq='A'*34) for g in range(15) for p in range(30)])
+
+
+def save(path,value):
+    path.write_text(json.dumps(value));return pipe.sha256_file(path)
+
+
+def authorized(tmp_path,phase='pilot'):
+    created=datetime.now(timezone.utc)-timedelta(seconds=2);expiry=created+timedelta(hours=48);protocol={'protocol_hash':'new','source_sha256':{'bound':'hash'}}
+    guard_auth=tmp_path/'old_guard_auth.json';guard_hash=save(guard_auth,{'app_id':'ap-old','controller_pid':2147483646,'prior_charges_usd':1.,'total_allocation_usd':65.})
+    transfer=tmp_path/'old_transfer_exit.json';driver=tmp_path/'old_driver_exit.json';guard=tmp_path/'old_guard_status.json';reconciled=tmp_path/'old_reconciliation.json'
+    th=save(transfer,{'status':'complete','pid':2147483646,'protocol_hash':'old'});dh=save(driver,{'status':'complete','app_context_closed':True,'app_id':'ap-old','pid':2147483646});gh=save(guard,{'phase':'finished','app_stopped':True,'controller_state':'done','guard_pid':2147483645,'authorization_sha256':guard_hash,'budget_verified':True,'effective_commitment_usd':1.})
+    rh=save(reconciled,{'schema':'final_scope_reconciliation.1','authorization_sha256':guard_hash,'guard_status_sha256':gh,'cumulative_prior_charges_usd':2.})
+    gate_path=tmp_path/'gate.json';path=tmp_path/'approved.json'
+    auth={'schema':pipe.SCHEMA,'approved':True,'phase':phase,'protocol_hash':'new','source_sha256':protocol['source_sha256'],'controller_sha256':pipe.sha256_file(Path(pipe.__file__)),'worker_sha256':pipe.sha256_file(Path(worker.__file__)),'jobs':[f'fold_{f}/{r}' for f,r in pipe.phase_jobs(phase)],'max_workers':1 if phase=='pilot' else 2,'threads_each':2,'cloud_spend_usd':0,'n_fits':12 if phase=='pilot' else 480,'created_at_utc':created.isoformat(),'queue_deadline_utc':expiry.isoformat(),'fit_wall_seconds':7200,'launch_gate_path':str(gate_path),'predecessor':{'controller_pid':2147483646,'guard_pid':2147483645,'app_id':'ap-old','protocol_hash':'old','guard_authorization_path':str(guard_auth),'guard_authorization_sha256':guard_hash}}
+    save(path,auth)
+    gate={'schema':pipe.GATE_SCHEMA,'approved':True,'phase':phase,'authorization_sha256':pipe.sha256_file(path),'created_at_utc':datetime.now(timezone.utc).isoformat(),'expires_at_utc':expiry.isoformat(),'predecessor':{'transfer_exit_path':str(transfer),'transfer_exit_sha256':th,'driver_exit_path':str(driver),'driver_exit_sha256':dh,'guard_status_path':str(guard),'guard_status_sha256':gh,'reconciliation_path':str(reconciled),'reconciliation_sha256':rh}}
+    save(gate_path,gate)
+    return path,auth,gate,protocol
+
+
+def test_exact_scientific_schedule_count_and_nested_exclusion():
+    frame=population();manifest=worker.task_manifest(frame)
+    assert len(manifest['scientific'])==80 and sum(x['n_fits'] for x in manifest['scientific'])==480
+    assert len(manifest['engineering_pilot'])==2 and sum(x['n_fits'] for x in manifest['engineering_pilot'])==12
+    for item in manifest['scientific']:
+        sets=[set(frame.set_index('pair_id').loc[item[k]].cluster_id) for k in ('gradient_rows','stopping_rows','held_rows')]
+        assert not sets[0]&sets[1] and not sets[0]&sets[2] and not sets[1]&sets[2]
+    assert worker.fit_graph()['additional_leaf_tree_fits']==0
+    assert len(worker.preflight(frame))==40
+
+
+def test_authorization_refuses_changed_caps_counts_and_sources(tmp_path):
+    path,auth,gate,protocol=authorized(tmp_path)
+    assert pipe.check_authorization(path,protocol,'pilot')['n_fits']==12
+    for key,value in [('n_fits',13),('max_workers',2),('cloud_spend_usd',1),('worker_sha256','changed')]:
+        changed=dict(auth,**{key:value});save(path,changed)
+        with pytest.raises(ValueError,match='mismatch'):pipe.check_authorization(path,protocol,'pilot',require_gate=False)
+    save(path,auth);changed=dict(protocol,source_sha256={'different':'hash'})
+    with pytest.raises(ValueError,match='every frozen source'):pipe.check_authorization(path,changed,'pilot',require_gate=False)
+
+
+def test_gate_absent_failed_stale_and_unclosed_predecessor_refuse(tmp_path):
+    path,auth,gate,protocol=authorized(tmp_path);gate_path=Path(auth['launch_gate_path'])
+    gate_path.unlink()
+    with pytest.raises(FileNotFoundError):pipe.check_authorization(path,protocol,'pilot')
+    save(gate_path,dict(gate,approved=False))
+    with pytest.raises(ValueError,match='approved exact phase'):pipe.check_authorization(path,protocol,'pilot')
+    save(gate_path,dict(gate,expires_at_utc=(datetime.now(timezone.utc)-timedelta(seconds=1)).isoformat()))
+    with pytest.raises(ValueError,match='stale'):pipe.check_authorization(path,protocol,'pilot')
+    driver=Path(gate['predecessor']['driver_exit_path']);dh=save(driver,{'status':'failed','app_context_closed':False,'app_id':'ap-old','pid':2147483646});gate['predecessor']['driver_exit_sha256']=dh;save(gate_path,gate)
+    with pytest.raises(ValueError,match='driver has not closed'):pipe.check_authorization(path,protocol,'pilot')
+
+
+def test_reused_predecessor_pid_blocks_without_signalling(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path);signals=[]
+    monkeypatch.setattr(pipe.os,'kill',lambda pid,sig:signals.append((pid,sig)))
+    with pytest.raises(ValueError,match='still present'):pipe.check_authorization(path,protocol,'pilot')
+    assert signals==[(2147483646,0)]
+
+
+def test_queue_waits_for_explicit_root_gate_then_exits_pilot_only(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path);gate_path=Path(auth['launch_gate_path']);gate_path.unlink();events=[]
+    monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol))
+    def sleep(seconds):events.append(('wait',seconds));save(gate_path,gate)
+    def phase(out,approved,phase):
+        events.append(('run',phase));directory=Path(out)/'controller'/phase;save(directory/'exit_receipt.json',{'status':'complete'});return {'n_fits':12}
+    monkeypatch.setattr(pipe,'run_phase',phase)
+    result=pipe.queue_phase(tmp_path,path,'pilot',sleep=sleep)
+    assert result['n_fits']==12 and events==[('wait',30),('run','pilot')]
+    assert json.loads((tmp_path/'controller/pilot/queue_exit_receipt.json').read_text())['status']=='complete'
+    with pytest.raises(FileExistsError):pipe.queue_phase(tmp_path,path,'pilot',sleep=sleep)
+
+
+def test_failed_child_stops_dispatch_and_receipt_bars_retry(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path);monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));launches=[]
+    class Child:
+        pid=123
+        def poll(self):return 9
+    def popen(command,**kwargs):launches.append((command,kwargs));return Child()
+    with pytest.raises(RuntimeError,match='failed'):pipe.run_phase(tmp_path,path,'pilot',popen=popen,sleep=lambda _:None)
+    assert len(launches)==1 and launches[0][1]['start_new_session'] is True
+    receipt=json.loads((tmp_path/'controller/pilot/exit_receipt.json').read_text());assert receipt['status']=='failed'
+    with pytest.raises(FileExistsError):pipe.run_phase(tmp_path,path,'pilot',popen=popen,sleep=lambda _:None)
+
+
+def test_owned_deadline_kills_only_launched_process_groups(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path);monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));ticks=iter([0,1,7201,7202]);signals=[]
+    class Child:
+        pid=123
+        dead=False
+        def poll(self):return -15 if self.dead else None
+        def wait(self,timeout):self.dead=True;return -15
+    monkeypatch.setattr(pipe.os,'getpgid',lambda pid:pid);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
+    with pytest.raises(TimeoutError,match='deadline'):pipe.run_phase(tmp_path,path,'pilot',popen=lambda *a,**k:Child(),monotonic=lambda:next(ticks),sleep=lambda _:None)
+    assert signals==[(123,signal.SIGTERM)]
+    receipt=json.loads((tmp_path/'controller/pilot/exit_receipt.json').read_text());assert receipt['active_children']==[] and receipt['status']=='failed'
+
+
+def test_owned_group_identity_mismatch_refuses_signal(monkeypatch):
+    class Child:
+        pid=123
+        def poll(self):return None
+        def wait(self,timeout):raise subprocess.TimeoutExpired('fake',timeout)
+    signals=[];monkeypatch.setattr(pipe.os,'getpgid',lambda pid:999);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
+    state={'finished_children':[]};pipe.stop_owned_children({Child():{'pid':123,'process_group':123}},state)
+    assert signals==[] and state['cleanup_errors'] and state['active_children'][0]['cleanup_status']=='process_still_uncertain'
+
+
+def test_mock_component_artifacts_and_held_label_invariance(tmp_path,monkeypatch):
+    frame=population();features={r:np.zeros((len(frame),860 if r=='R0' else 1024),dtype=np.float32) for r in worker.REPRESENTATIONS};protocol={'protocol_hash':'synthetic','specification':{'feature_hashes':{r:worker.array_hash(x) for r,x in features.items()}}};calls=[]
+    monkeypatch.setattr(worker,'require_authorization',lambda *args:(frame,protocol,{}));monkeypatch.setattr(worker,'validated_features',lambda *args:features)
+    approved=tmp_path/'approved.json';approved.write_text('{}')
+    def bundle(arrays,gradient,stopping,held,**kwargs):
+        assert 'y_log1p' not in held and 'thalf_hours' not in held
+        for a,b in ((gradient,stopping),(gradient,held),(stopping,held)):worker.validate_partition(a,b)
+        path=Path(kwargs['artifact_dir']);path.mkdir(parents=True);worker.write_once(path/'completed.json',{'n_fits':6});calls.append(kwargs['context'])
+        return {'n_fits':6,'predictions':{c:held.cluster_id.to_numpy(dtype=float)+gradient.y_log1p.mean() for c in worker.COMPONENTS},'identity':{'synthetic':True}}
+    monkeypatch.setattr(worker,'fit_bundle',bundle)
+    first=tmp_path/'first';worker.component_job(first,approved,'R0',0)
+    assert len(calls)==8 and worker.verify_component(first/'fold_0/R0',protocol,0,'R0')['n_fits']==48
+    predictions=pd.read_csv(first/'fold_0/R0/predictions.csv');assert set(predictions.arm)=={f'R0_{s}' for s in worker.SUFFIXES}
+    outer=worker.nested.outer_folds(frame);changed=frame.copy();changed.loc[outer==0,'y_log1p']=-999
+    monkeypatch.setattr(worker,'require_authorization',lambda *args:(changed,protocol,{}));second=tmp_path/'second';worker.component_job(second,approved,'R0',0)
+    pd.testing.assert_frame_equal(predictions,pd.read_csv(second/'fold_0/R0/predictions.csv'))
+    assert json.loads((first/'fold_0/R0/selection.json').read_text())==json.loads((second/'fold_0/R0/selection.json').read_text())
+    with pytest.raises(FileExistsError):worker.component_job(first,approved,'R0',0)
+
+
+def test_sigterm_cleans_owned_children_and_restores_handlers(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path);monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));signals=[];previous=signal.getsignal(signal.SIGTERM)
+    class Child:
+        pid=123
+        dead=False
+        def poll(self):return -15 if self.dead else None
+        def wait(self,timeout):self.dead=True;return -15
+    monkeypatch.setattr(pipe.os,'getpgid',lambda pid:pid);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
+    def interrupt(_):signal.getsignal(signal.SIGTERM)(signal.SIGTERM,None)
+    with pytest.raises(RuntimeError,match='interrupted'):pipe.run_phase(tmp_path,path,'pilot',popen=lambda *a,**k:Child(),sleep=interrupt)
+    assert signals==[(123,signal.SIGTERM)] and signal.getsignal(signal.SIGTERM)==previous
+    assert json.loads((tmp_path/'controller/pilot/exit_receipt.json').read_text())['active_children']==[]
+
+
+def test_main_failure_terminates_active_sibling_and_never_dispatches_queue(tmp_path,monkeypatch):
+    path,auth,gate,protocol=authorized(tmp_path,'main');monkeypatch.setattr(pipe,'validate_frozen',lambda out:(population(),protocol));monkeypatch.setattr(pipe,'check_launch_gate',lambda *args:{});launches=[];signals=[]
+    class Child:
+        def __init__(self,pid,failed):self.pid=pid;self.code=9 if failed else None
+        def poll(self):return self.code
+        def wait(self,timeout):self.code=-15;return self.code
+    def launch(*args,**kwargs):child=Child(123+len(launches),not launches);launches.append(child);return child
+    monkeypatch.setattr(pipe.os,'getpgid',lambda pid:pid);monkeypatch.setattr(pipe.os,'killpg',lambda pid,sig:signals.append((pid,sig)))
+    with pytest.raises(RuntimeError,match='failed'):pipe.run_phase(tmp_path,path,'main',popen=launch,sleep=lambda _:None)
+    assert len(launches)==2 and signals==[(124,signal.SIGTERM)]
+    assert json.loads((tmp_path/'controller/main/exit_receipt.json').read_text())['status']=='failed'
+
+
+def mocked_bundle_integration(tmp_path,monkeypatch):
+    from pepstab import final_hybrids as core
+    frame=population();features={r:np.zeros((len(frame),860 if r=='R0' else 1024),dtype=np.float32) for r in worker.REPRESENTATIONS};protocol={'protocol_hash':'synthetic','specification':{'feature_hashes':{r:worker.array_hash(x) for r,x in features.items()}}};saved={}
+    approved=tmp_path/'approved.json';approved.write_text('{}')
+    monkeypatch.setattr(worker,'require_authorization',lambda *args:(frame,protocol,{}));monkeypatch.setattr(worker,'validated_features',lambda *args:features)
+    def bundle(arrays,gradient,stopping,held,**kwargs):
+        path=Path(kwargs['artifact_dir']);path.mkdir(parents=True)
+        identity=core.member_identity(arrays,gradient,stopping,held,representation=kwargs['representation'],seed=kwargs['seed'],context=kwargs['context'],protocol_hash=kwargs['protocol_hash'],source_feature_hash=kwargs['source_feature_hash'])
+        predictions={c:held.cluster_id.to_numpy(dtype=float)+float(gradient.y_log1p.mean())+index*.01 for index,c in enumerate(worker.COMPONENTS)}
+        result={'n_fits':6,'predictions':predictions,'identity':identity};saved[str(path.resolve())]=result
+        worker.write_once(path/'completed.json',{'n_fits':6,'total_fit_seconds':.6,'bundle_seconds':.7,'transform_seconds':.1,'peak_rss_bytes':1024,'component_details':{c:{'fit_seconds':.1} for c in worker.COMPONENTS}})
+        return result
+    def audit(arrays,gradient,stopping,held,artifact_dir,protocol_hash,expected_identity):
+        result=saved[str(Path(artifact_dir).resolve())]
+        assert result['identity']==expected_identity
+        return result
+    monkeypatch.setattr(worker,'fit_bundle',bundle);monkeypatch.setattr(core,'audit_member_bundle',audit)
+    return frame,features,protocol,approved
+
+
+def test_runner_artifacts_feed_independent_report_audit_and_reject_corrupted_aggregate(tmp_path,monkeypatch):
+    from scripts import final_hybrids_report as report
+    frame,features,protocol,approved=mocked_bundle_integration(tmp_path,monkeypatch)
+    worker.component_job(tmp_path,approved,'R0',0)
+    table,choice,audit=report.audit_component(tmp_path,protocol,frame,features,'R0',0)
+    assert audit['new_supervised_fits']==48 and audit['bundles']==8 and len(audit['runtime'])==8
+    assert choice['hybrid_component'] in worker.ORDER and len(table)==90*8
+    path=tmp_path/'fold_0/R0/raw_final_predictions.csv';raw=pd.read_csv(path);raw.loc[0,'y_pred']+=1;raw.to_csv(path,index=False)
+    # Re-sign the altered aggregate to exercise semantic member replay.
+    completed=tmp_path/'fold_0/R0/completed.json';done=json.loads(completed.read_text());done['sha256']['raw_final_predictions.csv']=worker.sha256_file(path);completed.write_text(json.dumps(done))
+    with pytest.raises(AssertionError):report.audit_component(tmp_path,protocol,frame,features,'R0',0)
+
+
+def test_pilot_artifacts_feed_independent_unscored_audit(tmp_path,monkeypatch):
+    from scripts import final_hybrids_report as report
+    frame,features,protocol,approved=mocked_bundle_integration(tmp_path,monkeypatch)
+    for rep in worker.REPRESENTATIONS:worker.component_job(tmp_path,approved,rep,0,pilot=True)
+    runtime=report.audit_pilots(tmp_path,protocol,frame,features)
+    assert len(runtime)==2 and {r['representation'] for r in runtime}=={'R0','R5'}
+    assert all(r['role']=='engineering_pilot' for r in runtime)
+    for rep in worker.REPRESENTATIONS:
+        directory=tmp_path/'pilot/fold_0'/rep;done=json.loads((directory/'completed.json').read_text())
+        assert done['n_fits']==6 and done['held_scores_computed'] is False and done['reuse_into_scientific'] is False
+        assert not (directory/'selection.json').exists() and not (directory/'predictions.csv').exists()
+
+
+def test_report_replay_holds_numerical_thread_limit(tmp_path,monkeypatch):
+    from scripts import final_hybrids_report as report
+    from threadpoolctl import threadpool_info
+    observed=[]
+    def inner(out):
+        observed.extend(threadpool_info())
+        assert observed and all(pool['num_threads']<=2 for pool in observed)
+        return {'replayed':True}
+    monkeypatch.setattr(report,'_build_report',inner)
+    assert report.build_report(tmp_path)=={'replayed':True}

@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-10-13T18:10:15.939926+00:00",
+  "status": "complete",
+  "plan_sha256": "596f24498026863e39d43d39aecc42619755881c10fe2dc50791904a6e7cfbc0",
+  "children": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "seconds": 4059.29629278183,
+      "command": [
+        "python",
+        "scripts/followup3_inverse_fulltrain.py",
+        "extract-batch",
+        "--batch",
+        "0",
+        "--workers",
+        "8"
+      ],
+      "at_utc": "2026-10-13T18:10:14.841729+00:00"
+    }
+  ]
+}

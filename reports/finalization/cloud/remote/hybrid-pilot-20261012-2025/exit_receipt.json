@@ -1,0 +1,142 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "hybrid_pilot",
+  "phase_nonce": "hybrid-pilot-20261012-2025",
+  "authorization_sha256": "dc45c2b453a017c9da17f74005c8d44ac5a19d331fc9ebf456a4d0d9dab06cb6",
+  "input_manifest_sha256": "4545a9a20e3a2c4d240d27bc36cf65fc6dc6e32b27db25e766ec9912b1877f21",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T20:28:31.484894+00:00",
+  "sandbox_id": "sb-01M4RWTV1ZC0V93MFF0N052DZ9",
+  "app_id": "ap-qO3FPwfYZJ4ydcOAldUHms",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 12,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-12T20:36:23.032544+00:00",
+  "elapsed_fit_seconds": 271.966574585,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/hybrid-pilot-20261012-2025/output_manifest.json",
+    "sha256": "6d4456ae0734b6f0f648ca6318e1fe15990ff554939250d22de5bd541fcedbc4"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "fold_0/R0",
+      "axes": [
+        0,
+        "R0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_hybrids_cloud.py",
+        "--",
+        "pilot-component",
+        "--out-dir",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--fold",
+        "0",
+        "--representation",
+        "R0"
+      ],
+      "intent_at_utc": "2026-10-12T20:31:51.066636+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-12T20:31:51.672378+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:33:29.384376+00:00"
+    },
+    {
+      "index": 1,
+      "job": "fold_0/R5",
+      "axes": [
+        0,
+        "R5"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_hybrids_cloud.py",
+        "--",
+        "pilot-component",
+        "--out-dir",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/hybrids_cloud_v1",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--fold",
+        "0",
+        "--representation",
+        "R5"
+      ],
+      "intent_at_utc": "2026-10-12T20:33:30.124825+00:00",
+      "pid": 26,
+      "started_at_utc": "2026-10-12T20:33:30.724368+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:35:41.870778+00:00"
+    },
+    {
+      "index": 2,
+      "job": "pilot_saved_model_audit",
+      "axes": null,
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/scripts/final_cloud_phase.py",
+        "--",
+        "--approved",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "--audit-pilot",
+        "/__modal/volumes/vo-1ru7LYJCjHIuMJMaRSytr6/reports/finalization/cloud/remote/hybrid-pilot-20261012-2025/pilot_audit.json"
+      ],
+      "intent_at_utc": "2026-10-12T20:35:42.469293+00:00",
+      "pid": 44,
+      "started_at_utc": "2026-10-12T20:35:43.017553+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:36:21.470706+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 36664,
+    "last_sequence": 42,
+    "expires_at_utc": "2026-10-12T20:37:42.177956+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

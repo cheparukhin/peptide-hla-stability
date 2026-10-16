@@ -3,835 +3,161 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Antigen Presentation Stability</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-
+<title>Boltz-2 features improve peptide–HLA stability ranking</title>
+<meta name="description" content="Frozen Boltz-2 representations improve peptide–HLA stability ranking in development assessments. Results, transfer comparisons, and the next independent test.">
+<link rel="canonical" href="https://cheparukhin.github.io/peptide-hla-stability/">
+<style>
+:root { color-scheme: light; --ink:#17272d; --muted:#53656a; --accent:#0a6b6c; --line:#d7e0df; --paper:#fff; --wash:#edf4f2; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:1.5rem; }
+body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+main { max-width:1040px; margin:auto; padding:0 44px; }
+a { color:var(--accent); text-underline-offset:3px; }
+a:hover { text-decoration-thickness:2px; }
+a:focus-visible,summary:focus-visible,[tabindex]:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+.skip { position:absolute; top:-100px; padding:10px; background:white; }.skip:focus { top:0; }
+p { margin:0 0 1rem; } p:last-child { margin-bottom:0; }
+h1,h2 { font-family:Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.024em; }
+h1 { font-size:clamp(2.15rem,5.2vw,3.65rem); line-height:1.12; max-width:26ch; margin:0 0 1.5rem; }
+h2 { font-size:clamp(1.6rem,3.2vw,2.25rem); line-height:1.25; max-width:35ch; margin:0 0 1.25rem; }
+.masthead { padding:44px 0 32px; border-bottom:1px solid var(--ink); }
+.eyebrow { text-transform:uppercase; letter-spacing:.14em; color:var(--accent); font-size:.69rem; font-weight:650; margin-bottom:1.1rem; }
+.standfirst { font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.15rem,2.2vw,1.45rem); line-height:1.6; max-width:65ch; color:var(--muted); }
+nav { display:flex; flex-wrap:wrap; gap:9px 25px; margin-top:30px; font-size:.83rem; }
+section { padding:46px 0; border-bottom:1px solid var(--line); }
+section>p { max-width:79ch; }
+.abstract h2 { font-size:1.55rem; max-width:50ch; }
+.cohort { display:grid; grid-template-columns:repeat(3,1fr); margin:26px 0 20px; padding:20px 0; border-block:1px solid var(--line); gap:20px; }
+.cohort dt { color:var(--muted); font-size:.73rem; }.cohort dd { margin:3px 0 0; font:2rem/1.2 Georgia,serif; }
+.note { color:var(--muted); font-size:.88rem; line-height:1.65; }
+.main-result { display:grid; grid-template-columns:1.2fr 1fr; align-items:center; gap:35px; margin:24px 0; padding:28px 30px; background:var(--wash); }
+.metric-label { font-size:.78rem; margin-bottom:2px; }.effect { color:var(--accent); font-size:3.15rem; font-weight:500; line-height:1.2; letter-spacing:-.04em; margin-bottom:8px; font-variant-numeric:tabular-nums; }
+.uncertainty { font-size:.78rem; font-variant-numeric:tabular-nums; }
+.primary-result .score-pair strong { font-size:1.7rem; line-height:1.3; }
+.primary-result .effect { font-size:1.7rem; }
+.primary-result .metric-label { margin-bottom:10px; }
+.score-pair p { display:flex; gap:12px; justify-content:space-between; font-size:.86rem; padding:9px 0; margin:0; border-bottom:1px solid #c6d6d1; }.score-pair p:last-child { border:0; }.score-pair strong { font-variant-numeric:tabular-nums; }
+.table-scroll { overflow-x:auto; margin:22px 0; }
+table { border-collapse:collapse; width:100%; font-size:.8rem; font-variant-numeric:tabular-nums; text-align:right; }
+caption { text-align:left; color:var(--muted); font-size:.74rem; line-height:1.5; padding-bottom:12px; }
+th,td { padding:12px 11px; border-bottom:1px solid var(--line); vertical-align:top; white-space:nowrap; }
+th:first-child { padding-left:0; text-align:left; white-space:normal; min-width:175px; }
+th:last-child,td:last-child { padding-right:0; }
+thead th { border-block:1px solid var(--ink); font-weight:600; }
+tbody th { font-weight:500; }tbody th span { display:block; font-size:.72rem; color:var(--muted); }
+figure { margin:27px 0 20px; }figure img { display:block; width:100%; height:auto; background:#fff; }
+figcaption { font-size:.78rem; color:var(--muted); line-height:1.6; margin-top:14px; }
+details { margin-top:24px; border-top:1px solid var(--line); padding-top:14px; }
+summary { cursor:pointer; color:var(--accent); font-size:.87rem; font-weight:600; }
+summary::marker { color:var(--accent); }
+.detail-content { margin-top:18px; font-size:.92rem; }
+.detail-content>p { max-width:83ch; }
+.compact-table th:first-child { min-width:0; width:58%; }
+.compact-table td { font-size:1.05rem; font-weight:600; }
+.source { font-size:.77rem; color:var(--muted); margin-top:22px; }.discussion { padding-bottom:42px; }
+footer { padding:29px 0 45px; font-size:.78rem; color:var(--muted); }footer p { margin-bottom:8px; }
+@media(max-width:640px) { main { padding:0 22px; } .masthead { padding-top:30px; } section { padding:34px 0; } .main-result { grid-template-columns:1fr; gap:15px; padding:22px; }.cohort { gap:10px; }.cohort dt { font-size:.65rem; }.cohort dd { font-size:1.7rem; }.table-scroll { margin-inline:-6px; padding-inline:6px; }.effect { font-size:2.8rem; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+@media print { main { max-width:none; padding:0; } .masthead { padding-top:0; } nav,.source,footer { display:none; } section { break-inside:avoid; padding:20px 0; }.main-result { background:transparent; border:1px solid var(--line); }body { font-size:11pt; }h1 { font-size:30pt; }h2 { font-size:20pt; } }
+</style>
 </head>
 <body>
-<style>
-  :root {
-    --ground:      #F7F8FA;
-    --surface:     #FFFFFF;
-    --sunk:        #EFF1F4;
-    --ink:         #15191F;
-    --ink-2:       #474F5A;
-    --ink-3:       #717B88;
-    --rule:        #D9DEE4;
-    --rule-soft:   #E7EAEF;
-    --accent:      #0E7490;
-    --accent-deep: #0A5668;
-    --neg:         #B23A2E;
-    --neg-soft:    #F7ECEA;
-    --pos:         #2E6E43;
-    --pos-soft:    #E9F2EC;
-    --warn:        #8C5A0E;
-    --warn-soft:   #F8F0E2;
-
-    --col:      68ch;
-    --wide:     1080px;
-    --s1: 0.4rem; --s2: 0.75rem; --s3: 1.15rem;
-    --s4: 1.9rem; --s5: 3rem;   --s6: 4.5rem;
-
-    --serif: "Spectral", Georgia, "Times New Roman", serif;
-    --sans:  "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:      #0E1116;
-      --surface:     #161A21;
-      --sunk:        #1C212A;
-      --ink:         #E6E9EE;
-      --ink-2:       #AEB6C2;
-      --ink-3:       #7D8795;
-      --rule:        #2A313C;
-      --rule-soft:   #222832;
-      --accent:      #3FA8C4;
-      --accent-deep: #7FCFE4;
-      --neg:         #E0766A;
-      --neg-soft:    #2A1B19;
-      --pos:         #6FBF8C;
-      --pos-soft:    #16251C;
-      --warn:        #D6A24A;
-      --warn-soft:   #261E11;
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --ground:      #0E1116;
-    --surface:     #161A21;
-    --sunk:        #1C212A;
-    --ink:         #E6E9EE;
-    --ink-2:       #AEB6C2;
-    --ink-3:       #7D8795;
-    --rule:        #2A313C;
-    --rule-soft:   #222832;
-    --accent:      #3FA8C4;
-    --accent-deep: #7FCFE4;
-    --neg:         #E0766A;
-    --neg-soft:    #2A1B19;
-    --pos:         #6FBF8C;
-    --pos-soft:    #16251C;
-    --warn:        #D6A24A;
-    --warn-soft:   #261E11;
-  }
-
-  * { box-sizing: border-box; }
-
-  body {
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 17px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-  }
-
-  .wrap {
-    max-width: var(--wide);
-    margin: 0 auto;
-    padding: 0 var(--s4) var(--s6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s6);
-  }
-
-  .col { max-width: var(--col); }
-
-  p { margin: 0 0 var(--s3); }
-  p:last-child { margin-bottom: 0; }
-
-  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-  a:focus-visible, summary:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin: 0 0 var(--s2);
-  }
-
-  /* ---------- masthead ---------- */
-
-  .masthead {
-    border-bottom: 1px solid var(--rule);
-    padding: var(--s5) 0 var(--s4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s3);
-  }
-
-  h1 {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: clamp(1.9rem, 4.6vw, 3.2rem);
-    line-height: 1.12;
-    letter-spacing: -0.016em;
-    margin: 0;
-    max-width: 30ch;
-  }
-  /* The explicit break sets the two lines; let it wrap naturally below that. */
-  h1 br { display: none; }
-  @media (min-width: 620px) {
-    h1 br { display: inline; }
-  }
-
-  .standfirst {
-    font-family: var(--serif);
-    font-size: clamp(1.05rem, 2vw, 1.3rem);
-    line-height: 1.5;
-    color: var(--ink-2);
-    max-width: 58ch;
-    margin: 0;
-  }
-
-  .byline {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--ink-3);
-    letter-spacing: 0.04em;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s1) var(--s3);
-  }
-
-  /* ---------- the question ---------- */
-
-  .question {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--accent);
-    padding: var(--s4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s3);
-  }
-
-  .question h2 {
-    font-family: var(--serif);
-    font-size: 1.45rem;
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0;
-    max-width: 48ch;
-    text-wrap: balance;
-  }
-
-  .question .task-body { max-width: var(--col); color: var(--ink-2); }
-  .question strong { color: var(--ink); font-weight: 600; }
-
-  .spec {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1px;
-    background: var(--rule-soft);
-    border: 1px solid var(--rule-soft);
-    margin-top: var(--s1);
-  }
-  .spec div {
-    background: var(--surface);
-    padding: var(--s2) var(--s3);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .spec dt {
-    font-family: var(--mono);
-    font-size: 0.67rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-  }
-  .spec dd {
-    margin: 0;
-    font-family: var(--mono);
-    font-size: 1.02rem;
-    font-weight: 500;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ---------- formulas ---------- */
-
-  .formulas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: var(--s3);
-    margin: 0;
-  }
-  .formulas div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-    border-top: 2px solid var(--rule);
-    padding-top: var(--s2);
-  }
-  .formulas dt {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-  }
-  .formulas dd { margin: 0; }
-  .formulas .f {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--ink);
-    letter-spacing: 0.01em;
-  }
-  .formulas sub { font-style: normal; font-size: 0.62em; }
-
-  /* ---------- approach bullets ---------- */
-
-  .arm-list {
-    margin: 0;
-    padding-left: 1.1rem;
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-    max-width: var(--col);
-    color: var(--ink-2);
-  }
-  .arm-list li::marker { color: var(--accent); }
-
-  /* ---------- section scaffolding ---------- */
-
-  section { display: flex; flex-direction: column; gap: var(--s4); }
-
-  .shead { display: flex; flex-direction: column; gap: var(--s2); }
-
-  h2.title {
-    font-family: var(--serif);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
-    line-height: 1.18;
-    letter-spacing: -0.012em;
-    margin: 0;
-    text-wrap: balance;
-    max-width: 30ch;
-  }
-
-  .lede { color: var(--ink-2); max-width: var(--col); }
-
-  /* ---------- video ---------- */
-
-  figure { margin: 0; display: flex; flex-direction: column; gap: var(--s2); }
-
-  .video-frame {
-    background: #0B0E12;
-    border: 1px solid var(--rule);
-    overflow: hidden;
-    line-height: 0;
-  }
-  video, .figure-img { width: 100%; height: auto; display: block; }
-
-  /* The matplotlib figures are white-ground PNGs: sit them on an explicit
-     white card so they never glare against a dark page ground. */
-  .plate {
-    background: #FFFFFF;
-    border: 1px solid var(--rule);
-    padding: var(--s2);
-    line-height: 0;
-  }
-
-  figcaption {
-    font-size: 0.86rem;
-    color: var(--ink-3);
-    max-width: 62ch;
-    line-height: 1.55;
-  }
-  figcaption b { color: var(--ink-2); font-weight: 600; }
-
-  .beats {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: var(--s3);
-    counter-reset: beat;
-  }
-  .beats li {
-    counter-increment: beat;
-    border-top: 2px solid var(--rule);
-    padding-top: var(--s2);
-    font-size: 0.9rem;
-    color: var(--ink-2);
-    line-height: 1.5;
-  }
-  .beats li::before {
-    content: counter(beat);
-    display: block;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--accent);
-    margin-bottom: 4px;
-    font-weight: 500;
-  }
-
-  /* ---------- approach list ---------- */
-
-  .approaches { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
-
-  .approach {
-    display: grid;
-    grid-template-columns: 1fr minmax(0, 300px) 110px;
-    gap: var(--s3);
-    align-items: baseline;
-    padding: var(--s3) 0;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-
-  .approach .name {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .approach .kind {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ink-3);
-    font-weight: 400;
-  }
-  .approach .what {
-    font-size: 0.9rem;
-    color: var(--ink-2);
-    line-height: 1.5;
-  }
-  .approach .score {
-    font-family: var(--mono);
-    font-size: 1.15rem;
-    font-weight: 500;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-  }
-  .approach .score small {
-    display: block;
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    font-weight: 400;
-    margin-top: 2px;
-  }
-
-  .approach.is-best { background: var(--pos-soft); }
-  .approach.is-best .score { color: var(--pos); }
-  .approach.is-best .score small { color: var(--pos); }
-  .approach.is-neg .score { color: var(--neg); }
-  .approach.is-neg .score small { color: var(--neg); }
-  .approach.is-null .score small { color: var(--ink-3); }
-  .approach.is-best .name::after {
-    content: "best in project";
-    font-family: var(--mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--pos);
-  }
-  .approach.is-best { padding-left: var(--s3); padding-right: var(--s3); }
-
-  /* ---------- tables ---------- */
-
-  .scroller { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 1rem;
-    min-width: 580px;
-  }
-  caption {
-    text-align: left;
-    padding: var(--s3) var(--s3) var(--s2);
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  th, td { padding: 0.6rem var(--s3); text-align: left; vertical-align: top; }
-  thead th {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    border-bottom: 1px solid var(--rule);
-    white-space: nowrap;
-  }
-  tbody tr + tr td { border-top: 1px solid var(--rule-soft); }
-  td.num {
-    font-family: var(--mono);
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-  tbody tr.row-best td { background: var(--pos-soft); font-weight: 600; }
-
-  .chip {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    padding: 2px 7px;
-    white-space: nowrap;
-    border-radius: 2px;
-  }
-  .chip.neg  { background: var(--neg-soft);  color: var(--neg); }
-  .chip.null { background: var(--sunk);      color: var(--ink-2); }
-  .chip.pos  { background: var(--pos-soft);  color: var(--pos); }
-  .chip.warn { background: var(--warn-soft); color: var(--warn); }
-
-  /* ---------- callout ---------- */
-
-  .note {
-    border-left: 2px solid var(--rule);
-    padding-left: var(--s3);
-    font-size: 0.92rem;
-    color: var(--ink-2);
-    max-width: var(--col);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-  }
-  .note.flag { border-left-color: var(--warn); }
-
-  /* ---------- next steps ---------- */
-
-  .steps { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
-
-  .step {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--s3);
-    padding: var(--s4) 0;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .step .rank {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    color: var(--accent);
-    padding-top: 5px;
-    font-weight: 500;
-  }
-  .step .body { display: flex; flex-direction: column; gap: var(--s2); max-width: var(--col); }
-  .step h3 {
-    font-family: var(--serif);
-    font-size: 1.22rem;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-    text-wrap: balance;
-  }
-  .step p { font-size: 0.95rem; color: var(--ink-2); margin: 0; }
-  .step .answers {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    color: var(--ink-3);
-    border-top: 1px dashed var(--rule);
-    padding-top: var(--s2);
-    line-height: 1.5;
-  }
-  .step .answers b {
-    color: var(--accent);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 0.68rem;
-  }
-
-  .closed summary {
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    color: var(--ink-3);
-    padding: var(--s2) 0;
-    list-style: none;
-  }
-  .closed summary::-webkit-details-marker { display: none; }
-  .closed summary::before { content: "▸ "; color: var(--accent); }
-  .closed[open] summary::before { content: "▾ "; }
-  .closed summary:hover { color: var(--ink); }
-  .closed ul {
-    margin: 0 0 var(--s3);
-    padding-left: var(--s3);
-    font-size: 0.89rem;
-    color: var(--ink-2);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s1);
-  }
-
-  /* ---------- footer ---------- */
-
-  footer {
-    border-top: 1px solid var(--rule);
-    padding-top: var(--s4);
-    font-size: 0.84rem;
-    color: var(--ink-3);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-    max-width: var(--col);
-  }
-  footer code {
-    font-family: var(--mono);
-    font-size: 0.88em;
-    background: var(--sunk);
-    padding: 1px 5px;
-  }
-
-  @media (max-width: 760px) {
-    .approach { grid-template-columns: 1fr auto; }
-    .approach .what { grid-column: 1 / -1; }
-    .step { grid-template-columns: 1fr; gap: var(--s2); }
-    .wrap { padding-left: var(--s3); padding-right: var(--s3); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  }
-</style>
-
-<div class="wrap">
-
-  <header class="masthead">
-    <p class="eyebrow">London AI × Science · logic binders team · 3–4 October 2026</p>
-    <h1>Antigen Presentation Stability:<br>Sequence Is All You Need?</h1>
-    <p class="standfirst">
-      <b>TL;DR:</b> We tested language-model embeddings and predicted structures against a
-      supervised model trained on sequences. None of them won.
-    </p>
-  </header>
-
-  <!-- ========== 1. FILM ========== -->
-  <section id="intro">
-    <div class="shead">
-      <h2 class="title">The two-minute version</h2>
-    </div>
-
-    <figure>
-      <!-- The film runs live rather than as a recording: it is the same
-           composition the repo renders, with every number read at runtime from
-           film/film_data.js, which is generated from the frozen result tables.
-           Sandboxed in an iframe so its globals cannot collide with this page. -->
-      <div class="video-frame">
-        <iframe src="film/" title="Sequence Is All You Need? - the submission film"
-                loading="lazy" allowfullscreen
-                style="width:100%;aspect-ratio:16/9;border:0;display:block"></iframe>
-      </div>
-      <noscript>
-        <p class="note">
-          The film is rendered in the browser and needs JavaScript. The
-          30-second interface animation is available as a video instead:
-          <a href="intro.mp4">intro.mp4</a>.
-        </p>
-      </noscript>
-      <figcaption class="note">
-        Plays in the browser. <a href="film/">Open it full-screen</a> &middot;
-        the original 30-second interface animation also runs live at
-        <a href="intro/">intro/</a>, or
-        <a href="intro.mp4">as an MP4</a>.
-      </figcaption>
-    </figure>
-  </section>
-
-  <!-- ========== 2. THE TASK ========== -->
-  <section id="task">
-    <div class="question">
-      <p class="eyebrow">The task</p>
-      <h2>Stability is different from affinity.</h2>
-      <dl class="formulas">
-        <div>
-          <dt>Stability — how long it stays bound</dt>
-          <dd><span class="f">t<sub>½</sub> = ln 2 / k<sub>off</sub></span></dd>
-        </div>
-        <div>
-          <dt>Affinity — how readily it binds</dt>
-          <dd><span class="f">K<sub>d</sub> = k<sub>off</sub> / k<sub>on</sub></span></dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <!-- ========== 3. APPROACHES TESTED ========== -->
-  <section id="approaches">
-    <div class="shead">
-      <h2 class="title">Our approach</h2>
-    </div>
-
-    <ul class="arm-list">
-      <li>Allele-mean (sanity floor)</li>
-      <li>Single sequence MLP (peptide + HLA contact residues)</li>
-      <li>Sequence ensemble (30 networks)</li>
-      <li>ESM-2 35M embeddings, alone</li>
-      <li>ESM-2 150M embeddings, alone</li>
-      <li>ESM-2 + sequence features</li>
-      <li>Boltz-2 structure — geometry only</li>
-      <li>Boltz-2 structure — confidence only</li>
-      <li>Boltz-2 structure — seq + geometry + confidence</li>
-      <li>FoldX energy + sequence</li>
-    </ul>
-  </section>
-
-  <!-- ========== 4. RESULTS TABLE ========== -->
-  <section id="results">
-    <div class="shead">
-      <p class="eyebrow">Main result</p>
-      <h2 class="title">Pretrained features versus the baseline</h2>
-      <p class="lede">
-        <b>Held-out test split</b>, median per-allele Spearman, higher is better. Scored once,
-        after every modelling decision was frozen. An interval crossing zero is
-        <em>inconclusive</em>; a strong negative <em>rules out</em> the 0.05 bar.
-      </p>
-    </div>
-
-    <div class="scroller">
-      <table>
-        <caption>Test split &middot; 5,565 rows &middot; 67 alleles &middot; paired cluster bootstrap, 2,000 resamples</caption>
-        <thead>
-          <tr>
-            <th scope="col">Approach</th>
-            <th scope="col" style="text-align:right">Score</th>
-            <th scope="col">Verdict vs. baseline (0.706)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row-best">
-            <td>Sequence ensemble (30 networks)</td>
-            <td class="num">0.7064</td>
-            <td><span class="chip pos">best in project</span></td>
-          </tr>
-          <tr>
-            <td>ESM-2 35M embeddings, alone</td>
-            <td class="num">0.6979</td>
-            <td><span class="chip null">&minus;0.009 [&minus;0.029, +0.023] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>Sequence ensemble, full domain</td>
-            <td class="num">0.6904</td>
-            <td><span class="chip null">&minus;0.016 [&minus;0.039, +0.004] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>ESM-2 + sequence features</td>
-            <td class="num">0.6816</td>
-            <td><span class="chip null">&minus;0.025 [&minus;0.046, +0.007] &middot; rules out 0.05</span></td>
-          </tr>
-          <tr>
-            <td>Single sequence MLP (peptide + contact residues)</td>
-            <td class="num">0.6181</td>
-            <td><span class="chip neg">worse: &minus;0.088 [&minus;0.120, &minus;0.055]</span></td>
-          </tr>
-          <tr>
-            <td>Boltz-2 &mdash; seq + geometry + confidence</td>
-            <td class="num">0.5947</td>
-            <td><span class="chip neg">worse: &minus;0.112 [&minus;0.134, &minus;0.057]</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>The structural arm is conclusively worse.</b> Its interval sits entirely below zero, and
-        a sequence-only control through the <em>identical</em> pipeline beats it at every tuning
-        setting — so the loss is the structural features, not the fit.
-      </p>
-      <p>
-        <b>The ESM-2 arms are inconclusive at zero.</b> They neither replace nor improve the
-        baseline, and the intervals are tight enough to rule out a worthwhile gain.
-      </p>
-      <p>
-        <b>We do not claim "pretraining helps."</b> ESM-2 only <em>ties</em> the cheap 34-residue
-        contact-sequence baseline. Both beat a weaker full-domain encoding by similar margins —
-        a fact about the weak encoding, not evidence for pretraining.
-      </p>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>One strong positive.</b> With no retraining, the sequence model ranked 81,600 naturally
-        presented peptides above 816,000 matched decoys — a different assay, a different biological
-        event — at <strong>median AUROC 0.966</strong>. That is the evidence it learned real
-        biology rather than dataset artefacts.
-      </p>
-    </div>
-  </section>
-
-  <!-- ========== 5. NEXT STEPS ========== -->
-  <section id="next">
-    <div class="shead">
-      <h2 class="title">Next steps</h2>
-    </div>
-
-    <div class="scroller">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Proposed experiment</th>
-            <th scope="col">Explanation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>ESM-C with concatenated sequences</b></td>
-            <td>Feed peptide&ndash;linker&ndash;MHC &alpha;1&alpha;2 into ESM-C as one sequence, so each
-                partner is represented in the context of the other. Compare against encoding them
-                separately.</td>
-          </tr>
-          <tr>
-            <td><b>Separate embeddings + cross-attention</b></td>
-            <td>Keep peptide and MHC embeddings separate, then add a trainable cross-attention
-                module that connects individual peptide positions with groove positions. Compare
-                against concatenated embeddings + a small MLP, keeping the embeddings unchanged.</td>
-          </tr>
-          <tr>
-            <td><b>Inverse-folding and energy features</b></td>
-            <td>Score each predicted complex with ProteinMPNN peptide likelihoods and FoldX
-                interaction energies, and test them as half-life features. Compare against the
-                sequence ensemble, keeping the same folds and tuning budget.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ========== 6. METHODS ========== -->
-  <section id="methods">
-    <div class="shead">
-      <h2 class="title">Methods</h2>
-    </div>
-
-    <div class="note">
-      <p>
-        <b>The rules were fixed before any modelling.</b> Splits are frozen 70/10/20 with peptides
-        grouped by similarity, so no peptide within 3 substitutions appears in two splits. The
-        primary metric is median per-allele Spearman &mdash; ranking peptides <em>within</em> each
-        allele. The 0.05 bar is not a preference: below it, this benchmark cannot separate a real
-        difference from noise.
-      </p>
-      <p>
-        Every arm uses the same rows, the same 30-network ensembling, and an equal tuning
-        <em>budget</em>. Scores are median per-allele Spearman.
-      </p>
-      <p>
-        <b>NetMHCstabpan is not used as a comparator.</b> The published model for this task was
-        trained on our entire dataset, including our test peptides &mdash; any score it posts here
-        is memorisation, not prediction.
-      </p>
-    </div>
-
-    <dl class="spec">
-      <div><dt>Measured pairs</dt><dd>28,166</dd></div>
-      <div><dt>Unique peptides</dt><dd>5,633</dd></div>
-      <div><dt>HLA alleles</dt><dd>75</dd></div>
-      <div><dt>Peptide length</dt><dd>9 exact</dd></div>
-      <div><dt>Labels at 0 h</dt><dd>20.2%</dd></div>
-      <div><dt>Worthwhile bar</dt><dd>&Delta;&rho; &ge; 0.05</dd></div>
-    </dl>
-  </section>
-
-  <footer>
-    <p class="eyebrow">Credits</p>
-    <p>
-      <b>logic binders team</b> &middot; London AI &times; Science, Protein Engineering Track
-      &middot; 3&ndash;4 October 2026.
-    </p>
-    <p>
-      <b>The headline table is the held-out test split</b>, scored once and last, under a
-      single-pass rule fixed in writing before any test number existed. Secondary experiments
-      and the external-validation AUROC are validation numbers.
-    </p>
-    <p>
-      Detail lives in <code>reports/REPORT.md</code> (concise) and <code>reports/SUBMISSION.md</code>
-      (long form); the evaluation contract in <code>EVALUATION.md</code>, costs in
-      <code>reports/compute_ledger.md</code>, and forward plan in <code>NEXT_STEPS.md</code>.
-    </p>
-  </footer>
-
-</div>
-
+<a class="skip" href="#results">Skip to results</a>
+<main>
+<!-- ROUND2 GENERATED START -->
+<header class="masthead" id="results">
+  <p class="eyebrow">Peptide–HLA stability · Research findings</p>
+  <h1>Boltz-2 features improve peptide–HLA stability ranking</h1>
+  <p class="standfirst">Boltz-2 is a biomolecular structure-prediction model that we keep unchanged. Using its internal features that describe relationships between amino acids in the peptide and HLA, we train small predictors to rank measured complex stability and compare them with sequence-based models.</p>
+  <div class="main-result primary-result">
+    <div><p class="metric-label">Median within-allele Spearman ranking correlation</p><div class="score-pair"><p><span>Selected sequence-based models</span><strong>0.6668</strong></p><p><span>Selected Boltz-feature models</span><strong>0.7212</strong></p></div></div>
+    <div><p class="metric-label">Paired difference in ranking correlation</p><p class="effect">+0.0543</p><p class="uncertainty">Conditional 95% interval [+0.0314, +0.0808]</p></div>
+  </div>
+  <p>Median within-allele Spearman correlation measures how closely predicted stability rankings match measured orderings within each HLA type (allele); higher values mean better agreement. Per-allele scores are higher in 60 of 69 eligible HLA types and lower in 9. Across 19,716 development pairs, model choice uses data separate from evaluation on held-out groups of similar peptides (clusters). Measurements come from one existing stability assay; independent kinetic validation is still needed.</p>
+  <nav aria-label="Research navigation"><a href="#question">Approach</a><a href="#transfer">Transfer</a><a href="#adaptation">Adaptation</a><a href="#elution">Presented peptides</a><a href="#interpretation">Interpretation</a><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/MANUSCRIPT.md">Manuscript ↗</a></nav>
+</header>
+<section class="abstract" aria-labelledby="question">
+  <h2 id="question">Biological question and approach</h2>
+  <p>Human leukocyte antigen (HLA) class I proteins display short intracellular peptides on the cell surface for immune recognition; we focus on nine-residue peptides. Complex stability, or how long a peptide–HLA complex persists, influences antigen presentation and differs from equilibrium binding affinity. Boltz-2 features provide learned numerical representations, not measured dissociation rates.</p>
+  <dl class="cohort"><div><dt>Development pairs</dt><dd>19,716</dd></div><div><dt>Peptide clusters</dt><dd>3,587</dd></div><div><dt>Eligible HLA alleles</dt><dd>69</dd></div></dl>
+  <p>Residue-pair features outperform tested chain averages and projected token summaries in matched MLPs. In separate tests, an ESM-2 model and an implemented Boltz-2 coordinate-and-confidence pipeline did not establish an advantage over their sequence baselines. <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons">Earlier representation comparisons</a></p>
+  <details><summary>Cohort eligibility, nested selection, and representation controls</summary><div class="detail-content">
+<p class="note">The development cohort comes from the original training split and spans 75 HLA allele/construct labels. Of these, 69 are eligible—having both at least 20 rows and varying labels—and receive equal weight in the primary endpoint. Nested cross-validation separates held-out peptide clusters from model fitting and selection.</p>
+<p>For unseen peptide clusters on known alleles, the prespecified embedding selector—defined as inner-selected frozen-feature procedures with the original sequence ensemble as fallback—outperforms the competitive sequence selector across the 69 eligible alleles on the development panel. The conditional interval supports a within-allele ranking gain from Boltz-2 trunk representations.</p>
+<p>Retaining position-aware token features improves ranking over pooling the same underlying tokens, cleanly supporting positional indexing. While the full 9×34 interface representation also outperforms contact-restricted pooled pairs, this comparison changes both groove coverage and positional resolution jointly rather than isolating a positional effect. Separately, pooling over a crystal-derived peptide–HLA contact mask offers no established advantage over shuffled residue-pair membership (+0.0007 [−0.0096, +0.0236]). The positive performance comparisons show that the learned representations carry predictive signal without establishing a specific physical contact mechanism behind the gain.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/paired_comparisons.csv">Paired results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/further_research/round2/results/main/pooled_scores.csv">All procedure scores</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/manuscript/figure2_data.json">Saved per-allele results</a></p>
+  </div></details>
+</section>
+<section id="label-budget" aria-labelledby="label-budget-title">
+  <p class="eyebrow">01 · Reduced training data</p>
+  <h2 id="label-budget-title">Boltz-2 features maintain stronger stability ranking with less training data</h2>
+  <p>Using 25% of available groups of similar peptides, Boltz-2 pair features reach 0.5877 median within-allele Spearman correlation versus 0.2640 for sequence models. Scores are averaged across three fixed subsets in a separate analysis that holds out peptide groups.</p>
+  <p class="note">Both fitting and stopping labels count toward the budget for these two-network ensembles. The sequence reference is weaker than the primary baseline, limiting comparison to the main result. This retrospective test does not measure prospective assay savings.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#training-label-budgets">Training-label budget details</a></p>
+</section>
+<section id="transfer" aria-labelledby="transfer-title">
+  <p class="eyebrow">02 · Held-out HLA groups</p>
+  <h2 id="transfer-title">Ranking advantage transfers across held-out HLA groups</h2>
+  <p>Using matched small nonlinear neural predictors, we test whether the ranking advantage holds when related HLA types are excluded from supervised fitting, or when both related HLA types and groups of similar peptides are excluded.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Matched-MLP transfer comparison across held-out HLA regimes" tabindex="0"><table><caption>Median within-allele Spearman correlation across 69 alleles for matched neural predictors</caption><thead><tr><th scope="col">Excluded from predictor training</th><th scope="col">Sequence</th><th scope="col">Boltz-2 features</th></tr></thead><tbody><tr><th scope="row">Related HLA groups</th><td>0.1605</td><td>0.5667</td></tr>
+<tr><th scope="row">Related HLA groups and peptide groups</th><td>0.1242</td><td>0.4980</td></tr></tbody></table></div>
+  <details><summary>Expanded sequence baselines, confidence intervals, and pretraining scope</summary><div class="detail-content">
+<div class="table-scroll" role="region" aria-label="Transfer results" tabindex="0"><table><caption>Median within-allele Spearman · 69 alleles · conditional crossed 95% intervals</caption><thead><tr><th scope="col">Held out / comparison</th><th scope="col">Sequence</th><th scope="col">Embedding</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">HLA group<span>Matched MLPs</span></th><td>0.1605</td><td>0.5667</td><td>+0.4062 [+0.3073, +0.4733]</td></tr>
+<tr><th scope="row">HLA group<span>Embedding vs expanded sequence selector</span></th><td>0.1921</td><td>0.5463</td><td>+0.3542 [+0.2762, +0.4563]</td></tr>
+<tr><th scope="row">HLA group + peptide cluster<span>Matched MLPs</span></th><td>0.1242</td><td>0.4980</td><td>+0.3738 [+0.3092, +0.4638]</td></tr>
+<tr><th scope="row">HLA group + peptide cluster<span>Embedding vs expanded sequence selector</span></th><td>0.1085</td><td>0.5067</td><td>+0.3982 [+0.3143, +0.4613]</td></tr></tbody></table></div>
+<p class="note">Matched nonlinear MLPs provide the headline architectural comparison because an additive sequence-ridge model cannot express allele-specific peptide preferences across alleles. The original 30-member sequence ensemble scores 0.1709 under HLA holdout and 0.1350 under joint holdout; expanding sequence selection does not consistently improve this reference. Because Boltz-2 brings broader molecular context and prior structural training, holding out HLA groups from supervised fitting does not establish structural novelty during pretraining.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/transfer_cloud_recovery/results/comparisons.csv">All transfer comparisons</a></p>
+  </div></details>
+</section>
+<section id="adaptation" aria-labelledby="adaptation-title">
+  <p class="eyebrow">03 · Few-shot adaptation</p>
+  <h2 id="adaptation-title">Twenty existing measurements per target HLA type improve stability ranking</h2>
+  <p>Using 20 existing measurements for a target HLA type allows Boltz-feature models to adapt stability rankings for other peptides of that HLA.</p>
+  <p class="note">We fit a separate linear ridge model across 68 eligible alleles under joint HLA-group and peptide-group holdout. Because both the model and query panel differ from the transfer analysis, their scores are not directly comparable.</p>
+  <div class="main-result"><div><p class="metric-label">Paired gain in ranking correlation</p><p class="effect">+0.0468</p><p class="uncertainty">Conditional 98.33% family-adjusted interval [+0.0140, +0.1195]</p></div>
+  <div class="score-pair"><p><span>0 target-allele measurements</span><strong>0.5296</strong></p><p><span>20 existing target-allele measurements</span><strong>0.5763</strong></p></div></div>
+  <details><summary>Learning curves, support-query design, and allele eligibility</summary><div class="detail-content">
+<p>In this separate retrospective ridge study, query identities are fixed across label budgets within each of three support designs (not identical across all three designs), and the intersection of eligible allele labels across designs gives 68 alleles.</p>
+<figure><img src="figures/fewshot_curves.svg" width="1020" height="530" loading="lazy" alt="Learning curves for sequence and Boltz representations, with the positive family-adjusted interval for Boltz adaptation at twenty labels."><figcaption>Scores average three fixed support-set sampling designs across 68 target alleles. Support and query peptide families are excluded from source-model fitting. R0 is additive sequence ridge, and R5 uses Boltz features. The four-member sequence ensemble is a reduced reference comparator, not the fully tuned sequence selector. The interval at 20 labels conditions on these three fixed support designs. Curve uncertainty bands are not estimated.</figcaption></figure>
+<p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/absolute_curves.csv">Exact learning curves</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/fewshot/primary_family3_interval.json">Primary family interval</a> · <a href="figures/fewshot_curves.svg">Download figure</a></p>
+  </div></details>
+</section>
+<section id="extensions" aria-labelledby="extensions-title">
+  <p class="eyebrow">04 · Additional descriptors and learners</p>
+  <h2 id="extensions-title">Tested descriptors and learners show no established extra gain</h2>
+  <p>Adding ProteinMPNN inverse-folding scores, FoldX energy terms, pairwise ranking losses, or hybrid learners showed no established extra benefit beyond Boltz-2 features in tested comparisons. Confidence intervals span zero, which neither establishes equivalence nor rules out useful effects.</p>
+  <details><summary>ProteinMPNN, FoldX, ranking-loss, and hybrid-learner comparisons</summary><div class="detail-content">
+<p>We next test whether supplementing frozen Boltz trunk embeddings with explicit inverse-folding likelihoods or physical energy terms adds predictive signal. On an identity-selected, allele-balanced 4,449-pair panel (at most 64 rows per allele, with 69 scoring alleles eligible under at least 20 rows and varying labels), matched two-member MLPs evaluate two augmentations: adding complex-context ProteinMPNN scores (C) to a reference of Boltz plus peptide-only ProteinMPNN scores (Boltz+P), and adding repaired FoldX energy descriptors to Boltz features alone. The full-cohort extension described next evaluates a different contrast (R5+P+C versus R5) rather than a sample-size change alone.</p>
+  <div class="table-scroll" role="region" aria-label="Descriptor results" tabindex="0"><table><caption>Matched MLPs · 69 alleles · conditional 98.33% family intervals</caption><thead><tr><th scope="col">Added information</th><th scope="col">Reference</th><th scope="col">Augmented</th><th scope="col">Difference [interval]</th></tr></thead><tbody><tr><th scope="row">ProteinMPNN complex context</th><td>0.5956</td><td>0.6195</td><td>+0.0240 [−0.0219, +0.0659]</td></tr>
+<tr><th scope="row">Repaired FoldX descriptors</th><td>0.6007</td><td>0.6157</td><td>+0.0150 [−0.0524, +0.0450]</td></tr></tbody></table></div>
+  <p>A post-hoc extension of the ProteinMPNN comparison to all 19,716 development pairs, selected after the subset analysis, yields −0.0070 [−0.0220, +0.0131] relative to Boltz alone (pointwise 95% interval). Alternative pairwise ranking losses (+0.0071 [−0.0051, +0.0098]) and hybrid learners (+0.0044 [−0.0055, +0.0100]) also yield intervals spanning zero. Because such intervals remain compatible with small effects, these experiments establish neither added benefit nor equivalence.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_execution_v2/comparisons.csv">ProteinMPNN</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/energy_execution_v2/comparisons.csv">FoldX</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/followup3/inverse_fulltrain_candidate/comparisons.csv">Full-cohort extension</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/ranking/comparisons.csv">Ranking loss</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/finalization/hybrids_cloud_v1/comparisons.csv">Hybrid learners</a></p>
+  </div></details>
+</section>
+<section id="elution" aria-labelledby="elution-title">
+  <p class="eyebrow">05 · Secondary sequence-model benchmark</p>
+  <h2 id="elution-title">Sequence stability model separates naturally presented and comparison peptides</h2>
+  <p>The sequence stability model separates naturally presented peptides from proteome comparison peptides in external MHC Motif Atlas data without retraining. Across 51 alleles, we compare 81,600 observed nine-residue peptide–HLA pairs against 816,000 comparison pairs from the human proteome. These comparison peptides (decoys) are proteome reference sequences, not verified nonbinders or unpresented peptides.</p>
+  <div class="table-scroll compact-table" role="region" aria-label="Median per-allele AUROC across 51 alleles, measuring separation between observed and comparison peptides (higher is better)." tabindex="0"><table><caption>Median per-allele AUROC across 51 alleles, measuring separation between observed and comparison peptides (higher is better).</caption><thead><tr><th scope="col">Benchmark condition</th><th scope="col">AUROC</th></tr></thead><tbody>
+<tr><th scope="row">Comparison peptides from the human proteome</th><td>0.9656</td></tr>
+<tr><th scope="row">Peptides observed on other HLA types used as comparisons</th><td>0.9157</td></tr>
+<tr><th scope="row">Shuffled HLA inputs with the same human-proteome comparison peptides</th><td>0.6965</td></tr>
+  </tbody></table></div>
+  <p class="note">All 5,633 unique peptides from the entire stability dataset are excluded from both observed and comparison sets. With ten comparison pairs per observed pair, the main proteome comparison reaches a median per-allele AUPRC of 0.7804.</p>
+  <p>Because this benchmark evaluates the sequence model only, it neither confirms the Boltz-2 stability advantage nor provides independent kinetic validation.</p>
+  <p class="source"><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/stage3c_summary.csv">Elution summary CSV</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/stage3c_provenance.json">Dataset provenance</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation">Supplementary elution details</a></p>
+</section>
+<section id="interpretation" class="discussion" aria-labelledby="interpretation-title">
+  <p class="eyebrow">Interpretation</p>
+  <h2 id="interpretation-title">What remains to be tested</h2>
+  <p>All stability evaluations rely on one existing scintillation proximity assay that tracks β2-microglobulin dissociation as a stability proxy and contains unresolved zero-valued labels. The models rank recorded stability rather than predicting calibrated half-lives or immunogenicity. Independent kinetic validation is still needed.</p>
+  <details><summary>Conditional resampling intervals and three-comparison family adjustment</summary><div class="detail-content">
+<p>All confidence intervals resample saved out-of-fold predictions while holding fitted models and selection choices fixed, using peptide-cluster resampling for peptide holdout and crossed HLA-group by peptide-cluster resampling for transfer and adaptation. These conditional intervals omit variance from refitting models, collecting new measurements, and selecting follow-up studies adaptively. One three-comparison family spans 20-label R5 adaptation, ProteinMPNN complex context beyond peptide-only, and FoldX augmentation; the 98.33% intervals correct only that declared family, not project-wide exploration.</p>
+  </div></details>
+</section>
+<footer><p>For related context, see the supplementary results on <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#earlier-sequence-and-pretrained-feature-comparisons">earlier sequence baselines</a> and <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md#sequence-predictions-transfer-to-ligand-presentation">ligand presentation</a>.</p><p><a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/MANUSCRIPT.md">Manuscript</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/reports/REPORT.md">Supplementary results</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/EVALUATION.md">Evaluation methods</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/DATASETS.md">Dataset and assay</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability/blob/main/docs/ROUND2_INFERENCE.md">Use the released models</a></p><p><a href="round2-data.json">Source values and hashes</a> · <a href="intro/">Peptide–HLA biology animation</a> · <a href="https://github.com/cheparukhin/peptide-hla-stability">Code and evidence</a></p></footer>
+<!-- ROUND2 GENERATED END -->
+</main>
 </body>
 </html>

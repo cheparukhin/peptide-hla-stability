@@ -1,0 +1,307 @@
+{
+  "schema": "round2_transfer_timing_forecast.1",
+  "at_utc": "2026-10-12T07:57:17.845557+00:00",
+  "status": "passed_timing_gate_local_only",
+  "protocol_hash": "1a27bc32a749b69928f83fecabb5e80419b8e472423066dfe08bc1bdfd8723c4",
+  "controller_sha256": "ebd1175080ffc049dcaa256d3539c9e72cdea378a9013e7b8cf0899a1a7f1e20",
+  "timing_cells": [
+    {
+      "cell": "hla/h0",
+      "regime": "hla",
+      "member_count": 226,
+      "wall_seconds": 485.801054,
+      "member_fit_seconds": 471.67739453713875,
+      "outer_fitting_rows": 15757,
+      "completed_sha256": "5b87becf41bd15f49f1217019472f328a98d012cfde3be058b9ecb2f5ff42810"
+    },
+    {
+      "cell": "joint/h0_p0",
+      "regime": "joint",
+      "member_count": 496,
+      "wall_seconds": 300.60095,
+      "member_fit_seconds": 287.3332354463637,
+      "outer_fitting_rows": 12651,
+      "completed_sha256": "81364cb75ec9951223c925c07b62548cbc66c8397644afc877d499303d58b726"
+    }
+  ],
+  "remaining_cells": [
+    {
+      "cell": "hla/h1",
+      "outer_fitting_rows": 15682,
+      "reference_cell": "hla/h0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 485.801054,
+      "contingency_seconds": 971.602108,
+      "n_fits": 226
+    },
+    {
+      "cell": "hla/h2",
+      "outer_fitting_rows": 15720,
+      "reference_cell": "hla/h0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 485.801054,
+      "contingency_seconds": 971.602108,
+      "n_fits": 226
+    },
+    {
+      "cell": "hla/h3",
+      "outer_fitting_rows": 15886,
+      "reference_cell": "hla/h0",
+      "row_ratio_at_least_one": 1.008186837595989,
+      "projected_seconds": 489.77822833305834,
+      "contingency_seconds": 979.5564566661167,
+      "n_fits": 226
+    },
+    {
+      "cell": "hla/h4",
+      "outer_fitting_rows": 15819,
+      "reference_cell": "hla/h0",
+      "row_ratio_at_least_one": 1.0039347591546615,
+      "projected_seconds": 487.7125641445707,
+      "contingency_seconds": 975.4251282891414,
+      "n_fits": 226
+    },
+    {
+      "cell": "joint/h0_p1",
+      "outer_fitting_rows": 12549,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h0_p2",
+      "outer_fitting_rows": 12613,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h0_p3",
+      "outer_fitting_rows": 12572,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h0_p4",
+      "outer_fitting_rows": 12643,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h1_p0",
+      "outer_fitting_rows": 12529,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h1_p1",
+      "outer_fitting_rows": 12563,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h1_p2",
+      "outer_fitting_rows": 12525,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h1_p3",
+      "outer_fitting_rows": 12569,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h1_p4",
+      "outer_fitting_rows": 12542,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h2_p0",
+      "outer_fitting_rows": 12591,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h2_p1",
+      "outer_fitting_rows": 12578,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h2_p2",
+      "outer_fitting_rows": 12571,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h2_p3",
+      "outer_fitting_rows": 12566,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h2_p4",
+      "outer_fitting_rows": 12574,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h3_p0",
+      "outer_fitting_rows": 12691,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0031618053908782,
+      "projected_seconds": 301.55139170421313,
+      "contingency_seconds": 603.1027834084263,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h3_p1",
+      "outer_fitting_rows": 12697,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.00363607619951,
+      "projected_seconds": 301.69395795984514,
+      "contingency_seconds": 603.3879159196903,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h3_p2",
+      "outer_fitting_rows": 12754,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0081416488815114,
+      "projected_seconds": 303.0483373883488,
+      "contingency_seconds": 606.0966747766976,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h3_p3",
+      "outer_fitting_rows": 12724,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0057702948383527,
+      "projected_seconds": 302.33550611018893,
+      "contingency_seconds": 604.6710122203779,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h3_p4",
+      "outer_fitting_rows": 12678,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0021342186388429,
+      "projected_seconds": 301.24249815034386,
+      "contingency_seconds": 602.4849963006877,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h4_p0",
+      "outer_fitting_rows": 12626,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h4_p1",
+      "outer_fitting_rows": 12705,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0042684372776856,
+      "projected_seconds": 301.8840463006877,
+      "contingency_seconds": 603.7680926013754,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h4_p2",
+      "outer_fitting_rows": 12629,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0,
+      "projected_seconds": 300.60095,
+      "contingency_seconds": 601.2019,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h4_p3",
+      "outer_fitting_rows": 12661,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0007904513477195,
+      "projected_seconds": 300.8385604260533,
+      "contingency_seconds": 601.6771208521066,
+      "n_fits": 496
+    },
+    {
+      "cell": "joint/h4_p4",
+      "outer_fitting_rows": 12655,
+      "reference_cell": "joint/h0_p0",
+      "row_ratio_at_least_one": 1.0003161805390879,
+      "projected_seconds": 300.69599417042133,
+      "contingency_seconds": 601.3919883408427,
+      "n_fits": 496
+    }
+  ],
+  "remaining_cells_count": 28,
+  "remaining_fits": 12808,
+  "workers": 3,
+  "threads_per_worker": 2,
+  "nominal_schedule_seconds": 3195.272742285511,
+  "schedule_with_2x_timing_contingency_seconds": 6390.545484571022,
+  "separate_reporting_allowance_seconds": 900,
+  "nominal_fit_completion_if_launched_now_utc": "2026-10-12T08:50:33.118299+00:00",
+  "contingency_fit_plus_reporting_if_launched_now_utc": "2026-10-12T09:58:48.391042+00:00",
+  "cloud_spend_usd": 0,
+  "outcome_access": "Read only completion markers, elapsed/member timing and frozen group membership; no transfer prediction, selection, held score or label read for scheduling.",
+  "limitations": [
+    "One deterministic timed cell per regime; first-cell runtime is not a statistical runtime bound.",
+    "Row-count scaling is a scheduling heuristic and does not model epoch/inner-partition complexity; 2x timing plus15min reporting allowance is contingency, not a guaranteed deadline.",
+    "All28 remaining cells stay in the frozen order; no scope, grid, comparison or cell selection changes.",
+    "User receives an honest11AM London checkpoint if fitting/reporting remains incomplete."
+  ],
+  "source_sha256": {
+    "transfer/assessment_protocol.json": "a5c623104553f8cf3794993633849ef035e6cc2502b7045019fde312176cbf97",
+    "transfer/controller/timing_exit_receipt.json": "50f7f20c978b7713d25467f9f520ceaac29427e010103da7add1e08998b5804e",
+    "transfer/manifest.csv": "10f72322fdf042a847a5e1d1cc32be9c7eb4b07c738cb010db829c11e18120e9",
+    "transfer/hla/h0/completed.json": "5b87becf41bd15f49f1217019472f328a98d012cfde3be058b9ecb2f5ff42810",
+    "transfer/hla/h0/members.json": "9252d660739eceea74113cfbfb8407eaf07df1ce9158509ff0eafcafed9120c5",
+    "transfer/joint/h0_p0/completed.json": "81364cb75ec9951223c925c07b62548cbc66c8397644afc877d499303d58b726",
+    "transfer/joint/h0_p0/members.json": "2ab6a7fff900e1f33187cc949ec73da4590e491623bb7bcf2a9f75828e5c9942"
+  }
+}

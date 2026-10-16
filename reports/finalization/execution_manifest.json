@@ -1,0 +1,912 @@
+{
+  "schema": "hackathon_finalization.1",
+  "started_at_utc": "2026-10-12T12:38:44.635627+00:00",
+  "source_revision": "3cf7443dc4323bcd2c096238f81bd76053346c52",
+  "status": "complete_authorized_computational_work_independent_confirmation_open",
+  "canonical_plan": "reports/NEXT_RESEARCH_PLAN.md",
+  "phase_plan": "reports/finalization/PLAN.md",
+  "user_authorization": "Autonomous hackathon finalisation with Sol/Astra delegation and Modal. User reported $143 remaining and authorized up to $100 additional if needed; suggested Boltz embeddings with ranking loss.",
+  "budget": {
+    "user_reported_remaining_usd": 143,
+    "new_phase_incremental_ceiling_usd": 100,
+    "minimum_reported_reserve_usd": 43,
+    "previous_round2_conservative_accounting_usd": 76.83880887462121,
+    "previous_round2_is_closed_and_separate": true,
+    "new_cloud_settled_usd": null,
+    "new_cloud_reserved_usd": 3,
+    "new_cloud_apps": [],
+    "preflight_provider_app_list": [],
+    "rule": "No paid launch before frozen fit graph, timed pilot/rate-based cost authorization and independent fixed-deadline watchdog; account preemption restarts, no blind retries.",
+    "provider_baseline": "resources/modal_baseline.json",
+    "new_cloud_scope_allocation_usd": 0,
+    "initial_reserve_is_provisional_build_allowance": true,
+    "new_cloud_conservative_carry_usd": 8.60938200305646,
+    "new_cloud_accounting_snapshot": "reports/finalization/resources/final_cloud_closeout.json",
+    "hybrid_additional_cloud_allocation_max_usd": 35,
+    "snapshot_at_utc": "2026-10-13T01:17:49.356356+00:00",
+    "snapshot_is_final_settlement": false,
+    "hybrid_current_cloud_allocation_usd": 0,
+    "new_cloud_closed_liability_usd": 8.60938200305646,
+    "recovery_additional_cloud_allocation_usd": 10,
+    "uncertain_old_reservations_fully_carried_usd": 0.448164,
+    "maximum_inclusive_future_envelope_usd": 35,
+    "maximum_total_commitment_usd": 11.60938200305646,
+    "total_shared_future_reservation_usd": 3
+  },
+  "scientific_scope": {
+    "ranking_loss_followup": "Complete840 fresh fits,480 reused logical MSE fits; report and independent audit passed. R5 delta+.007072 CI[-.005051,+.009829], selector retains MSE all5folds.",
+    "transfer_controls": "Complete: 30 cells, 10830 retained fits, full report and independent audit.",
+    "confirmation": "Feasibility/quote-ready materials only; no assay vendor messages, purchases, invented measurements or original-test rescoring.",
+    "tree_embedding_hybrid_idea": "Complete: 480 scientific fits, 12 separate pilot fits, exact saved-model audit and paired statistics.",
+    "transfer_status": "complete_30_cells_10830_retained_fits_and_full_report",
+    "label_budget": "Complete and independently audited: 120 new fixed-head fits, 20 identity-matched full-budget members reused; primary gap change+.161536 CI[.133321,.204142]. Conditional development sensitivity."
+  },
+  "delivery": {
+    "site": "Complete source-backed local site; browser and evidence links verified; snapshot check passed. No deployment.",
+    "inference": "Complete: 31 locked original-training fits, exact roundtrip predictions, measured cached-head latency; safe NPZ/JSON artifacts. No new accuracy assessment.",
+    "final_docs": "Complete concise scientific report, README, submission brief, recorded environment setup and final source-backed page.",
+    "code_commits": "Validated completed changes only; exclude historical logs/livepartialoutputs.",
+    "validation": "Independent label saved-table/member/subset/CI audit passed; all phase output hashes verified; no local heavy inference; page source check and 36 local evidence paths passed.",
+    "preview": "reports/finalization/preview/label-budget.jpg",
+    "completed_artifact_commit": "8bef075"
+  },
+  "controllers": {
+    "ranking": {
+      "pid": 60954,
+      "keep_awake_pid": 60955,
+      "at_utc": "2026-10-12T13:03:16.228423+00:00",
+      "protocol_hash": "32d3f8f1908bd5bb3df81ed205c61771b567d2e349f92ebfa199da8111b0ef8d",
+      "max_workers": 2,
+      "threads_per_worker": 2,
+      "deadline_utc": "2026-10-12T15:03:16.219869+00:00",
+      "status": "complete_report_and_audit_passed"
+    },
+    "transfer_smoke": {
+      "pid": 64511,
+      "keep_awake_pid": 64512,
+      "at_utc": "2026-10-12T13:12:39.393920+00:00",
+      "scope": "transfer_smoke",
+      "allocation_usd": 2,
+      "profile": "a-cheparukhin",
+      "app_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+      "guard": {
+        "pid": 68543,
+        "keep_awake_pid": 68544,
+        "app_id": "ap-Yuu3hNUiQFK7HgWVV1Ubo3",
+        "authorization_sha256": "c8afe32f439daf8e556041e1ca2ce308ace8143b8f14c6dc9b5dd74caa13d123",
+        "at_utc": "2026-10-12T13:13:36.805998+00:00",
+        "deadline_utc": "2026-10-12T13:42:39.393920+00:00"
+      },
+      "status": "calls_complete_app_stopped_missing_driver_exit_watchdog_shutdown_repair"
+    },
+    "transfer_main": {
+      "pid": 89292,
+      "keep_awake_pid": 89293,
+      "at_utc": "2026-10-12T13:32:19.924192+00:00",
+      "scope": "transfer_main",
+      "cumulative_allocation_usd": 65,
+      "prior_charges_usd": 1.3895622678414123,
+      "profile": "a-cheparukhin",
+      "wall_seconds": 93600,
+      "guard": {
+        "pid": 89617,
+        "keep_awake_pid": 89618,
+        "app_id": "ap-RrFfbDvriD4rehaba5x7CA",
+        "authorization_sha256": "79423a9d60e8559049ac50cb3263fb1d898c1c230e21e925f330088c55f41e45",
+        "at_utc": "2026-10-12T13:32:55.269490+00:00",
+        "deadline_utc": "2026-10-13T15:32:19.924192+00:00"
+      },
+      "app_id": "ap-RrFfbDvriD4rehaba5x7CA",
+      "progress_checkpoint": {
+        "at_utc": "2026-10-12T14:17:56.041849+00:00",
+        "completed_cells": 11,
+        "total_cells": 30,
+        "guard_phase": "monitoring",
+        "calls": 540,
+        "preemption_count": 2,
+        "cumulative_commitment_usd": 3.82760798103261
+      },
+      "status": "interrupted_no_exit_app_closed"
+    },
+    "hybrid_pilot": {
+      "pid": 11628,
+      "keep_awake_pid": 11629,
+      "at_utc": "2026-10-12T14:15:46.316112+00:00",
+      "phase": "pilot",
+      "mode": "queue",
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "/Users/cheparukhin/ai_science_hack/scripts/final_hybrids_pipeline.py",
+        "queue",
+        "--out-dir",
+        "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids",
+        "--approved",
+        "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/hybrid_pilot/controller_authorization.json",
+        "--phase",
+        "pilot"
+      ],
+      "authorization_sha256": "0348033e89cbb78a3fc8a43ebf359e769f6bfd401a116cc5671c31763176cb41",
+      "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+      "queue_deadline_utc": "2026-10-14T14:15:17.567539+00:00",
+      "fit_wall_seconds": 7200,
+      "cloud_spend_usd": 0,
+      "status": "interrupted_while_waiting_no_fits_no_exit",
+      "operations": "reports/finalization/hybrids/OPERATIONS.md",
+      "launch_gate": "reports/finalization/resources/hybrid_pilot/launch_gate.json"
+    },
+    "transfer_recovery": {
+      "additional_cloud_spend_usd": 0,
+      "at_utc": "2026-10-12T15:13:27.696866+00:00",
+      "authorization": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/authorization.json",
+        "sha256": "b8b8e5660332a1677d5737a7cd454457df64ce019dcd018e4b4d027b0ee873e7"
+      },
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "/Users/cheparukhin/ai_science_hack/scripts/final_transfer_recovery.py",
+        "run",
+        "--approved",
+        "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery/authorization.json"
+      ],
+      "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+      "keep_awake_pid": 37823,
+      "max_workers": 3,
+      "new_fits": 4800,
+      "pid": 37822,
+      "preserved_cells": 18,
+      "remaining_cells": 12,
+      "threads_each": 2,
+      "status": "failed_sigterm_cleanup_confirmed",
+      "state": "reports/finalization/transfer_recovery/controller/state.json"
+    },
+    "hybrid_recovery_pilot": {
+      "pid": 44698,
+      "keep_awake_pid": 44699,
+      "at_utc": "2026-10-12T15:23:52.446369+00:00",
+      "command": [
+        "/Users/cheparukhin/ai_science_hack/.venv/bin/python",
+        "/Users/cheparukhin/ai_science_hack/scripts/final_hybrids_pipeline.py",
+        "queue",
+        "--out-dir",
+        "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery",
+        "--approved",
+        "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/hybrid_recovery_pilot/controller_authorization.json",
+        "--phase",
+        "pilot"
+      ],
+      "authorization_sha256": "3acfd2df988542381cbeb4d3277edf59abf4e6a1f799ebbab885d4876dde4c89",
+      "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+      "queue_deadline_utc": "2026-10-14T14:15:17.567539+00:00",
+      "fit_wall_seconds": 7200,
+      "cloud_spend_usd": 0,
+      "scope_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery",
+      "predecessor_controller_pid": 37822,
+      "status": "terminated_while_waiting_no_fits",
+      "operations": "reports/finalization/RECOVERY_OPERATIONS.md"
+    },
+    "transfer_durable": {
+      "additional_cloud_spend_usd": 0,
+      "at_utc": "2026-10-12T16:09:30.276424+00:00",
+      "attempt": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2/controller/attempt.json",
+        "sha256": "bff6f68ebd76c1c4ecf7c61b796348ae83834283a9f8bd09c7f669e6c21e0797"
+      },
+      "authorization": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/transfer_recovery_v2/authorization.json",
+        "sha256": "d00771c31eba4b3f4d60db72e27af7ec07dc2b842113a1dfde06c2038830465c"
+      },
+      "automatic_retry": false,
+      "bootstrap_exit_code": 0,
+      "controller_plist": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_durable/controller.plist",
+        "sha256": "98f5036c3dcc7c8015a9bb5c2c6fdeae3f1297b309eb9ecd3c874da78d1c5241"
+      },
+      "controller_started_at_utc": "2026-10-12T16:09:00.940737+00:00",
+      "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+      "domain": "gui/501",
+      "keep_alive": false,
+      "keep_awake_label": "org.pepstab.transfer-recovery-v2-awake-20261012",
+      "keep_awake_plist": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_durable/keep_awake.plist",
+        "sha256": "21b5d0bffdc53b914adba1b4bf61957e297efac7e12a25bdb161575de650c485"
+      },
+      "label": "org.pepstab.transfer-recovery-v2-20261012",
+      "launch_plan": {
+        "path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/transfer_durable/launch_plan.json",
+        "sha256": "9a7f4a11cbdc8322568d2ac8f9ace37eb1f3a5a167ac733bae2624129db172f7"
+      },
+      "max_workers": 3,
+      "new_fits": 4800,
+      "observed_ppid": 1,
+      "observed_runs": 1,
+      "pid": 59308,
+      "recurring_triggers": false,
+      "schema": "final_transfer_launchd_owner.1",
+      "threads_each": 2,
+      "keep_awake_pid": 59464,
+      "status": "failed_environment_deleted_workers_stopped_launchd_removed",
+      "state": "reports/finalization/transfer_recovery_v2/controller/state.json",
+      "operations": "reports/finalization/RECOVERY_OPERATIONS.md"
+    },
+    "transfer_cloud_recovery": {
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920",
+      "authorization": {
+        "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "sha256": "9479c2bd877b23a0f58f046fcb2797ecc4ef14b5b980333dd6aad989d702c5f7"
+      },
+      "app_id": "ap-GwmNX2i77HHXKL8r20lzM9",
+      "sandbox_id": "sb-01M4RRW8TNY5H1WRJN30PXVJF7",
+      "volume_id": "vo-1p9WI9DhfOZeHRynFPqXsR",
+      "status": "complete_audited_downloaded_cloud_closed",
+      "created_at_utc": "2026-10-12T19:19:21.246161+00:00",
+      "guard_pid": 23909,
+      "guard_label": "org.pepstab.cloud-recovery-watch-20261012-1920",
+      "keep_awake_label": "org.pepstab.cloud-recovery-awake-20261012-1920",
+      "launcher_pid": 23986,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-12T23:58:00+00:00",
+      "provider_stop_utc": "2026-10-13T00:00:00+00:00",
+      "image_id": "im-Epc3H2RdNAgJSwtXBYMCfy",
+      "max_workers": 2,
+      "numerical_threads": 2,
+      "n_fits": 2000,
+      "scientific_completion_claimed": true,
+      "n_fits_completed": 2000,
+      "canonical_targets": {
+        "path": "reports/finalization/cloud/canonical_training_targets.json",
+        "sha256": "f5a609a98fb7dc607242bcbe7b31db503f19a673c62a7de6398cd30b33df0b70"
+      },
+      "completed_recovery_cells": [
+        "joint/h4_p0",
+        "joint/h4_p1",
+        "joint/h4_p2",
+        "joint/h4_p3",
+        "joint/h4_p4"
+      ],
+      "total_completed_cells": 30,
+      "full_semantic_audit_pending": false,
+      "progress_checkpoint": {
+        "at_utc": "2026-10-12T20:11:21.240606+00:00",
+        "provider_returncode": null,
+        "active_job": "transfer_semantic_audit",
+        "audit_started_at_utc": "2026-10-12T20:07:55.607956+00:00",
+        "guard_fresh": true
+      },
+      "volume_deleted": true,
+      "app_stopped": true,
+      "guard_stopped": true,
+      "closeout": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/closeout.json",
+      "certificate": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/phase_certificate.json"
+    },
+    "transfer_cloud_recovery_1836_closed": {
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836",
+      "authorization": {
+        "path": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/authorization.json",
+        "sha256": "f3e405f013521c24f7a19ca1db11f0b61cfe90056597f6cb37a03d8bb07bb4bb"
+      },
+      "app_id": "ap-VscycuTMnHPJipKWIH9xta",
+      "sandbox_id": "sb-01M4RPBV4S79S665WJQ1N85ZM7",
+      "volume_id": "vo-t4GBVVV1RihMTmyXIlRwYi",
+      "status": "failed_before_fitting_closed",
+      "created_at_utc": "2026-10-12T18:35:25.794600+00:00",
+      "guard_pid": 16757,
+      "guard_label": "org.pepstab.cloud-recovery-watch-20261012-1836",
+      "keep_awake_label": "org.pepstab.cloud-recovery-awake-20261012-1836",
+      "launcher_pid": 16902,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-12T23:58:00+00:00",
+      "provider_stop_utc": "2026-10-13T00:00:00+00:00",
+      "image_id": "im-Epc3H2RdNAgJSwtXBYMCfy",
+      "max_workers": 2,
+      "numerical_threads": 2,
+      "n_fits": 2000,
+      "scientific_completion_claimed": false,
+      "progress_checkpoint": {
+        "at_utc": "2026-10-12T18:40:53.978734+00:00",
+        "provider_returncode": null,
+        "provider_identity_and_tags_match": true,
+        "stage": "input_verification_before_fit_dispatch",
+        "remote_receipts_present": [
+          "startup.json",
+          "release.json"
+        ],
+        "guard_pid": 16757,
+        "guard_fresh": true,
+        "guard_lease_sequence": 30,
+        "conservative_elapsed_resource_usd": 0.09343829503870009,
+        "changes_or_relaunches": false
+      },
+      "n_fits_completed": 0,
+      "provider_returncode": 1,
+      "volume_deleted": true,
+      "guard_stopped": true,
+      "launchd_registrations_removed": true,
+      "closed_at_utc": "2026-10-12T19:14:28.956358+00:00",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1836/closeout.json"
+    },
+    "transfer_report_cloud": {
+      "status": "complete_audited_downloaded_cloud_closed",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025",
+      "authorization": {
+        "path": "reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/authorization.json",
+        "sha256": "c0ae532220b71b4a7c92873e29766509388ba7c4a339dde9979e8a2217a95bd8"
+      },
+      "app_id": "ap-1QKtm1LAixAH5U5Igmzrdn",
+      "sandbox_id": "sb-01M4RWTTN48RP2XCW558BD6TEF",
+      "volume_id": "vo-qFq0MHRC3Uy9YjqNmwHcQJ",
+      "guard_pid": 36660,
+      "launcher_pid": 36766,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-13T04:30:00+00:00",
+      "provider_stop_utc": "2026-10-13T04:32:00+00:00",
+      "resources": {
+        "cpu_cores": 2,
+        "memory_mib": 8192,
+        "numerical_threads": 2,
+        "max_workers": 1
+      },
+      "cap_usd": 5,
+      "scientific_completion_claimed": true,
+      "certificate": "reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/phase_certificate.json",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/closeout.json",
+      "volume_deleted": true,
+      "app_stopped": true,
+      "guard_stopped": true
+    },
+    "hybrid_pilot_cloud": {
+      "status": "complete_audited_downloaded_cloud_closed",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025",
+      "authorization": {
+        "path": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/authorization.json",
+        "sha256": "dc45c2b453a017c9da17f74005c8d44ac5a19d331fc9ebf456a4d0d9dab06cb6"
+      },
+      "app_id": "ap-qO3FPwfYZJ4ydcOAldUHms",
+      "sandbox_id": "sb-01M4RWTV1ZC0V93MFF0N052DZ9",
+      "volume_id": "vo-1ru7LYJCjHIuMJMaRSytr6",
+      "guard_pid": 36664,
+      "launcher_pid": 36764,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-12T22:30:00+00:00",
+      "provider_stop_utc": "2026-10-12T22:32:00+00:00",
+      "resources": {
+        "cpu_cores": 2,
+        "memory_mib": 8192,
+        "numerical_threads": 2,
+        "max_workers": 1
+      },
+      "cap_usd": 2,
+      "scientific_completion_claimed": false,
+      "engineering_fits_completed": 12,
+      "scientific_fits_completed": 0,
+      "progress_observed_at_utc": "2026-10-12T20:35:26+00:00",
+      "R0_pilot_fit_seconds": 76.38778549799997,
+      "R0_pilot_peak_rss_mib": 2542.890625,
+      "held_scores_computed": false,
+      "certificate": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/phase_certificate.json",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/closeout.json",
+      "volume_deleted": true,
+      "app_stopped": true,
+      "guard_stopped": true,
+      "saved_model_replay_passed": true
+    },
+    "hybrid_main_cloud": {
+      "status": "complete_audited_downloaded_cloud_closed",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050",
+      "authorization": {
+        "path": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/authorization.json",
+        "sha256": "8562ad472f4563106ba39312c730716c11d3a290e7fc9e02f8407308a807490c"
+      },
+      "sandbox_id": "sb-01M4RY4YCXH56DDWFCZGN6Y7KX",
+      "app_id": "ap-wmOBffnJfZWFATGFardDin",
+      "volume_id": "vo-NlgR5DEpQf5cc0Ta3tZRKg",
+      "guard_pid": 40012,
+      "launcher_pid": 40066,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-13T00:55:00+00:00",
+      "provider_stop_utc": "2026-10-13T00:57:00+00:00",
+      "resources": {
+        "cpu_cores": 4,
+        "memory_mib": 16384,
+        "numerical_threads": 2,
+        "max_workers": 2
+      },
+      "cap_usd": 20,
+      "n_fits": 480,
+      "scientific_completion_claimed": true,
+      "runtime_forecast": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/runtime_forecast.json",
+      "progress_observation": {
+        "observed_at_utc": "2026-10-12T21:35:52.645663+00:00",
+        "provider_returncode": null,
+        "identity_match": true,
+        "remote_receipts": [
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/attempt.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_000.exit.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_000.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_000.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_000.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_001.exit.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_001.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_001.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_001.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_002.exit.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_002.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_002.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_002.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_003.exit.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_003.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_003.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_003.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_004.exit.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_004.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_004.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_004.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_005.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_005.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_005.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_006.intent.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_006.log",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/child_006.owner.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/release.json",
+          "reports/finalization/cloud/remote/hybrid-main-20261012-2050/startup.json"
+        ],
+        "child_records": [
+          {
+            "job": "fold_0/R0",
+            "started_at_utc": "2026-10-12T21:04:38.970456+00:00",
+            "finished_at_utc": "2026-10-12T21:12:10.943101+00:00",
+            "exit_code": 0,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_0/R0",
+            "started_at_utc": "2026-10-12T21:04:38.970456+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_0/R5",
+            "started_at_utc": "2026-10-12T21:04:40.233422+00:00",
+            "finished_at_utc": "2026-10-12T21:15:36.314696+00:00",
+            "exit_code": 0,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_0/R5",
+            "started_at_utc": "2026-10-12T21:04:40.233422+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_1/R0",
+            "started_at_utc": "2026-10-12T21:12:13.707533+00:00",
+            "finished_at_utc": "2026-10-12T21:20:59.350102+00:00",
+            "exit_code": 0,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_1/R0",
+            "started_at_utc": "2026-10-12T21:12:13.707533+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_1/R5",
+            "started_at_utc": "2026-10-12T21:15:45.348028+00:00",
+            "finished_at_utc": "2026-10-12T21:26:54.271855+00:00",
+            "exit_code": 0,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_1/R5",
+            "started_at_utc": "2026-10-12T21:15:45.348028+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_2/R0",
+            "started_at_utc": "2026-10-12T21:21:01.257193+00:00",
+            "finished_at_utc": "2026-10-12T21:28:43.991820+00:00",
+            "exit_code": 0,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_2/R0",
+            "started_at_utc": "2026-10-12T21:21:01.257193+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_2/R5",
+            "started_at_utc": "2026-10-12T21:26:55.889718+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          },
+          {
+            "job": "fold_3/R0",
+            "started_at_utc": "2026-10-12T21:28:46.185755+00:00",
+            "finished_at_utc": null,
+            "exit_code": null,
+            "n_fits": null,
+            "status": null,
+            "error": null
+          }
+        ]
+      },
+      "completed_jobs": [
+        {
+          "fold": 0,
+          "representation": "R0",
+          "n_fits": 48
+        },
+        {
+          "fold": 0,
+          "representation": "R5",
+          "n_fits": 48
+        },
+        {
+          "fold": 1,
+          "representation": "R0",
+          "n_fits": 48
+        },
+        {
+          "fold": 1,
+          "representation": "R5",
+          "n_fits": 48
+        },
+        {
+          "fold": 2,
+          "representation": "R0",
+          "n_fits": 48
+        },
+        {
+          "fold": 2,
+          "representation": "R5",
+          "n_fits": 48
+        },
+        {
+          "fold": 3,
+          "representation": "R0",
+          "n_fits": 48
+        },
+        {
+          "fold": 3,
+          "representation": "R5",
+          "n_fits": 48
+        },
+        {
+          "fold": 4,
+          "representation": "R0",
+          "n_fits": 48
+        },
+        {
+          "fold": 4,
+          "representation": "R5",
+          "n_fits": 48
+        }
+      ],
+      "verified_completed_job_fits": 480,
+      "progress_checked_at_utc": "2026-10-12T21:36:22.854248+00:00",
+      "full_saved_model_statistical_audit_pending": false,
+      "provider_returncode": 0,
+      "finished_at_utc": "2026-10-12T21:56:50.924885+00:00",
+      "elapsed_fit_seconds": 3132.497224694,
+      "guard_stopped": true,
+      "launchd_registrations_removed": true,
+      "verified_download_session_id": 15589,
+      "download_started_at_utc": "2026-10-12T22:05:43+00:00",
+      "download_max_seconds": 3600,
+      "main_outputs_downloaded": true,
+      "verified_download_pid": 78642,
+      "volume_deleted": true,
+      "app_stopped": true,
+      "certificate": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/phase_certificate.json",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/closeout.json"
+    },
+    "hybrid_report_cloud": {
+      "status": "complete_audited_verified_download_cloud_closed",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020",
+      "authorization_sha256": "dac98e3de1ea5ba62046b37045283a038dcc5f90a5a8b69e56dcae982ecd8695",
+      "app_id": "ap-tXZim3RKtP1MEpna5Nmgxj",
+      "volume_id": "vo-A71FrGIxlb9M6L3hwubYev",
+      "sandbox_id": "sb-01M4S9VY6NV4WYNP3JHCNNZ98N",
+      "guard_pid": 27319,
+      "launcher_pid": 27905,
+      "launcher_exit_code": 0,
+      "guard_label": "org.pepstab.hybrid-report-watch-20261013-0020",
+      "cap_usd": 5,
+      "work_stop_utc": "2026-10-13T06:45:00+00:00",
+      "provider_stop_utc": "2026-10-13T06:47:00+00:00",
+      "scientific_fits": 0,
+      "backend": "Record-nominated SkylakeX/OpenBLAS2threads, checked before scientific replay",
+      "report_only_amendments": [
+        "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+        "reports/finalization/cloud/ensemble_replay_amendment.json",
+        "reports/finalization/cloud/backend_replay_amendment.json"
+      ],
+      "provider_returncode": 0,
+      "app_stopped": true,
+      "volume_deleted": true,
+      "guard_stopped": true,
+      "launchd_registrations_removed": true,
+      "certificate": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/phase_certificate.json",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/closeout.json",
+      "coverage_audit": "reports/finalization/hybrids_cloud_v1/coverage_audit.json",
+      "scientific_completion_claimed": true,
+      "scalar_checks": 328,
+      "scalar_max_ulp": 0,
+      "all_held_predictions_exact": true
+    },
+    "hybrid_report_cloud_failed_2240": {
+      "status": "failed_pilot_replay_closed_no_statistics",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2240",
+      "authorization_sha256": "04e42d79a1619da900d432bc1941c50153bab4f13b7057edb22fc391c6a979ea",
+      "cap_usd": 5,
+      "work_stop_utc": "2026-10-13T06:45:00+00:00",
+      "provider_stop_utc": "2026-10-13T06:47:00+00:00",
+      "new_fits": 0,
+      "app_id": "ap-i2lNOkyEV6agaShswBHHyi",
+      "volume_id": "vo-B3aQeMNIW9UAWUW2LjKfSx",
+      "input_files": 5007,
+      "input_bytes": 3038435218,
+      "sandbox_id": "sb-01M4S4C9MERKK9QCX47E74XE2H",
+      "guard_pid": 95134,
+      "launcher_pid": 95169,
+      "launcher_exit_code": 0,
+      "guard_label": "org.pepstab.hybrid-report-watch-20261012-2240",
+      "resources": {
+        "cpu_cores": 2,
+        "memory_mib": 8192,
+        "numerical_threads": 2,
+        "max_workers": 1
+      },
+      "provider_returncode": 1,
+      "app_stopped": true,
+      "volume_deleted": true,
+      "guard_stopped": true,
+      "failure_closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2240/failure_closeout.json"
+    },
+    "hybrid_report_cloud_failed_2320": {
+      "status": "failed_ensemble_replay_closed_before_statistics",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2320",
+      "authorization_sha256": "8ca687d2b9c9bdd567df29283542919cd6916fe05ae337816dd9bbf2c9e32c61",
+      "app_id": "ap-s6KYerBFivGn7WuTmBNVuM",
+      "volume_id": "vo-4mrvdhw2Wb3LmEKHGib6q1",
+      "cap_usd": 5,
+      "work_stop_utc": "2026-10-13T06:45:00+00:00",
+      "provider_stop_utc": "2026-10-13T06:47:00+00:00",
+      "scientific_fits": 0,
+      "report_only_amendment": "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+      "sandbox_id": "sb-01M4S6V5S2HAVBCCAR3MR9Z37K",
+      "guard_pid": 4035,
+      "launcher_pid": 4097,
+      "launcher_exit_code": 0,
+      "guard_label": "org.pepstab.hybrid-report-watch-20261012-2320",
+      "progress_observation": {
+        "at_utc": "2026-10-12T23:27:57.002936+00:00",
+        "provider_returncode": null,
+        "remote_files": [
+          "reports/finalization/cloud/remote/hybrid-report-20261012-2320/release.json",
+          "reports/finalization/cloud/remote/hybrid-report-20261012-2320/startup.json"
+        ],
+        "records": []
+      },
+      "provider_returncode": 1,
+      "app_stopped": true,
+      "volume_deleted": true,
+      "guard_stopped": true,
+      "failure_closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2320/failure_closeout.json"
+    },
+    "hybrid_report_cloud_failed_2350": {
+      "status": "failed_pilot_exact_replay_closed_before_statistics",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2350",
+      "authorization_sha256": "d427f4af861f526a575fa96142a7f47f2356fe27e041435f62b1e1f2a399e91b",
+      "app_id": "ap-uzE2ZhxzJNoxj38JzbBXMT",
+      "volume_id": "vo-6LW5fTKXPxWOFpJNT0ceY2",
+      "sandbox_id": "sb-01M4S85N57N520133XCE0H6B6Y",
+      "guard_pid": 10871,
+      "launcher_pid": 10946,
+      "launcher_exit_code": 0,
+      "guard_label": "org.pepstab.hybrid-report-watch-20261012-2350",
+      "cap_usd": 5,
+      "work_stop_utc": "2026-10-13T06:45:00+00:00",
+      "provider_stop_utc": "2026-10-13T06:47:00+00:00",
+      "scientific_fits": 0,
+      "report_only_amendments": [
+        "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+        "reports/finalization/cloud/ensemble_replay_amendment.json"
+      ],
+      "progress_observation": {
+        "at_utc": "2026-10-12T23:47:01.374311+00:00",
+        "sandbox_id": "sb-01M4S85N57N520133XCE0H6B6Y",
+        "returncode": null,
+        "tags": {
+          "authorization_sha256": "d427f4af861f526a575fa96142a7f47f2356fe27e041435f62b1e1f2a399e91b",
+          "phase": "hybrid_report",
+          "phase_nonce": "hybrid-report-20261012-2350"
+        }
+      },
+      "provider_returncode": 1,
+      "app_stopped": true,
+      "volume_deleted": true,
+      "guard_stopped": true,
+      "failure_closeout": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2350/failure_closeout.json"
+    },
+    "label_efficiency_cloud": {
+      "status": "complete_audited_verified_download_cloud_closed",
+      "phase_directory": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055",
+      "authorization_sha256": "d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6",
+      "sandbox_id": "sb-01M4SC2YAXV4Z96XY8M5Z3AVF8",
+      "app_id": "ap-PlSRglCk86O6RZPcvN43hG",
+      "volume_id": "vo-AvRCgkVpPihf94kxbJ29lz",
+      "guard_pid": 38348,
+      "launcher_pid": 38399,
+      "launcher_exit_code": 0,
+      "work_stop_utc": "2026-10-13T01:55:00+00:00",
+      "provider_stop_utc": "2026-10-13T01:57:00+00:00",
+      "cap_usd": 10,
+      "new_fits": 120,
+      "reused_audited_members": 20,
+      "cpu_cores": 2,
+      "memory_mib": 8192,
+      "max_workers": 1,
+      "numerical_threads": 2,
+      "scientific_completion_claimed": true,
+      "provider_returncode": 0,
+      "guard_stopped": true,
+      "download_exec_session": 95131,
+      "download_max_seconds": 3600,
+      "provider_metered_snapshot_usd": 0.05160619,
+      "app_stopped": true,
+      "volume_deleted": true,
+      "launchd_registrations_removed": true,
+      "certificate": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/phase_certificate.json",
+      "closeout": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/closeout.json",
+      "download_finished": true,
+      "output_files": 491,
+      "output_bytes": 74821701,
+      "coverage_audit": "reports/finalization/label_efficiency/coverage_audit.json",
+      "conservative_compute_carry_usd": 0.1
+    }
+  },
+  "delegation": {
+    "scientific_design": "Astra",
+    "bounded_implementation": "6.1Sol"
+  },
+  "continuation": {
+    "automation_id": "continue-round-two-research",
+    "policy": "Quiet on healthy unchanged state; notify meaningful milestones/failure/budget or completion; pause when finalised.",
+    "user_canceled_handoff": true,
+    "automation_still_active": false,
+    "status": "PAUSED",
+    "reason": "All achievable authorized science, reporting and temporary cloud closure complete."
+  },
+  "updated_at_utc": "2026-10-13T01:20:34.081397+00:00",
+  "recovery": {
+    "amendment": "reports/finalization/resources/transfer_main/interruption_20261012/implementation_amendment.json",
+    "closure": "reports/finalization/resources/transfer_main/interruption_20261012/closure.json",
+    "new_output_root": "reports/finalization/transfer_cloud_recovery",
+    "known_completed_fits_after_success_including_discarded": 13409,
+    "unknown_remote_attempts": 12,
+    "deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+    "source_of_interruption": "User confirmed restarting/updating Codex; app-server stop/restart matches localSIGTERM.",
+    "status": "complete_audited_downloaded_cloud_closed",
+    "operations": "reports/finalization/RECOVERY_OPERATIONS.md",
+    "preserved_cells_audit": "reports/finalization/resources/transfer_main/interruption_20261012/preserved_cells_audit.json",
+    "validation": {
+      "combined_tests": 117,
+      "independent_review": "Astra scientific/provenance review passed after complete-cache-to-cell linkage",
+      "original_scientific_source_unchanged": true
+    },
+    "second_interruption": "reports/finalization/resources/transfer_recovery/interruption_20261012_153054/closure.json",
+    "discarded_recorded_completed_fits": 2579,
+    "one_shot_launchd_smoke": "reports/finalization/resources/durable_engineering/audit.json",
+    "active_controller_pid": null,
+    "source_commit": "301c64a",
+    "third_interruption": "reports/finalization/resources/transfer_durable/interruption_20261012_172654/closure.json"
+  },
+  "hybrid_v3": {
+    "output_root": "reports/finalization/hybrids_recovery_v2",
+    "protocol_sha256": "d5e5560f11e779b8967f55e252c1187cbbfb6779e570273c78ba25ea807cf5d8",
+    "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+    "predecessor_path": "/Users/cheparukhin/ai_science_hack/reports/finalization/resources/hybrid_durable_pilot/predecessor.json",
+    "status": "historical_local_operational_reference_not_launched_superseded_by_modal_preference",
+    "pipeline_tests": 63
+  },
+  "compute_placement_preference": {
+    "recorded_at_utc": "2026-10-12T16:16:47.799375+00:00",
+    "user_instruction": "In the future please run compute-heavy jobs on Modal in order to not overwhelm local resource on Mac",
+    "future_heavy_execution": "Modal",
+    "local_role": "Orchestration, editing and lightweight checks",
+    "already_running_transfer": "Continue existing bounded authorization; user did not request stopping it",
+    "upcoming_hybrids": "Do not launch local v3 pilot/main; cloud operational amendment and guarded resource authorization required",
+    "incremental_total_ceiling_usd": 100,
+    "previously_discussed_hybrid_cloud_ceiling_usd": 35,
+    "new_cloud_launch_authorized_by_this_record": false
+  },
+  "cloud_transition": {
+    "status": "all_compute_and_temporary_finalization_storage_closed",
+    "operations": "reports/finalization/cloud/CONTINUATION.md",
+    "design": "reports/finalization/cloud/OPERATIONS_DESIGN.md",
+    "hybrid_output_root": "reports/finalization/hybrids_cloud_v1",
+    "scientific_protocol_unchanged": true,
+    "scientific_copy_validation": "reports/finalization/cloud/scientific_copy_validation.json",
+    "future_phase_names": [
+      "transfer_report",
+      "hybrid_pilot",
+      "hybrid_main",
+      "hybrid_report"
+    ],
+    "proposed_all_in_envelope_usd": 35,
+    "current_new_allocation_usd": 0,
+    "cloud_resources_created": true,
+    "transfer_complete_cells_snapshot": 30,
+    "local_heavy_work_after_current_transfer": false,
+    "user_priority": "Scientific results and final delivery; stop adding nonessential execution infrastructure. Finish only the minimal reviewed cloud transition.",
+    "source_commit": "e5be689",
+    "validation": "reports/finalization/cloud/validation.json",
+    "amendment": "reports/finalization/cloud/implementation_amendment.json",
+    "lightweight_checks_passed": 172,
+    "phase_directory": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055",
+    "app_id": "ap-PlSRglCk86O6RZPcvN43hG",
+    "volume_id": "vo-AvRCgkVpPihf94kxbJ29lz",
+    "authorization_sha256": "d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6",
+    "sandbox_created": true,
+    "work_deadline_utc": "2026-10-13T01:55:00+00:00",
+    "original_deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+    "recovery_scientific_fits": 2000,
+    "preserved_scientific_fits": 8830,
+    "maximum_combined_commitment_usd": 11.60938200305646
+  },
+  "current_finalization_accounting": {
+    "closed_conservative_compute_usd": 8.60938200305646,
+    "shared_35_envelope_settled_compute_usd": 1.95,
+    "pending_main_cap_usd": 0,
+    "pending_hybrid_report_cap_usd": 0,
+    "overhead_reserved_usd": 3,
+    "maximum_closed_plus_pending_usd": 11.60938200305646,
+    "user_additional_ceiling_usd": 100,
+    "not_live_balance": true,
+    "pending_label_inclusive_cap_usd": 0,
+    "cloud_closeout": "reports/finalization/resources/final_cloud_closeout.json"
+  },
+  "additional_science_authorization": {
+    "user_requested_challenge_alignment": true,
+    "budget_ceiling_usd": 100,
+    "budget_interpretation": "Keep the same100USD additional ceiling; new message is not treated as doubling it.",
+    "potential_followup": "Completed and audited; no further study planned.",
+    "source_brief": "Serova Protein Engineering Track Challenge.pdf",
+    "implementation_commit": "3e1b378",
+    "implementation_review": "Astra passed; five synthetic checks including exact member averaging and saved-state prediction replay; no freeze or launch until successful hybrid audit.",
+    "implementation": "scripts/final_label_efficiency.py",
+    "hybrid_predecessor_ready": true,
+    "cloud_authorization": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/authorization.json"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "status": "attempted",
+  "pid": 8,
+  "runtime": {
+    "python": "3.12.12",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "threadpoolctl": "3.7.0"
+    },
+    "numerical_libraries": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "prefix": "libscipy_openblas",
+        "version": "0.3.34.106.0",
+        "num_threads": 2,
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "prefix": "libscipy_openblas",
+        "version": "0.3.31.dev",
+        "num_threads": 2,
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "prefix": "libgomp",
+        "version": null,
+        "num_threads": 2,
+        "threading_layer": null,
+        "architecture": null
+      }
+    ]
+  },
+  "protocol_hash": "73c9215a258f12e929c283512401e7e8b8de952ab6b639088123c05009ccf40b",
+  "authorization_sha256": "d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6",
+  "new_fits": 120,
+  "no_retry": true
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "transfer_report",
+  "phase_nonce": "transfer-report-20261012-2025",
+  "authorization_sha256": "c0ae532220b71b4a7c92873e29766509388ba7c4a339dde9979e8a2217a95bd8",
+  "input_manifest_sha256": "78c726bd41d0f8786d2f55df4d31edc058020a4b795a2d1c68f2c8d48236aa01",
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T20:28:31.142141+00:00",
+  "sandbox_id": "sb-01M4RWTTN48RP2XCW558BD6TEF",
+  "app_id": "ap-1QKtm1LAixAH5U5Igmzrdn",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-qFq0MHRC3Uy9YjqNmwHcQJ"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 0,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-12T20:41:06.111739+00:00",
+  "elapsed_fit_seconds": 554.723933137,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/transfer-report-20261012-2025/output_manifest.json",
+    "sha256": "0edd6b18273eb8c086829ab676424add2a65b56ea67922f3762263244aacb448"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "transfer_report",
+      "axes": [
+        null,
+        null
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-qFq0MHRC3Uy9YjqNmwHcQJ/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-qFq0MHRC3Uy9YjqNmwHcQJ/reports/finalization/resources/cloud_sandboxes/transfer-report-20261012-2025/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-qFq0MHRC3Uy9YjqNmwHcQJ/scripts/final_transfer_report.py",
+        "--",
+        "--out-dir",
+        "/__modal/volumes/vo-qFq0MHRC3Uy9YjqNmwHcQJ/reports/finalization/transfer_cloud_recovery"
+      ],
+      "intent_at_utc": "2026-10-12T20:31:51.388509+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-12T20:31:51.913080+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:41:03.873538+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 36660,
+    "last_sequence": 68,
+    "expires_at_utc": "2026-10-12T20:42:27.156164+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

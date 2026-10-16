@@ -1,0 +1,105 @@
+baseline,candidate,comparison_kind,interpretation
+sequence_selector,mlp_log,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,mlp_centred,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,mlp_centred,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,tree_log,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,tree_log,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,tree_centred,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,tree_centred,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,pairlogit,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,pairlogit,sequence_selected_control,component versus competitive inner-selected sequence
+mlp_log,sequence_selector,sequence_reference,corrected sequence procedure versus original recipe
+sequence_selector,embedding_selector,primary,inner-selected embedding-or-original procedure versus competitive sequence
+mlp_log,embedding_selector,embedding_original_reference,inner-selected embedding-or-original procedure versus original
+mlp_log,R0_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R0_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R0_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R0_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R1_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R1_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R1_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R1_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R2_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R2_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R2_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R2_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R3_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R3_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R3_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R3_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R4_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R4_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R4_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R4_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_shuffled_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_shuffled_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_shuffled_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_shuffled_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_position9x34_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_position9x34_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_position9x34_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_position9x34_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R3_pooled_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R3_pooled_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R3_pooled_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R3_pooled_mlp,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_position9x34_pooled_ridge,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_position9x34_pooled_ridge,embedding_selected_control,declared component versus competitive sequence
+mlp_log,R5_position9x34_pooled_mlp,embedding_original_reference,declared component versus original sequence
+sequence_selector,R5_position9x34_pooled_mlp,embedding_selected_control,declared component versus competitive sequence
+R0_ridge,R1_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R2_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R3_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R4_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R5_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R5_shuffled_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R5_position9x34_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R3_pooled_ridge,matched_head,same learner and head recipe; regularization selected separately
+R0_ridge,R5_position9x34_pooled_ridge,matched_head,same learner and head recipe; regularization selected separately
+R3_pooled_ridge,R3_ridge,isolated_position_control,frozen matched positional/membership control
+R5_shuffled_ridge,R5_ridge,isolated_position_control,frozen matched positional/membership control
+R5_position9x34_pooled_ridge,R5_position9x34_ridge,isolated_position_control,frozen matched positional/membership control
+R2_ridge,R3_ridge,confounded_component,"changes positions plus chain context, channels or central pooling; cannot isolate position"
+R5_ridge,R5_position9x34_ridge,confounded_component,"changes positions plus chain context, channels or central pooling; cannot isolate position"
+R0_mlp,R1_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R2_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R3_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R4_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R5_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R5_shuffled_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R5_position9x34_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R3_pooled_mlp,matched_head,same learner and head recipe; regularization selected separately
+R0_mlp,R5_position9x34_pooled_mlp,matched_head,same learner and head recipe; regularization selected separately
+R3_pooled_mlp,R3_mlp,isolated_position_control,frozen matched positional/membership control
+R5_shuffled_mlp,R5_mlp,isolated_position_control,frozen matched positional/membership control
+R5_position9x34_pooled_mlp,R5_position9x34_mlp,isolated_position_control,frozen matched positional/membership control
+R2_mlp,R3_mlp,confounded_component,"changes positions plus chain context, channels or central pooling; cannot isolate position"
+R5_mlp,R5_position9x34_mlp,confounded_component,"changes positions plus chain context, channels or central pooling; cannot isolate position"
+mlp_log__seed0,mlp_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+mlp_centred__seed0,mlp_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+tree_log__seed0,tree_log__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+tree_centred__seed0,tree_centred__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+pairlogit__seed0,pairlogit__seed1,seed_diagnostic,paired execution seed diagnostic; not assay noise
+mlp_log,mlp_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+mlp_log,mlp_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+mlp_log__repeat1,mlp_log__repeat2,execution_repeat,two identical-seed locked refits
+tree_log,tree_log__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+tree_log,tree_log__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+tree_log__repeat1,tree_log__repeat2,execution_repeat,two identical-seed locked refits
+pairlogit,pairlogit__repeat1,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+pairlogit,pairlogit__repeat2,execution_repeat,identical-seed locked refit; not paired seed or assay variation
+pairlogit__repeat1,pairlogit__repeat2,execution_repeat,two identical-seed locked refits
+R0_mlp__seed0,R0_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R1_mlp__seed0,R1_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R2_mlp__seed0,R2_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R3_mlp__seed0,R3_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R4_mlp__seed0,R4_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R5_mlp__seed0,R5_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R5_shuffled_mlp__seed0,R5_shuffled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R5_position9x34_mlp__seed0,R5_position9x34_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R3_pooled_mlp__seed0,R3_pooled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"
+R5_position9x34_pooled_mlp__seed0,R5_position9x34_pooled_mlp__seed1,seed_diagnostic,"embedding paired seeds; five stopping folds per seed, not execution repeats or assay noise"

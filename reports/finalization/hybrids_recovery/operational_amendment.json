@@ -1,0 +1,28 @@
+{
+  "schema": "final_hybrids_operational_amendment.2",
+  "at_utc": "2026-10-12T15:23:02.122558+00:00",
+  "scientific_protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "scientific_specification_unchanged": true,
+  "unchanged_scientific_fits": 480,
+  "unchanged_unscored_pilot_fits": 12,
+  "old_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids",
+  "new_output_root": "/Users/cheparukhin/ai_science_hack/reports/finalization/hybrids_recovery",
+  "prior_source_archive_manifest_sha256": "011546ce35f6ef4579b0c41f1e8c9e0a044f57542f60f1215a6725aacb1bf7a9",
+  "prior_protocol_sha256": "5e700c45b0e020953aa9401bfe38e645b7820e86f45f44123128d51f03ace86f",
+  "new_protocol_sha256": "e834d4cf2e1d68e4be6fc55fdec6d3dcd728b73381441ba2c848b1fc3f44b8ae",
+  "changed_sources": [
+    "scripts/final_hybrids_pipeline.py",
+    "tests/test_final_hybrids_pipeline.py"
+  ],
+  "reason": "Original waiting queue disappeared without any fitting gate or fit. Its normal-success predecessor gate cannot honestly be satisfied after transfer interruption. New operational version binds interrupted-cloud closure, complete recovery source/preparation, exact launched attempt/PID, all30 audited cells and successful new controller exit. Original queue/auth/source snapshots preserved; no fabricated original success.",
+  "execution_hardening": "Defer signals during child creation until ownership registration without inherited blocked masks; observe all children before replacement dispatch; pilot retains fixed7200second cap.",
+  "validation": {
+    "original_scientific_core_checks": 20,
+    "unchanged_reporting_helper_checks": 3,
+    "current_pipeline_checks_passed": 28,
+    "recovery_controller_checks_passed": 21,
+    "independent_review": "Astra High final read-only review passed; actual recovery closure/source/attempt bindings pass."
+  },
+  "additional_cloud_spend_usd": 0,
+  "original_test_reopened": false
+}

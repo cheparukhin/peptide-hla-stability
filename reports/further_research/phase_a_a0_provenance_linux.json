@@ -1,0 +1,192 @@
+{
+  "arm": "A0 (Linux rerun)",
+  "description": "the Phase A sequence reference refitted in Modal Linux containers, beside the macOS original, so that Linux-fitted arms are compared within platform",
+  "written_utc": "2026-10-04T21:46:55+00:00",
+  "does_not_replace": "reports/further_research/phase_a_a0_provenance.json",
+  "platform": {
+    "where": "Modal Linux containers (debian_slim, x86-64)",
+    "blas": "OpenBLAS x86-64 (numpy manylinux wheel)",
+    "threads": 2,
+    "contrast": "the shipped A0 ran on macOS/Accelerate arm64 at threads=1; float32 accumulation order differs, which Phase B measured at max|diff| 1.82e-01 and 0.0020 on median-of-medians for one fold",
+    "client_platform": "macOS-27.0-arm64-arm-64bit"
+  },
+  "input_set": "pep_pseudo",
+  "member_config": {
+    "input_set": "pep_pseudo",
+    "encodings": [
+      "onehot",
+      "blosum"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "selected": {
+      "onehot": [
+        [
+          256,
+          64
+        ],
+        1e-05
+      ],
+      "blosum": [
+        [
+          256,
+          64
+        ],
+        0.001
+      ]
+    },
+    "max_epochs": 300,
+    "patience": 15,
+    "lr": 0.001,
+    "batch_size": 256,
+    "source": "pepstab.nested.REFERENCE_MLP + scripts.baseline_ensemble.SELECTED"
+  },
+  "arity": {
+    "members_per_outer_fold": 30,
+    "axes": "5 inner x 2 encodings x 3 seeds"
+  },
+  "networks_total": 900,
+  "min_rows_per_allele_fold": 20,
+  "sensitivity_min_rows_per_allele_fold": 50,
+  "package_versions": {
+    "python": "3.12.12",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "note": "client versions; the container pins are in the image"
+  },
+  "input_digests": {
+    "data/splits.csv": "6173c8de986c9187601c697597920090d27192e46221558012a88c43e1671877",
+    "data/rasmussen_et_al_dataset.csv": "17c574c2c6d2746a238804bd73fa05279ae23e476be5df124dc084e116635658"
+  },
+  "rows": {
+    "train": 19716,
+    "oof_csv": 177444,
+    "runs_csv": 900
+  },
+  "fold_scores": [
+    {
+      "outer_fold": 0,
+      "n_alleles_eligible": 68,
+      "n_rows": 3944,
+      "eligible_row_coverage": 0.9961967545638946,
+      "median_spearman": 0.6780834677259666,
+      "iqr_low": 0.5211281061445456,
+      "iqr_high": 0.7543154105795116,
+      "mae_log1p": 0.49247898286641134,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6908917145508797,
+      "n_alleles_eligible_min50": 48,
+      "eligible_row_coverage_min50": 0.7667342799188641
+    },
+    {
+      "outer_fold": 1,
+      "n_alleles_eligible": 68,
+      "n_rows": 3943,
+      "eligible_row_coverage": 0.9972102460055795,
+      "median_spearman": 0.6247892591153871,
+      "iqr_low": 0.5560764265348662,
+      "iqr_high": 0.7136679192530708,
+      "mae_log1p": 0.4975642363528467,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6131923967100265,
+      "n_alleles_eligible_min50": 48,
+      "eligible_row_coverage_min50": 0.773015470453969
+    },
+    {
+      "outer_fold": 2,
+      "n_alleles_eligible": 68,
+      "n_rows": 3943,
+      "eligible_row_coverage": 0.9936596500126808,
+      "median_spearman": 0.637826859230844,
+      "iqr_low": 0.5504456815282857,
+      "iqr_high": 0.7335906129903694,
+      "mae_log1p": 0.48199346864959197,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6942388989460575,
+      "n_alleles_eligible_min50": 41,
+      "eligible_row_coverage_min50": 0.6936342886127315
+    },
+    {
+      "outer_fold": 3,
+      "n_alleles_eligible": 68,
+      "n_rows": 3943,
+      "eligible_row_coverage": 0.9934060360131879,
+      "median_spearman": 0.6549116169751102,
+      "iqr_low": 0.5661763329398007,
+      "iqr_high": 0.7628084749085392,
+      "mae_log1p": 0.4781513788306368,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6574877242352813,
+      "n_alleles_eligible_min50": 45,
+      "eligible_row_coverage_min50": 0.7339589145320822
+    },
+    {
+      "outer_fold": 4,
+      "n_alleles_eligible": 68,
+      "n_rows": 3943,
+      "eligible_row_coverage": 0.9949277200101445,
+      "median_spearman": 0.6506452211195521,
+      "iqr_low": 0.5370232807004904,
+      "iqr_high": 0.7322669717420105,
+      "mae_log1p": 0.48555388967755236,
+      "n_alleles_unranked": 0,
+      "median_spearman_min50": 0.6798193043369722,
+      "n_alleles_eligible_min50": 49,
+      "eligible_row_coverage_min50": 0.7851889424296221
+    }
+  ],
+  "five_fold_median_of_medians": 0.6506452211195521,
+  "five_fold_median_of_medians_min50": 0.6798193043369722,
+  "inner_oof_residual_scale": {
+    "outer_held": {
+      "n_rows": 19716,
+      "n_rows_measured": 15739,
+      "rmse_measured_rows": 0.6944654623554036,
+      "rmse_all_rows": 0.6679168234336109,
+      "rmse_replicate_averaged_DO_NOT_USE": 0.6944654623554036
+    },
+    "inner_oof_6": {
+      "n_rows": 78864,
+      "n_rows_measured": 62956,
+      "rmse_measured_rows": 0.7089315949850269,
+      "rmse_all_rows": 0.6807520603403632,
+      "rmse_replicate_averaged_DO_NOT_USE": 0.6843856821136115,
+      "rmse_ratio_measured_rows": 1.0208306005320391,
+      "rmse_ratio_all_rows": 1.0192168193050883
+    },
+    "inner_oof_30": {
+      "n_rows": 78864,
+      "n_rows_measured": 62956,
+      "rmse_measured_rows": 0.7167344415226947,
+      "rmse_all_rows": 0.6895536180797119,
+      "rmse_replicate_averaged_DO_NOT_USE": 0.6992766789274433,
+      "rmse_ratio_measured_rows": 1.0320663594871398,
+      "rmse_ratio_all_rows": 1.032394444767645
+    },
+    "method": "un-averaged: every inner row enters as it ships, 4 per pair_id. Averaging a pair_id's replicates first is an ensemble-of-ensembles no stacker sees, and on A0 it moved inner_oof_6 from above the target to below it -- reversing the sign and fabricating a bracket.",
+    "interpretation": "A ratio above 1 means the inner role sits further from the label than outer_held does. On A0 both inner roles are pessimistic, so they bound the out-of-sample residual scale from ONE SIDE ONLY and do not bracket it. inner_oof_6's members early-stopped on the rows they predict; inner_oof_30 is fitted on ~10,094 rows against ~12,618. Which is the better stacking input is OPEN and A5 decides it on a paired blend outcome, not on this ratio."
+  },
+  "modal_container_timing": {
+    "n_units": 30,
+    "container_threads_observed": 2,
+    "unit_seconds_total": 6870.3,
+    "unit_seconds_max": 570.4,
+    "unit_seconds_median": 178.7,
+    "superseded_journal_lines": 0
+  },
+  "asserted": [
+    "outer fold assignment == phase_a_outer_folds.csv for all 19,716 rows (loaded and compared)",
+    "np.isfinite on all 177,444 predictions",
+    "177,444 rows = 19,716 outer_held + 4 x 19,716 inner_oof_6 + 4 x 19,716 inner_oof_30",
+    "every pair_id: exactly 1 outer_held, 4 inner_oof_6, 4 inner_oof_30",
+    "pair_id set == the training split (19,716)",
+    "outer_held fold id == phase_a_outer_folds.csv for every row",
+    "no inner_oof row is attributed to its own outer held-out fold",
+    "members: 900 = 150 level-2 + 750 level-3",
+    "150 fit/predict disjointness checks"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "round2_sequence_repeats_completion.2",
+  "protocol_hash": "2959e00f6c9f74da18591b38182d6490412599325d5157960b57e596129e2907",
+  "outer_fold": 1,
+  "repeats": 2,
+  "scope": "locked member refits; selected configurations and ranker calibration mapping held fixed",
+  "additional_members": 84,
+  "members_per_repeat": 42,
+  "member_counts": [
+    {
+      "repeat": 1,
+      "arm": "mlp_log",
+      "members": 30
+    },
+    {
+      "repeat": 1,
+      "arm": "tree_log",
+      "members": 6
+    },
+    {
+      "repeat": 1,
+      "arm": "pairlogit",
+      "members": 6
+    },
+    {
+      "repeat": 2,
+      "arm": "mlp_log",
+      "members": 30
+    },
+    {
+      "repeat": 2,
+      "arm": "tree_log",
+      "members": 6
+    },
+    {
+      "repeat": 2,
+      "arm": "pairlogit",
+      "members": 6
+    }
+  ],
+  "ancestry_audit": {
+    "records": 557,
+    "rowsets": 90,
+    "outer_cluster_exclusion": true,
+    "predicted_cluster_exclusion": true
+  },
+  "repeat_prediction_sha256": "201804a726fd2dc15758666a71871ebeb929e74d3f13a7dcddb014b30a3bdde2",
+  "ancestry_sha256": "f690481e9ade7997303b8f139938b365f4eec6d8d5786d61470441040b6a1c10",
+  "member_table_sha256": "a31ae3aecab4c929ecc98f0049204c2bbbbb9cf7f89061480e916a9770b35a8c",
+  "primary_completion_sha256": "cb8b873345aa6aff16edbe75dc46faff2e19e91181e04d9828d1655f8958786a"
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "final_hybrid_backend_replay_amendment.1",
+  "approved": true,
+  "recorded_at_utc": "2026-10-13T00:10:32.092669+00:00",
+  "coretype": "SkylakeX",
+  "numerical_threads": 2,
+  "fitting_runtime_records": [
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_0/R0/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_0/R5/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_1/R0/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_1/R5/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_2/R0/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_2/R5/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_3/R0/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_3/R5/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_4/R0/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/fold_4/R5/runtime.json",
+      "sha256": "4736893c429f236de25a6e0aea8b9fd6807ef5938e48d5ea552c9584489a4ef9"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R0/runtime.json",
+      "sha256": "273184e1642c5f4ac16e806e066ac388afcd1b65efa1cbfd31be75d3866424fc"
+    },
+    {
+      "path": "reports/finalization/hybrids_cloud_v1/pilot/fold_0/R5/runtime.json",
+      "sha256": "273184e1642c5f4ac16e806e066ac388afcd1b65efa1cbfd31be75d3866424fc"
+    }
+  ],
+  "original_entry": {
+    "path": "reports/finalization/cloud/report_backend_original/final_cloud_scientific_entry.py",
+    "sha256": "d168a4465aee9533d4d1cb861f97a8035b18ce910327a8e94a5b39ef7db22e7c"
+  },
+  "current_entry": {
+    "path": "scripts/final_cloud_scientific_entry.py",
+    "sha256": "a35b4233735d6686fdf645c81f9f9f94f24e2237fa9e2a232caa53b317c82a54"
+  },
+  "adapter": {
+    "path": "pepstab/final_replay_backend.py",
+    "sha256": "c313a5540420711164fda285e173ccd348f1d1db796c0424b88a0a5c38530a77"
+  },
+  "tests": {
+    "path": "tests/test_final_replay_backend.py",
+    "sha256": "592c32f12b905c6e8df8eb8d4c548252889e5dabae0df2112bf38f89c27012c2"
+  },
+  "failure_closeout": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261012-2350/failure_closeout.json",
+    "sha256": "a24bf7fd17643b638e33b05a065f20abbe5624456196cd775d846039f7d24402"
+  },
+  "scientific_sources_unchanged": true,
+  "held_predictions_remain_exact": true,
+  "recomputed_stopping_mse_max_float32_ulp": 1,
+  "new_fits": 0,
+  "statistics_unchanged": true,
+  "source": "https://raw.githubusercontent.com/OpenMathLib/OpenBLAS/develop/driver/others/dynamic.c",
+  "independent_review": "Astra approves one provenance-nominated SkylakeX/two-thread replay after capability and actual-library checks; this is not proof of the previous failure cause.",
+  "failure_policy": "If replay fails under the verified historical backend, stop repeated report attempts; no automatic tolerance widening or kernel search.",
+  "work_deadline_utc": "2026-10-13T06:45:00+00:00",
+  "provider_stop_deadline_utc": "2026-10-13T06:47:00+00:00",
+  "cap_usd": 5,
+  "lightweight_checks_passed": 31,
+  "fresh_entry_import_order_verified": true
+}

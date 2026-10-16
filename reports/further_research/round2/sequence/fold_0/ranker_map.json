@@ -1,0 +1,107 @@
+{
+  "slope": 0.6887175264706779,
+  "intercept": 1.135791736102417,
+  "minimum_slope": 1e-08,
+  "n_rows": 15772,
+  "crossfit_selections": [
+    {
+      "fold": 0,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.46644656017699926,
+            0.44260353312249523,
+            0.4454019238382545
+          ],
+          "mean": 0.451484005712583,
+          "se": 0.007524765217267119
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.5052831488790163,
+            0.47548462084115317,
+            0.48456218259407147
+          ],
+          "mean": 0.4884433174380803,
+          "se": 0.008818266535320548
+        }
+      ]
+    },
+    {
+      "fold": 1,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.5358408652656717,
+            0.49184972628893403,
+            0.5337076534275232
+          ],
+          "mean": 0.5204660816607096,
+          "se": 0.014321423279588491
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.5683989176074188,
+            0.5422945084956803,
+            0.5509066637958049
+          ],
+          "mean": 0.553866696632968,
+          "se": 0.0076796568839600935
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "candidate": {
+        "id": "pairlogit_d8",
+        "learner": "pairlogit",
+        "target": "log",
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10
+      },
+      "scores": [
+        {
+          "candidate": "pairlogit_d4",
+          "fold_scores": [
+            0.47929587993164324,
+            0.4987761390510311,
+            0.46442643357163405
+          ],
+          "mean": 0.48083281751810275,
+          "se": 0.009945638901696792
+        },
+        {
+          "candidate": "pairlogit_d8",
+          "fold_scores": [
+            0.5196671756578239,
+            0.5426589426011366,
+            0.4891398322299534
+          ],
+          "mean": 0.517155316829638,
+          "se": 0.015500600739006574
+        }
+      ]
+    }
+  ]
+}

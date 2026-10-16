@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-A*02:01",
+  "peptide": "ALYEKKLAL",
+  "cluster_id": 155,
+  "outer_fold": 2,
+  "complex_id": "A0201_ALYEKKLAL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-A_02_01/A0201_ALYEKKLAL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=A0201_ALYEKKLAL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_em2xch12/input",
+        "--output-dir=/tmp/energy_repaired_em2xch12/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 266.905707386
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=A0201_ALYEKKLAL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_em2xch12/output",
+        "--output-dir=/tmp/energy_repaired_em2xch12/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 3.1673199729999624
+    }
+  ],
+  "metadata_sha256": "616952d68dd2440c8844a5227f0c9ffd604201f2a834da951cca9471e3884023",
+  "structure_sha256": "0933d91628c2a0cef9de73be55a4ca17d1f8973dbd0ffa0e44749bfe2e04d065",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.032601,
+    "foldx_intraclashesgroup2": 13.3343,
+    "foldx_interaction_energy": -21.8175,
+    "foldx_backbone_hbond": -5.77805,
+    "foldx_sidechain_hbond": -5.47779,
+    "foldx_van_der_waals": -18.1041,
+    "foldx_electrostatics": -1.40651,
+    "foldx_solvation_polar": 23.9301,
+    "foldx_solvation_hydrophobic": -26.635,
+    "foldx_van_der_waals_clashes": 0.857084,
+    "foldx_entropy_sidechain": 6.12777,
+    "foldx_entropy_mainchain": 4.64278,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.12624,
+    "foldx_backbone_clash": 0.849867,
+    "foldx_helix_dipole": -0.0100846,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -0.150105,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0600775,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 49.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "0fdcd88d97f8dcc02c608626d029eb7cfab0dc552bce4bfd488b19814977b6c5",
+  "repaired_pdb_sha256": "8c6555d0b11e0fd0bbba0f698a349400d2cbb26b0cf6465b4703639c60e85e2d",
+  "conversion_validation": {
+    "n_atoms": 3147,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "ALYEKKLAL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 273.31428602200003,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

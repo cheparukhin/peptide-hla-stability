@@ -1906,7 +1906,7 @@ function BeatGroove({
     y: 80,
     op: tw(T, A.Lock - 0.05, A.Lock + 0.25, Easing.linear) * out,
     color: C.crimson,
-    text: "bound \xB7 stable fit"
+    text: "bound peptide"
   }));
 }
 
@@ -2091,7 +2091,7 @@ function BeatStability({
     y: 80,
     op: unst * opW,
     color: C.crimson,
-    text: t < 1.7 ? 'loose fit' : 'peptide lost · no signal'
+    text: t < 1.7 ? 'dissociation illustrated' : 'peptide lost'
   }), /*#__PURE__*/React.createElement(Frame, {
     src: "shot3d_settled_anchors_grey",
     op: opAn,
@@ -2599,31 +2599,31 @@ function Piece({
       text: 'Many candidate peptides. Which ones fit this HLA allele?'
     }, {
       at: A.Lock + 0.1,
-      text: 'Only some form a precise pair.'
+      text: 'Peptides differ in binding and complex stability.'
     }, {
       at: A.Approach + 0.3,
       text: 'A T-cell receptor docks onto the peptide–HLA complex.'
     }, {
       at: A.Interface + 0.2,
-      text: 'Its CDR loops read the exposed peptide residues.'
+      text: 'Its CDR loops contact the peptide–HLA surface.'
     }, {
       at: A.Wobble + 0.3,
-      text: 'A loose peptide escapes, and the T cell sees nothing.'
+      text: 'Peptide dissociation can reduce the persistence of this surface complex.'
     }, {
       at: A.Anchors + 0.2,
-      text: 'A stable fit: anchors P2 and P9 seat in pockets B and F.'
+      text: 'Here, anchors P2 and P9 occupy HLA pockets B and F.'
     }, {
       at: A.Contact + 0.3,
-      text: 'CDR3 contacts the peptide. The receptor signals.'
+      text: 'Specific T-cell receptor engagement can initiate signalling.'
     }, {
       at: A.Activation + 0.2,
-      text: 'The T cell activates.'
+      text: 'T-cell activation also depends on co-stimulation and cellular context.'
     }, {
       at: A.Expansion + 0.3,
-      text: 'Out of the naïve repertoire, one clone expands.'
+      text: 'An activated T-cell clone can expand.'
     }, {
       at: A.Body + 0.2,
-      text: 'Every successful immune response depends on this pairing.'
+      text: 'Peptide–HLA recognition can contribute to a T-cell response.'
     }]
   }));
 }

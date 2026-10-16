@@ -1,0 +1,267 @@
+{
+  "schema": "followup3_budget.1",
+  "user_reported_remaining_usd": 139.0,
+  "inclusive_new_tranche_ceiling_usd": 139.0,
+  "planned_commitment_limit_usd": 120.0,
+  "operational_cushion_usd": 19.0,
+  "conservative_closed_usd": 67.30273086063039,
+  "reserved_usd": 0,
+  "provider_profile": "a-cheparukhin",
+  "charges_are_not_provider_invoices": true,
+  "jobs": [
+    {
+      "name": "features-prepare-20261013",
+      "plan_sha256": "ab0b22388fa5a23cc685098be030fc3952c004e335aebb3be328048e5f518881",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5105240864473979,
+      "provider_exit": "reports/followup3/resources/features_prepare/provider_exit.json"
+    },
+    {
+      "name": "runtime-prepare-20261013",
+      "plan_sha256": "8aca4ea549409d300a72b82c7259d859f25f6841b170c80e89825d39e2de5a33",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 1.0082086449942589,
+      "provider_exit": "reports/followup3/resources/runtime_prepare/provider_exit.json"
+    },
+    {
+      "name": "science-pilots-20261013",
+      "plan_sha256": "8a73ec1546acc12952f4fb8833f10624e841cd3a14343cfb2267d2266f47f747",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 0.5133552841369311,
+      "result": "failed_scaler_replay_before_efficacy",
+      "provider_exit": "reports/followup3/resources/science_pilots/provider_exit.json"
+    },
+    {
+      "name": "inverse-pilot-20261013",
+      "plan_sha256": "21d9ac59e323ed56b171c371e8cf41088615604549039a62e606b7865ff9acfc",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.580755184997201,
+      "provider_exit": "reports/followup3/resources/inverse_pilot/provider_exit.json"
+    },
+    {
+      "name": "fewshot-pilot-v2-20261013",
+      "plan_sha256": "343d63e97dedd2e04740ed854f8ef4284465a07ae165d7fd38569a7411dcf537",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 0.5125410297543606,
+      "provider_exit": "reports/followup3/resources/fewshot_pilot_v2/provider_exit.json"
+    },
+    {
+      "name": "fewshot-main-20261013",
+      "plan_sha256": "dbaa97ee514f462545ae68af759427ce17a3676bc95a98e24a53519e11a1a2a7",
+      "reservation_usd": 8.0,
+      "status": "closed",
+      "conservative_charge_usd": 1.2030666287126541,
+      "provider_exit": "reports/followup3/resources/fewshot_main/provider_exit.json"
+    },
+    {
+      "name": "inverse-pilot-v2-20261013",
+      "plan_sha256": "5b0821b3e3c33f5d653422da39ebdb9c21213385be0da020431a1e3b82843c05",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.520035289372007,
+      "provider_exit": "reports/followup3/resources/inverse_pilot_v2/provider_exit.json"
+    },
+    {
+      "name": "foldx-technical-20261013",
+      "plan_sha256": "cf7d9faeb94291724c39cf5f89565a1eb5ef335093e7dc31704bee26cf27a2c7",
+      "reservation_usd": 4.0,
+      "status": "closed",
+      "conservative_charge_usd": 1.3831429719707171,
+      "provider_exit": "reports/followup3/resources/foldx_pilot/provider_exit.json"
+    },
+    {
+      "name": "fewshot-report-20261013",
+      "plan_sha256": "d1f6d368428ff76c1034d656f8c99ea2f8467aa3eab865cb60156ea4b8119223",
+      "reservation_usd": 2.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5724870129089753,
+      "provider_exit": "reports/followup3/resources/fewshot_report/provider_exit.json"
+    },
+    {
+      "name": "inverse-extract-20261013",
+      "plan_sha256": "ad5bc636625ef294ce64a5e054280ba9d3aaa39a88c0589d7df60b1e56e76b3c",
+      "reservation_usd": 8.0,
+      "status": "closed",
+      "conservative_charge_usd": 7.0677435348825455,
+      "provider_exit": "reports/followup3/resources/inverse_extract/provider_exit.json",
+      "result": "fixed_deadline_partial_extraction_preserved"
+    },
+    {
+      "name": "inverse-stage-20261013",
+      "plan_sha256": "eaaf8c1ffc89b142846fca04bf7a2909a0898c7d6d996f9cf233e9747bb4af9c",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5051037186864614,
+      "provider_exit": "reports/followup3/resources/inverse_stage/provider_exit.json"
+    },
+    {
+      "name": "energy-extract-20261013",
+      "plan_sha256": "ccef48349c9ef36328fa343a1c530e8a713339792a9c58eb195ec5bcdf9caf3d",
+      "reservation_usd": 40.0,
+      "status": "closed",
+      "conservative_charge_usd": 3.248455110814174,
+      "provider_exit": "reports/followup3/resources/energy_extract/provider_exit.json",
+      "result": "pre_scoring_volume_reload_failure"
+    },
+    {
+      "name": "energy-extract-v2-20261013",
+      "plan_sha256": "e4324f84740696c9c35e36e4a6ff247367838cf667e53bce1addbeb1dc2de2ea",
+      "reservation_usd": 40.0,
+      "status": "closed",
+      "conservative_charge_usd": 22.34464236096541,
+      "provider_exit": "reports/followup3/resources/energy_extract_v2/provider_exit.json",
+      "result": "4376_completed_73_interrupted_provider_attempts_no_efficacy"
+    },
+    {
+      "name": "fewshot-offset-diagnostic-20261013",
+      "plan_sha256": "879b8a97ff1f0d8c55256bcf52d3eaf0f6621cf26c976e2c41a103eef50a56fd",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 0.5114276327313582,
+      "provider_exit": "reports/followup3/resources/fewshot_offset/provider_exit.json"
+    },
+    {
+      "name": "inverse-continue-20261013",
+      "plan_sha256": "ff56f774d5990b469ff612fdee9db802865cd97c176cc6666832b1fe12942e12",
+      "reservation_usd": 4.5,
+      "status": "closed",
+      "conservative_charge_usd": 1.4658571467313766,
+      "provider_exit": "reports/followup3/resources/inverse_continue/provider_exit.json",
+      "result": "complete_same_panel_parser_recovery"
+    },
+    {
+      "name": "inverse-heads-20261013",
+      "plan_sha256": "99fb3671431e500dcde9254737df5e66131120a1b6056daab506c075adb9f9de",
+      "reservation_usd": 8.0,
+      "status": "closed",
+      "conservative_charge_usd": 1.0669217560329438,
+      "provider_exit": "reports/followup3/resources/inverse_heads/provider_exit.json"
+    },
+    {
+      "name": "inverse-report-20261013",
+      "plan_sha256": "be094ee907840de3d5f69b3df10324cc22742332f70fb087a5ce963809eb55c5",
+      "reservation_usd": 1.5,
+      "status": "closed",
+      "conservative_charge_usd": 0.5090065945513248,
+      "provider_exit": "reports/followup3/resources/inverse_report/provider_exit.json"
+    },
+    {
+      "name": "energy-recovery-v3-20261013",
+      "plan_sha256": "548f518a090f19aa75911586f3b30272508fbdbfaf342adeee36f126fed52ba8",
+      "reservation_usd": 3.5,
+      "status": "closed",
+      "conservative_charge_usd": 1.4226840582618714,
+      "provider_exit": "reports/followup3/resources/energy_recovery_v3/provider_exit.json",
+      "result": "complete_manual_recovery"
+    },
+    {
+      "name": "energy-collect-20261013",
+      "plan_sha256": "f13b05a2af0d05c3483463e118c2f5dec152c13d29e98642c0075c3db9d49a2a",
+      "reservation_usd": 0.75,
+      "status": "closed",
+      "conservative_charge_usd": 0.5067061300506195,
+      "provider_exit": "reports/followup3/resources/energy_collect/provider_exit.json"
+    },
+    {
+      "name": "energy-heads-20261013",
+      "plan_sha256": "1acab960135c2a3340fd46317c1dc31b489deb11d70723e1b9224423e8330ba3",
+      "reservation_usd": 2.5,
+      "status": "closed",
+      "conservative_charge_usd": 0.6081857530174255,
+      "provider_exit": "reports/followup3/resources/energy_heads/provider_exit.json"
+    },
+    {
+      "name": "energy-report-20261013",
+      "plan_sha256": "f925861fb648e7a0569f3fcf64d3eea23a29e87a4597aa8ba41148408d861e50",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5109307528377374,
+      "provider_exit": "reports/followup3/resources/energy_report/provider_exit.json"
+    },
+    {
+      "name": "inverse-fulltrain-extract-0-20261013",
+      "plan_sha256": "596f24498026863e39d43d39aecc42619755881c10fe2dc50791904a6e7cfbc0",
+      "reservation_usd": 8.5,
+      "status": "closed",
+      "conservative_charge_usd": 3.9566379881353377,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_extract_0/provider_exit.json",
+      "result": "complete_frozen_batch"
+    },
+    {
+      "name": "inverse-fulltrain-extract-1-20261013",
+      "plan_sha256": "ba4ff7cffaef7d2ca7b885e5843e8e68d7663e76273cb772be8972a88277cfea",
+      "reservation_usd": 8.5,
+      "status": "closed",
+      "conservative_charge_usd": 5.843031314645767,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_extract_1/provider_exit.json",
+      "result": "complete_frozen_batch"
+    },
+    {
+      "name": "inverse-fulltrain-extract-2-20261013",
+      "plan_sha256": "a684b2358bdddbfeac718e35990a0755d8c89fdaad28eab20747f5e742673664",
+      "reservation_usd": 8.5,
+      "status": "closed",
+      "conservative_charge_usd": 4.071208574438096,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_extract_2/provider_exit.json",
+      "result": "complete_frozen_batch"
+    },
+    {
+      "name": "inverse-fulltrain-extract-3-20261013",
+      "plan_sha256": "1d76b5999977d6def1e7bf685f4f4adea81b58736febc16a10a9962599f1f336",
+      "reservation_usd": 8.5,
+      "status": "closed",
+      "conservative_charge_usd": 4.0452686130313875,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_extract_3/provider_exit.json",
+      "result": "complete_frozen_batch"
+    },
+    {
+      "name": "inverse-fulltrain-stage-20261013",
+      "plan_sha256": "40383ea3b620fe77b6e3ab1e3dad68574a2d11cf4675832b6980d48e0d5c66e5",
+      "reservation_usd": 0.75,
+      "status": "closed",
+      "conservative_charge_usd": 0.5106284703793526,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_stage/provider_exit.json"
+    },
+    {
+      "name": "inverse-fulltrain-collect-20261013",
+      "plan_sha256": "5371772bd2f25c9a18a2c2ce422dbf35769aee4348add2e4e411fda135eb0cd1",
+      "reservation_usd": 0.75,
+      "status": "closed",
+      "conservative_charge_usd": 0.5310463171786467,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_collect/provider_exit.json",
+      "result": "complete"
+    },
+    {
+      "name": "inverse-fulltrain-heads-20261013",
+      "plan_sha256": "0c1a4898c09d7fce1fe1b511f52f522db084076ba962b920c578aafb10b43493",
+      "reservation_usd": 3.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5441005504407883,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_heads/provider_exit.json",
+      "result": "failed_preserved"
+    },
+    {
+      "name": "inverse-fulltrain-heads-v2-20261013",
+      "plan_sha256": "340c3b58bcaf8f628e16fe6299fb46e7dbce07ed210252bde6f37fc7cea76fce",
+      "reservation_usd": 3.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.710075830037117,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_heads_v2/provider_exit.json",
+      "result": "complete"
+    },
+    {
+      "name": "inverse-fulltrain-report-20261013",
+      "plan_sha256": "c9dbfff63d04576556b944834725e81027ba269402ba048f51f81e79c31040b5",
+      "reservation_usd": 1.0,
+      "status": "closed",
+      "conservative_charge_usd": 0.5189525194861492,
+      "provider_exit": "reports/followup3/resources/inverse_fulltrain_report/provider_exit.json",
+      "result": "complete"
+    }
+  ]
+}

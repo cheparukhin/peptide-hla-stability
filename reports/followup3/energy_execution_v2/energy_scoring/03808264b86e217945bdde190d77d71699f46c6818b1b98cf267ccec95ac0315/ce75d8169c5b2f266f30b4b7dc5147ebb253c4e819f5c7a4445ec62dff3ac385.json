@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*27:05",
+  "peptide": "SRIGAWASK",
+  "cluster_id": 3937,
+  "outer_fold": 1,
+  "complex_id": "B2705_SRIGAWASK",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_27_05/B2705_SRIGAWASK",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B2705_SRIGAWASK.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tgy0irta/input",
+        "--output-dir=/tmp/energy_repaired_tgy0irta/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 234.59179557000016
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B2705_SRIGAWASK_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tgy0irta/output",
+        "--output-dir=/tmp/energy_repaired_tgy0irta/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.3219296199999917
+    }
+  ],
+  "metadata_sha256": "2d3400216a3b686c6d6f9cc1431b3a26da4a07c12d6cbeb2a7f244b36428d4f6",
+  "structure_sha256": "33980100689433ba6189cc1ba4c3c8acaf37a7f5d4f3579640ba31c7270f7976",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0380565,
+    "foldx_intraclashesgroup2": 13.5573,
+    "foldx_interaction_energy": -22.3473,
+    "foldx_backbone_hbond": -4.99367,
+    "foldx_sidechain_hbond": -12.5773,
+    "foldx_van_der_waals": -18.2396,
+    "foldx_electrostatics": -5.42509,
+    "foldx_solvation_polar": 28.7104,
+    "foldx_solvation_hydrophobic": -23.0946,
+    "foldx_van_der_waals_clashes": 0.394066,
+    "foldx_entropy_sidechain": 10.4469,
+    "foldx_entropy_mainchain": 3.33523,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.138368,
+    "foldx_backbone_clash": 0.498768,
+    "foldx_helix_dipole": 0.00593288,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -1.06464,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.0167184,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 50.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "4c952ee8c3859ede3bcc713668cec626d540772bc12459c1afa95302a39efdae",
+  "repaired_pdb_sha256": "a9057b700fa5d48c456cad83e841d99fdbc1b34899316e57729db4be92d543fe",
+  "conversion_validation": {
+    "n_atoms": 3140,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.000500023365020752,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "SRIGAWASK"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 239.67900613999996,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

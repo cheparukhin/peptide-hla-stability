@@ -1,0 +1,234 @@
+{
+  "schema": "final_cloud_phase_exit.1",
+  "phase": "transfer_recovery",
+  "phase_nonce": "transfer-recovery-20261012-1920",
+  "authorization_sha256": "9479c2bd877b23a0f58f046fcb2797ecc4ef14b5b980333dd6aad989d702c5f7",
+  "input_manifest_sha256": "fd36b24b8c4715ae028009340b0d882516dc5c2b1d872c7320bb7f8af43b5fe8",
+  "protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "real_process_owner": {
+    "pid": 2,
+    "hostname": "modal",
+    "pid_namespace": "pid:[5]"
+  },
+  "started_at_utc": "2026-10-12T19:19:23.950799+00:00",
+  "sandbox_id": "sb-01M4RRW8TNY5H1WRJN30PXVJF7",
+  "app_id": "ap-GwmNX2i77HHXKL8r20lzM9",
+  "sandbox_id_source": "root_exact_sandbox_stdin_release",
+  "environment": {
+    "python": "3.12.12",
+    "python_build": "3.12.12 (main, Feb 24 2026, 20:29:11) [GCC 12.2.0]",
+    "packages": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "machine": "x86_64",
+    "logical_repository_root": "/Users/cheparukhin/ai_science_hack",
+    "resolved_repository_root": "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR"
+  },
+  "status": "complete",
+  "exit_code": 0,
+  "n_fits": 2000,
+  "cleanup_complete": true,
+  "finished_at_utc": "2026-10-12T20:14:45.228701+00:00",
+  "elapsed_fit_seconds": 3046.8963051759997,
+  "output_manifest": {
+    "path": "reports/finalization/cloud/remote/transfer-recovery-20261012-1920/output_manifest.json",
+    "sha256": "593dc090aba0b170047f8777b62f09fdd9d28d08d53c43637bae77e674c026c2"
+  },
+  "finished_children": [
+    {
+      "index": 0,
+      "job": "joint/h4_p0",
+      "axes": [
+        "joint",
+        "h4_p0"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_transfer.py",
+        "--",
+        "run-cell",
+        "--out-dir",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/transfer_cloud_recovery",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--regime",
+        "joint",
+        "--cell",
+        "h4_p0"
+      ],
+      "intent_at_utc": "2026-10-12T19:23:58.333051+00:00",
+      "pid": 8,
+      "started_at_utc": "2026-10-12T19:23:59.441546+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T19:39:14.277669+00:00"
+    },
+    {
+      "index": 1,
+      "job": "joint/h4_p1",
+      "axes": [
+        "joint",
+        "h4_p1"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_transfer.py",
+        "--",
+        "run-cell",
+        "--out-dir",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/transfer_cloud_recovery",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--regime",
+        "joint",
+        "--cell",
+        "h4_p1"
+      ],
+      "intent_at_utc": "2026-10-12T19:24:00.614539+00:00",
+      "pid": 10,
+      "started_at_utc": "2026-10-12T19:24:02.138420+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T19:40:03.203827+00:00"
+    },
+    {
+      "index": 2,
+      "job": "joint/h4_p2",
+      "axes": [
+        "joint",
+        "h4_p2"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_transfer.py",
+        "--",
+        "run-cell",
+        "--out-dir",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/transfer_cloud_recovery",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--regime",
+        "joint",
+        "--cell",
+        "h4_p2"
+      ],
+      "intent_at_utc": "2026-10-12T19:39:20.994735+00:00",
+      "pid": 3562,
+      "started_at_utc": "2026-10-12T19:39:21.613228+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T19:53:25.391845+00:00"
+    },
+    {
+      "index": 3,
+      "job": "joint/h4_p3",
+      "axes": [
+        "joint",
+        "h4_p3"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_transfer.py",
+        "--",
+        "run-cell",
+        "--out-dir",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/transfer_cloud_recovery",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--regime",
+        "joint",
+        "--cell",
+        "h4_p3"
+      ],
+      "intent_at_utc": "2026-10-12T19:40:05.418312+00:00",
+      "pid": 4085,
+      "started_at_utc": "2026-10-12T19:40:06.310228+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T19:54:34.789909+00:00"
+    },
+    {
+      "index": 4,
+      "job": "joint/h4_p4",
+      "axes": [
+        "joint",
+        "h4_p4"
+      ],
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_transfer.py",
+        "--",
+        "run-cell",
+        "--out-dir",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/transfer_cloud_recovery",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--regime",
+        "joint",
+        "--cell",
+        "h4_p4"
+      ],
+      "intent_at_utc": "2026-10-12T19:53:26.719825+00:00",
+      "pid": 7120,
+      "started_at_utc": "2026-10-12T19:53:27.255143+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:07:53.439427+00:00"
+    },
+    {
+      "index": 5,
+      "job": "transfer_semantic_audit",
+      "axes": null,
+      "command": [
+        "/usr/local/bin/python",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_scientific_entry.py",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--script",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/scripts/final_cloud_phase.py",
+        "--",
+        "--approved",
+        "/__modal/volumes/vo-1p9WI9DhfOZeHRynFPqXsR/reports/finalization/resources/cloud_sandboxes/transfer-recovery-20261012-1920/authorization.json",
+        "--audit-transfer-recovery"
+      ],
+      "intent_at_utc": "2026-10-12T20:07:55.173036+00:00",
+      "pid": 8925,
+      "started_at_utc": "2026-10-12T20:07:55.607956+00:00",
+      "exit_code": 0,
+      "finished_at_utc": "2026-10-12T20:14:44.205590+00:00"
+    }
+  ],
+  "guard_lease": {
+    "watchdog_pid": 23909,
+    "last_sequence": 301,
+    "expires_at_utc": "2026-10-12T20:16:04.758720+00:00",
+    "maximum_seconds": 90,
+    "monitor_cleanup_error": null
+  },
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync",
+    "acknowledged": true
+  }
+}

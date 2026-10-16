@@ -1,0 +1,56 @@
+{
+  "schema": "final_cloud_transfer_recovery_amendment.1",
+  "status": "reviewed_for_exact_phase_authorization",
+  "at_utc": "2026-10-12T17:56:58.446694+00:00",
+  "cause": "User confirmed disk cleanup removed the active project virtual environment; next worker failed importing SciPy. Old controller and children exited.",
+  "failed_predecessor": {
+    "path": "reports/finalization/cloud/portable_transfer_failure.json",
+    "sha256": "a7df6fd81debff4dc04fc656cd0a8731b29515d74953c5e4557e83f043bed84e"
+  },
+  "validation": {
+    "path": "reports/finalization/cloud/recovery_validation.json",
+    "sha256": "0fda109617515831702fc7bc486557ab441e37eb18298734f71e156bfb1c70f5"
+  },
+  "preparation": {
+    "path": "reports/finalization/resources/transfer_durable/interruption_20261012_172654/preparation.json",
+    "sha256": "fd4d29f32f249fe9146638617b4176189dd39fb9a1b257a65be16f7607131783"
+  },
+  "reconciliation": {
+    "path": "reports/finalization/resources/transfer_durable/interruption_20261012_172654/reconciliation.json",
+    "sha256": "4bde0316c72a8630c3e4b2b22f0b848dd5c48b0a0a67719396a9df1fee5532ca"
+  },
+  "scientific_protocol_hash": "bcda56bc3ae36dd757ef1a3210b167fc926d1604be74bb7487c5e18fedaf412d",
+  "scientific_sources_unchanged": true,
+  "output_root": "reports/finalization/transfer_cloud_recovery",
+  "cells": [
+    "joint/h4_p0",
+    "joint/h4_p1",
+    "joint/h4_p2",
+    "joint/h4_p3",
+    "joint/h4_p4"
+  ],
+  "n_preserved_fits": 8830,
+  "n_new_fits": 2000,
+  "retained_fits_after_success": 10830,
+  "discarded_known_completed_fits": 2579,
+  "known_completed_after_success": 13409,
+  "unknown_remote_attempts": 12,
+  "unknown_interrupted_local_fits": true,
+  "resources": {
+    "cpu_cores": 4,
+    "memory_mib": 16384,
+    "numerical_threads": 2,
+    "max_workers": 2
+  },
+  "max_work_seconds": 21600,
+  "recovery_cap_usd": 10,
+  "other_future_envelope_usd": 35,
+  "prior_conservative_liability_usd": 5.1793820030564595,
+  "maximum_total_commitment_usd": 50.17938200305646,
+  "user_ceiling_usd": 100,
+  "original_deadline_utc": "2026-10-13T15:32:19.924192+00:00",
+  "retries": 0,
+  "partial_checkpoint_reuse": false,
+  "reason_for_fresh_incomplete_cells": "Avoid changing frozen cache/runtime identity semantics across Mac and Linux; retain whole completed cells and redo only five unfinished cells.",
+  "next_step": "Run the unchanged original worker for five cells on Modal, then its unchanged semantic audit and scientific report. No additional harness features."
+}

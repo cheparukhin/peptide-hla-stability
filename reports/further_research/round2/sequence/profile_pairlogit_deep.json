@@ -1,0 +1,70 @@
+[
+  {
+    "stop_fold": 0,
+    "seed": 0,
+    "fit_seconds": 51.53735066705849,
+    "details": {
+      "best_epoch": 1229,
+      "epochs": 1230,
+      "config": {
+        "iterations": 2000,
+        "od_type": "Iter",
+        "od_wait": 100,
+        "bootstrap_type": "Bernoulli",
+        "subsample": 0.8,
+        "rsm": 1.0,
+        "random_strength": 1.0,
+        "border_count": 128,
+        "depth": 4,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10,
+        "random_seed": 0,
+        "thread_count": 2,
+        "verbose": false,
+        "allow_writing_files": false,
+        "loss_function": "PairLogit",
+        "eval_metric": "PairLogit"
+      },
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "threadpools": []
+    },
+    "depth": 4,
+    "n_gradient_fit": 4672,
+    "n_stop": 2337,
+    "n_predict": 3505
+  },
+  {
+    "stop_fold": 0,
+    "seed": 0,
+    "fit_seconds": 43.43604637507815,
+    "details": {
+      "best_epoch": 813,
+      "epochs": 814,
+      "config": {
+        "iterations": 2000,
+        "od_type": "Iter",
+        "od_wait": 100,
+        "bootstrap_type": "Bernoulli",
+        "subsample": 0.8,
+        "rsm": 1.0,
+        "random_strength": 1.0,
+        "border_count": 128,
+        "depth": 8,
+        "learning_rate": 0.06,
+        "l2_leaf_reg": 10,
+        "random_seed": 0,
+        "thread_count": 2,
+        "verbose": false,
+        "allow_writing_files": false,
+        "loss_function": "PairLogit",
+        "eval_metric": "PairLogit"
+      },
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "threadpools": []
+    },
+    "depth": 8,
+    "n_gradient_fit": 4672,
+    "n_stop": 2337,
+    "n_predict": 3505
+  }
+]

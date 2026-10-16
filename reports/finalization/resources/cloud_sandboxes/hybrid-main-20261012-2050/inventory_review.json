@@ -1,0 +1,36 @@
+{
+  "schema": "final_hybrid_inventory_review.1",
+  "status": "passed",
+  "at_utc": "2026-10-12T22:38:11.253561+00:00",
+  "reviewer": "6.1 Sol independent bounded read-only review",
+  "phase_certificate": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/phase_certificate.json",
+    "sha256": "aeadd529c2183e23e945f2f85cb78e16452b7ce73927500653a95f0c7e598b2f"
+  },
+  "task_manifest": {
+    "path": "reports/finalization/hybrids_cloud_v1/task_manifest.json",
+    "sha256": "2423acd18b7b9269ed070762106ab4c42cf9dcad091a43d211c209cdc52a4766"
+  },
+  "checks": {
+    "complete_jobs": 10,
+    "unique_bundles": 80,
+    "unique_supervised_fit_keys": 480,
+    "mlp_fits": 320,
+    "tree_fits": 160,
+    "exact_member_schedules": true,
+    "gradient_stopping_held_pair_ids_match_frozen_tasks": true,
+    "prediction_arms": 16,
+    "unique_canonical_outer_held_rows_each_arm": 19716,
+    "total_prediction_rows": 315456,
+    "duplicate_predictions": 0,
+    "pilot_bundles": 2,
+    "pilot_fits": 12,
+    "pilot_unscored_and_not_reused": true
+  },
+  "limits": [
+    "Header, manifest, row coverage and saved hash checks only",
+    "No model replay or inference",
+    "No bootstrap or outcome interpretation",
+    "Heavy saved-model and statistical audit pending"
+  ]
+}

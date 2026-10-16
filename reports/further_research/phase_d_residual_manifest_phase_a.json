@@ -1,0 +1,70 @@
+{
+  "tag": "phase_a",
+  "sequence_arm": "reports/further_research/phase_a_seq_oof_cluster.csv",
+  "n_train_rows": 19716,
+  "outer_fingerprint": "50fdca745c9e8e99",
+  "alpha_ladder": [
+    10.0,
+    100.0,
+    1000.0,
+    10000.0,
+    100000.0,
+    1000000.0,
+    "inf"
+  ],
+  "min_rows": 20,
+  "min_rows_strict": 50,
+  "n_alleles_panel": 69,
+  "n_alleles_strict": 68,
+  "n_boot": 2000,
+  "bootstrap_seed": 20261003,
+  "shuffle_seed": 20261004,
+  "fitting_role": "inner_oof_30",
+  "residual_sd_by_role": {
+    "outer_held": 0.6673959184137946,
+    "inner_oof_30": 0.6902503364686535,
+    "inner_oof_6": 0.6802877925334047
+  },
+  "residual_sd_ratio_fitted_over_applied": 1.0342441681531065,
+  "oof_contract": {
+    "n_outer_held": 19716,
+    "roles": [
+      "inner_oof_30",
+      "inner_oof_6",
+      "outer_held"
+    ],
+    "inner_roles": [
+      "inner_oof_30",
+      "inner_oof_6"
+    ],
+    "fitting_role": "inner_oof_30",
+    "n_rows_per_inner_role": {
+      "inner_oof_30": 78864,
+      "inner_oof_6": 78864
+    }
+  },
+  "a0_provenance": {
+    "networks_total": 900,
+    "members_per_outer_fold": {
+      "level2_outer_held_and_inner_oof_6": 30,
+      "level3_inner_oof_30": 150
+    },
+    "fit_rows_by_level": {
+      "outer_held": 12618,
+      "inner_oof_30": 10095,
+      "note": "the irreducible remainder of nested CV: each level removes another fifth, so inner_oof_30 members are fitted on fewer rows than outer_held members. A large arity mismatch is traded for a small training-size mismatch, not eliminated."
+    },
+    "five_fold_median_of_medians": 0.6492987333936656
+  },
+  "arm_feature_counts": {
+    "D0_none": 0,
+    "D1_geometry": 36,
+    "D2_confidence": 73,
+    "D3_anchor_geometry": 15,
+    "D3b_anchor_geometry_p1p2p9": 18,
+    "D4_geometry+confidence": 109,
+    "D3c_central_geometry": 27,
+    "DX_geometry_shuffled": 36
+  },
+  "wall_seconds": 673.5
+}

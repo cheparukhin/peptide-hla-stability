@@ -1,0 +1,25 @@
+{
+  "schema": "final_cloud_transport_plan.1",
+  "approved": true,
+  "profile": "a-cheparukhin",
+  "authorization": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/authorization.json",
+    "sha256": "d24f7c60396d0192ac33dc6bb479c14cb8c122772e65675b1ee118278504c5a6"
+  },
+  "resources": {
+    "path": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055/resources.json",
+    "sha256": "b5724568f1d36dd570c6a365250fe3f403125bea62fb4f3c75b4ebd68a978ce8"
+  },
+  "directory": "reports/finalization/resources/cloud_sandboxes/label-efficiency-20261013-0055",
+  "sources": {
+    "scripts/final_cloud_transport.py": "a2997f3e8da0b0bed74d94744a2f539ad70f691e0fd0b8a4d6cfee18ceaf1479",
+    "tests/test_final_cloud_transport.py": "10152b55efc169a4917bd08a26be367a243f47be8197731f44b8e14b397e7888"
+  },
+  "max_upload_bytes": 3221225472,
+  "max_download_bytes": 8589934592,
+  "max_file_bytes": 8589934592,
+  "max_metadata_bytes": 16777216,
+  "max_files": 20000,
+  "upload_timeout_seconds": 3600,
+  "download_timeout_seconds": 3600
+}

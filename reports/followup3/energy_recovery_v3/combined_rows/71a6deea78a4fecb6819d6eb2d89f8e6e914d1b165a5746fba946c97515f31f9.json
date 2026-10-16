@@ -1,0 +1,102 @@
+{
+  "allele": "HLA-B*40:01",
+  "peptide": "REIGDISYL",
+  "cluster_id": 3256,
+  "outer_fold": 3,
+  "complex_id": "B4001_REIGDISYL",
+  "folder": "stage4c/ectodomain-20261004/boltz2/production/HLA-B_40_01/B4001_REIGDISYL",
+  "status": "ok",
+  "binary_sha256": "faed5e54e47744ab6ab75f8f9ad1a1f2e2cdbeac4f0f98d4e36c97049eb14268",
+  "repair_interface": "ALL",
+  "phases": [
+    {
+      "phase": "repair",
+      "command": [
+        "foldx_20261231",
+        "--command=RepairPDB",
+        "--pdb=B4001_REIGDISYL.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tsztwwuz/input",
+        "--output-dir=/tmp/energy_repaired_tsztwwuz/output"
+      ],
+      "returncode": 0,
+      "elapsed_s": 302.0707433309999
+    },
+    {
+      "phase": "analysis",
+      "command": [
+        "foldx_20261231",
+        "--command=AnalyseComplex",
+        "--pdb=B4001_REIGDISYL_Repair.pdb",
+        "--pdb-dir=/tmp/energy_repaired_tsztwwuz/output",
+        "--output-dir=/tmp/energy_repaired_tsztwwuz/output",
+        "--analyseComplexChains=C,A"
+      ],
+      "returncode": 0,
+      "elapsed_s": 2.7001599000004717
+    }
+  ],
+  "metadata_sha256": "3f111088f29d9a848d400e414de123dc38606560b67880d1eafed818b67b5631",
+  "structure_sha256": "ad1497ba554e4b7901668072ebaf664ea4a728cc9b45e7b97b6a27fae095a24f",
+  "terms": {
+    "foldx_intraclashesgroup1": 0.0600976,
+    "foldx_intraclashesgroup2": 13.4608,
+    "foldx_interaction_energy": -22.377,
+    "foldx_backbone_hbond": -6.03705,
+    "foldx_sidechain_hbond": -9.91827,
+    "foldx_van_der_waals": -18.6899,
+    "foldx_electrostatics": -8.17825,
+    "foldx_solvation_polar": 29.2862,
+    "foldx_solvation_hydrophobic": -24.1505,
+    "foldx_van_der_waals_clashes": 2.38242,
+    "foldx_entropy_sidechain": 9.73191,
+    "foldx_entropy_mainchain": 4.33935,
+    "foldx_sloop_entropy": 0.0,
+    "foldx_mloop_entropy": 0.0,
+    "foldx_cis_bond": 0.0,
+    "foldx_torsional_clash": 0.0844586,
+    "foldx_backbone_clash": 0.555492,
+    "foldx_helix_dipole": 0.00137244,
+    "foldx_water_bridge": 0.0,
+    "foldx_disulfide": 0.0,
+    "foldx_electrostatic_kon": -1.38331,
+    "foldx_partial_covalent_bonds": 0.0,
+    "foldx_energy_ionisation": 0.154572,
+    "foldx_entropy_complex": 2.384,
+    "foldx_number_of_residues": 383.0,
+    "foldx_interface_residues": 48.0,
+    "foldx_interface_residues_clashing": 0.0,
+    "foldx_interface_residues_vdw_clashing": 0.0,
+    "foldx_interface_residues_bb_clashing": 0.0,
+    "foldx_group1": "C",
+    "foldx_group2": "A"
+  },
+  "fxout_sha256": "735c69e8646606978d7240a32882de3ebd50e1e12f0608b7b98062cba0bd572d",
+  "repaired_pdb_sha256": "f90078298f52448b364df4785a5685b6f30c6692ca70e6390711298f6ec6e839",
+  "conversion_validation": {
+    "n_atoms": 3152,
+    "chain_runs": [
+      [
+        "A",
+        275
+      ],
+      [
+        "B",
+        99
+      ],
+      [
+        "C",
+        9
+      ]
+    ],
+    "max_coord_dev_A": 0.0005002021789550781,
+    "max_bfactor_dev": 0.0049999999999954525,
+    "ter_records": 3,
+    "ends_with_END": true,
+    "peptide_chain": "C",
+    "peptide_sequence": "REIGDISYL"
+  },
+  "peptide_chain": "C",
+  "hla_chain": "A",
+  "elapsed_s": 307.9326825349999,
+  "protocol_hash": "03808264b86e217945bdde190d77d71699f46c6818b1b98cf267ccec95ac0315"
+}

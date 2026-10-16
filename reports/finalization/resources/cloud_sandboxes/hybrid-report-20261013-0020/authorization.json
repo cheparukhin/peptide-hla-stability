@@ -1,0 +1,140 @@
+{
+  "schema": "final_cloud_phase_authorization.1",
+  "approved": true,
+  "phase": "hybrid_report",
+  "scope_root": "reports/finalization/hybrids_cloud_v1",
+  "protocol_hash": "c5fd5501d8b640428305a1eb5b2d9fd83c3fb47139faa7de055550cb02de3955",
+  "n_fits": 0,
+  "resources": {
+    "cpu_cores": 2,
+    "memory_mib": 8192,
+    "numerical_threads": 2,
+    "max_workers": 1
+  },
+  "fit_wall_seconds": 28800,
+  "deadline_utc": "2026-10-13T06:45:00+00:00",
+  "sandbox_name": "pepstab-final-hybrid-report-20261013-0020",
+  "phase_nonce": "hybrid-report-20261013-0020",
+  "image_id": "im-Epc3H2RdNAgJSwtXBYMCfy",
+  "run_directory": "reports/finalization/cloud/remote/hybrid-report-20261013-0020",
+  "durability": {
+    "volume_version": 2,
+    "method": "os.sync"
+  },
+  "sources": {
+    "modal_app/final_transfer.py": "8603bf6989aa92a553df751aba28673cfc424efca3979205c978126c100e48c4",
+    "pepstab/boltz_embeddings.py": "efa00faf8765004b14c38f2c9ca6e09b2b76847eb76dde30f19be0241f2f039c",
+    "pepstab/data.py": "628b9698cbd417d4397f84a3932ea5337243feda66d2c7b5ec7dc7b5b21744b6",
+    "pepstab/evaluation.py": "0c8fa53f2fcb3e05a0617316c2f9f5e210ec4c6800ebe0fbd8f75bce3f21dcd2",
+    "pepstab/features.py": "7414160c3e34f3121c7469cf28c0000d2eaa8b8b5fc602cbbd441d504a344b53",
+    "pepstab/final_modal_backend.py": "98c08da2b52c35c7d891e6126df8f5da3cd072f117dcc4b999f3de6216d5c3b3",
+    "pepstab/final_transfer.py": "aba5a72e1183a93df707bb2350d32a78b73a6a5cf44360ba73a3268256a9cb9d",
+    "pepstab/final_transfer_checkpoint.py": "086ed51e24f7d2b51047ebcae8dae85b977d4917d0240592ce1579904ebfba7a",
+    "pepstab/mlp.py": "460ce9dc18a90d6abf9398b8e9cd21476391e8f552f29302f8c751808b2acf7d",
+    "pepstab/phase_a.py": "4d23014554d081cf0b245b3085adf0227d091379fc20f929f75396d8e8c7a6e8",
+    "pepstab/round2_budget.py": "57f54e788e24093bafe1e97c5e7ec63d0e200114283bb9489161733fccea4d91",
+    "pepstab/round2_embedding.py": "d98f53a7204d1b46ba6d6b299995239b742ab8cea4e9323da40b8d447017a9d3",
+    "pepstab/round2_nested.py": "f4121bc577d7279107ab9ee8fe934c548a7fe28af8cfba61515955a61a15ee36",
+    "pepstab/round2_reporting.py": "104764b8e92472cae88350e3696ae46f0162a6b350645cf18f2ca2eff7a70f43",
+    "pepstab/round2_representations.py": "236f15d71cb3abcc50e5e8f3608bdd1791e523d6d5aef82395ca6d1a41f073ab",
+    "pepstab/round2_transfer.py": "55ddf2c167c1176fc79fbb79df2946f5d6a2a17740fa3da2f8df3ceb89c62905",
+    "reports/finalization/transfer_controls/SPECIFICATION.md": "37e988b4233fdae3b684f5f5bf1c736ee4eb7daedb50f3624e4ca4193bc1827f",
+    "reports/finalization/transfer_controls/runtime_plan.json": "a4e1857bd97885e74d3f6958fcbc530b605e465b96cd490c3d3b4a1e59588af6",
+    "scripts/final_runtime_guard.py": "ea05ea977fab7ec274942d71b521e931117912408b7150ad9d0fb5203e1a6627",
+    "scripts/final_transfer.py": "c20906775caa14616c03d94a36f34ce4b6925292edb506a9aa03ec9afb88e801",
+    "scripts/final_transfer_checkpoint_worker.py": "eeb085a087e860da60c0c0775b83f1b84f216fe6f1cd10f506a85cb3f4b121ce",
+    "scripts/final_transfer_cloud.py": "f488562a2cc3ba1583a7fbd1adac137552917fe19782a3c2e918e7f64f32c458",
+    "scripts/final_transfer_durable.py": "895e2439759f682838a861217557c29eda5453a153b7fa789f8b09ca4c31b97b",
+    "scripts/final_transfer_pipeline.py": "e98e5e1953d52745fcca5da7cdd164275ed27500575bdb8d56638a04facc31ff",
+    "scripts/final_transfer_report.py": "2d22a3146448d3185cf93faed1b75cb43c65c953228d4b8b8fb5577e8dcb3bca",
+    "scripts/round2_embedding_screen.py": "6cf617b53b038a57cc9c027b949fda79e4ca3c514598a1c5b4d7d9ff87dc96b8",
+    "scripts/round2_transfer.py": "ba44e66e84deb090937fd4275cc4a5ec7dd4fc049a44a6bf001c99e0043864cb",
+    "scripts/round2_transfer_report.py": "43bc7e576dfd0bd3d89745eaf3d5dd5738b7cec035985ae4717a1ef2b438cf75",
+    "tests/test_final_modal_backend.py": "c063f140db300dcd8b5c870668ee3af41f3e7cb1d27e4654056d5e2ed833f4a5",
+    "tests/test_final_runtime_guard.py": "827b9be6128241d4f633254a4c3fd8ca4dda8725b43df09946c21082d8dfe81b",
+    "tests/test_final_transfer.py": "25278ee2e92d0d0f886c2ae0466479c3afe15a0a9ca807f76dd323d50f768886",
+    "tests/test_final_transfer_checkpoint.py": "f40640f6b216f0002746176c3bc74bb77d381cd7304e52bb40fd824065f38ad3",
+    "tests/test_final_transfer_cloud.py": "a890dee997dd7dc1b9d934216602c11f77dd0e6fd198e8269e1d371a607eb731",
+    "tests/test_final_transfer_durable.py": "7fc1f989c03702527cf53418d474d012efdddd55b43707bbb262773a07247a90",
+    "tests/test_final_transfer_pipeline.py": "422639d108d3a4c4a9633b5d54397cabb78a90a2c717627caa153ff9a5410551",
+    "pepstab/final_hybrids.py": "d80909dd4b5c54d877be1117c709f99e6325d5dc0ad35f90f36b8deca2d4282a",
+    "scripts/final_hybrids.py": "45adc884f21fbbe1c72cbb7545b292f230698b5d100e0a5a6e6c519500b18535",
+    "scripts/final_hybrids_pipeline.py": "6f20157ebb4fabe2f0157377e811d7cfb88c1546fdacfe940c551399cc8257d6",
+    "scripts/final_hybrids_report.py": "3b2919bbbb8245101f8396c6abbe56af909d37a45ee662608a158b27e27f46eb",
+    "pepstab/final_hybrid_reporting.py": "d6e84748677d0b949938dfbf4234f56578c25401d3ef5ed6790fc3cb58636766",
+    "tests/test_final_hybrids.py": "b803b9e19ac368676e334acf16bd032c42c3fec03450b13dd8975d96f9175fec",
+    "tests/test_final_hybrids_pipeline.py": "998181b266a900e95fde22b74aa6711735b998a08ad857a8320d1a11b17ba9f0",
+    "tests/test_final_hybrid_reporting.py": "ccae03d11658d647b1c30c0ae747ce986aa4765c9740e8fdb235f2a390bcdd1e",
+    "pepstab/nested.py": "f301b7ed4f0799bc2c17f61de3fc9a4429b576f246b69a4426fe71cf2d91efd0",
+    "pepstab/splits.py": "3da9638c8d48b8a0f5d16a9f90b2f58364cec6ca4da94c8a0487c0ff0891254f",
+    "scripts/final_ranking.py": "dffd748c758e706d0d2712d0cdc8b6ee8e1608c0fc44b52ac74ce79ccfb05db4",
+    "pepstab/final_ranking.py": "5da325790c2902ba32dc7757db631ddcfd2033084a3667f4d7aff1110089d535",
+    "pepstab/final_cloud_protocol.py": "ade6f60a46bc31afb1c98a94e7b5b6a72ab696d876201f783b6ebcb9d6a9649b",
+    "scripts/final_cloud_inputs.py": "40120f965f6681c80e20911ed1bb4e83d2a948954c75e1abe4dd7b0de0130fd5",
+    "scripts/final_cloud_phase.py": "fb273c22e5359681be50bb947e9eb6e3d2b28ebbcb838024c183bfd621c21895",
+    "scripts/final_hybrids_cloud.py": "9e1010ae90adc2c2dd0dcc12019925b14b5fc61326e9de693c42dc7a051806a8",
+    "scripts/final_hybrids_cloud_report.py": "9d6499521c0b471f54034619792b700f9c071940eed798c19a317c5082de3116",
+    "scripts/final_sandbox_driver.py": "f805bfd5fe6d17052e3322a285dad740f1a7bc17fe24ac0631b2485418a49020",
+    "scripts/final_cloud_resources.py": "9c0e4d44c5048de334b3937ab969c3a32fd06d7294f31aa82bbf6896a5fc650a",
+    "scripts/final_cloud_transport.py": "91f3b5398a7ee7d3e4ba77ad4324fd6ed66b563ff1e63184b5a882c108107e51",
+    "tests/test_final_cloud_protocol.py": "9fee820cfa8c67b0611b3e65f95b0aa9b2c9e6c52efc0e27b97ed650d8e22997",
+    "tests/test_final_cloud_inputs.py": "82c5479c302304e195fcf5b2e41f8db24f963fe43a99bf408e00de18b5f36ba7",
+    "tests/test_final_sandbox_driver.py": "b6aa0e0669e0f546753071139ff49e539f83132693267ad5c429ef73ad88647c",
+    "tests/test_final_cloud_resources.py": "779d2741e96d49fbe3c02868f0037358d80a3f5bedc99b5c212eabc364d5c395",
+    "tests/test_final_cloud_transport.py": "ee3c78797fb16ba1731fae1f64bd37a6ab3002a11ef2fdc31c36bd9c335e54cb",
+    "pepstab/__init__.py": "002d2c88281ed63b93875917fbdd7e49079c3c1d6d71f8e571e4d0d65a34568c",
+    "pepstab/augment.py": "2a23123ece406323fe3b623d493bfd4766b94c2c1312550c199b148fa1656f74",
+    "pepstab/esm.py": "61b4b3b7ab225a9569cc05e8854824fab104123ee55b2ee5c986309c6d6aea45",
+    "pepstab/legacy_assessment.py": "bdfd45325b940af7cbb850fef46bf0acef2111426f4879dfcac5ec58e9d4c134",
+    "scripts/baseline_ensemble.py": "4e583dd93300b8433c55c4e5fdf0134f00fd41336d162ecf2804c82d10b34bd6",
+    "scripts/baseline_sequence.py": "129b50afb5b777f153e613f2dcfb48f44164b7392e4e31eada2dfc38ba162036",
+    "scripts/phase_d_structural_residual.py": "de4a835cafb805bc5d62fdd9954068244c76696f76acae5a60dba0d70fa85662",
+    "scripts/stage5_structural_arm.py": "b78e5d1cb35320f6c3e972cc801c25ce996dc6806690abcc74792cc201de728a",
+    "pepstab/final_cloud_targets.py": "2ed5778238570c8bad1a599b6e8fe3552c6d54ed9437d62fc5821539b34670a2",
+    "scripts/final_cloud_scientific_entry.py": "a35b4233735d6686fdf645c81f9f9f94f24e2237fa9e2a232caa53b317c82a54",
+    "pepstab/final_hybrid_replay.py": "e4d1199bd7d30a7191bd06a14aabf1da04f6fa707ff4797e51fe0c3fc5d1d367",
+    "tests/test_final_hybrid_replay.py": "cec720e80c67a07b9dea65e8f1c7b239b9a79fc046686e455d8638e5a03e2d16",
+    "tests/test_final_hybrid_aggregation.py": "bc9035c26935dc1d214fe43adf06d1688b4011af98f585f4f630d5db54fc48ae",
+    "pepstab/final_replay_backend.py": "c313a5540420711164fda285e173ccd348f1d1db796c0424b88a0a5c38530a77",
+    "tests/test_final_replay_backend.py": "592c32f12b905c6e8df8eb8d4c548252889e5dabae0df2112bf38f89c27012c2"
+  },
+  "input_manifest": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/input_manifest.json",
+    "sha256": "f1cad975c46415043cf72d919af1dc4af8c1573a8706227e716ce27944feeae1"
+  },
+  "portable_predecessor": {
+    "path": "reports/finalization/cloud/portable_cloud_transfer_closure.json",
+    "sha256": "ac01ef60e2460bed375392166ee2dfc4f88c8c78eb562e80538eb66d159bf3c8"
+  },
+  "phase_certificates": {
+    "hybrid_pilot": {
+      "path": "reports/finalization/resources/cloud_sandboxes/hybrid-pilot-20261012-2025/phase_certificate.json",
+      "sha256": "9938d7cf8defe1f5c367eecbb0ae7ee04899536d5a87f82a14028219d903212a"
+    },
+    "hybrid_main": {
+      "path": "reports/finalization/resources/cloud_sandboxes/hybrid-main-20261012-2050/phase_certificate.json",
+      "sha256": "aeadd529c2183e23e945f2f85cb78e16452b7ce73927500653a95f0c7e598b2f"
+    }
+  },
+  "cloud_accounting": {
+    "path": "reports/finalization/resources/cloud_sandboxes/hybrid-report-20261013-0020/accounting.json",
+    "sha256": "a610e103fb538a814647e2d7d69154d08fbd0f84d4390b8dda8103d13545c0e2"
+  },
+  "phase_cap_usd": 5,
+  "canonical_targets": {
+    "path": "reports/finalization/cloud/canonical_training_targets.json",
+    "sha256": "f5a609a98fb7dc607242bcbe7b31db503f19a673c62a7de6398cd30b33df0b70"
+  },
+  "report_replay_amendment": {
+    "path": "reports/finalization/cloud/stopping_mse_replay_amendment.json",
+    "sha256": "52706610025afcb82eead1625ff27fb5b76397f8a4a28be2bdb9ca2a314083f6"
+  },
+  "ensemble_replay_amendment": {
+    "path": "reports/finalization/cloud/ensemble_replay_amendment.json",
+    "sha256": "2bf63f5724e27caa81e3e93de0d78d611c5adbb8e9c9a6edcaaa72dd74929bdd"
+  },
+  "report_backend_amendment": {
+    "path": "reports/finalization/cloud/backend_replay_amendment.json",
+    "sha256": "b7a985a66d812a4f8dd3a68d94f64ea0f080ad83ed3f129a6af9d1ac73b2dd70"
+  }
+}

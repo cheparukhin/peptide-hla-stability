@@ -1,0 +1,74 @@
+{
+  "schema": "final_transfer_runtime_plan.1",
+  "status": "PLAN_ONLY_NOT_LAUNCH_APPROVAL",
+  "fit_graph": {
+    "regimes": {
+      "hla": {
+        "outer_cells": 5,
+        "inner_cells": 3,
+        "fits_per_cell": 166,
+        "members_per_procedure": {
+          "tree_log": 42,
+          "tree_centred": 42,
+          "R0_ridge": 10,
+          "R0_mlp": 48,
+          "fixed_ranker8": 24
+        },
+        "total_fits": 830
+      },
+      "joint": {
+        "outer_cells": 25,
+        "inner_cells": 9,
+        "fits_per_cell": 400,
+        "members_per_procedure": {
+          "tree_log": 114,
+          "tree_centred": 114,
+          "R0_ridge": 28,
+          "R0_mlp": 84,
+          "fixed_ranker8": 60
+        },
+        "total_fits": 10000
+      }
+    },
+    "by_procedure": {
+      "tree_log": 3060,
+      "tree_centred": 3060,
+      "R0_ridge": 750,
+      "R0_mlp": 2340,
+      "fixed_ranker8": 1620
+    },
+    "total_fits": 10830,
+    "reused_fits": 0,
+    "selector_extra_fits": 0,
+    "mapping_extra_fits": 0
+  },
+  "local_workers_max": 3,
+  "numerical_threads_each": 2,
+  "prerequisite": "ranking successful exit receipt SHA256 and process absence; packaging/ranking must share overall local cap",
+  "cloud_topology": "one root-owned app context; up to3 cell threads; six calls/batch;18 active/container cap",
+  "cloud_member_calls": 1620,
+  "task_timeout_seconds": 1000,
+  "startup_timeout_seconds": 60,
+  "scaledown_seconds": 2,
+  "cpu_cores": 2,
+  "memory_gib": 4,
+  "fresh_rates_reference": "reports/finalization/resources/modal_baseline.json",
+  "rate_hour_usd": 0.1266,
+  "timeout_bound_calls_usd": 60.50214,
+  "smoke_and_build_reserve_usd": 1.35,
+  "timeout_bound_total_usd": 61.85214,
+  "proposed_scope_ceiling_usd": 65,
+  "forecast_status": "unmeasured; expected around25USD is provisional; pilot+local interleaving+idle/startup telemetry must determine fixed deadline before fanout",
+  "maximum_active_concurrency_for_forecast": 18,
+  "preemption": "provider restarts require independent resource/wall guard; retries0 does not bound billing",
+  "automatic_retries": 0,
+  "automatic_scope_expansion": false,
+  "required_before_launch": [
+    "root scientific source/protocol/count/ancestry review",
+    "fresh rates/provider state",
+    "separately authorized bounded pilot with equivalence and meter/version evidence",
+    "durable app identity before calls",
+    "worst-case reservation and independent guard before batches",
+    "fixed wall deadline with shutdown cushion and controller exit receipts"
+  ]
+}
