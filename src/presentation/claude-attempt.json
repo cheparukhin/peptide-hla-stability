@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-16",
+  "source_commit": "be0197ce",
+  "claude_code_version": "2.1.296",
+  "isolation": {
+    "separate_directories": true,
+    "outside_repository": true,
+    "restricted": true,
+    "safe_mode": true,
+    "available_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ],
+    "shell_browser_mcp_access": false,
+    "max_budget_usd_each": 3,
+    "fallback_model_flag_supplied": false
+  },
+  "attempts": [
+    {
+      "task": "website",
+      "requested_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "reported_cost_usd": 0.1607846,
+      "safety_stops": 2,
+      "stop_reason": "refusal",
+      "terminal_reason": "aborted_streaming",
+      "produced_deliverable": false,
+      "authentication_refresh_error": "EPERM creating ~/.claude/.oauth_refresh.lock",
+      "prompt_sha256": "064eb7fd10c397f3b48fc5a04b49b7ac876ed513157c7783ae1730b388a00ce2",
+      "facts_sha256": "a6c2971c95a602676db835418d409b5b6a484fa02aee3fae790b9b522a9ed9c3"
+    },
+    {
+      "task": "figures",
+      "requested_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "reported_models": [
+        "claude-opus-5-5",
+        "claude-opus-5"
+      ],
+      "reported_cost_usd": 0.6279267500000001,
+      "safety_stops": 2,
+      "stop_reason": "tool_use",
+      "terminal_reason": "aborted_streaming",
+      "produced_deliverable": false,
+      "authentication_refresh_error": "EPERM creating ~/.claude/.oauth_refresh.lock",
+      "prompt_sha256": "01e19d35d6bf3a842bc5c979d252036e020c16e214dff57d9df1b55940d47c04",
+      "facts_sha256": "a6c2971c95a602676db835418d409b5b6a484fa02aee3fae790b9b522a9ed9c3"
+    },
+    {
+      "task": "film",
+      "requested_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "reported_models": [
+        "claude-opus-5-5"
+      ],
+      "reported_cost_usd": 0.060237,
+      "safety_stops": 2,
+      "stop_reason": "refusal",
+      "terminal_reason": "aborted_streaming",
+      "produced_deliverable": false,
+      "authentication_refresh_error": "EPERM creating ~/.claude/.oauth_refresh.lock",
+      "prompt_sha256": "061097d1dbd834258aae89dea7951ca4e4e5fe46314cd7355c99d737da4495bb",
+      "facts_sha256": "a6c2971c95a602676db835418d409b5b6a484fa02aee3fae790b9b522a9ed9c3"
+    }
+  ],
+  "total_reported_cost_usd": 0.84894835,
+  "note": "Stopped by parent after no output and reported safety stops/authentication errors. No claim about which safety category fired. The figures usage record includes Opus 5 despite requesting Opus 5.5 and supplying no fallback flag. Costs are CLI-reported list-cost estimates, not a billing invoice."
+}
